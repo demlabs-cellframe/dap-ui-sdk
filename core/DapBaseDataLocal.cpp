@@ -575,19 +575,7 @@ void DapBaseDataLocal::loadBugReport()
                 result.insert (item.number, std::move (item));
         }
     }
-    else
-    {
-        QList<QString> list;
-        /* get array from settings */
-        loadFromSettingsBase(TEXT_BUGREPORT_HISTORY, list);
 
-        for (const auto &number : qAsConst(list))
-        {
-            auto item = DapBugReportHistoryItem { number.toInt(), "unknown" };
-            if (item.number)
-                result.insert (item.number, std::move (item));
-        }
-    }
     m_bugReportHistory->setBagreports(std::move(result));
 }
 
