@@ -60,19 +60,31 @@ bool UserConfigManager::configure() {
 
 QString UserConfigManager::getGuiUser() const {
     QProcess process;
+    qDebug() << "Starting process to determine GUI user...";
+
     process.start(processName, QStringList());
-    process.waitForFinished();
+    if (!process.waitForFinished()) {
+        qWarning() << "Process failed to finish in a timely manner.";
+        return QString();
+    }
+
     QString output = process.readAllStandardOutput();
+    qDebug() << "Process output:" << output;
 
     QStringList lines = output.split('\n');
     for (const QString& line : lines) {
+        qDebug() << "Processing line:" << line;
         if (line.contains(":0")) { // Check if the session is GUI-based
+            qDebug() << "Found GUI session line:" << line;
             QStringList parts = line.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
             if (!parts.isEmpty()) {
+                qDebug() << "Returning GUI user:" << parts[0];
                 return parts[0];
             }
         }
     }
+
+    qWarning() << "No GUI user found.";
     return QString();
 }
 
