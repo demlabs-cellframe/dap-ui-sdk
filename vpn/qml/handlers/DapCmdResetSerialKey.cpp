@@ -27,6 +27,8 @@ void DapCmdResetSerialKey::handleError(int code, const QString& message)
 
     switch (code) {
     case 1:
+        // Code 1 indicates a non-critical reset error that allows clearing the local key storage.
+        // In this case, the user will not lose the key if it is still valid.
         emit sigResetSerialKeyError(message);
         break;
     case 2:
