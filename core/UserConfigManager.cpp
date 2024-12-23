@@ -110,12 +110,13 @@ bool UserConfigManager::checkFolderExists(const QString& folderPath) const {
 bool UserConfigManager::changeOwnershipRecursively(const QString& folderPath, const QString& user) const {
     struct passwd* pw = getpwnam(user.toUtf8().constData());
     if (!pw) {
-        qDebug() << "Failed to retrieve user information for:" << user;
+        qDebug() << "Error: Failed to retrieve user information for:" << user;
         return false;
     }
 
     if (chown(folderPath.toUtf8().constData(), pw->pw_uid, pw->pw_gid) != 0) {
-        perror(("Failed to change ownership for folder: " + folderPath).toUtf8().constData());
+        qDebug() << "Error: Failed to change ownership for folder:" << folderPath
+                 << "Error:" << strerror(errno);
         return false;
     }
 
@@ -123,11 +124,13 @@ bool UserConfigManager::changeOwnershipRecursively(const QString& folderPath, co
     while (it.hasNext()) {
         QString path = it.next();
         if (chown(path.toUtf8().constData(), pw->pw_uid, pw->pw_gid) != 0) {
-            perror(("Failed to change ownership for: " + path).toUtf8().constData());
+            qDebug() << "Error: Failed to change ownership for:" << path
+                     << "Error:" << strerror(errno);
             return false;
         }
     }
 
+    qDebug() << "Ownership successfully changed for folder and its contents:" << folderPath;
     return true;
 }
 
