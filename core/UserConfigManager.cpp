@@ -74,7 +74,8 @@ QString UserConfigManager::getGuiUser() const {
     QStringList lines = output.split('\n');
     for (const QString& line : lines) {
         qDebug() << "Processing line:" << line;
-        if (line.contains(":0")) { // Check if the session is GUI-based
+        // Check for identifiers that indicate a GUI session
+        if (line.contains(":0") || line.contains("tty2") || line.contains("wayland")) {
             qDebug() << "Found GUI session line:" << line;
             QStringList parts = line.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
             if (!parts.isEmpty()) {
