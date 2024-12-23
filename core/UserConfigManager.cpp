@@ -139,7 +139,8 @@ bool UserConfigManager::setReadWritePermissionsRecursively(const QString& folder
     mode_t mode_file = S_IRUSR | S_IWUSR;
 
     if (chmod(folderPath.toUtf8().constData(), mode_dir) != 0) {
-        perror(("Failed to change permissions for folder: " + folderPath).toUtf8().constData());
+        qDebug() << "Error: Failed to change permissions for folder:" << folderPath
+                 << "Error:" << strerror(errno);
         return false;
     }
 
@@ -151,12 +152,13 @@ bool UserConfigManager::setReadWritePermissionsRecursively(const QString& folder
         mode_t mode = fileInfo.isDir() ? mode_dir : mode_file;
 
         if (chmod(path.toUtf8().constData(), mode) != 0) {
-            perror(("Failed to change permissions for: " + path).toUtf8().constData());
+            qDebug() << "Error: Failed to change permissions for:" << path
+                     << "Error:" << strerror(errno);
             return false;
         }
     }
 
+    qDebug() << "Permissions successfully changed for folder and its contents:" << folderPath;
     return true;
 }
-
 #endif
