@@ -44,11 +44,10 @@ bool UserConfigManager::configure() {
     }
 
 #ifndef Q_OS_WIN
-    if (!changeOwnershipRecursively(userConfigPath, guiUser)) {
+    if (!changeOwnership(userConfigPath, guiUser)) {
         qDebug() << "Failed to change ownership for:" << userConfigPath;
-        return false;
     }
-    if (!setReadWritePermissionsRecursively(userConfigPath)) {
+    if (!setReadWritePermissions(userConfigPath)) {
         qDebug() << "Failed to change permissions for:" << userConfigPath;
         return false;
     }
@@ -74,12 +73,26 @@ QString UserConfigManager::getGuiUser() const {
     QStringList lines = output.split('\n');
     for (const QString& line : lines) {
         qDebug() << "Processing line:" << line;
-        // Check for identifiers that indicate a GUI session
-        if (line.contains(":0") || line.contains("tty2") || line.contains("wayland")) {
-            qDebug() << "Found GUI session line:" << line;
+
+        // Priority check for GUI session identifiers: ":0" and "wayland"
+        if (line.contains(":0") || line.contains("wayland")) {
+            qDebug() << "Found high-priority GUI session line:" << line;
             QStringList parts = line.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
             if (!parts.isEmpty()) {
-                qDebug() << "Returning GUI user:" << parts[0];
+                qDebug() << "Returning GUI user (high-priority):" << parts[0];
+                return parts[0];
+            }
+        }
+    }
+
+    // Secondary check for less likely identifiers
+    for (const QString& line : lines) {
+        qDebug() << "Processing line (secondary):" << line;
+        if (line.contains("tty") || line.contains("pts")) {
+            qDebug() << "Found secondary GUI session line:" << line;
+            QStringList parts = line.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
+            if (!parts.isEmpty()) {
+                qDebug() << "Returning GUI user (secondary):" << parts[0];
                 return parts[0];
             }
         }
@@ -108,58 +121,38 @@ bool UserConfigManager::checkFolderExists(const QString& folderPath) const {
 }
 
 #ifndef Q_OS_WIN
-bool UserConfigManager::changeOwnershipRecursively(const QString& folderPath, const QString& user) const {
+bool UserConfigManager::changeOwnership(const QString& targetPath, const QString& user) const {
     struct passwd* pw = getpwnam(user.toUtf8().constData());
     if (!pw) {
         qDebug() << "Error: Failed to retrieve user information for:" << user;
         return false;
     }
 
-    if (chown(folderPath.toUtf8().constData(), pw->pw_uid, pw->pw_gid) != 0) {
-        qDebug() << "Error: Failed to change ownership for folder:" << folderPath
+    if (chown(targetPath.toUtf8().constData(), pw->pw_uid, pw->pw_gid) != 0) {
+        qDebug() << "Error: Failed to change ownership for:" << targetPath
                  << "Error:" << strerror(errno);
         return false;
     }
 
-    QDirIterator it(folderPath, QDir::AllEntries | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
-    while (it.hasNext()) {
-        QString path = it.next();
-        if (chown(path.toUtf8().constData(), pw->pw_uid, pw->pw_gid) != 0) {
-            qDebug() << "Error: Failed to change ownership for:" << path
-                     << "Error:" << strerror(errno);
-            return false;
-        }
-    }
-
-    qDebug() << "Ownership successfully changed for folder and its contents:" << folderPath;
+    qDebug() << "Ownership successfully changed for:" << targetPath;
     return true;
 }
 
-bool UserConfigManager::setReadWritePermissionsRecursively(const QString& folderPath) const {
+bool UserConfigManager::setReadWritePermissions(const QString& targetPath) const {
     mode_t mode_dir = S_IRUSR | S_IWUSR | S_IXUSR;
     mode_t mode_file = S_IRUSR | S_IWUSR;
 
-    if (chmod(folderPath.toUtf8().constData(), mode_dir) != 0) {
-        qDebug() << "Error: Failed to change permissions for folder:" << folderPath
+    QFileInfo fileInfo(targetPath);
+    mode_t mode = fileInfo.isDir() ? mode_dir : mode_file;
+
+    if (chmod(targetPath.toUtf8().constData(), mode) != 0) {
+        qDebug() << "Error: Failed to change permissions for:" << targetPath
                  << "Error:" << strerror(errno);
         return false;
     }
 
-    QDirIterator it(folderPath, QDir::AllEntries | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
-    while (it.hasNext()) {
-        QString path = it.next();
-
-        QFileInfo fileInfo(path);
-        mode_t mode = fileInfo.isDir() ? mode_dir : mode_file;
-
-        if (chmod(path.toUtf8().constData(), mode) != 0) {
-            qDebug() << "Error: Failed to change permissions for:" << path
-                     << "Error:" << strerror(errno);
-            return false;
-        }
-    }
-
-    qDebug() << "Permissions successfully changed for folder and its contents:" << folderPath;
+    qDebug() << "Permissions successfully changed for:" << targetPath;
     return true;
 }
+
 #endif
