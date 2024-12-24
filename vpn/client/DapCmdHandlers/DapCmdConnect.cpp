@@ -6,14 +6,11 @@
 #include "DapSerialKeyData.h"
 
 DapCmdConnect::DapCmdConnect(QObject *parent)
-    : DapCmdServiceAbstract(DapJsonCmdType::CONNECTION, parent) {
-
-}
+    : DapCmdServiceAbstract(DapJsonCmdType::CONNECTION, parent) 
+{}
 
 DapCmdConnect::~DapCmdConnect()
-{
-
-}
+{}
 
 /**
  * @brief DapCmdConnect::sendCmdError
@@ -93,6 +90,7 @@ void DapCmdConnect::handle(const QJsonObject* params)
     } else {
         serialKey = DapServiceDataLocal::instance()->serialKeyData()->serialKey().remove('-');
     }
+    serialKey = QString(DapServiceDataLocal::instance()->serialKeyData()->serialKey()).remove('-');
 
     uint16_t port = uint16_t(mandatoryConnParams[PORT_KEY].toInt());
     QString address = mandatoryConnParams[ADDRESS_KEY].toString();
