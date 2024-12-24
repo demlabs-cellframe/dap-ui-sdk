@@ -111,7 +111,7 @@ QString UserConfigManager::getUserConfigPath(const QString& user) const {
         qDebug() << "Failed to retrieve home directory for user:" << user;
         return QString();
     }
-    return QString::fromUtf8(pw->pw_dir) + "/.config/" + DAP_BRAND;
+    return QString::fromUtf8(pw->pw_dir) + "/.config/" + DAP_BRAND + "/" + DAP_BRAND + ".conf";
 #endif
 }
 
