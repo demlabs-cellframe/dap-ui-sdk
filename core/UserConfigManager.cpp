@@ -120,9 +120,9 @@ QString UserConfigManager::getUserConfigPath(const QString& user) const {
 #endif
 }
 
-bool UserConfigManager::checkFolderExists(const QString& folderPath) const {
-    QDir dir(folderPath);
-    return dir.exists();
+bool UserConfigManager::checkFileExists(const QString& filePath) const {
+    QFile file(filePath);
+    return file.exists();
 }
 
 #ifndef Q_OS_WIN

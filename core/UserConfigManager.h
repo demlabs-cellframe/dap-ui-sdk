@@ -16,7 +16,7 @@ private:
 
     QString getUserConfigPath(const QString& user) const;
 
-    bool checkFolderExists(const QString& folderPath) const;
+    bool checkFileExists(const QString& folderPath) const;
 
 #ifndef Q_OS_WIN
     bool changeOwnership(const QString& folderPath, const QString& user) const;
