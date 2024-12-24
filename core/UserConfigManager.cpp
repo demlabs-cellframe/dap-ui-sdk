@@ -6,12 +6,17 @@
 #include <QFileInfo>
 #include <QDebug>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#include <aclapi.h>
+#else
 #include <pwd.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <cerrno>
 #include <cstring>
+#endif
 
 UserConfigManager::UserConfigManager(const QString& processName)
     : processName(processName) {
