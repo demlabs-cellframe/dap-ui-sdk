@@ -18,7 +18,7 @@ private:
 
     bool checkFileExists(const QString& folderPath) const;
 
-#ifndef Q_OS_WIN
+#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
     bool changeOwnership(const QString& folderPath, const QString& user) const;
 
     bool setReadWritePermissions(const QString& folderPath) const;

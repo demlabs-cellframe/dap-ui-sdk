@@ -125,7 +125,7 @@ bool UserConfigManager::checkFileExists(const QString& filePath) const {
     return file.exists();
 }
 
-#ifndef Q_OS_WIN
+#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
 bool UserConfigManager::changeOwnership(const QString& targetPath, const QString& user) const {
     struct passwd* pw = getpwnam(user.toUtf8().constData());
     if (!pw) {
