@@ -275,10 +275,18 @@ void DapBaseDataLocal::saveSerialKeyData()
 
 void DapBaseDataLocal::resetSerialKeyData()
 {
+    qDebug() << "Resetting serial key data...";
+
     if (m_serialKeyData)
     {
+        qDebug() << "Serial key data exists, performing reset.";
         m_serialKeyData->reset();
         this->saveToSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
+        qDebug() << "Serial key data has been reset and saved to settings.";
+    }
+    else
+    {
+        qDebug() << "No serial key data to reset.";
     }
 }
 
