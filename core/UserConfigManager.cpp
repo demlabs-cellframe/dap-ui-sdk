@@ -6,15 +6,12 @@
 #include <QFileInfo>
 #include <QDebug>
 
-#ifdef Q_OS_WIN
-#include <windows.h>
-#include <aclapi.h>
-#else
 #include <pwd.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#endif
+#include <cerrno>
+#include <cstring>
 
 UserConfigManager::UserConfigManager(const QString& processName)
     : processName(processName) {
@@ -125,7 +122,8 @@ bool UserConfigManager::checkFileExists(const QString& filePath) const {
     return file.exists();
 }
 
-#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
+#ifndef Q_OS_WIN
+#ifndef Q_OS_ANDROID
 bool UserConfigManager::changeOwnership(const QString& targetPath, const QString& user) const {
     struct passwd* pw = getpwnam(user.toUtf8().constData());
     if (!pw) {
@@ -159,5 +157,5 @@ bool UserConfigManager::setReadWritePermissions(const QString& targetPath) const
     qDebug() << "Permissions successfully changed for:" << targetPath;
     return true;
 }
-
+#endif
 #endif
