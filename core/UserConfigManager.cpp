@@ -38,7 +38,7 @@ bool UserConfigManager::configure() {
     }
     qDebug() << "User config path:" << userConfigPath;
 
-    if (!checkFolderExists(userConfigPath)) {
+    if (!checkFileExists(userConfigPath)) {
         qDebug() << "Config path does not exist:" << userConfigPath;
         return false;
     }
