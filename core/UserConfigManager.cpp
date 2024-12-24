@@ -41,6 +41,7 @@ bool UserConfigManager::configure() {
     }
 
 #ifndef Q_OS_WIN
+#ifndef Q_OS_ANDROID
     if (!changeOwnership(userConfigPath, guiUser)) {
         qDebug() << "Failed to change ownership for:" << userConfigPath;
     }
@@ -48,6 +49,7 @@ bool UserConfigManager::configure() {
         qDebug() << "Failed to change permissions for:" << userConfigPath;
         return false;
     }
+#endif
 #endif
 
     qDebug() << "Permissions successfully updated for:" << userConfigPath;
