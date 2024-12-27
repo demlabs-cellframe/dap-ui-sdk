@@ -1,18 +1,19 @@
-QT += core network xml
+QT += core network
 
 include (../zip/zip.pri)
 SOURCES += \
     $$PWD/DapLogHandler.cpp \
-    $$PWD/DapNetworkReply.cpp \
     $$PWD/DapPluginsPathControll.cpp \
-    $$PWD/DapLogger.cpp
-
+    $$PWD/DapLogger.cpp \
+    $$PWD/DapUtils.cpp
 
 HEADERS += \
+    $$PWD/DapLocationInfo.h \
     $$PWD/DapLogHandler.h \
-    $$PWD/DapNetworkReply.h \
     $$PWD/DapPluginsPathControll.h \
-    $$PWD/DapLogger.h
+    $$PWD/DapUtils.h \
+    $$PWD/DapLogger.h \
+
 
 INCLUDEPATH += $$PWD
 INCLUDEPATH += $$PWD/../quazip

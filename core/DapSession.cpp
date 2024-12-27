@@ -93,33 +93,41 @@ DapNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QSt
     return _buildNetworkReplyReq(str_url, obj, slot, slot_err, Q_NULLPTR);
 }
 
-DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObject *obj, const char *slot,  const char *slot_err,
-                                                 const QByteArray* data, bool isCDB)
+DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObject *obj, const char *slot, const char *slot_err,
+                                                   const QByteArray* data, bool isCDB, bool isCriticalReq)
 {
     DapNetworkReply *netReply = new DapNetworkReply();
-    if (slot)
+    if (slot) {
         connect(netReply, SIGNAL(finished()), obj, slot);
-    connect(netReply, &DapNetworkReply::sigError, this, [=]
-            {
-        if ( netReply->error() != 110 )
-        {
-            qInfo() << "errorNetwork";
-            emit errorNetwork(netReply->error(), netReply->errorString());
-            if (slot_err)
-                QMetaObject::invokeMethod(obj, slot_err, Qt::ConnectionType::AutoConnection, Q_ARG(const QString&, netReply->errorString()));
-        }
-        else
-            qInfo() << "Timeout its not a reason for the network error sate, right?";
+    }
 
+    connect(netReply, &DapNetworkReply::sigError, this, [=] {
+        const int errorCode = netReply->error();
+        const QString errorString = netReply->errorString();
+
+        qInfo() << "[DapSession::_buildNetworkReplyReq] - errorNetwork: " + errorString + "code: " + QString::number(errorCode);
+        if (isCriticalReq) {  // Error code 110 as timeout
+            emit errorNetwork(errorCode, errorString);
+
+            if (slot_err) {
+                QMetaObject::invokeMethod(obj, slot_err, Qt::AutoConnection, Q_ARG(const QString&, errorString));
+            }
+        } else {
+            qInfo() << "[DapSession::_buildNetworkReplyReq] Not critical error.";
+        }
     });
-    data ? DapConnectClient::instance()->request_POST(isCDB ? m_CDBaddress : m_upstreamAddress,
-                                                      isCDB ? m_CDBport : m_upstreamPort,
-                                                      urlPath, *data, *netReply,
-                                                      QString("KeyID: %1\r\n").arg(isCDB ? m_sessionKeyID_CDB : m_sessionKeyID))
-         : DapConnectClient::instance()->request_GET(isCDB ? m_CDBaddress : m_upstreamAddress,
-                                                     isCDB ? m_CDBport : m_upstreamPort,
-                                                     urlPath, *netReply,
-                                                     QString("KeyID: %1\r\n").arg(isCDB ? m_sessionKeyID_CDB : m_sessionKeyID));
+
+    const QString keyHeader = QString("KeyID: %1\r\n").arg(isCDB ? m_sessionKeyID_CDB : m_sessionKeyID);
+    if (data) {
+        DapConnectClient::instance()->request_POST(isCDB ? m_CDBaddress : m_upstreamAddress,
+                                                   isCDB ? m_CDBport : m_upstreamPort,
+                                                   urlPath, *data, *netReply, keyHeader);
+    } else {
+        DapConnectClient::instance()->request_GET(isCDB ? m_CDBaddress : m_upstreamAddress,
+                                                  isCDB ? m_CDBport : m_upstreamPort,
+                                                  urlPath, *netReply, keyHeader);
+    }
+
     return netReply;
 }
 
@@ -204,11 +212,8 @@ void DapSession::sendBugReportStatusRequest(const QByteArray &data)
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]
                               {
             preserveCDBSession();
-            /*m_netBugReportsStatusReply = _buildNetworkReplyReq(URL_BUG_REPORT + "?bugreports=" + data, this
-                                                               , SLOT(answerBugReportsStatus())
-                                                               , QT_STRINGIFY(answerBugReportsStatusError), NULL, true);*/
             m_netBugReportsStatusReply = encRequest("", URL_BUG_REPORT, "", "bugreports=" + data,
-                                                    SLOT(answerBugReportsStatus()), QT_STRINGIFY(answerBugReportsStatusError), true);
+                                                    SLOT(answerBugReportsStatus()), QT_STRINGIFY(answerBugReportsStatusError), true, false);
             disconnect(*l_tempConn);
             delete l_tempConn;
         });
@@ -216,11 +221,8 @@ void DapSession::sendBugReportStatusRequest(const QByteArray &data)
     }
     else
     {
-        /*m_netBugReportsStatusReply = _buildNetworkReplyReq(URL_BUG_REPORT + "?bugreports=" + data, this
-                                                           , SLOT(answerBugReportsStatus())
-                                                           , QT_STRINGIFY(answerBugReportsStatusError), NULL, true);*/
         m_netBugReportsStatusReply = encRequest("", URL_BUG_REPORT, "", "bugreports=" + data,
-                                                SLOT(answerBugReportsStatus()), QT_STRINGIFY(answerBugReportsStatusError), true);
+                                                SLOT(answerBugReportsStatus()), QT_STRINGIFY(answerBugReportsStatusError), true, false);
     }
 }
 
@@ -384,7 +386,7 @@ void DapSession::setUserAgent(const QString& userAgent)
  * @return
  */
 DapNetworkReply* DapSession::encRequest(const QString& reqData, const QString& url,
-                          const QString& subUrl, const QString& query, QObject* obj, const char* slot, const char* slot_err, bool isCDB)
+                          const QString& subUrl, const QString& query, QObject* obj, const char* slot, const char* slot_err, bool isCDB, bool isCriticalReq)
 {
     qInfo() << "encRequest " + QString(isCDB ? "CDB" : "noCDB") + " mode";
     DapCrypt *l_dapCrypt = isCDB ? m_dapCryptCDB : m_dapCrypt;
@@ -414,7 +416,7 @@ DapNetworkReply* DapSession::encRequest(const QString& reqData, const QString& u
         urlPath += "?" + BAqueryEncrypted.toBase64(QByteArray::Base64UrlEncoding);
     }
 
-    return _buildNetworkReplyReq(urlPath, obj, slot, slot_err, BAreqDataEnc.length() ? &BAreqDataEnc : nullptr, isCDB);
+    return _buildNetworkReplyReq(urlPath, obj, slot, slot_err, BAreqDataEnc.length() ? &BAreqDataEnc : nullptr, isCDB, isCriticalReq);
 }
 
 DapNetworkReply* DapSession::encRequestRaw(const QByteArray& bData, const QString& url,
@@ -818,57 +820,44 @@ void DapSession::answerBugReport()
 
 void DapSession::errorResetSerialKey(const QString& error)
 {
-    qDebug() << "Reset serial key error: network error";
-    emit sigResetSerialKeyError (2, tr ("Reset error: ") + error);
+    qDebug() << "Reset serial key error: " << error;
+    int errorCode = (error == "Serial key expired") ? 1 : 2;
+    emit sigResetSerialKeyError(errorCode, tr("Reset error: ") + error);
 }
+// At some point, expired keys started being identified as an error,
+// which led to the invocation of the errorResetSerialKey callback.
+// Therefore, duplication ("Serial key expired") is kept in both errorResetSerialKey and onResetSerialKey.
 
 void DapSession::onResetSerialKey()
 {
-    if(m_netKeyActivateReply->getReplyData().size() <= 0 )
-    {
-        emit errorResetSerialKey (tr ("Wrong answer from server"));
+    if (m_netKeyActivateReply->getReplyData().isEmpty()) {
+        emit sigResetSerialKeyError(2, tr("Wrong answer from server"));
         return;
     }
 
     QByteArray replyArr;
     m_dapCryptCDB->decode(m_netKeyActivateReply->getReplyData(), replyArr, KeyRoleSession);
-    qDebug() << "Serial key reset reply: " << QString::fromUtf8(replyArr);
+    qDebug() << "Processing serial key reset, reply: " << QString::fromUtf8(replyArr);
 
     QString op_code = QString::fromUtf8(replyArr).left(4);
 
-    if (op_code == OP_CODE_GENERAL_ERR)
-    {
-        emit sigResetSerialKeyError (1, tr ("Unknown authorization error"));
-        return;
-    }
-    else if (op_code == OP_CODE_ALREADY_ACTIVATED)
-    {
-        emit sigResetSerialKeyError (1, tr ("Serial key already activated on another device"));
-        return;
-    }
-    else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB)
-    {
-        emit sigResetSerialKeyError (1, isSerial ? tr("Serial key not found in database") : tr ("Login not found in database"));
-        return;
-    }
-    else if (op_code == OP_CODE_SUBSCRIBE_EXPIRED)
-    {
-        emit sigResetSerialKeyError (1, tr ("Serial key expired"));
-        return;
-    }
-    else if (op_code == OP_CODE_CANT_CONNECTION_TO_DB)
-    {
-        emit sigResetSerialKeyError (1, tr ("Can't connect to database"));
-        return;
-    }
-    else if (op_code == OP_CODE_INCORRECT_SYM)
-    {
-        emit sigResetSerialKeyError(1, tr ("Incorrect symbols in request"));
+    static const QMap<QString, QString> errorMessages = {
+        {OP_CODE_GENERAL_ERR, tr("Unknown authorization error")},
+        {OP_CODE_ALREADY_ACTIVATED, tr("Serial key already activated on another device")},
+        {OP_CODE_NOT_FOUND_LOGIN_IN_DB, isSerial ? tr("Serial key not found in database") : tr("Login not found in database")},
+        {OP_CODE_SUBSCRIBE_EXPIRED, tr("Serial key expired")},
+        {OP_CODE_CANT_CONNECTION_TO_DB, tr("Can't connect to database")},
+        {OP_CODE_INCORRECT_SYM, tr("Incorrect symbols in request")}
+    };
+
+    if (errorMessages.contains(op_code)) {
+        emit sigResetSerialKeyError(1, errorMessages.value(op_code));
         return;
     }
 
-    emit sigSerialKeyReseted (tr ("Serial key reset successfully"));
+    emit sigSerialKeyReseted(tr("Serial key reset successfully"));
 }
+
 void DapSession::answerBugReportsStatus()
 {
     if (!m_netBugReportsStatusReply)

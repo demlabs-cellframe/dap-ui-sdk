@@ -6,14 +6,11 @@
 #include "DapSerialKeyData.h"
 
 DapCmdConnect::DapCmdConnect(QObject *parent)
-    : DapCmdServiceAbstract(DapJsonCmdType::CONNECTION, parent) {
-
-}
+    : DapCmdServiceAbstract(DapJsonCmdType::CONNECTION, parent) 
+{}
 
 DapCmdConnect::~DapCmdConnect()
-{
-
-}
+{}
 
 /**
  * @brief DapCmdConnect::sendCmdError
@@ -54,26 +51,17 @@ void DapCmdConnect::handle(const QJsonObject* params)
 {
     DapCmdServiceAbstract::handle(params);
 
-    if (params->contains(ACTION_KEY))
-    {
-        //this is disconnect request
-        QString req = params->value(ACTION_KEY).toString();
-        if (req == "Disconnect")
-        {
+    if (params->contains(ACTION_KEY)) {
+        QString req = params->value(ACTION_KEY).toString("");
+        if (req == "Disconnect") {
             qDebug() << "DapCmdConnect::Disconnect signal";
             emit sigDisconnect();
             return;
-        }
-
-        if (req == "RestartService")
-        {
+        } else if (req == "RestartService") {
             qDebug() << "DapCmdConnect::RestartService signal";
             emit sigRestartService(false);
             return;
-        }
-
-        if (req == "RestartServiceIfRunning")
-        {
+        } else if (req == "RestartServiceIfRunning") {
             qDebug() << "DapCmdConnect::RestartServiceIfRunning signal";
             emit sigRestartService(true);
             return;
@@ -86,27 +74,35 @@ void DapCmdConnect::handle(const QJsonObject* params)
         {UPDATE_ROUTE_TABLE, params->value(UPDATE_ROUTE_TABLE)}
     };
 
+    if (!mandatoryConnParams[ADDRESS_KEY].isString() || !mandatoryConnParams[PORT_KEY].isDouble()) {
+        qWarning() << "Missing or invalid mandatory connection parameters";
+        return;
+    }
+
     bool updateRouteTable = mandatoryConnParams[UPDATE_ROUTE_TABLE].toBool(true);
     QString serialKey;
 
-    if(params->contains("serial"))
-    {
-        serialKey = params->value("serial").toString();
+    if (params->contains("serial")) {
+        serialKey = params->value("serial").toString().remove('-');
+        if (serialKey.isEmpty()) {
+            serialKey = DapServiceDataLocal::instance()->serialKeyData()->serialKey().remove('-');
+        }
+    } else {
+        serialKey = DapServiceDataLocal::instance()->serialKeyData()->serialKey().remove('-');
     }
-    else
-    {
-        serialKey = QString(DapServiceDataLocal::instance()->serialKeyData()->serialKey()).remove('-');
-    }
+    serialKey = QString(DapServiceDataLocal::instance()->serialKeyData()->serialKey()).remove('-');
 
     uint16_t port = uint16_t(mandatoryConnParams[PORT_KEY].toInt());
     QString address = mandatoryConnParams[ADDRESS_KEY].toString();
 
-    if (!serialKey.isEmpty())
-    {
+    qDebug() << "Address:" << address << ", Port:" << port << ", UpdateRouteTable:" << updateRouteTable;
+    qDebug() << "SerialKey:" << (serialKey.isEmpty() ? "No serial key provided" : "Serial key provided");
+
+    if (!serialKey.isEmpty()) {
         emit sigConnect(serialKey, "", "", address, port, updateRouteTable);
-    }
-    else
-    {
+    } else {
         emit sigConnectNoAuth(address, port);
     }
 }
+
+
