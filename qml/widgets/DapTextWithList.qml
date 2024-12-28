@@ -89,7 +89,7 @@ Item
                     {
                         var tmpItem = list.model.get(i)
                         var tmpStr = tmpItem.name + " " + tmpItem.number + " " + tmpItem.token_name
-                        console.log(tmpStr)
+//                        console.log(tmpStr)
                         if(maxCount < tmpStr.length)
                         {
                             maxCount = tmpStr.length
