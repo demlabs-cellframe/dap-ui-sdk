@@ -36,6 +36,16 @@ const QVector<DapIndicator>& DapStateMachine::getCachedStates()
     return _statesBuffer;
 }
 
+const QJsonObject DapStateMachine::getJsonCachedStates()
+{
+    QJsonObject statesInfo;
+    for (const auto &state: getCachedStates()) {
+        statesInfo.insert(state.getStringType(), state.getStringState());
+        qDebug() << "[DapChainVpnService] [onIndicatorStateChanged] type: " << state.getStringType() << ", state: " << state.getStringState();
+    }
+    return statesInfo;
+}
+
 void DapStateMachine::_emitStateChanged(DapIndicator::Type type, DapIndicator::State state)
 {
     m_indicatorStateCache.insert(type, new DapIndicator::State(state));

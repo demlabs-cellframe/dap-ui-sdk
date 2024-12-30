@@ -10,7 +10,7 @@ class DapCmdStates: public DapCmdServiceAbstract
     Q_OBJECT
 public:
     explicit DapCmdStates(QObject *parent = nullptr);
-    void handle(const QJsonObject* params) override;
+    void handle(const QJsonObject* statesInfo) override;
     void sendServerChanged();
 private:
     void sendCmdStates(const QString& stateName, const QString stateVal);
