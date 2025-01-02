@@ -10,19 +10,19 @@ class DapTunUnixAbstract : public DapTunAbstract
     Q_OBJECT
 public:
     DapTunUnixAbstract();
-    void addNewUpstreamRoute(const QString&);
-    void workerStart();
+    void addNewUpstreamRoute(const QString&) override;
+    void workerStart() override;
 protected:
     QThread *tunThread;
     QString m_ethDevice; // eth adapter device name
     QString m_TunDeviceH;// tunDevice name human freendly name
 
-    void tunDeviceCreate(){;}
-    void workerStop();
-    void workerPause();
-    void workerPrepare();
-    void tunDeviceDestroy();
-    void signalWriteQueueProc();
+    void tunDeviceCreate() override{}
+    void workerStop() override;
+    void workerPause() override;
+    void workerPrepare() override;
+    void tunDeviceDestroy() override;
+    void signalWriteQueueProc() override;
 
     int breaker0,breaker1;
     DapTunWorkerUnix * tunWorkerUnix;

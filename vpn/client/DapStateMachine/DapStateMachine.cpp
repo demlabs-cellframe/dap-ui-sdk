@@ -1,5 +1,4 @@
 #include "DapStateMachine.h"
-#include "DapCmdConnect.h"
 
 DapStateMachine::DapStateMachine(QObject *parent) : QObject(parent), sm(this)
 {
@@ -13,15 +12,15 @@ DapStateMachine::DapStateMachine(QObject *parent) : QObject(parent), sm(this)
 
     _statesBuffer.resize(DapIndicator::TYPE_COUNT);
 
-    connect(&sessionStates, &DapIndicatorStateAbstract::stateChanged, [=](DapIndicator::State state) {
+    connect(&sessionStates, &DapIndicatorStateAbstract::stateChanged, this, [this](DapIndicator::State state) {
         _emitStateChanged(DapIndicator::Type::Session, state);
     });
 
-    connect(&streamStates, &DapIndicatorStateAbstract::stateChanged, [=](DapIndicator::State state) {
+    connect(&streamStates, &DapIndicatorStateAbstract::stateChanged, this, [this](DapIndicator::State state) {
         _emitStateChanged(DapIndicator::Type::Stream, state);
     });
 
-    connect(&tunnelStates, &DapIndicatorStateAbstract::stateChanged, [=](DapIndicator::State state) {
+    connect(&tunnelStates, &DapIndicatorStateAbstract::stateChanged, this,  [this](DapIndicator::State state) {
         _emitStateChanged(DapIndicator::Type::Tunnel, state);
     });
 

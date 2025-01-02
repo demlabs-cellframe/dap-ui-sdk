@@ -265,7 +265,7 @@ void DapNodeTransactionHistory::load()
   QJsonArray jarr;
 
   /* get data */
-  DapDataLocal::instance()->loadFromSettings (NODE_ORDER_HISTORY, source);
+  DapDataLocal::instance()->loadFromSettings (DapDataLocal::NODE_ORDER_HISTORY, source);
   jarr  = QJsonDocument::fromJson (source).array();
 
   /* prepare parsing */
@@ -292,7 +292,7 @@ void DapNodeTransactionHistory::save() const
 
   /* store result json array */
   QByteArray result = QJsonDocument (jarr).toJson (QJsonDocument::JsonFormat::Compact);
-  DapDataLocal::instance()->saveToSettings (NODE_ORDER_HISTORY, result);
+  DapDataLocal::instance()->saveToSettings (DapDataLocal::NODE_ORDER_HISTORY, result);
 }
 
 void DapNodeTransactionHistory::itemUpdated (int a_index)

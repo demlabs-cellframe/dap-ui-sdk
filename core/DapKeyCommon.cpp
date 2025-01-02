@@ -5,7 +5,9 @@
 
 #include "DapKeyCommon.h"
 
-DapKey::DapKey() {
+DapKey::DapKey()
+  : m_key (nullptr)
+{
 
 }
 

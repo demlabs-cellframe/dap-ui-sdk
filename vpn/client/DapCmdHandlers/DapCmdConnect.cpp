@@ -1,17 +1,16 @@
 #include "DapCmdConnect.h"
 #include <QMap>
 #include <QDebug>
+#include "DapServiceDataLocal.h"
 #include "DapSession.h"
+#include "DapSerialKeyData.h"
 
 DapCmdConnect::DapCmdConnect(QObject *parent)
-    : DapCmdServiceAbstract(DapJsonCmdType::CONNECTION, parent) {
-
-}
+    : DapCmdServiceAbstract(DapJsonCmdType::CONNECTION, parent) 
+{}
 
 DapCmdConnect::~DapCmdConnect()
-{
-
-}
+{}
 
 /**
  * @brief DapCmdConnect::sendCmdError
@@ -48,29 +47,21 @@ void DapCmdConnect::sendCmdError(const QString errorMsg)
     sendCmd(&response);
 }
 
-void DapCmdConnect::handle(const QJsonObject* params) 
+void DapCmdConnect::handle(const QJsonObject* params)
 {
     DapCmdServiceAbstract::handle(params);
-    if(params->value(ACTION_KEY) != QJsonValue::Undefined)
-    { 
-        //this is disconnect request
-        QString req = params->value(ACTION_KEY).toString();
-        if(req == "Disconnect") 
-        {
+
+    if (params->contains(ACTION_KEY)) {
+        QString req = params->value(ACTION_KEY).toString("");
+        if (req == "Disconnect") {
             qDebug() << "DapCmdConnect::Disconnect signal";
             emit sigDisconnect();
             return;
-        } 
-        
-        if (req == "RestartService")
-        {
+        } else if (req == "RestartService") {
             qDebug() << "DapCmdConnect::RestartService signal";
             emit sigRestartService(false);
             return;
-        }
-
-        if (req == "RestartServiceIfRunning")
-        {
+        } else if (req == "RestartServiceIfRunning") {
             qDebug() << "DapCmdConnect::RestartServiceIfRunning signal";
             emit sigRestartService(true);
             return;
@@ -78,53 +69,40 @@ void DapCmdConnect::handle(const QJsonObject* params)
     }
 
     QMap<QString, QJsonValue> mandatoryConnParams = {
-        {ADDRESS_KEY, QJsonValue::Undefined },
-        {PASSWORD_KEY, QJsonValue::Undefined },
-        {PORT_KEY, QJsonValue::Undefined },
-        {USER_KEY, QJsonValue::Undefined },
-        {SERIAL_KEY, QJsonValue::Undefined },
-        {UPDATE_ROUTE_TABLE, QJsonValue::Undefined }
+        {ADDRESS_KEY, params->value(ADDRESS_KEY)},
+        {PORT_KEY, params->value(PORT_KEY)},
+        {UPDATE_ROUTE_TABLE, params->value(UPDATE_ROUTE_TABLE)}
     };
 
-    for(auto &key: mandatoryConnParams.keys())
-    {
-        QJsonValue val = params->value(key);
-        if (val != QJsonValue::Undefined) {
-            mandatoryConnParams[key] = val;
-        }
+    if (!mandatoryConnParams[ADDRESS_KEY].isString() || !mandatoryConnParams[PORT_KEY].isDouble()) {
+        qWarning() << "Missing or invalid mandatory connection parameters";
+        return;
     }
 
-    if ( mandatoryConnParams[PORT_KEY] != QJsonValue::Undefined  && mandatoryConnParams[ADDRESS_KEY] != QJsonValue::Undefined )
-    {
-        if ( mandatoryConnParams[ADDRESS_KEY] != QJsonValue::Undefined)
-        {
-            auto getValidString = [](const QJsonValue& value) -> QString
-            {
-                if(value == QJsonValue::Undefined)
-                {
-                    return QString();
-                }
-                return value.toString();
-            };
+    bool updateRouteTable = mandatoryConnParams[UPDATE_ROUTE_TABLE].toBool(true);
+    QString serialKey;
 
-            QString serialKey = getValidString(mandatoryConnParams[SERIAL_KEY]);
-            QString userName = getValidString(mandatoryConnParams[USER_KEY]);
-            QString password = getValidString(mandatoryConnParams[PASSWORD_KEY]);
-            bool updateRouteTable = mandatoryConnParams[UPDATE_ROUTE_TABLE].toBool(true);
+    if (params->contains("serial")) {
+        serialKey = params->value("serial").toString().remove('-');
+        if (serialKey.isEmpty()) {
+            serialKey = DapServiceDataLocal::instance()->serialKeyData()->serialKey().remove('-');
+        }
+    } else {
+        serialKey = DapServiceDataLocal::instance()->serialKeyData()->serialKey().remove('-');
+    }
+    serialKey = QString(DapServiceDataLocal::instance()->serialKeyData()->serialKey()).remove('-');
 
-            if(serialKey.isEmpty() && userName.isEmpty() && password.isEmpty())
-            {
-                qWarning() << "[handle] There is no serial key, username and password.";
-                return;
-            }
-            emit sigConnect(serialKey, userName, password,
-                            mandatoryConnParams[ADDRESS_KEY].toString(),
-                            uint16_t(mandatoryConnParams[PORT_KEY].toInt()), updateRouteTable);
-        }
-        else
-        {
-            emit sigConnectNoAuth( mandatoryConnParams[ADDRESS_KEY].toString(),
-                                  uint16_t(mandatoryConnParams[PORT_KEY].toInt()));
-        }
+    uint16_t port = uint16_t(mandatoryConnParams[PORT_KEY].toInt());
+    QString address = mandatoryConnParams[ADDRESS_KEY].toString();
+
+    qDebug() << "Address:" << address << ", Port:" << port << ", UpdateRouteTable:" << updateRouteTable;
+    qDebug() << "SerialKey:" << (serialKey.isEmpty() ? "No serial key provided" : "Serial key provided");
+
+    if (!serialKey.isEmpty()) {
+        emit sigConnect(serialKey, "", "", address, port, updateRouteTable);
+    } else {
+        emit sigConnectNoAuth(address, port);
     }
 }
+
+

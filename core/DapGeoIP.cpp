@@ -1,5 +1,5 @@
 #include "DapGeoIP.h"
-#include "DapDataLocal.h"
+#include "DapServiceDataLocal.h"
 
 #include <QDebug>
 
@@ -23,7 +23,7 @@ DapGeoIP::DapGeoIP(QObject *parent)
         //manager->get(QNetworkRequest(QUrl("http://api.ipify.org")));
 
         /* get cdb address */
-        auto address  = DapDataLocal::instance()->m_cdbIter->address;
+        auto address  = DapServiceDataLocal::instance()->getCdbIterator()->address;
         auto url      = QUrl ("http://" + address + "/my_ip");
 
         /* send request */
@@ -58,7 +58,7 @@ void DapGeoIP::onIPReceived(QNetworkReply *reply) {
 
     countryCode = getCountryIsoCode(ip);
     qDebug() << "Country ISO Code:" << countryCode;
-    DapDataLocal::instance()->setCountryISO(countryCode);
+    DapServiceDataLocal::instance()->setCountryISO(countryCode);
     emit sigCountryIsoCodeExists();
 }
 

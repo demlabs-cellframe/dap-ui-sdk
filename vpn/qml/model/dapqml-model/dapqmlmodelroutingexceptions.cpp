@@ -1,7 +1,7 @@
 /* INCLUDES */
 #include "dapqmlmodelroutingexceptions.h"
 
-#include <QLinkedList>
+#include <QList>
 #include <QBuffer>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -700,7 +700,7 @@ void DapQmlModelRoutingExceptions::save() const
     {"routes", jroutes},
   };
 
-  DapDataLocal::instance()->saveSetting (ROUTING_EXCEPTIONS_LIST, jobj);
+  DapDataLocal::instance()->saveSetting (DapDataLocal::ROUTING_EXCEPTIONS_LIST, jobj);
 
   /* clear data */
   while (jExApps.erase (jExApps.begin()) != jExApps.end());
@@ -726,7 +726,7 @@ void DapQmlModelRoutingExceptions::load()
 
   /* fill */
   {
-    auto jobj = DapDataLocal::instance()->getSetting (ROUTING_EXCEPTIONS_LIST).toJsonObject();
+    auto jobj = DapDataLocal::instance()->getSetting (DapDataLocal::ROUTING_EXCEPTIONS_LIST).toJsonObject();
     bool old  = jobj.contains ("apps");
     jExApps   = (!old) ? jobj.value ("exApps").toArray() : jobj.value ("apps").toArray();
     jInApps   = (!old) ? jobj.value ("inApps").toArray() : QJsonArray();

@@ -1,7 +1,6 @@
 #include <QtDebug>
 #include <QProcess>
 #include <QFile>
-#include <QSettings>
 
 #include <sys/stat.h>
 #include <sys/ioctl.h>
@@ -343,7 +342,8 @@ void DapTunLinux::tunDeviceDestroy()
         qDebug() << "cmd run [" << run << ']';
         ::system(run.toLatin1().constData());
 
-        for (const auto &str : m_routingExceptionAddrs){
+        for (const auto &str : m_routingExceptionAddrs)
+        {
             QString run = QString("route del %1")
                     .arg(str);
             ::system(run.toLatin1().constData() );
@@ -354,6 +354,8 @@ void DapTunLinux::tunDeviceDestroy()
         ::system(QString("nmcli connection up \"%1\"")
                      .arg(m_lastUsedConnectionName).toLatin1().constData());
     }
+
+    // resetNetworkSettingsToDefault();
 
     DapTunUnixAbstract::tunDeviceDestroy();
 }

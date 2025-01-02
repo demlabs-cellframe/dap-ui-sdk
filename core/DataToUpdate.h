@@ -2,7 +2,8 @@
 
 #include <QString>
 
-enum class DownloadingUpdateState{
+enum class DownloadingUpdateState
+{
     Default, Download
 };
 

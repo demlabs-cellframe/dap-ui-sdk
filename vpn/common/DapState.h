@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QState>
-#include <QLinkedList>
+#include <QList>
 
 class DapState : public QState
 {

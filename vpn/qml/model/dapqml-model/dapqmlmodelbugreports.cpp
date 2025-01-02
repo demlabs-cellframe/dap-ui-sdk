@@ -123,7 +123,8 @@ void DapQmlModelBugReports::slotSetup()
   if (history->isEmpty())
     {
       beginResetModel();
-      DapDataLocal::instance()->bugReportHistory()->load();
+      // We need to change the model management
+      DapDataLocal::instance()->loadBugReport();
       endResetModel();
     }
 }

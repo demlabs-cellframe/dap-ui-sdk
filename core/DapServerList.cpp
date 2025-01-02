@@ -224,7 +224,7 @@ static const QHash<QString, QString> s_countryMap =
 
 static const QString _findInCountriesMap (const QString &string)
 {
-  QStringList list = string.split (".", QString::SkipEmptyParts);
+  QStringList list = string.split (".", Qt::SkipEmptyParts);
   QString code;
   for (const QString &s : qAsConst (list))
     {
@@ -242,7 +242,7 @@ static const QString _findInCountriesMap (const QString &string)
 class InsertServerOperation
 {
   DapSortedServerList &_list;
-  QLinkedList<int> &_sortedIndexes;
+  QList<int> &_sortedIndexes;
   int _insertedIndex;
   int _destination;
   bool _finished;
@@ -252,7 +252,7 @@ class InsertServerOperation
       Append,
   } _result;
   public:
-  InsertServerOperation (DapSortedServerList &a_list, QLinkedList<int> &a_sortedIndexes, const DapServerInfo &a_server, int a_insertedIndex);
+  InsertServerOperation (DapSortedServerList &a_list, QList<int> &a_sortedIndexes, const DapServerInfo &a_server, int a_insertedIndex);
   ~InsertServerOperation(); ///< will call finish
   void finish();
   operator int() const;
@@ -1065,7 +1065,7 @@ void DapSortedServerList::update (const QList<int> &a_indexes)
   QList<int> actualIndexes;
 
   /* resort */
-  qSort (sortedIndexes);
+  std::sort(sortedIndexes.begin(), sortedIndexes.end());
 
   /* take items from list */
   for (auto i = sortedIndexes.crbegin(), e = sortedIndexes.crend(); i != e ; i++)
@@ -1093,7 +1093,7 @@ void DapSortedServerList::update (const QList<int> &a_indexes)
     }
 }
 
-const QLinkedList<int> &DapSortedServerList::getSortedIndexes() const
+const QList<int> &DapSortedServerList::getSortedIndexes() const
 {
   return _sortedIndexes;
 }
@@ -1428,7 +1428,7 @@ const QHash<QString, QString> &DapAbstractServerList::countryMap()
 
 InsertServerOperation::InsertServerOperation (
   DapSortedServerList &a_list,
-  QLinkedList<int> &a_sortedIndexes,
+  QList<int> &a_sortedIndexes,
   const DapServerInfo &a_server,
   int a_insertedIndex)
   : _list (a_list)
