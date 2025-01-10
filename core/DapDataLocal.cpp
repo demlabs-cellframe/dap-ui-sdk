@@ -181,6 +181,11 @@ void DapDataLocal::dataFromCommand(const QJsonObject& object)
         if(currentKeysList.isEmpty())
         {
             {
+                loadAuthorizationDatas();
+                emit valueDataLocalUpdated(QJsonObject{{JSON_SERIAL_KEY_DATA_KEY, serialKeyDataToJson()}});
+                emit valueDataLocalUpdated(QJsonObject{{JSON_SERIAL_KEY_DATA_LIST_KEY, serialKeyDataListToJson()}});
+            }
+            {
                 m_serialKeyHistory->setKeyList(keysList);
                 QJsonArray serialKeyHistory;
                 qDebug() << "[DapBaseDataLocal][dataFromCommand] send to service list of keys: " << keysList;
