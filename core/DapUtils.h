@@ -22,8 +22,6 @@ namespace DapUtils
     {
         T value;
         QDataStream stream(&a_arr, QIODevice::ReadOnly);
-        // stream >> value;
-        // return value;
         try {
             stream >> value;
 
