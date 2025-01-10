@@ -4,7 +4,7 @@
 #include <QByteArray>
 #include <QIODevice>
 #include <QDataStream>
-
+#include <QDebug>
 
 namespace DapUtils
 {
@@ -22,7 +22,21 @@ namespace DapUtils
     {
         T value;
         QDataStream stream(&a_arr, QIODevice::ReadOnly);
-        stream >> value;
+        // stream >> value;
+        // return value;
+        try {
+            stream >> value;
+
+            if (stream.status() != QDataStream::Ok) {
+                throw std::runtime_error("Failed to read data from QByteArray.");
+            }
+        } catch (const std::bad_alloc&) {
+            qWarning() << "[DapUtils] MEMORY ALLOCATION FAILED while reading from QByteArray.";
+            return T();
+        } catch (const std::exception& e) {
+            qWarning() << "[DapUtils] EXCEPTION OCCURRED:" << e.what();
+            return T();
+        }
         return value;
     }
 

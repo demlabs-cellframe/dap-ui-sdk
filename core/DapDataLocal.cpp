@@ -1,5 +1,6 @@
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
+#include "DapSerialKeyHistory.h"
 #include "qjsondocument.h"
 
 DapDataLocal::DapDataLocal()
@@ -160,13 +161,42 @@ void DapDataLocal::updateCdbList (const DapCdbServerList &a_newCdbList)
 
 void DapDataLocal::dataFromCommand(const QJsonObject& object)
 {
-    fromJson(object);
+    QString action;
     if(object.contains("action"))
     {
-        QString action = object["action"].toString();
-        if(action == "setAll")
+        action = object["action"].toString();
+    }
+    bool isAll = action == "setAll";
+    QStringList keysList = isAll ? m_serialKeyHistory->getKeysHistory() : QStringList();
+
+    fromJson(object);
+
+    if(isAll)
+    {
+        emit allDataReceived();
+    }
+    if(!keysList.isEmpty())
+    {
+        QStringList currentKeysList = m_serialKeyHistory->getKeysHistory();
+        if(currentKeysList.isEmpty())
         {
-            emit allDataReceived();
+            {
+                m_serialKeyHistory->setKeyList(keysList);
+                QJsonArray serialKeyHistory;
+                qDebug() << "[DapBaseDataLocal][dataFromCommand] send to service list of keys: " << keysList;
+                for(const auto& item: keysList) {
+                    serialKeyHistory.append(std::move(item));
+                }
+                emit valueDataLocalUpdated(QJsonObject{{JSON_SERIAL_KEY_HISTORY_KEY, serialKeyHistory}});
+            }
+            {
+                QJsonArray array;
+                if (loadFromSettingsBase(TEXT_BUGREPORT_HISTORY, array)
+                    && !array.isEmpty() && m_bugReportHistory->isEmpty()) {
+                    loadBugReport();
+                    emit valueDataLocalUpdated(QJsonObject{{JSON_BUG_REPORT_HISTORY_KEY, bugReportHistoryToJson()}});
+                }
+            }
         }
     }
 }
