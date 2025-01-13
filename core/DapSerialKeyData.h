@@ -33,6 +33,8 @@ public:
     int daysLeft();
     QString daysLeftString();
 
+    void setFromJson(const QJsonObject& jsonData);
+
 public slots:
     void userSerialKeyEntered(const QString &a_serialKey);
 
@@ -42,6 +44,7 @@ signals:
     void activationChanged(bool activation);
     void licenseTermTillChanged(const QString &days);
     void daysLeftStringChanged(const QString &days);
+    void sigSerialKeyIsSet();
 
 public slots:
     void setLicenseTermTill(const QString &a_date);
@@ -51,6 +54,15 @@ private:
     bool m_isActivated;
     QDateTime m_licenseTermTill = QDateTime::fromTime_t(0);
     QDateTime m_activatedDate = QDateTime::currentDateTime();
+
+protected:
+    const QString JSON_SERIAL_KEY_KEY = "serialKey";
+    const QString JSON_IS_ACTIVATED_KEY = "isActivated";
+    const QString JSON_LISENSE_TIME_KEY = "lisenseTime";
+    const QString JSON_DAYS_LEFT_STRING_KEY = "daysLeftString";
+    const QString JSON_SERIAL_KEY_DATA_KEY = "serialKeyData";
+    const QString JSON_SERIAL_KEY_DATA_LIST_KEY = "serialKeyDataList";
+
 };
 
 QDataStream &operator<<(QDataStream &a_outStream, const DapSerialKeyData &a_serialKeyData);
