@@ -584,7 +584,7 @@ void DapBaseDataLocal::loadBugReport()
         }
     }
 
-    m_bugReportHistory->setBagreports(std::move(result));
+    m_bugReportHistory->setBugReports(std::move(result));
 }
 
 void DapBaseDataLocal::saveBugReport()
