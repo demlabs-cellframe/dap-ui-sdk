@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QState>
 #include <QStateMachine>
+#include <QJsonObject>
 
 #include <QCache>
 #include <QVector>
@@ -42,6 +43,7 @@ public:
     DapState *initState;
 
     const QVector<DapIndicator>& getCachedStates();
+    const QJsonObject getJsonCachedStates();
 signals:
     void stateChanged(DapIndicator i);
 private:

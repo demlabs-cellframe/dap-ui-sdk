@@ -22,15 +22,20 @@ void DapCmdResetSerialKey::handleResult(const QJsonObject& result)
 
 void DapCmdResetSerialKey::handleError(int code, const QString& message)
 {
-    Q_UNUSED(code); Q_UNUSED(message);
+    qWarning() << "Error code:" << code << ", message:" << message;
     qWarning() << *m_errorObject;
 
     switch (code) {
     case 1:
+        // Code 1 indicates a non-critical reset error that allows clearing the local key storage.
+        // In this case, the user will not lose the key if it is still valid.
         emit sigResetSerialKeyError(message);
         break;
     case 2:
         emit sigResetSerialKeyErrorSetOnlyMessage(message);
+        break;
+    default:
+        qWarning() << "Unknown error code received.";
         break;
     }
 }

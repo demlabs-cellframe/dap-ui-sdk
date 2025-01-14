@@ -16,12 +16,12 @@ private:
 
     QString getUserConfigPath(const QString& user) const;
 
-    bool checkFolderExists(const QString& folderPath) const;
+    bool checkFileExists(const QString& folderPath) const;
 
-#ifndef Q_OS_WIN
-    bool changeOwnershipRecursively(const QString& folderPath, const QString& user) const;
+#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
+    bool changeOwnership(const QString& folderPath, const QString& user) const;
 
-    bool setReadWritePermissionsRecursively(const QString& folderPath) const;
+    bool setReadWritePermissions(const QString& folderPath) const;
 #endif
 
 };

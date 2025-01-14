@@ -809,57 +809,44 @@ void DapSession::answerBugReport()
 
 void DapSession::errorResetSerialKey(const QString& error)
 {
-    qDebug() << "Reset serial key error: network error";
-    emit sigResetSerialKeyError (2, tr ("Reset error: ") + error);
+    qDebug() << "Reset serial key error: " << error;
+    int errorCode = (error == "Serial key expired") ? 1 : 2;
+    emit sigResetSerialKeyError(errorCode, tr("Reset error: ") + error);
 }
+// At some point, expired keys started being identified as an error,
+// which led to the invocation of the errorResetSerialKey callback.
+// Therefore, duplication ("Serial key expired") is kept in both errorResetSerialKey and onResetSerialKey.
 
 void DapSession::onResetSerialKey()
 {
-    if(m_netKeyActivateReply->getReplyData().size() <= 0 )
-    {
-        emit errorResetSerialKey (tr ("Wrong answer from server"));
+    if (m_netKeyActivateReply->getReplyData().isEmpty()) {
+        emit sigResetSerialKeyError(2, tr("Wrong answer from server"));
         return;
     }
 
     QByteArray replyArr;
     m_dapCryptCDB->decode(m_netKeyActivateReply->getReplyData(), replyArr, KeyRoleSession);
-    qDebug() << "Serial key reset reply: " << QString::fromUtf8(replyArr);
+    qDebug() << "Processing serial key reset, reply: " << QString::fromUtf8(replyArr);
 
     QString op_code = QString::fromUtf8(replyArr).left(4);
 
-    if (op_code == OP_CODE_GENERAL_ERR)
-    {
-        emit sigResetSerialKeyError (1, tr ("Unknown authorization error"));
-        return;
-    }
-    else if (op_code == OP_CODE_ALREADY_ACTIVATED)
-    {
-        emit sigResetSerialKeyError (1, tr ("Serial key already activated on another device"));
-        return;
-    }
-    else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB)
-    {
-        emit sigResetSerialKeyError (1, isSerial ? tr("Serial key not found in database") : tr ("Login not found in database"));
-        return;
-    }
-    else if (op_code == OP_CODE_SUBSCRIBE_EXPIRED)
-    {
-        emit sigResetSerialKeyError (1, tr ("Serial key expired"));
-        return;
-    }
-    else if (op_code == OP_CODE_CANT_CONNECTION_TO_DB)
-    {
-        emit sigResetSerialKeyError (1, tr ("Can't connect to database"));
-        return;
-    }
-    else if (op_code == OP_CODE_INCORRECT_SYM)
-    {
-        emit sigResetSerialKeyError(1, tr ("Incorrect symbols in request"));
+    static const QMap<QString, QString> errorMessages = {
+        {OP_CODE_GENERAL_ERR, tr("Unknown authorization error")},
+        {OP_CODE_ALREADY_ACTIVATED, tr("Serial key already activated on another device")},
+        {OP_CODE_NOT_FOUND_LOGIN_IN_DB, isSerial ? tr("Serial key not found in database") : tr("Login not found in database")},
+        {OP_CODE_SUBSCRIBE_EXPIRED, tr("Serial key expired")},
+        {OP_CODE_CANT_CONNECTION_TO_DB, tr("Can't connect to database")},
+        {OP_CODE_INCORRECT_SYM, tr("Incorrect symbols in request")}
+    };
+
+    if (errorMessages.contains(op_code)) {
+        emit sigResetSerialKeyError(1, errorMessages.value(op_code));
         return;
     }
 
-    emit sigSerialKeyReseted (tr ("Serial key reset successfully"));
+    emit sigSerialKeyReseted(tr("Serial key reset successfully"));
 }
+
 void DapSession::answerBugReportsStatus()
 {
     if (!m_netBugReportsStatusReply)

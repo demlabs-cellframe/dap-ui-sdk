@@ -88,4 +88,6 @@ void DapCmdConnect::handleError(int code, const QString& message)
     if (code == 10053 && message == "Unknown error")
         return;
     emit errorMessage(message);
+    QString textError = QString("code: %1, message: %2").arg(QString::number(code)).arg(message);
+    emit errorMessageWithCode(textError);
 }

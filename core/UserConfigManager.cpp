@@ -14,6 +14,8 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <cerrno>
+#include <cstring>
 #endif
 
 UserConfigManager::UserConfigManager(const QString& processName)
@@ -38,20 +40,21 @@ bool UserConfigManager::configure() {
     }
     qDebug() << "User config path:" << userConfigPath;
 
-    if (!checkFolderExists(userConfigPath)) {
+    if (!checkFileExists(userConfigPath)) {
         qDebug() << "Config path does not exist:" << userConfigPath;
         return false;
     }
 
 #ifndef Q_OS_WIN
-    if (!changeOwnershipRecursively(userConfigPath, guiUser)) {
+#ifndef Q_OS_ANDROID
+    if (!changeOwnership(userConfigPath, guiUser)) {
         qDebug() << "Failed to change ownership for:" << userConfigPath;
-        return false;
     }
-    if (!setReadWritePermissionsRecursively(userConfigPath)) {
+    if (!setReadWritePermissions(userConfigPath)) {
         qDebug() << "Failed to change permissions for:" << userConfigPath;
         return false;
     }
+#endif
 #endif
 
     qDebug() << "Permissions successfully updated for:" << userConfigPath;
@@ -60,19 +63,51 @@ bool UserConfigManager::configure() {
 
 QString UserConfigManager::getGuiUser() const {
     QProcess process;
+    qDebug() << "Starting process to determine GUI user...";
+
     process.start(processName, QStringList());
-    process.waitForFinished();
+    if (!process.waitForFinished()) {
+        qWarning() << "Process failed to finish in a timely manner.";
+        return QString();
+    }
+
     QString output = process.readAllStandardOutput();
+    qDebug() << "Process output:" << output;
 
     QStringList lines = output.split('\n');
+
+    // Regular expressions to match session identifiers
+    QRegExp guiSessionRegex(":\\d+");       // Matches GUI sessions like :0, :1, etc.
+    QRegExp ttyRegex("tty\\d+");            // Matches tty sessions like tty1, tty2, etc.
+
+    // Priority check for GUI session identifiers
     for (const QString& line : lines) {
-        if (line.contains(":0")) { // Check if the session is GUI-based
+        qDebug() << "Processing line:" << line;
+
+        if (line.contains(guiSessionRegex) || line.contains("wayland") || line.contains("seat0")) {
+            qDebug() << "Found high-priority GUI session line:" << line;
             QStringList parts = line.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
             if (!parts.isEmpty()) {
+                qDebug() << "Returning GUI user (high-priority):" << parts[0];
                 return parts[0];
             }
         }
     }
+
+    // Secondary check for tty and pts sessions
+    for (const QString& line : lines) {
+        qDebug() << "Processing line (secondary):" << line;
+        if (line.contains(ttyRegex) || line.contains("pts")) {
+            qDebug() << "Found secondary session line:" << line;
+            QStringList parts = line.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
+            if (!parts.isEmpty()) {
+                qDebug() << "Returning user (secondary):" << parts[0];
+                return parts[0];
+            }
+        }
+    }
+
+    qWarning() << "No GUI user found.";
     return QString();
 }
 
@@ -85,63 +120,49 @@ QString UserConfigManager::getUserConfigPath(const QString& user) const {
         qDebug() << "Failed to retrieve home directory for user:" << user;
         return QString();
     }
-    return QString::fromUtf8(pw->pw_dir) + "/.config/" + DAP_BRAND;
+    return QString::fromUtf8(pw->pw_dir) + "/.config/" + DAP_BRAND + "/" + DAP_BRAND + ".conf";
 #endif
 }
 
-bool UserConfigManager::checkFolderExists(const QString& folderPath) const {
-    QDir dir(folderPath);
-    return dir.exists();
+bool UserConfigManager::checkFileExists(const QString& filePath) const {
+    QFile file(filePath);
+    return file.exists();
 }
 
 #ifndef Q_OS_WIN
-bool UserConfigManager::changeOwnershipRecursively(const QString& folderPath, const QString& user) const {
+#ifndef Q_OS_ANDROID
+bool UserConfigManager::changeOwnership(const QString& targetPath, const QString& user) const {
     struct passwd* pw = getpwnam(user.toUtf8().constData());
     if (!pw) {
-        qDebug() << "Failed to retrieve user information for:" << user;
+        qDebug() << "Error: Failed to retrieve user information for:" << user;
         return false;
     }
 
-    if (chown(folderPath.toUtf8().constData(), pw->pw_uid, pw->pw_gid) != 0) {
-        perror(("Failed to change ownership for folder: " + folderPath).toUtf8().constData());
+    if (chown(targetPath.toUtf8().constData(), pw->pw_uid, pw->pw_gid) != 0) {
+        qDebug() << "Error: Failed to change ownership for:" << targetPath
+                 << "Error:" << strerror(errno);
         return false;
     }
 
-    QDirIterator it(folderPath, QDir::AllEntries | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
-    while (it.hasNext()) {
-        QString path = it.next();
-        if (chown(path.toUtf8().constData(), pw->pw_uid, pw->pw_gid) != 0) {
-            perror(("Failed to change ownership for: " + path).toUtf8().constData());
-            return false;
-        }
-    }
-
+    qDebug() << "Ownership successfully changed for:" << targetPath;
     return true;
 }
 
-bool UserConfigManager::setReadWritePermissionsRecursively(const QString& folderPath) const {
+bool UserConfigManager::setReadWritePermissions(const QString& targetPath) const {
     mode_t mode_dir = S_IRUSR | S_IWUSR | S_IXUSR;
     mode_t mode_file = S_IRUSR | S_IWUSR;
 
-    if (chmod(folderPath.toUtf8().constData(), mode_dir) != 0) {
-        perror(("Failed to change permissions for folder: " + folderPath).toUtf8().constData());
+    QFileInfo fileInfo(targetPath);
+    mode_t mode = fileInfo.isDir() ? mode_dir : mode_file;
+
+    if (chmod(targetPath.toUtf8().constData(), mode) != 0) {
+        qDebug() << "Error: Failed to change permissions for:" << targetPath
+                 << "Error:" << strerror(errno);
         return false;
     }
 
-    QDirIterator it(folderPath, QDir::AllEntries | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
-    while (it.hasNext()) {
-        QString path = it.next();
-
-        QFileInfo fileInfo(path);
-        mode_t mode = fileInfo.isDir() ? mode_dir : mode_file;
-
-        if (chmod(path.toUtf8().constData(), mode) != 0) {
-            perror(("Failed to change permissions for: " + path).toUtf8().constData());
-            return false;
-        }
-    }
-
+    qDebug() << "Permissions successfully changed for:" << targetPath;
     return true;
 }
-
+#endif
 #endif

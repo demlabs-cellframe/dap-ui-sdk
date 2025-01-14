@@ -3,12 +3,22 @@
 void DapCmdStates::handle(const QJsonObject* params)
 {
     DapCmdServiceAbstract::handle(params);
+    QString userRequestState = getUserRequestState();
+    QJsonObject result;
 
-    for (const auto &di: _activeStateMachine->getCachedStates()) {
-        sendCmdStates(di.getStringType(), di.getStringState());
+    result.insert("states", _activeStateMachine->getJsonCachedStates());
+    if(!userRequestState.isEmpty()){
+        result.insert(QStringLiteral("user_request_state"), userRequestState);
+        qDebug() << "[DapCmdStates] type:  user_request_state, state: " << userRequestState;
     }
+    sendCmd(&result);
+}
 
-    _sendUserRequestState();
+void DapCmdStates::sendServerChanged()
+{
+    QJsonObject result;
+    result.insert("server_change_state", "ServerChanged");
+    sendCmd(&result);
 }
 
 void DapCmdStates::sendCmdStates(const QString& stateName, const QString stateVal)
@@ -27,13 +37,12 @@ DapCmdStates::DapCmdStates(QObject *parent)
     Q_ASSERT(_activeStateMachine);
 }
 
-void DapCmdStates::_sendUserRequestState()
+QString DapCmdStates::getUserRequestState()
 {
     const QVector<DapIndicator>& states = _activeStateMachine->getCachedStates();
 
     if (states.empty()) {
-        sendCmdStates(QStringLiteral("user_request_state"), QStringLiteral("Disconnect"));
-        return;
+        return QStringLiteral("Disconnect");
     }
 
     bool allFalse = std::all_of(states.begin(), states.end(), [](const DapIndicator& state) {
@@ -45,8 +54,11 @@ void DapCmdStates::_sendUserRequestState()
     });
 
     if (allFalse) {
-        sendCmdStates(QStringLiteral("user_request_state"), QStringLiteral("Disconnect"));
-    } else if (allTrue) {
-        sendCmdStates(QStringLiteral("user_request_state"), QStringLiteral("Connect"));
+        return QStringLiteral("Disconnect");
     }
+    else if (allTrue) {
+        return QStringLiteral("Connect");
+    }
+
+    return QString();
 }
