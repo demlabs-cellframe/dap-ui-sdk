@@ -11,7 +11,11 @@ DapDataLocal::DapDataLocal()
     initSettings();
     initData();
 
+    qDebug() << "[TEST] construct keysList: " << m_serialKeyHistory->getKeysHistory();
+
     QStringList keys = m_settings->allKeys();
+
+    qDebug() << "[TEST] construct keys: " << keys;
     if(keys.contains(SETTING_THEME)) {
         m_settingsMap[SETTING_THEME] = m_settings->value(SETTING_THEME);
     }
@@ -169,8 +173,11 @@ void DapDataLocal::dataFromCommand(const QJsonObject& object)
     bool isAll = action == "setAll";
     QStringList keysList = isAll ? m_serialKeyHistory->getKeysHistory() : QStringList();
 
-    fromJson(object);
+    qDebug() << "[TEST] isAll: " << isAll;
+    qDebug() << "[TEST] keysList: " << keysList;
 
+    fromJson(object);
+    qDebug() << "[TEST] fromJson keysList: " << m_serialKeyHistory->getKeysHistory();
     if(isAll)
     {
         emit allDataReceived();

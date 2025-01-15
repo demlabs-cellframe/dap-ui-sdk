@@ -28,10 +28,12 @@ namespace DapUtils
             if (stream.status() != QDataStream::Ok) {
                 throw std::runtime_error("Failed to read data from QByteArray.");
             }
-        } catch (const std::bad_alloc&) {
+        }
+        catch (const std::bad_alloc&) {
             qWarning() << "[DapUtils] MEMORY ALLOCATION FAILED while reading from QByteArray.";
             return T();
-        } catch (const std::exception& e) {
+        }
+        catch (const std::exception& e) {
             qWarning() << "[DapUtils] EXCEPTION OCCURRED:" << e.what();
             return T();
         }
