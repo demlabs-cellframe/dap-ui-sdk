@@ -808,7 +808,7 @@ const QJsonObject DapBaseDataLocal::serialKeyDataToJson() const
     auto timeLicense = m_serialKeyData->licenseTermTill();
     qint64 timeStemp = timeLicense.toSecsSinceEpoch();
     serialKeyData.insert(JSON_LISENSE_TIME_KEY, QString::number(timeStemp));
-    serialKeyData.insert(JSON_DAYS_LEFT_STRING_KEY, m_serialKeyData->daysLeftString());
+    serialKeyData.insert(JSON_LICENSE_TERM_TILL_KEY, m_serialKeyData->licenseTermTill().toSecsSinceEpoch());
     return serialKeyData;
 }
 
@@ -819,15 +819,16 @@ void DapBaseDataLocal::setSerialKeyData(const QJsonObject& object)
         resetSerialKeyData();
         return;
     }
-    QString serialKey = QString();
-    jsonToValue(serialKey, object, JSON_SERIAL_KEY_KEY);
-    bool isActivated = false;
-    jsonToValue(isActivated, object, JSON_IS_ACTIVATED_KEY);
-    qint64 timeStemp = object[JSON_LISENSE_TIME_KEY].toString().toLongLong();
+    QString serialKey = object.value(JSON_SERIAL_KEY_KEY).toString();
+    bool isActivated = object.value(JSON_IS_ACTIVATED_KEY).toBool();
+    qint64 timeStemp = object.value(JSON_LISENSE_TIME_KEY).toString().toLongLong();
+    qint64 licenseTermTillLong = object.value(JSON_LICENSE_TERM_TILL_KEY).toInt();
+    QDateTime licenseTermTill = QDateTime::fromSecsSinceEpoch(licenseTermTillLong);
     QDateTime time = QDateTime::fromSecsSinceEpoch(timeStemp);
     m_serialKeyData->setSerialKey(std::move(serialKey));
     m_serialKeyData->setDateActivate(time);
     m_serialKeyData->setActivated(isActivated);
+    m_serialKeyData->setLicenseTermTill(licenseTermTill);
 }
 
 const QJsonArray DapBaseDataLocal::serialKeyDataListToJson() const

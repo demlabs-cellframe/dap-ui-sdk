@@ -246,7 +246,7 @@ protected:
     const QString JSON_DATA_TO_UPDATE_KEY = "dataToUpdate";
     const QString JSON_IS_ACTIVATED_KEY = "isActivated";
     const QString JSON_LISENSE_TIME_KEY = "lisenseTime";
-    const QString JSON_DAYS_LEFT_STRING_KEY = "daysLeftString";
+    const QString JSON_LICENSE_TERM_TILL_KEY = "licenseTermTill";
     const QString JSON_SERIAL_KEY_DATA_KEY = "serialKeyData";
     const QString JSON_SERIAL_KEY_DATA_LIST_KEY = "serialKeyDataList";
     const QString JSON_BUG_NUMBER_KEY = "bugNumber";
