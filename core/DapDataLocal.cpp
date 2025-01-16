@@ -10,18 +10,14 @@ DapDataLocal::DapDataLocal()
             this, &DapDataLocal::saveSerialKeyData);
     initSettings();
     initData();
-
-    qDebug() << "[TEST] construct keysList: " << m_serialKeyHistory->getKeysHistory();
+    initAuthData();
 
     QStringList keys = m_settings->allKeys();
 
-    qDebug() << "[TEST] construct keys: " << keys;
     if(keys.contains(SETTING_THEME)) {
         m_settingsMap[SETTING_THEME] = m_settings->value(SETTING_THEME);
     }
     if(!keys.contains(MIGRATION_KEY)) {
-        initAuthData();
-
         qDebug() << "[DapDataLocal] Data needs to be migrated";
         m_needMigration = true;
     }
@@ -173,17 +169,16 @@ void DapDataLocal::dataFromCommand(const QJsonObject& object)
     bool isAll = action == "setAll";
     QStringList keysList = isAll ? m_serialKeyHistory->getKeysHistory() : QStringList();
 
-    qDebug() << "[TEST] isAll: " << isAll;
-    qDebug() << "[TEST] keysList: " << keysList;
+    qDebug() << "[DapDataLocal] [dataFromCommand] action: " << action;
 
     fromJson(object);
-    qDebug() << "[TEST] fromJson keysList: " << m_serialKeyHistory->getKeysHistory();
     if(isAll)
     {
         emit allDataReceived();
     }
     if(!keysList.isEmpty())
     {
+        qDebug() << "[DapDataLocal] [dataFromCommand] have a old keys";
         QStringList currentKeysList = m_serialKeyHistory->getKeysHistory();
         if(currentKeysList.isEmpty())
         {
