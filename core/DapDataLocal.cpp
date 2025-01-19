@@ -167,44 +167,25 @@ void DapDataLocal::dataFromCommand(const QJsonObject& object)
         action = object["action"].toString();
     }
     bool isAll = action == "setAll";
-    QStringList keysList = isAll ? m_serialKeyHistory->getKeysHistory() : QStringList();
 
     qDebug() << "[DapDataLocal] [dataFromCommand] action: " << action;
 
-    fromJson(object);
-    if(isAll)
-    {
-        emit allDataReceived();
-    }
-    if(!keysList.isEmpty())
-    {
-        qDebug() << "[DapDataLocal] [dataFromCommand] have a old keys";
-        QStringList currentKeysList = m_serialKeyHistory->getKeysHistory();
-        if(currentKeysList.isEmpty())
-        {
-            {
-                loadAuthorizationDatas();
-                emit valueDataLocalUpdated(QJsonObject{{JSON_SERIAL_KEY_DATA_KEY, serialKeyDataToJson()}});
-                emit valueDataLocalUpdated(QJsonObject{{JSON_SERIAL_KEY_DATA_LIST_KEY, serialKeyDataListToJson()}});
-            }
-            {
-                m_serialKeyHistory->setKeyList(keysList);
-                QJsonArray serialKeyHistory;
-                qDebug() << "[DapBaseDataLocal][dataFromCommand] send to service list of keys: " << keysList;
-                for(const auto& item: keysList) {
-                    serialKeyHistory.append(std::move(item));
-                }
-                emit valueDataLocalUpdated(QJsonObject{{JSON_SERIAL_KEY_HISTORY_KEY, serialKeyHistory}});
-            }
-            {
-                QJsonArray array;
-                if (loadFromSettingsBase(TEXT_BUGREPORT_HISTORY, array)
-                    && !array.isEmpty() && m_bugReportHistory->isEmpty()) {
-                    loadBugReport();
-                    emit valueDataLocalUpdated(QJsonObject{{JSON_BUG_REPORT_HISTORY_KEY, bugReportHistoryToJson()}});
-                }
-            }
+    if(isAll && object.contains(JSON_SERIAL_KEY_HISTORY_KEY)){
+        QStringList keysList = m_serialKeyHistory->getKeysHistory();
+        const auto& serialArray = object[JSON_SERIAL_KEY_HISTORY_KEY].toArray();
+        if(!keysList.isEmpty() && serialArray.isEmpty()) {
+            emit reMigrationSignal();
         }
+        else {
+            fromJson(object);
+        }
+    }
+    else {
+        fromJson(object);
+    }
+
+    if(isAll) {
+        emit allDataReceived();
     }
 }
 
