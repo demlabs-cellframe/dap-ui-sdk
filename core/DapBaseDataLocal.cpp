@@ -894,7 +894,7 @@ const QJsonArray DapBaseDataLocal::serialKeyHistoryToJson() const
     QJsonArray serialKeyHistory;
     QStringList listKeys = m_serialKeyHistory->getKeysHistory();
     qDebug() << "[DapBaseDataLocal][serialKeyHistoryToJson] list of keys: " << listKeys;
-    for(const auto& item: m_serialKeyHistory->getKeysHistory())
+    for(const auto& item: listKeys)
     {
         serialKeyHistory.append(std::move(item));
     }

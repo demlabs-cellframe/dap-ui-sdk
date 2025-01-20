@@ -42,6 +42,7 @@ signals:
     void valueDataLocalUpdated(const QJsonObject& object);
 
     void allDataReceived();
+    void reMigrationSignal();
 private:
     QVariantMap m_settingsMap;
 
