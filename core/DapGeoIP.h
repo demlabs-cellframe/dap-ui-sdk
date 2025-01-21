@@ -29,6 +29,7 @@ public:
     QString getCountryIsoCode() {
         return countryCode;
     }
+    QString getLocationString(const QString &ipAddress);
 
 signals:
     void sigCountryIsoCodeExists();
