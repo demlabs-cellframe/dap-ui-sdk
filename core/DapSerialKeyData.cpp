@@ -103,6 +103,12 @@ void DapSerialKeyData::setLicenseTermTill(const QString &a_date)
     emit this->daysLeftStringChanged(this->daysLeftString());
 }
 
+void DapSerialKeyData::setLicenseTermTill(const QDateTime &a_date)
+{
+    m_licenseTermTill = a_date;
+    emit daysLeftStringChanged(this->daysLeftString());
+}
+
 void DapSerialKeyData::operator=(const DapSerialKeyData &a_another)
 {
     this->setSerialKey(a_another.serialKey());

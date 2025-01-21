@@ -1,5 +1,6 @@
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
+#include "DapSerialKeyHistory.h"
 #include "qjsondocument.h"
 
 DapDataLocal::DapDataLocal()
@@ -9,14 +10,14 @@ DapDataLocal::DapDataLocal()
             this, &DapDataLocal::saveSerialKeyData);
     initSettings();
     initData();
+    initAuthData();
 
     QStringList keys = m_settings->allKeys();
+
     if(keys.contains(SETTING_THEME)) {
         m_settingsMap[SETTING_THEME] = m_settings->value(SETTING_THEME);
     }
     if(!keys.contains(MIGRATION_KEY)) {
-        initAuthData();
-
         qDebug() << "[DapDataLocal] Data needs to be migrated";
         m_needMigration = true;
     }
@@ -160,14 +161,31 @@ void DapDataLocal::updateCdbList (const DapCdbServerList &a_newCdbList)
 
 void DapDataLocal::dataFromCommand(const QJsonObject& object)
 {
-    fromJson(object);
+    QString action;
     if(object.contains("action"))
     {
-        QString action = object["action"].toString();
-        if(action == "setAll")
-        {
-            emit allDataReceived();
+        action = object["action"].toString();
+    }
+    bool isAll = action == "setAll";
+
+    qDebug() << "[DapDataLocal] [dataFromCommand] action: " << action;
+
+    if(isAll && object.contains(JSON_SERIAL_KEY_HISTORY_KEY)){
+        QStringList keysList = m_serialKeyHistory->getKeysHistory();
+        const auto& serialArray = object[JSON_SERIAL_KEY_HISTORY_KEY].toArray();
+        if(!keysList.isEmpty() && serialArray.isEmpty()) {
+            emit reMigrationSignal();
         }
+        else {
+            fromJson(object);
+        }
+    }
+    else {
+        fromJson(object);
+    }
+
+    if(isAll) {
+        emit allDataReceived();
     }
 }
 

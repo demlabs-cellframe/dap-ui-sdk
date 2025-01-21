@@ -83,13 +83,28 @@ public:
     QString login() const;
 
     QString getPub() {return m_pubStage;}
-    const CdbIterator& getCdbIterator() const {return m_cdbIter;}
+    const CdbIterator& getCdbIterator() const {
+        if (m_cdbIter == m_cdbServersList.end() || m_cdbServersList.empty()) {
+            qWarning() << "[DapBaseDataLocal] m_cdbIter is uninitialized. Initializing...";
+            auto nonConstThis = const_cast<DapBaseDataLocal*>(this);
+            nonConstThis->setNewCbdIterator(m_cdbServersList.begin());
+        }
+
+        return m_cdbIter;
+    }
+
 
     QString password() const;
 
     DataToUpdate& getDataToUpdate(){return m_dataToUpdate;}
 
-    void setNewCbdIterator(const CdbIterator& iterator){ m_cdbIter = iterator; }
+    void setNewCbdIterator(const CdbIterator& iter) {
+        if (iter != m_cdbServersList.end()) {
+            m_cdbIter = iter;
+        } else {
+            qWarning() << "[DapBaseDataLocal] Attempt to set m_cdbIter to an invalid iterator.";
+        }
+    }
     void nextCbdIterator() {m_cdbIter++;}
     const DapCdbServerList &cdbServersList()  { return m_cdbServersList; }
     const QString & KelvpnPub()               { return m_kelvpnPub;}
@@ -246,7 +261,7 @@ protected:
     const QString JSON_DATA_TO_UPDATE_KEY = "dataToUpdate";
     const QString JSON_IS_ACTIVATED_KEY = "isActivated";
     const QString JSON_LISENSE_TIME_KEY = "lisenseTime";
-    const QString JSON_DAYS_LEFT_STRING_KEY = "daysLeftString";
+    const QString JSON_LICENSE_TERM_TILL_KEY = "licenseTermTill";
     const QString JSON_SERIAL_KEY_DATA_KEY = "serialKeyData";
     const QString JSON_SERIAL_KEY_DATA_LIST_KEY = "serialKeyDataList";
     const QString JSON_BUG_NUMBER_KEY = "bugNumber";
