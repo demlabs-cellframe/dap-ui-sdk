@@ -88,3 +88,49 @@ QString DapGeoIP::getCountryIsoCode(const QString &ipAddress) {
     }
     return "";
 }
+
+QString DapGeoIP::getLocationString(const QString &ipAddress) {
+    if (!isDBOpen) {
+        qDebug() << "Database is not open.";
+        return "";
+    }
+
+    int gai_error, mmdb_error;
+    MMDB_lookup_result_s result = MMDB_lookup_string(&mmdb, ipAddress.toStdString().c_str(), &gai_error, &mmdb_error);
+    if (mmdb_error == MMDB_SUCCESS) {
+        if (result.found_entry) {
+            MMDB_entry_data_s continent_data;
+            MMDB_entry_data_s country_data;
+            MMDB_entry_data_s code_data;
+
+            QString continent = "Unknown";
+            QString country = "Unknown";
+            QString code = "0";
+
+            // Get continent name
+            int status_continent = MMDB_get_value(&result.entry, &continent_data, "continent", "names", "en", NULL);
+            if (status_continent == MMDB_SUCCESS && continent_data.has_data) {
+                continent = QString::fromUtf8(continent_data.utf8_string, continent_data.data_size);
+            }
+
+            // Get country name
+            int status_country = MMDB_get_value(&result.entry, &country_data, "country", "names", "en", NULL);
+            if (status_country == MMDB_SUCCESS && country_data.has_data) {
+                country = QString::fromUtf8(country_data.utf8_string, country_data.data_size);
+            }
+
+            // Get ISO code
+            int status_code = MMDB_get_value(&result.entry, &code_data, "country", "iso_code", NULL);
+            if (status_code == MMDB_SUCCESS && code_data.has_data) {
+                code = QString::fromUtf8(code_data.utf8_string, code_data.data_size);
+            }
+
+            return QString("%1.%2.%3").arg(continent, country, code);
+        } else {
+            qDebug() << "No entry found for this IP address.";
+        }
+    } else {
+        qDebug() << "Error occurred while looking up the IP address: " << MMDB_strerror(mmdb_error);
+    }
+    return "";
+}
