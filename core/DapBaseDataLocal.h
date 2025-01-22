@@ -84,7 +84,7 @@ public:
 
     QString getPub() {return m_pubStage;}
     const CdbIterator& getCdbIterator() const {
-        if (m_cdbIter == m_cdbServersList.end() || m_cdbServersList.empty()) {
+        if (m_cdbServersList.empty()) {
             qWarning() << "[DapBaseDataLocal] m_cdbIter is uninitialized. Initializing...";
             auto nonConstThis = const_cast<DapBaseDataLocal*>(this);
             nonConstThis->setNewCbdIterator(m_cdbServersList.begin());
