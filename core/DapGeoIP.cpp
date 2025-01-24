@@ -119,13 +119,7 @@ QString DapGeoIP::getLocationString(const QString &ipAddress) {
                 country = QString::fromUtf8(country_data.utf8_string, country_data.data_size);
             }
 
-            // Get ISO code
-            int status_code = MMDB_get_value(&result.entry, &code_data, "country", "iso_code", NULL);
-            if (status_code == MMDB_SUCCESS && code_data.has_data) {
-                code = QString::fromUtf8(code_data.utf8_string, code_data.data_size);
-            }
-
-            return QString("%1.%2.%3").arg(continent, country, code);
+            return QString("%1.%2").arg(continent, country);
         } else {
             qDebug() << "No entry found for this IP address.";
         }
