@@ -30,6 +30,7 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 #include "dap_cert_file.h"
 #include "DapCert.h"
 #include "dap_enc.h"
+#include "DapDashboardPathDefines.h"
 #ifdef Q_OS_WIN
 #include "registry.h"
 #endif
@@ -277,18 +278,5 @@ void Cert::savePubCert(const char * saveDir, const char * newName) {
 
 QString Cert::storagePath()
 {
-#if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
-    return QString("/opt/%1").arg(DAP_BRAND).toLower();
-#elif defined(Q_OS_MACOS)
-    return QString("/tmp/%1").arg(DAP_BRAND);
-#elif defined (Q_OS_WIN)
-    return QString("%1/%2").arg(regWGetUsrPath()).arg(DAP_BRAND);
-#elif defined Q_OS_ANDROID
-    static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod(
-                "getExternalFilesDir"
-                , "(Ljava/lang/String;)Ljava/io/File;"
-                , QAndroidJniObject::fromString(QString("")).object());
-    return l_pathObj.toString();
-#endif
-    return {};
+    return Dap::DashboardDefines::DapUiSdk::STORAGE_PATH;
 }
