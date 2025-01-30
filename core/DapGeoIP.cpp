@@ -101,25 +101,29 @@ QString DapGeoIP::getLocationString(const QString &ipAddress) {
         if (result.found_entry) {
             MMDB_entry_data_s continent_data;
             MMDB_entry_data_s country_data;
-            MMDB_entry_data_s code_data;
+            MMDB_entry_data_s city_data;
 
             QString continent = "Unknown";
             QString country = "Unknown";
-            QString code = "0";
+            QString city = "Unknown";
 
-            // Get continent name
             int status_continent = MMDB_get_value(&result.entry, &continent_data, "continent", "names", "en", NULL);
             if (status_continent == MMDB_SUCCESS && continent_data.has_data) {
                 continent = QString::fromUtf8(continent_data.utf8_string, continent_data.data_size);
             }
 
-            // Get country name
             int status_country = MMDB_get_value(&result.entry, &country_data, "country", "names", "en", NULL);
             if (status_country == MMDB_SUCCESS && country_data.has_data) {
                 country = QString::fromUtf8(country_data.utf8_string, country_data.data_size);
             }
 
-            return QString("%1.%2").arg(continent, country);
+            int status_city = MMDB_get_value(&result.entry, &city_data, "city", "names", "en", NULL);
+            if (status_city == MMDB_SUCCESS && city_data.has_data) {
+                city = QString::fromUtf8(city_data.utf8_string, city_data.data_size);
+            }
+
+            return (city != "Unknown") ? QString("%1.%2.%3").arg(continent, country, city)
+                                       : QString("%1.%2").arg(continent, country);
         } else {
             qDebug() << "No entry found for this IP address.";
         }
