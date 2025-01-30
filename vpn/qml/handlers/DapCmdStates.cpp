@@ -101,6 +101,19 @@ void DapCmdStates::handleResult(const QJsonObject& result)
     qDebug() << "Call stateHandler" << result;
     QString userRequest = QStringLiteral("user_request_state");
     QString serverChange = QStringLiteral("server_change_state");
+    QString reconnectingState = QStringLiteral("reconnecting_state");
+
+    if(result.contains(userRequest)){
+        userHandler(result.value(userRequest).toString());
+    }
+
+    if(result.contains(serverChange)){
+        serverChangedHandler(result.value(serverChange).toString());
+    }
+
+    if (result.value("state_name").toString() == reconnectingState) {
+        emit sigUserStateReconnecting();
+    }
 
 
     if(result.contains("states")){
@@ -125,13 +138,6 @@ void DapCmdStates::handleResult(const QJsonObject& result)
                 emit sigAllIndicatorStatesIsFalse();
             }
         }
-    }
-    if(result.contains(userRequest)){
-        userHandler(result.value(userRequest).toString());
-    }
-
-    if(result.contains(serverChange)){
-        serverChangedHandler(result.value(serverChange).toString());
     }
 }
 

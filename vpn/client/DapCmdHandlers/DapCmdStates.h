@@ -12,6 +12,7 @@ public:
     explicit DapCmdStates(QObject *parent = nullptr);
     void handle(const QJsonObject* statesInfo) override;
     void sendServerChanged();
+    void sendReconnectingState();
 private:
     void sendCmdStates(const QString& stateName, const QString stateVal);
     void sendUserRequestState();

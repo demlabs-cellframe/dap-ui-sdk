@@ -21,6 +21,18 @@ void DapCmdStates::sendServerChanged()
     sendCmd(&result);
 }
 
+void DapCmdStates::sendReconnectingState()
+{
+    QJsonObject response;
+    const QString stateName = "reconnecting_state";
+    const QString stateVal = "Reconnecting";
+
+    qDebug() << "StateInfo\t state_name: " << stateName << "\tstate: " << stateVal;
+    response["state_name"] = stateName;
+    response["state"] = stateVal;
+    sendCmd(&response);
+}
+
 void DapCmdStates::sendCmdStates(const QString& stateName, const QString stateVal)
 {
     QJsonObject response;

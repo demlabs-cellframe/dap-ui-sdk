@@ -248,10 +248,10 @@ qint64 DapStreamer::writeStreamRaw(const void *data, size_t data_size)
         }
         else
         {
-            qWarning() << "[DapConnectStream] Failed to write data, bytesWritten =" << bytesWritten;
+            // qWarning() << "[DapConnectStream] Failed to write data, bytesWritten =" << bytesWritten;
             if (!m_isStreamOpened)
             {
-                qDebug() << "Stream is closed, stopping write operation";
+                // qDebug() << "Stream is closed, stopping write operation";
                 emit streamClosed();
             }
             return totalWritten;
