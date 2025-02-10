@@ -66,7 +66,7 @@ public:
     ParseOrderList,
     ParseNodeIp,
     ParseFee,
-    ParseNodeDump,
+    ParseNodeList,
     ParseListKeys,
     ParseNetId
   };
@@ -151,7 +151,7 @@ public slots:
   void getMempoolTxHashRequest (QString transactionHash, QString networkName);
   void getLedgerTxHashRequest (QString transactionHash, QString networkName);
   void getOrdersListRequest (QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
-  void nodeDumpRequest (QString networkName);
+  void nodeListRequest (QString networkName);
   void getNodeIPRequest (const QString &networkName, const QJsonArray &orderList);
   void getFeeRequest (QString networkName);
   void getNetIdRequest (QString networkName);
@@ -179,7 +179,7 @@ private slots:
   void parseOrderList (const QString &replyData, int baseErrorCode);
   void parseNodeIp (const QString &replyData, int baseErrorCode);
   void parseFee (const QString &replyData, int baseErrorCode);
-  void parseNodeDump (const QString &replyData, int baseErrorCode);
+  void parseNodeList (const QString &replyData, int baseErrorCode);
   void parseListKeys (const QString &replyData, int baseErrorCode);
   void parseNetId (const QString &replyData, int baseErrorCode);
 
@@ -207,7 +207,7 @@ signals:
   void sigFee (QString fee);
   void sigFeeData (QJsonObject);
   void connectionIdReceived (QString connectionId);
-  void sigNodeDump (QList<QMap<QString, QString>> nodeDump);
+  void sigNodeList (QList<QMap<QString, QString>> nodeList);
   void sigListKeys (QList<QString> listKeys);
   void statusOk();
   void nodeDetected();

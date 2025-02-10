@@ -95,7 +95,7 @@ DapNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QSt
 DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObject *obj, const char *slot, const char *slot_err,
                                                    const QByteArray* data, bool isCDB, bool isCriticalReq)
 {
-    DapNetworkReply *netReply = new DapNetworkReply();
+    DapNetworkReply *netReply = new DapNetworkReply(this);
     if (slot) {
         connect(netReply, SIGNAL(finished()), obj, slot);
     }
@@ -250,7 +250,7 @@ QString readJsonFile(const QString& filePath)
 
 void DapSession::getNews()
 {
-    DapNetworkReply *m_netNewsReply = new DapNetworkReply;
+    DapNetworkReply *m_netNewsReply = new DapNetworkReply(this);
     connect(m_netNewsReply, &DapNetworkReply::sigError, this, []() {
         qCritical() << "Couldn't fetch news";
         return;
@@ -884,7 +884,7 @@ DapNetworkReply *DapSession::logoutRequest() {
 
 DapNetworkReply * DapSession::requestRawToSite(const QString& dnsName, const QString& url, const QByteArray& bData, const char * slot, bool ssl, const QString& headers)
 {
-    DapNetworkReply * netReply = new DapNetworkReply;
+    DapNetworkReply * netReply = new DapNetworkReply(this);
     DapConnectClient::instance()->request_POST(dnsName, 443, url, bData, *netReply, headers, ssl);
     connect(netReply, SIGNAL(finished()), this, slot);
     return netReply;

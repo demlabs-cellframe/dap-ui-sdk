@@ -28,7 +28,7 @@ void DapCmdServersList::handle(const QJsonObject* params)
 }
 
 void DapCmdServersList::sendRequestToCDB() {
-    DapNetworkReply* reply = new DapNetworkReply();
+    DapNetworkReply* reply = new DapNetworkReply(this);
 
     connect(reply, &DapNetworkReply::finished, this, [this, reply] {
         handleReplyFinished(reply);
