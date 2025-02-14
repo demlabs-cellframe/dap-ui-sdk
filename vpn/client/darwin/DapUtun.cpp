@@ -21,38 +21,11 @@ This file is part of DAP UI SDK the open source project
    along with any DAP based project.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtDebug>
-#include <QProcess>
-#include <QFile>
-
-#include <stdarg.h>
-#include <sys/types.h>
-#include <sys/ioctl.h>
-#include <sys/socket.h>
-#include <sys/sys_domain.h>
-#include <sys/kern_control.h>
-#include <net/if_utun.h>
-#include <errno.h>
-#include <string.h>
-
-#include <unistd.h>
-#include <fcntl.h>
-
-
-
 #include "DapUtils.h"
-#include "DapTunUnixAbstract.h"
-#include "QtCore/qdebug.h"
 #include "darwin/DapUtun.h"
-#include "DapTunWorkerUnix.h"
-#include "DapNetworkMonitor.h"
-#include "SigUnixHandler.h"
 
-/**
- * @brief DapUtun::DapUtun
- */
 DapUtun::DapUtun()
-    :DapTunUnixAbstract()
+    : DapTunUnixAbstract()
 {
     // List of Apple addresses needed to be routed directly through the tunnel
     appleAdditionalRoutes = QStringList({
@@ -71,50 +44,81 @@ DapUtun::DapUtun()
             this, &DapUtun::tunDeviceDestroy, Qt::DirectConnection);
 }
 
-/**
- * @brief DapUtun::requestTunDeviceCreate
- */
+
+void DapUtun::executeCommand(const QString &cmd)
+{
+    qDebug() << "Executing command:" << cmd;
+
+    QProcess process;
+    process.start(cmd);
+
+    if (!process.waitForFinished(2000)) {
+        qWarning() << "Command failed to execute:" << process.errorString();
+        return;
+    }
+
+    int ret = process.exitCode();
+    QString output = process.readAllStandardOutput();
+    QString errorOutput = process.readAllStandardError();
+
+    qDebug() << "Command output:" << output.trimmed();
+    if (!errorOutput.isEmpty()) {
+        qWarning() << "Command error output:" << errorOutput.trimmed();
+    }
+
+    qDebug() << "Command returned exit code:" << ret;
+    if (ret != 0) {
+        qWarning() << "Command failed with exit code:" << ret;
+    }
+}
+
 void DapUtun::tunDeviceCreate()
 {
     qDebug() << "[DapUtun::tunDeviceCreate]";
+
     if (m_tunSocket > 0) {
         qInfo() << "Socket already open";
         return;
     }
-    // Prepare structs
+
+    // Lambda function to retrieve error messages
+    auto getErrorString = []() -> QString {
+        int err = errno;
+        char errbuf[256];
+        ::strerror_r(err, errbuf, sizeof(errbuf));
+        return QString("%1 (code %2)").arg(errbuf).arg(err);
+    };
+
+    // Initialize the control structure
     struct ctl_info l_ctl_info = {0};
 
     // Copy utun control name
     if (::strlcpy(l_ctl_info.ctl_name, UTUN_CONTROL_NAME, sizeof(l_ctl_info.ctl_name))
-            >= sizeof(l_ctl_info.ctl_name)){
-        emit error( QString("UTUN_CONTROL_NAME % is too long").arg(UTUN_CONTROL_NAME));
+        >= sizeof(l_ctl_info.ctl_name)) {
+        emit error(QString("UTUN_CONTROL_NAME %1 is too long").arg(UTUN_CONTROL_NAME));
         return;
     }
 
     // Create utun socket
     int l_tun_fd = ::socket(PF_SYSTEM, SOCK_DGRAM, SYSPROTO_CONTROL);
-    if( l_tun_fd < 0){
-        int l_errno = errno;
-        char l_errbuf[256];
-        ::strerror_r(l_errno, l_errbuf,sizeof(l_errbuf));
-        emit error ( QString("Opening utun device control (SYSPROTO_CONTROL) error: '%1' (code %2)").arg(l_errbuf).arg(l_errno));
+    if (l_tun_fd < 0) {
+        emit error(QString("Opening utun device control (SYSPROTO_CONTROL) error: %1")
+                       .arg(getErrorString()));
         return;
     }
     qInfo() << "Utun SYSPROTO_CONTROL descriptor obtained";
 
-    // Pass control structure to the utun socket
-    if( ::ioctl(l_tun_fd, CTLIOCGINFO, &l_ctl_info ) < 0 ){
-        int l_errno = errno;
-        char l_errbuf[256];
-        ::strerror_r(l_errno, l_errbuf,sizeof(l_errbuf));
-        emit error (QString("Can't execute ioctl(CTLIOCGINFO): '%1' (code %1)").arg(l_errbuf).arg(l_errno));
+    // Retrieve control ID via ioctl
+    if (::ioctl(l_tun_fd, CTLIOCGINFO, &l_ctl_info) < 0) {
+        ::close(l_tun_fd);
+        emit error(QString("Can't execute ioctl(CTLIOCGINFO): %1").arg(getErrorString()));
         return;
     }
     qInfo() << "Utun CTLIOCGINFO structure passed through ioctl";
 
     // Trying to connect with one of utunX devices
     int l_ret = -1;
-    for(int l_unit = 0; l_unit < 256; l_unit++){
+    for (int l_unit = 0; l_unit < 256; l_unit++) {
         struct sockaddr_ctl l_sa_ctl = {0};
         l_sa_ctl.sc_id = l_ctl_info.ctl_id;
         l_sa_ctl.sc_len = sizeof(l_sa_ctl);
@@ -122,234 +126,324 @@ void DapUtun::tunDeviceCreate()
         l_sa_ctl.ss_sysaddr = AF_SYS_CONTROL;
         l_sa_ctl.sc_unit = l_unit + 1;
 
-        // If connect successful, new utunX device should be created
-        l_ret = ::connect(l_tun_fd, (struct sockaddr *)&l_sa_ctl, sizeof(l_sa_ctl));
-        if(l_ret == 0)
+        l_ret = ::connect(l_tun_fd, reinterpret_cast<struct sockaddr*>(&l_sa_ctl), sizeof(l_sa_ctl));
+        if (l_ret == 0)
             break;
     }
-    // Check if the previous step was successful
-    if (l_ret < 0){
-        int l_errno = errno;
-        char l_errbuf[256];
-        ::strerror_r(l_errno, l_errbuf,sizeof(l_errbuf));
-        emit error( QString("Can't create utun device: '%1' (code %2)").arg(l_errbuf).arg(l_errno));
+
+    if (l_ret < 0) {
+        ::close(l_tun_fd);
+        emit error(QString("Can't create utun device: %1").arg(getErrorString()));
         return;
     }
-
     // Get iface name of newly created utun dev.
     qInfo() << "Utun device created";
-    char l_utunname[20];
-    l_utunname[0] = '\0';
+
+    // Retrieve the name of the utun network interface
+    char l_utunname[20] = {0};
     socklen_t l_utunname_len = sizeof(l_utunname);
-    if (::getsockopt(l_tun_fd, SYSPROTO_CONTROL, UTUN_OPT_IFNAME, l_utunname, &l_utunname_len) ){
-        int l_errno = errno;
-        char l_errbuf[256];
-        ::strerror_r(l_errno, l_errbuf,sizeof(l_errbuf));
-        emit error ( QString("Can't get utun device name: '%s' (code %d)").arg(l_errbuf).arg(l_errno));
+    if (::getsockopt(l_tun_fd, SYSPROTO_CONTROL, UTUN_OPT_IFNAME, l_utunname, &l_utunname_len)) {
+        ::close(l_tun_fd);
+        emit error(QString("Can't get utun device name: %1").arg(getErrorString()));
         return;
     }
 
-    m_tunDeviceName = QString::fromLatin1(l_utunname,l_utunname_len-1);
-    qInfo() << "Created utun "<<m_tunDeviceName<<" network interface";
     
     /* this is the special file descriptor that the caller will use to talk
     * with the virtual interface */
+    m_tunDeviceName = QString::fromLatin1(l_utunname, l_utunname_len - 1);
+    qInfo() << "Created utun" << m_tunDeviceName << "network interface";
+
     m_tunSocket = l_tun_fd;
 }
 
-/**
- * @brief Detects active interface by default routing to 8.8.8.8
- * @return  Returns current active internet interface
- */
 QString DapUtun::getInternetInterface()
 {
     return DapUtils::shellCmd("route get 8.8.8.8 | grep interface | awk '{print $2;}'");
 }
 
-/**
- * @brief DapUtun::saveCurrentConnectionInterfaceData
- */
 void DapUtun::saveCurrentConnectionInterfaceData()
 {
+    m_lastUsedConnectionDevice = getInternetInterface();
+    qDebug() << "Current internet interface:" << m_lastUsedConnectionDevice;
 
-    m_lastUsedConnectionDevice = this->getInternetInterface();
-    qDebug() << "Current internet interface "<< m_lastUsedConnectionDevice;
-    QString result = DapUtils::shellCmd(QString("networksetup -listnetworkserviceorder | grep 'Hardware Port' | grep %1").arg(m_lastUsedConnectionDevice));
+    QString cmdList = QString("networksetup -listnetworkserviceorder | grep 'Hardware Port' | grep %1")
+                          .arg(m_lastUsedConnectionDevice);
+    QString result = DapUtils::shellCmd(cmdList);
 
-    QStringList res1 = result.split(":"); // Break down answer by Hardware port: and Device
-
-    if(res1.length() < 3) {
-        qWarning() << "Can't get current connection interface name! Command returns "<< result;
+    QStringList parts = result.split(":");
+    if (parts.length() < 3) {
+        qWarning() << "Unable to retrieve connection interface name! Command output:" << result;
         return;
     }
 
-    QStringList res2 = res1[1].split(","); // Split from ,Device
-
-    if(res2.length() < 2) {
-        qWarning() << " Wrong networksetup answer! Command returns "<< result;
+    QStringList interfaceParts = parts[1].split(",");
+    if (interfaceParts.length() < 2) {
+        qWarning() << "Unexpected format from networksetup command! Command output:" << result;
         return;
     }
 
-    m_lastUsedConnectionName = res2[0].trimmed();
-    qDebug() << "Current internet connection name" << m_lastUsedConnectionName;
+    m_lastUsedConnectionName = interfaceParts[0].trimmed();
+    qDebug() << "Current internet connection name:" << m_lastUsedConnectionName;
 
-    result = DapUtils::shellCmd(QString("networksetup -getinfo \"%1\" | grep Router").arg(m_lastUsedConnectionName));
-    QStringList res3 =result.split("\n", Qt::SkipEmptyParts);
-    if(res3.length() < 1) {
-        qWarning() << "No default router at all";
-    }else{
-        QStringList res4 = res3[0].split(":");
-        if(res3.length() != 2) {
-            qWarning() << "No default route address in line";
-        }else{
-            m_defaultGwOld =  res4[1] == "none" ? QString() : res4[1];
+    QString cmdGetInfo = QString("networksetup -getinfo \"%1\" | grep Router")
+                             .arg(m_lastUsedConnectionName);
+    result = DapUtils::shellCmd(cmdGetInfo);
+
+    QStringList infoLines = result.split("\n", Qt::SkipEmptyParts);
+    if (infoLines.isEmpty()) {
+        qWarning() << "No default router found.";
+    } else {
+        QStringList routerParts = infoLines.first().split(":");
+        if (routerParts.length() != 2) {
+            qWarning() << "Unexpected default router line format:" << infoLines.first();
+        } else {
+            QString routerValue = routerParts[1].trimmed();
+            m_defaultGwOld = (routerValue == "none") ? QString() : routerValue;
         }
     }
 
-    qInfo() << "DeviceName name:" << m_lastUsedConnectionDevice
-             << "Interface Name:" << m_lastUsedConnectionName
-             << "Router" << m_defaultGwOld
-                ;
-
+    qInfo() << "Device Name:" << m_lastUsedConnectionDevice
+            << "Interface Name:" << m_lastUsedConnectionName
+            << "Router:" << m_defaultGwOld;
 }
 
+QStringList DapUtun::getNetworkServices() {
+    QProcess process;
+    process.start("networksetup", QStringList() << "-listallnetworkservices");
 
-/**
- * @brief DapUtun::onWorkerStarted
- */
+    if (!process.waitForFinished(5000)) {
+        qWarning() << "Failed to get list of network services:" << process.errorString();
+        return QStringList();
+    }
+
+    QStringList lines = QString(process.readAllStandardOutput()).split("\n", Qt::SkipEmptyParts);
+
+    if (lines.size() < 2) {
+        qWarning() << "No valid network services found.";
+        return QStringList();
+    }
+
+    return lines.mid(1);
+}
+
+QString DapUtun::getDNSServers(const QString &service) {
+    QProcess process;
+    process.start("networksetup", QStringList() << "-getdnsservers" << service);
+    if (!process.waitForFinished(5000)) {
+        qWarning() << "Timeout while getting DNS for service" << service << ":" << process.errorString();
+        return QString();
+    }
+
+    return process.readAllStandardOutput().trimmed();
+}
+
+bool DapUtun::clearDNSServers(const QString &service) {
+    QProcess process;
+    process.start("networksetup", QStringList() << "-setdnsservers" << service << "empty");
+    if (!process.waitForFinished(5000)) {
+        qWarning() << "Timeout while clearing DNS for service" << service << ":" << process.errorString();
+        return false;
+    }
+
+    if (process.exitCode() != 0) {
+        qWarning() << "Command failed for service" << service << "with exit code:" << process.exitCode();
+        qWarning() << "Error output: " << process.readAllStandardError();
+        return false;
+    }
+
+    return true;
+}
+
+void DapUtun::clearAllDNS() {
+    QStringList services = getNetworkServices();
+    if (services.isEmpty()) {
+        qWarning() << "No network services to clear DNS.";
+        return;
+    }
+
+    for (const QString &service : services) {
+        QString dns = getDNSServers(service);
+
+        if (dns.isEmpty() || dns.contains("There aren't any DNS Servers set on")) {
+            qDebug() << "DNS servers already cleared for service:" << service;
+            continue;
+        } else {
+            qWarning() << "Existing DNS servers for" << service << ":" << dns;
+        }
+
+        if (clearDNSServers(service)) {
+            dns = getDNSServers(service);
+            if (dns.isEmpty() || dns.contains("There aren't any DNS Servers set on")) {
+                qDebug() << "DNS servers successfully cleared for service:" << service;
+            } else {
+                qWarning() << "DNS servers still present after clearance for service" << service << ":" << dns;
+            }
+        }
+    }
+}
+
 void DapUtun::onWorkerStarted()
 {
-    qDebug() << "tunnelCreate()";
-    QProcess process;
+    qDebug() << "Starting tunnel creation";
 
-    if(m_tunSocket <= 0) {
-        qCritical() << "Can't bring up network interface";
+    if (m_tunSocket <= 0) {
+        qCritical() << "Failed to bring up network interface: invalid tunnel socket";
         return;
     }
 
     saveCurrentConnectionInterfaceData();
+    clearAllDNS();
 
-//    networksetup -ordernetworkservices
+    m_currentInterface = getCurrentNetworkInterface();
+    if (m_currentInterface.isEmpty()) {
+        qCritical() << "No active network interface found!";
+        return;
+    }
 
-    // Update route table for upstream if it's not local
-    if(!isLocalAddress(upstreamAddress())) {
+    if (!isLocalAddress(upstreamAddress())) {
         QString run = QString("route add -host %2 %1")
-                          .arg(m_defaultGwOld).arg(upstreamAddress());
-        qDebug() << "Execute " << run;
-        ::system(run.toLatin1().constData());
+                          .arg(m_defaultGwOld)
+                          .arg(upstreamAddress());
+        executeCommand(run);
     }
 
-    // Add all CDBs into routing exeption
-    for (const auto &str : m_routingExceptionAddrs){
+    for (const auto &address : m_routingExceptionAddrs) {
         QString run = QString("route add -host %2 %1")
-                          .arg(m_defaultGwOld).arg(str);
-        qDebug() << "Execute " << run;
-        ::system(run.toLatin1().constData() );
+                          .arg(m_defaultGwOld)
+                          .arg(address);
+        executeCommand(run);
     }
 
+    // QString cmdConnAdd = QString(
+    //                          "networksetup -createnetworkservice %1 %2 ;"
+    //                          "networksetup -setnetworkserviceenabled %1 on;"
+    //                          "networksetup -setmanual %1 %3 255.255.255.255 %4;"
+    //                          ).arg(DAP_BRAND)
+    //                          .arg(tunDeviceName())
+    //                          .arg(addr())
+    //                          .arg(gw());
 
-    // Create connection
-    /*
-    QString cmdConnAdd = QString(
-                "networksetup -createnetworkservice %1 %2 ;"
-                "networksetup -setnetworkserviceenabled %1 on;"
-                "networksetup -setmanual %1 %3 255.255.255.255 %4;"
-                "networksetup -setdnsservers %4"
-                ) .arg (DAP_BRAND)
-                  .arg(tunDeviceName())
-                  .arg(addr())
-                  .arg(gw());
+    // qDebug() << "Network service creation command:" << cmdConnAdd;
+    // DapUtils::shellCmd(cmdConnAdd);
 
-    qDebug() << "[Cmd to created interface: " <<  cmdConnAdd;
+    QString cmdSetDNS = QString("networksetup -setdnsservers %1 %2")
+                            .arg(m_currentInterface)
+                            .arg(gw());
 
-    DapTunUnixAbstract::runShellCmd( cmdConnAdd );
+    qDebug() << "Setting DNS for" << m_currentInterface << "to:" << gw();
+    DapUtils::shellCmd(cmdSetDNS);
 
+    QString ifconfigCmd = QString("ifconfig %1 %2 %3")
+                              .arg(tunDeviceName())
+                              .arg(addr())
+                              .arg(gw());
+    executeCommand(ifconfigCmd);
+    qDebug() << "Configured interface" << tunDeviceName() << "with IP" << addr() << "and gateway" << gw();
 
-    // Add additional Apple routes
-    QString cmdAddAdditionalRoutes = QString("networksetup -setadditionalroutes %1").arg(DAP_BRAND);
-    foreach(QString additionalRoute, appleAdditionalRoutes){
-        cmdAddAdditionalRoutes += additionalRoute;
-        cmdAddAdditionalRoutes += "\"\"";
-    }
+    executeCommand("route delete default");
+    qDebug() << "Removed default route:" << m_defaultGwOld;
 
-    DapTunUnixAbstract::runShellCmd( cmdAddAdditionalRoutes);*/
-
-
-    // Bring up network interface
-    ::system(QString("ifconfig %1 %2 %3")
-                 .arg(tunDeviceName()).arg(addr()).arg(gw()).toLatin1().constData());
-
-    qDebug() << "Configured " << tunDeviceName() << " with " << addr() << "-->" << gw();
-
-    // Remove old default route
-    ::system(QString("route delete default").toLatin1().constData());
-
-    qDebug() << "Removed default route " << m_defaultGwOld;
-
-    // Setup default route
     QString gateway = gw();
     qDebug() << "Gateway obtained: " << gateway;
     if (!gateway.isEmpty()) {
-        ::system(QString("route add default %1").arg(gateway).toLatin1().constData());
-        qDebug() << "Added default route " << gateway;
+        executeCommand(QString("route add default %1").arg(gateway));
+        qDebug() << "Added default route:" << gateway;
 
-        ::system(QString("route add -net 224.0.0.0/4 %1").arg(gateway).toLatin1().constData());
-        qDebug() << "Added multicast route " << gateway;
+        executeCommand(QString("route add -net 224.0.0.0/4 %1").arg(gateway));
+        qDebug() << "Added multicast route via gateway:" << gateway;
 
-        ::system(QString("route add -net 255.255.255.255/32 %1").arg(gateway).toLatin1().constData());
-        qDebug() << "Added broadcast route " << gateway;
+        executeCommand(QString("route add -net 255.255.255.255/32 %1").arg(gateway));
+        qDebug() << "Added broadcast route via gateway:" << gateway;
     } else {
-        qWarning() << "Gateway is empty!";
+        qWarning() << "Gateway is empty, cannot set up default routes";
     }
 
-    // Add additional Apple routes
-    foreach(QString additionalRoute, appleAdditionalRoutes) {
-        QStringList routeArgs = additionalRoute.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
-
-        if(routeArgs.length() == 1) {
-            ::system(QString("route add -host %1 %2")
-                         .arg(routeArgs[0]).arg(gw()).toLatin1().constData());
-            qDebug() << "Added host route " << routeArgs[0] << " via " << gw();
-        } else if (routeArgs.length() == 2) {
-            ::system(QString("route add -net %1 %2 %3")
-                         .arg(routeArgs[0]).arg(routeArgs[1]).arg(gw()).toLatin1().constData());
-            qDebug() << "Added network route " << routeArgs[0] << "/" << routeArgs[1] << " via " << gw();
-        } else {
-            qWarning() << "Unparseable additional route line " << additionalRoute;
-        }
+    QString cmdAddAdditionalRoutes = QString("networksetup -setadditionalroutes %1").arg(DAP_BRAND);
+    foreach (const QString &additionalRoute, appleAdditionalRoutes) {
+        cmdAddAdditionalRoutes += " " + additionalRoute;
     }
+    qDebug() << "Additional Apple routes command:" << cmdAddAdditionalRoutes;
+    DapUtils::shellCmd(cmdAddAdditionalRoutes);
 
     m_isCreated = true;
     emit created();
 }
 
+QString DapUtun::getCurrentNetworkInterface()
+{
+    qDebug() << "Fetching current active network interface...";
 
-/**
- * @brief DapUtun::onWorkerStopped
- */
+    QProcess routeProcess;
+    routeProcess.start("route get default");
+    routeProcess.waitForFinished();
+    QString routeOutput = routeProcess.readAllStandardOutput();
+
+    qDebug() << "Raw route get default output:" << routeOutput;
+
+    QString activeInterface;
+    QStringList routeLines = routeOutput.split("\n");
+    for (const QString &line : routeLines) {
+        if (line.contains("interface:")) {
+            activeInterface = line.split(":").last().trimmed();
+            qDebug() << "Detected active interface:" << activeInterface;
+            break;
+        }
+    }
+
+    if (activeInterface.isEmpty()) {
+        qWarning() << "No active internet interface found!";
+        return QString();
+    }
+
+    QProcess serviceOrderProcess;
+    serviceOrderProcess.start("networksetup -listnetworkserviceorder");
+    serviceOrderProcess.waitForFinished();
+    QString serviceOrderOutput = serviceOrderProcess.readAllStandardOutput();
+
+    qDebug() << "Raw network service order output:" << serviceOrderOutput;
+
+    QString regexPattern = R"(\(Hardware Port: (.+?), Device: )" + QRegularExpression::escape(activeInterface) + R"(\))";
+    QRegularExpression regex(regexPattern);
+    QRegularExpressionMatch match = regex.match(serviceOrderOutput);
+
+    if (match.hasMatch()) {
+        QString matchedService = match.captured(1).trimmed();
+        qDebug() << "Matched active network service via service order:" << matchedService;
+        return matchedService;
+    }
+
+    qWarning() << "Could not match active interface to a network service!";
+    return QString();
+}
+
 void DapUtun::tunDeviceDestroy()
 {
     DapTunUnixAbstract::tunDeviceDestroy();
-    // Delete upstream routes
-    if(!isLocalAddress(upstreamAddress()))
-    {
-        QString run = QString("route delete -host %1")
-                .arg(upstreamAddress()) ;
-        qDebug() << "Execute "<<run;
-        ::system( run.toLatin1().constData() );
+
+    if (!isLocalAddress(upstreamAddress())){
+        QString cmdDeleteUpstream = QString("route delete -host %1")
+                                        .arg(upstreamAddress());
+        executeCommand(cmdDeleteUpstream);
     }
 
-    for (const auto &str : m_routingExceptionAddrs){
-        QString run = QString("route delete -host %1")
-                          .arg(str);
-        qDebug() << "Execute " << run;
-        ::system(run.toLatin1().constData() );
+    for (const auto &route : m_routingExceptionAddrs) {
+        QString cmdDeleteException = QString("route delete -host %1")
+                                         .arg(route);
+        executeCommand(cmdDeleteException);
     }
 
     // Other routes connected with tunnel should be destroyed autimaticly
 
     // Restore default gateway
-    ::system ( QString("route add default %1").arg(m_defaultGwOld).toLatin1().constData());
-    qInfo() << "Restored default route "<< m_defaultGwOld;
-}
+    QString cmdRestoreDefault = QString("route add default %1")
+                                    .arg(m_defaultGwOld);
+    executeCommand(cmdRestoreDefault);
+    qInfo() << "Restored default route:" << m_defaultGwOld;
 
+    QString cmdRestoreDNS = QString("networksetup -setdnsservers \"%1\" %2")
+                                .arg(m_currentInterface)
+                                .arg(m_defaultGwOld);
+    executeCommand(cmdRestoreDNS);
+    qInfo() << "Restored DNS settings for" << m_currentInterface << "to" << m_defaultGwOld;
+}
