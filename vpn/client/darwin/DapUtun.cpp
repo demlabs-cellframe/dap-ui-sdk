@@ -161,9 +161,7 @@ QString DapUtun::getInternetInterface()
 {
     return DapUtils::shellCmd("route get 8.8.8.8 | grep interface | awk '{print $2;}'");
 }
-
-void DapUtun::saveCurrentConnectionInterfaceData()
-{
+void DapUtun::saveCurrentConnectionInterfaceData() {
     m_lastUsedConnectionDevice = getInternetInterface();
     qDebug() << "Current internet interface:" << m_lastUsedConnectionDevice;
 
@@ -238,11 +236,19 @@ QString DapUtun::getDNSServers(const QString &service) {
     return process.readAllStandardOutput().trimmed();
 }
 
-bool DapUtun::clearDNSServers(const QString &service) {
+bool DapUtun::setDNS(const QString &service, const QString &dnsServer) {
     QProcess process;
-    process.start("networksetup", QStringList() << "-setdnsservers" << service << "empty");
+    QStringList arguments;
+
+    if (dnsServer.isEmpty()) {
+        arguments << "-setdnsservers" << service << "empty";
+    } else {
+        arguments << "-setdnsservers" << service << dnsServer;
+    }
+
+    process.start("networksetup", arguments);
     if (!process.waitForFinished(5000)) {
-        qWarning() << "Timeout while clearing DNS for service" << service << ":" << process.errorString();
+        qWarning() << "Timeout while configuring DNS for service" << service << ":" << process.errorString();
         return false;
     }
 
@@ -255,32 +261,26 @@ bool DapUtun::clearDNSServers(const QString &service) {
     return true;
 }
 
-void DapUtun::clearAllDNS() {
+//Not used because breaks other interfaces. At the moment, only the utun interface is being modified.
+void DapUtun::configureDNS(const QMap<QString, QString> &dnsMap) {
     QStringList services = getNetworkServices();
     if (services.isEmpty()) {
-        qWarning() << "No network services to clear DNS.";
+        qWarning() << "No network services detected.";
         return;
     }
 
     for (const QString &service : services) {
-        QString dns = getDNSServers(service);
-
-        if (dns.isEmpty() || dns.contains("There aren't any DNS Servers set on")) {
-            qDebug() << "DNS servers already cleared for service:" << service;
-            continue;
+        QString dnsServer = dnsMap.value(service, "");
+        if (setDNS(service, dnsServer)) {
+            qDebug() << "DNS servers successfully " << (dnsServer.isEmpty() ? "cleared" : "configured") << " for service:" << service;
         } else {
-            qWarning() << "Existing DNS servers for" << service << ":" << dns;
-        }
-
-        if (clearDNSServers(service)) {
-            dns = getDNSServers(service);
-            if (dns.isEmpty() || dns.contains("There aren't any DNS Servers set on")) {
-                qDebug() << "DNS servers successfully cleared for service:" << service;
-            } else {
-                qWarning() << "DNS servers still present after clearance for service" << service << ":" << dns;
-            }
+            qWarning() << "Failed to " << (dnsServer.isEmpty() ? "clear" : "configure") << " DNS servers for service:" << service;
         }
     }
+}
+
+void DapUtun::clearAllDNS() {
+    configureDNS(QMap<QString, QString>());
 }
 
 void DapUtun::onWorkerStarted()
@@ -293,7 +293,6 @@ void DapUtun::onWorkerStarted()
     }
 
     saveCurrentConnectionInterfaceData();
-    clearAllDNS();
 
     m_currentInterface = getCurrentNetworkInterface();
     if (m_currentInterface.isEmpty()) {

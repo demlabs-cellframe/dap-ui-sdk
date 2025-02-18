@@ -55,6 +55,7 @@ protected:
     void tunDeviceDestroy();
     void onWorkerStarted();
     void clearAllDNS();
+    void configureDNS(const QMap<QString, QString> &dnsMap);
     QString getCurrentNetworkInterface();
 
 
@@ -66,7 +67,7 @@ private:
 
     QStringList getNetworkServices();
     QString getDNSServers(const QString &service);
-    bool clearDNSServers(const QString &service);
+    bool setDNS(const QString &service, const QString &dnsServer);
 
     // Connection witch used before creating utun Interface
     QString m_lastUsedConnectionName;
@@ -80,5 +81,7 @@ private:
 
     // Get current active internet interface
     QString getInternetInterface();
+
+    QMap<QString, QString> m_dnsMap;
 
 };
