@@ -9,12 +9,17 @@ Item
     property real currentValue: 0.01
     property real spinBoxStep: 0.01
     property real minimalValue: 0.0
+    property real maximumValue: 100.0
 
     property string valueName: "-"
     property int powerRound: 2
 
+    property bool editable: true
+
     property color currentColor: "#CAFC33"
     property string currentState: "Recommended"
+
+    signal valueChange()
 
     id: root
     //width: 278
@@ -120,7 +125,8 @@ Item
                     borderWidth: 0
                     borderRadius: 0
                     placeholderColor: currTheme.gray
-                    selectByMouse: true
+                    selectByMouse: editable
+                    enabled: editable
 
                     onTextChanged:
                     {
@@ -233,12 +239,13 @@ Item
                     PropertyAnimation{duration: 150}
                 }
 
-                MouseArea
-                {
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onClicked: setValue(model.minValue)
-                }
+                //TODO: uncorrect value calculating
+//                MouseArea
+//                {
+//                    anchors.fill: parent
+//                    hoverEnabled: true
+//                    onClicked: setValue(model.minValue)
+//                }
             }
         }
     }
@@ -260,7 +267,7 @@ Item
     function stepValue(step)
     {
         var summ = mathWorker.summDouble(currentValue, step)
-        if(summ !== "") setValue(summ)
+        if(summ !== "" && summ !== currentValue) setValue(summ)
    }
 
     function setValue(value)
@@ -268,11 +275,17 @@ Item
         var number = parseFloat(value)
         if(!isNaN(number))
         {
-            if( number >= minimalValue)
+            if( number >= minimalValue && number <= maximumValue)
             {
                 currentValue = number
                 updateState()
+                valueChange()
             }
+//            else
+//            {
+//                currentValue = "0.0"
+//                updateState()
+//            }
         }
     }
 
