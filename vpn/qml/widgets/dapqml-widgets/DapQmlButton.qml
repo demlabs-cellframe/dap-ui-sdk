@@ -525,6 +525,7 @@ Rectangle {
                 inputMask: root.inputMask
                 // android virtual keyboard
                 inputMethodHints: Qt.ImhSensitiveData
+                persistentSelection: true
 
                 DapQmlLabel {
                     anchors.fill: etmbsMain
@@ -541,7 +542,10 @@ Rectangle {
 
                 TextEditContextMenu {
                     id: ctxMenu
-                    Component.onCompleted: setTextEditWidget(etmbsMain)
+                    Component.onCompleted: {
+                        setSerialInpoutMode(false)
+                        setTextEditWidget(etmbsMain)
+                    }
                 }
 
                 MouseArea {
