@@ -19,7 +19,7 @@ DapCmdNews::DapCmdNews(QObject *parent)
 
 void DapCmdNews::handle(const QJsonObject* params)
 {
-    Q_UNUSED(params);
+    DapCmdServiceAbstract::handle(params);
     //if (params->value("message").toString() == "news")
     emit getNews();
 }

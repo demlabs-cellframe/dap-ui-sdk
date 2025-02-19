@@ -19,7 +19,7 @@ DapServiceClient::DapServiceClient(const QString& a_serviceName,
 
     connect(dapCmdParser, &DapCmdParser::cmdReady, this, &DapServiceClient::procCmdController);
 
-    connect(sockCtl,static_cast<void(DapUiSocket::*)(DapUiSocketError)> (&DapUiSocket::error) ,
+    connect(sockCtl,static_cast<void(DapUiSocket::*)(DapUiSocketError)> (&DapUiSocket::errorOccurred) ,
             this, &DapServiceClient::onCtlSocketError);
     connect(sockCtl,&DapUiSocket::connected, this, &DapServiceClient::onCtlSocketConnected);
 
@@ -71,7 +71,9 @@ void DapServiceClient::connectToService()
  */
 void DapServiceClient::sendCmd(const QString & a_cmd)
 {
-    //qDebug() << "[DapServiceClient] sock ctl send command "<< a_cmd;
+    // TODO: Extended output for problem diagnosis
+    // qDebug() << "[DapServiceClient] sock ctl send command: "<< a_cmd << " socket state: " << sockCtl->state();
+
     if(sockCtl->isWritable())
         sockCtl->write(QString("%1%2").arg(a_cmd).arg('\n').toUtf8());
     else
@@ -86,7 +88,7 @@ void DapServiceClient::sendCmd(const QString & a_cmd)
 void DapServiceClient::onCtlSocketError(DapUiSocketError socketError)
 {
     Q_UNUSED(socketError);
-    qDebug() << "onCtlSocketError() sockCtl->errorString() == "<<sockCtl->errorString();
+    qDebug() << "onCtlSocketError() sockCtl->errorString() == " <<sockCtl->errorString();
 
     emit ctlError(sockCtl->errorString());
     if (sockCtl->state() != QAbstractSocket::ConnectedState) {

@@ -1,38 +1,14 @@
-/* INCLUDES */
-
 import QtQuick 2.4
 import QtQuick.Layouts 1.3
-//import DapQmlModelSettings 1.0
 import StyleDebugTree 1.0
 import DapQmlStyle 1.0
 import Brand 1.0
-//import SettingsInterface 1.0
 import "qrc:/dapqml-widgets"
-
-/****************************************//**
- * @brief Settings Form
- * @ingroup groupDapQmlForms
- *
- * ### Structure
- *
- * Form is built using ListView with DapQmlButton and DapQmlLabel as delegate
- *
- * Delegate choses when to display DapQmlButton or DapQmlLabel
- *
- * If DapQmlButton is clicked, delegate executes settingsModel.exec static method
- *
- * @date 06.06.22
- * @author Mikhail Shilenko
- *******************************************/
 
 Item {
     id: root
+    objectName: "settingsForm"
     clip: true
-
-    /****************************************//**
-     * @name DEFS
-     ********************************************/
-    /// @{
 
     enum StyleId
     {
@@ -46,20 +22,12 @@ Item {
       SI_SPACER
     }
 
-    /// @}
-    /****************************************//**
-     * @name VARS
-     ********************************************/
-    /// @{
-
-    /// @brief form name
-    ///
-    /// Used to connect interface via Manager
     property string formName: "Settings"
-    //DapQmlModelSettings { id: settingsModel }
-    //SettingsInterface { id: settingsInterface; Component.onCompleted: setup(settingsModel); }
+
+    property bool darkTheme: false
 
     property QtObject internal: QtObject {
+        property bool disableAnim: false
         property var items: new Array();
 
         function appendItem (item) {
@@ -72,12 +40,6 @@ Item {
                 items.splice(index, 1);
         }
     }
-
-    /// @}
-    /****************************************//**
-     * @name FUNCTIONS
-     ********************************************/
-    /// @{
 
     function isSep(sid) {
         if (sid === QuiSettingsForm.StyleId.SI_BUTTON
@@ -99,37 +61,23 @@ Item {
         return resizer1.height;
     }
 
-    /****************************************//**
-     * Resizer
-     ********************************************/
+    function disableColorAnim() {
+        root.internal.disableAnim = true;
+        disableAnimInterval.start();
+    }
+
+    Timer {
+        id: disableAnimInterval
+        interval: 1000
+        running: false
+        repeat: false
+        onTriggered: root.internal.disableAnim = false
+    }
 
     DapQmlDummy {
         id: contentRect
         qss: "content-mid"
     }
-
-    /****************************************//**
-     * Content
-     ********************************************/
-
-//    property string testText: "test"
-//    property int testIndex: 0
-//    Timer {
-//        interval: 1000
-//        running: true
-//        repeat: true
-//        onTriggered: {
-//            if(testIndex < 3)
-//                testIndex++
-//            else
-//                testIndex = 0;
-
-//            testText    = "test";
-
-//            for(let i = 0; i < testIndex; i++)
-//                testText += ".";
-//        }
-//    }
 
     Rectangle {
         id: settingsContainer
@@ -146,17 +94,7 @@ Item {
             height: root.height
 
             clip: false
-            //model: settingsModel
 
-
-            /****************************************//**
-             * Resizers
-             ********************************************/
-
-            /* this item simulates resizing to give values:*/
-            /* height1 -> item.height, */
-            /* height2 -> title.height, */
-            /* fontSize1 -> item.iconSize */
             DapQmlLabel {
                 visible: false
                 id: resizer1
@@ -180,14 +118,23 @@ Item {
                 qss: "sett-content";
             }
 
-            /****************************************//**
-             * Delegate
-             ********************************************/
+            DapQmlDummy {
+                id: lvHoverColor
+                qss: "sett-btn-hover-bg";
+                property string color
+            }
+
+            DapQmlDummy {
+                id: lvNormalColor
+                qss: "c-background";
+                property string color
+            }
 
             delegate: Item {
                 id: delegate
                 width: settingsListView.width
-                height: calcHeight (model.sid) //model.sid !== QuiSettingsForm.StyleId.SI_TITLE ? resizer1.height : resizer2.height
+                height: calcHeight (model.sid)
+                clip: true
 
                 property int mySid: model.sid
                 property var settingsModel: settingsListView.model
@@ -195,15 +142,16 @@ Item {
 
                 DapQmlButton {
                     property int myIndex: model.index
-                    property string myText: model.textMain + settingsModel.notifier // + testText
+                    property string myText: model.textMain + settingsModel.notifier
+                    property bool preventDoubleExec: false
 
                     visible: model.sid !== QuiSettingsForm.StyleId.SI_TITLE
                     x: (parent.width - width) / 2
                     z: 50
-                    width: contentRect.width // settingsListView.width
+                    width: contentRect.width
                     height: delegate.height
                     buttonStyle: DapQmlButton.Style.IconMainSub
-                    mainText: myText // model.textMain + settingsModel.notifier + testText
+                    mainText: myText
                     subText: model.textSub + settingsModel.notifier
                     separator: isSep(model.sid)
                     qss: "sett-item"
@@ -214,6 +162,7 @@ Item {
                     }
                     link: model.sid === QuiSettingsForm.StyleId.SI_LINK
                     checkbox: model.sid === QuiSettingsForm.SI_CHECKBOX
+                    checked: (model.icon === "settings_icon ic_theme") ? root.darkTheme : false
                     icon: model.icon
                     iconSize: resizer1.fontSize
                     mouseArea.hoverEnabled: true
@@ -221,21 +170,26 @@ Item {
                     mouseArea.onExited:  delegate.hovered   = false
 
                     function buttonClicked(a_isButtonSignal) {
+                        if (preventDoubleExec)
+                            return;
+
+                        preventDoubleExec   = true;
+
                         if(a_isButtonSignal === false)
-                        {
                             clicked();
-                            settingsModel.exec (myIndex, this);
-                        }
+
+                        settingsModel.exec (myIndex, this);
+
+                        preventDoubleExec   = false;
+
+                        if (model.icon === "settings_icon ic_theme")
+                            root.darkTheme = checked;
                     }
 
                     onClicked: buttonClicked(true)
                     MouseArea {
                         anchors.fill: parent
                         onClicked: parent.buttonClicked(false)
-//                        {
-//                            parent.clicked();
-//                            settingsModel.exec (parent.myIndex, parent);
-//                        }
                     }
 
                     onMyTextChanged: mainText = myText;
@@ -245,19 +199,20 @@ Item {
                 }
 
                 DapQmlSeparator {
-                    anchors.bottom: parent.bottom
+                    y: parent.height - height
+                    width: settingsListView.width
                     z: 40
-                    width: parent.width
                     visible: model.sid !== QuiSettingsForm.StyleId.SI_TITLE
                              && isSep(model.sid)
                 }
 
-                DapQmlRectangle {
+                Rectangle {
                     anchors.fill: parent
+                    anchors.rightMargin: 0-1
                     z: 10
                     visible: !Brand.legacyStyle() && model.index > 0
-                    qss: delegate.hovered ? "sett-btn-hover-bg" : "c-background"
-                    Behavior on color { PropertyAnimation { duration: 150 } }
+                    color: delegate.hovered ? lvHoverColor.color : lvNormalColor.color
+                    Behavior on color { PropertyAnimation { duration: root.internal.disableAnim ? 0 : 150 } }
                 }
 
                 DapQmlLabel {
@@ -265,14 +220,9 @@ Item {
                     visible: model.sid === QuiSettingsForm.StyleId.SI_TITLE
                     width: settingsListView.width
                     height: delegate.height
-                    text: model.textMain + settingsModel.notifier // + testText
+                    text: model.textMain + settingsModel.notifier
                     qss: "sett-title-lbl-main"
                 }
-
-//                Component.onCompleted: StyleDebugTree.describe (
-//                   "Settings Item " + model.index,
-//                    ["height", "mySid"],
-//                   this);
             }
         }
     }

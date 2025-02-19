@@ -4,6 +4,8 @@
 #include "DapDataLocal.h"
 
 /* DEFS */
+#define DEBUGINFO qDebug() << (QString ("DapQmlModelChooseCountry::") + __func__)
+
 enum FieldId
 {
   name,
@@ -76,7 +78,7 @@ void DapQmlModelChooseCountry::setRowFilter (const QString &a_filter)
 bool DapQmlModelChooseCountry::countryExist()
 {
 #ifndef BRAND_RISEVPN
-  auto country = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
+  auto country = DapDataLocal::instance()->getSetting (DapDataLocal::COUNTRY_NAME).toString();
   return !country.isNull() && !country.isEmpty();
 #else
   return true;
@@ -107,16 +109,20 @@ void DapQmlModelChooseCountry::setCurrent (int newCurrent)
     emit dataChanged (oldIndex, oldIndex);
     emit dataChanged (newIndex, newIndex);
 
+    DEBUGINFO << "New current:" << newSortedIndex << _list.value (newSortedIndex);
+
     return;
   }
 
   m_current = -1;
+  DEBUGINFO << "New current:" << m_current;
   emit currentChanged();
 }
 
 void DapQmlModelChooseCountry::setCurrent (const QString &a_name)
 {
   int index = _list.indexOf (a_name);
+  DEBUGINFO << a_name;
   if (index == -1)
     return;
   setCurrent (_indexes.indexOf (index));
@@ -183,7 +189,7 @@ QVariant DapQmlModelChooseCountry::data (const QModelIndex &index, int role) con
   /* get result */
   switch (FieldId (role))
     {
-    case FieldId::name:     return capitalLetterName (_list [sortedIndex]);
+    case FieldId::name:     return capitalLetterName (_list.value (sortedIndex));
     case FieldId::checked:  return quint32 (m_current) == sortedIndex;
     }
 

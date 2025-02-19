@@ -167,12 +167,14 @@ void DapQmlModelSettings::_buildMenuItemsList()
       Item{SI_LINK,       tr ("Language"), "", "settings_icon ic_language", "language",                      [](QObject*) { emit __inst->sigLanguage(); } },
   #endif // BRAND_KELVPN
   #ifndef DISABLE_THEMES
-      Item{SI_LINK,       tr ("Color theme"), "", "settings_icon ic_theme", "color_theme",                   [](QObject*) { emit __inst->sigColorTheme(); } },
+      Item{SI_CHECKBOX,   tr ("Dark theme"), "", "settings_icon ic_theme", "dark_themes",                    [](QObject *a_item) { emit __inst->sigDarkTheme (a_item->property ("checked").toBool()); } },
+      //Item{SI_LINK,       tr ("Color theme"), "", "settings_icon ic_theme", "color_theme",                   [](QObject*) { emit __inst->sigColorTheme(); } },
+      Item{SI_LINK,       tr ("Notification center"), "", "settings_icon ic_notification", "notification",   [](QObject*) { emit __inst->sigNotification(); } },
   #endif // DISABLE_THEMES
 
       Item{SI_TITLE,      tr ("Support"), "", "settings_icon", "support",                                    [](QObject*){} },
 
-      Item{SI_BUTTON,     tr ("Send bug report"), "", "settings_icon ic_send-report", "send_bug_report",     [](QObject*) { emit __inst->sigBugSend(); } },
+      Item{SI_LINK,       tr ("Send bug report"), "", "settings_icon ic_send-report", "send_bug_report",     [](QObject*) { emit __inst->sigBugSend(); } },
       Item{SI_BUTTON,     tr ("Telegram support bot"), "", "settings_icon ic_bot", "telegram_support_bot",   [](QObject*) { emit __inst->sigTelegramBot(); } },
       Item{SI_BUTTON,     tr ("Share logs"), "", "settings_icon ic_share_log", "share_logs",                 [](QObject*) { emit __inst->sigShareLog(); } },
 
@@ -210,7 +212,7 @@ void DapQmlModelSettings::_buildMenuItemsList()
 
       Item{SI_TITLE,      tr ("Support"), "", "settings_icon", "support",                                                 [](QObject*){} },
 
-      Item{SI_BUTTON,     tr ("Send bug report"), "", "settings_icon ic_send-report", "send_bug_report",                  [](QObject*) { emit __inst->sigBugSend(); } },
+      Item{SI_LINK,       tr ("Send bug report"), "", "settings_icon ic_send-report", "send_bug_report",                  [](QObject*) { emit __inst->sigBugSend(); } },
       //Item{SI_BUTTON,     tr ("Telegram support bot"), "", "settings_icon ic_bot", "telegram_support_bot",                [](QObject*) { emit __inst->sigTelegramBot(); } },
 
       Item{SI_TITLE,      tr ("Information"), "", "settings_icon", "information",                                         [](QObject*){} },
@@ -394,7 +396,7 @@ void DapQmlModelSettings::slotRouExcModeUpdated()
   if (s_rouExcIndex == -1)
     return;
 
-  bool includedMode = DapDataLocal::getSetting (SETTING_ROUEXC_MODE).toBool();
+  bool includedMode = DapDataLocal::getSetting (DapDataLocal::SETTING_ROUEXC_MODE).toBool();
 
   s_items[s_rouExcIndex].m_textMain =
       !includedMode
@@ -456,7 +458,7 @@ void DapQmlModelSettings::slotRetranslate()
 
 QString DapQmlModelSettings::getCurrentCountryCode() const
 {
-  QString base_location = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
+  QString base_location = DapDataLocal::instance()->getSetting (DapDataLocal::COUNTRY_NAME).toString();
   return DapAbstractServerList::countryMap().value (base_location, QString()); // DapServersData::m_countryMap.value (base_location, QString());
 }
 

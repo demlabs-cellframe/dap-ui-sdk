@@ -5,7 +5,7 @@
 /// @param params Command parameters.
 void DapCmdLastConnectionData::handle(const QJsonObject *params)
 {
-    Q_UNUSED(params);
+    DapCmdServiceAbstract::handle(params);
     QJsonObject obj;
     obj["last_connection"] = mStartTime;
     sendCmd(&obj);
@@ -14,7 +14,8 @@ void DapCmdLastConnectionData::handle(const QJsonObject *params)
 void DapCmdLastConnectionData::saveConnectionStartTime()
 {
     if (!mNoReset)
-        mStartTime = QDateTime::currentDateTime().toString();
+        mStartTime = QDateTime::currentDateTime()
+                     .toString ("hh:mm:ss dd.MM.yyyy");
 }
 
 void DapCmdLastConnectionData::dontReset(bool b) {

@@ -1,6 +1,6 @@
 #include "DapSerialKeyData.h"
 
-#include "DapDataLocal.h"
+#include "DapBaseDataLocal.h"
 
 DapSerialKeyData::DapSerialKeyData(QObject *a_parent)
     : QObject(a_parent)
@@ -26,7 +26,16 @@ void DapSerialKeyData::setSerialKey(const QString &a_serialKey)
         return;
     m_serialKey = a_serialKey;
 
-    emit this->serialKeyChanged(m_serialKey);
+    emit serialKeyChanged(m_serialKey);
+}
+
+void DapSerialKeyData::userSerialKeyEntered(const QString &a_serialKey)
+{
+    if(m_serialKey != a_serialKey)
+    {
+        setSerialKey(a_serialKey);
+        emit serialKeyToSave();
+    }
 }
 
 bool DapSerialKeyData::isActivated() const
@@ -38,6 +47,8 @@ void DapSerialKeyData::setActivated(bool a_isActivated)
 {
     if (m_isActivated == a_isActivated)
         return;
+    if (m_serialKey.isEmpty() && a_isActivated)
+        return;
     m_isActivated = a_isActivated;
 
     emit activationChanged(a_isActivated);
@@ -45,8 +56,8 @@ void DapSerialKeyData::setActivated(bool a_isActivated)
 
 void DapSerialKeyData::reset()
 {
-    this->setSerialKey("");
     this->setActivated(false);
+    this->setSerialKey("");
 }
 
 const QDateTime &DapSerialKeyData::licenseTermTill() const
@@ -86,8 +97,7 @@ QString DapSerialKeyData::daysLeftString()
 void DapSerialKeyData::setLicenseTermTill(const QString &a_date)
 {
     QDateTime tempDate = QDateTime::fromTime_t(a_date.toUInt());
-    if (this->m_licenseTermTill == tempDate)
-        return;
+
     this->m_licenseTermTill = tempDate;
 
     emit this->daysLeftStringChanged(this->daysLeftString());

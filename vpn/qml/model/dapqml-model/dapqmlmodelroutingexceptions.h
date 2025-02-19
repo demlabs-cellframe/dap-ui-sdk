@@ -3,9 +3,12 @@
 
 /* INCLUDES */
 #include <QAbstractTableModel>
-#include <QImage>
-#include <QQuickImageProvider>
 #include <QSortFilterProxyModel>
+
+#ifdef Q_OS_ANDROID
+#include <QQuickImageProvider>
+#include <QImage>
+#endif // Q_OS_ANDROID
 
 /****************************************//**
  * @brief Routing Exceptions model
@@ -140,7 +143,9 @@ public:
 
   Q_INVOKABLE const App &app (int a_index) const;
   Q_INVOKABLE const App &appSorted (int a_index) const;
+#ifdef Q_OS_ANDROID
   Q_INVOKABLE const QImage &appIcon (const QString &a_packageName) const;
+#endif // Q_OS_ANDROID
   Q_INVOKABLE const Route &route (int a_index) const;
   Q_INVOKABLE QVariant appJson (int a_index) const;
   Q_INVOKABLE QVariant routeJson (int a_index) const;
@@ -208,6 +213,8 @@ signals:
   /// @}
 };
 
+#ifdef Q_OS_ANDROID
+
 /****************************************//**
  * @brief Routing Exceptions Image Provider
  *
@@ -254,6 +261,8 @@ public:
   QPixmap requestPixmap (const QString &id, QSize *size, const QSize &requestedSize) override;
   /// @}
 };
+
+#endif // Q_OS_ANDROID
 
 class DapQmlModelRoutingExceptionsFilterProxy : public QSortFilterProxyModel
 {

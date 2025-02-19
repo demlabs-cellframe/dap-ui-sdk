@@ -1,7 +1,6 @@
 #include <QtDebug>
 #include <QProcess>
 #include <QFile>
-#include <QSettings>
 
 #include <sys/stat.h>
 #include <sys/ioctl.h>
@@ -24,8 +23,7 @@ DapTunLinux::DapTunLinux()
 {
     if(nmcliVersion.size()==0){ // If not detected before - detect nmcli version
         QProcess cmdProcess;
-        // Thats command takes the last one piece of 'nmcli -v' output
-        //        cmdProcess.start("/bin/sh  'for i in `nmcli -v`; do a=$i; done; echo $a'");
+        // Command to get nmcli version
         cmdProcess.start("nmcli -v");
         cmdProcess.waitForFinished(-1);
         QByteArray cmdOutput = cmdProcess.readAllStandardOutput();
@@ -34,9 +32,9 @@ DapTunLinux::DapTunLinux()
         QStringList nmcliVersionNumbers= nmcliVersion.split('.');
         if(nmcliVersionNumbers.size() ==3) {
             qDebug()<< QString("nmcli version detected: %1.%2.%3")
-                       .arg(nmcliVersionNumbers.at(0).toInt())
-                       .arg(nmcliVersionNumbers.at(1).toInt())
-                       .arg(nmcliVersionNumbers.at(2).toInt());
+                            .arg(nmcliVersionNumbers.at(0).toInt())
+                            .arg(nmcliVersionNumbers.at(1).toInt())
+                            .arg(nmcliVersionNumbers.at(2).toInt());
         } else {
             qFatal("nmcli client not found");
         }
@@ -75,13 +73,9 @@ void DapTunLinux::tunDeviceCreate()
     }
     
     ::memset(&ifr,0,sizeof(ifr));
-    
     ifr.ifr_flags = flags;   /* IFF_TUN or IFF_TAP, plus maybe IFF_NO_PI */
     
     if (dev[0]) {
-        /* if a device name was specified, put it in the structure; otherwise,
-      * the kernel will try to allocate the "next" device of the
-      * specified type */
         ::strncpy(ifr.ifr_name, dev, IFNAMSIZ);
     }else
         /* try to create the device */
@@ -113,21 +107,17 @@ QString DapTunLinux::runBashCmd(const QString& cmd)
     QProcess process;
     process.start("bash", QStringList() << "-c" << cmd);
     process.waitForFinished(-1);
-    QString result = process.readAllStandardOutput();
+    QString result = process.readAllStandardOutput().trimmed();
 
-    if(!result.isEmpty())
-        result.chop(1); // delete \n symbol
-    else
-        qWarning() << "Result bash cmd " << cmd << "is empty";
+    if(result.isEmpty())
+        qWarning() << "Result of bash cmd " << cmd << " is empty";
 
     return result;
 }
 
 void DapTunLinux::saveCurrentConnectionInterfaceData()
 {
-    // nmcli -t -f NAME,TIMESTAMP con show | sort -t: -nk2 | tail -n1 | cut -d: -f1
-    QString result = runBashCmd("nmcli -terse --fields NAME,DEVICE con show | head -n1");
-
+    QString result = runBashCmd("nmcli -t --fields NAME,DEVICE connection show --active | head -n1");
     QStringList res = result.split(":");
 
     if(res.length() != 2) {
@@ -138,9 +128,8 @@ void DapTunLinux::saveCurrentConnectionInterfaceData()
     m_lastUsedConnectionName = res[0];
     m_lastUsedConnectionDevice = res[1];
 
-    qDebug() << "DeviceName name:" << m_lastUsedConnectionDevice
+    qDebug() << "DeviceName:" << m_lastUsedConnectionDevice
              << "Interface Name:" << m_lastUsedConnectionName;
-
 }
 
 void DapTunLinux::disableIPV6()
@@ -150,8 +139,7 @@ void DapTunLinux::disableIPV6()
         ::system(disableTmplCmd.arg(m_lastUsedConnectionDevice).toLatin1().data());
         return;
     }
-
-    qWarning() << "Can't disable IPV6 m_lastUsedConnectionDevice is empty";
+    qWarning() << "Can't disable IPV6, m_lastUsedConnectionDevice is empty";
 }
 
 void DapTunLinux::enableIPV6()
@@ -161,16 +149,13 @@ void DapTunLinux::enableIPV6()
         ::system(enableTmplCmd.arg(m_lastUsedConnectionDevice).toLatin1().data());
         return;
     }
-    qWarning() << "Can't enable IPV6 m_lastUsedConnectionDevice is empty";
+    qWarning() << "Can't enable IPV6, m_lastUsedConnectionDevice is empty";
 }
 
-/**
- * @brief DapTunLinux::checkDefaultGetaweyMetric
- */
 void DapTunLinux::checkDefaultGetaweyMetric()
 {
     enum {DESTINATION, GATEWAY, GENMASK, FLAGS,
-          METRIC, REF, USE, IFACE};
+           METRIC, REF, USE, IFACE};
     QStringList result = runBashCmd("route | grep default").simplified().split(" ");
 
     if(result.isEmpty()) {
@@ -181,8 +166,14 @@ void DapTunLinux::checkDefaultGetaweyMetric()
         QProcess process;
         process.start("bash", QStringList() << "-c" << QString("ifmetric %1 15").arg(result[IFACE]));
         process.waitForFinished(-1);
-        qInfo() << "Metric " << result[IFACE] << "change to 15";
+        qInfo() << "Metric for " << result[IFACE] << "changed to 15";
     }
+}
+
+bool DapTunLinux::connectionExists(const QString &connName)
+{
+    QString result = runBashCmd(QString("nmcli -t --fields NAME connection show | grep -w '%1'").arg(connName));
+    return !result.isEmpty();
 }
 
 /**
@@ -192,86 +183,140 @@ void DapTunLinux::onWorkerStarted()
 {
     qDebug() << "tunnelCreate()";
     QProcess process;
-    
-    if(m_tunSocket <=0){
-        qCritical()<< "Can't bring up network interface ";
+
+    if(m_tunSocket <= 0){
+        qCritical() << "Can't bring up network interface";
         return;
     }
 
-    checkDefaultGetaweyMetric();
-    saveCurrentConnectionInterfaceData();
-    disableIPV6();
+    bool updateRouteTable = ( upstreamSocket() != -1);// We expect that its could be only no-route situation
+    if( updateRouteTable ){
+        checkDefaultGetaweyMetric();
+        saveCurrentConnectionInterfaceData();
+        disableIPV6();
 
-    process.start("bash", QStringList() << "-c" <<  "netstat -rn|grep 'UG '| head -n 1| awk '{print $2;}'");
-    process.waitForFinished(-1);
-    m_defaultGwOld=process.readAllStandardOutput();
-    m_defaultGwOld.chop(1);
-    if(m_defaultGwOld.isEmpty()){
-        qWarning() << "There is no default gateway, may be we've broken that last time? Trying to check that...";
-        process.start("bash",QStringList() << "-c" << QString("netstat -rn|grep %1|awk '{print $2;}'").arg(upstreamAddress())  );
+        process.start("bash", QStringList() << "-c" <<  "netstat -rn | grep 'UG ' | head -n 1 | awk '{print $2;}'");
         process.waitForFinished(-1);
-        
-        m_defaultGwOld=process.readAllStandardOutput();
-        m_defaultGwOld.chop(1);
+        m_defaultGwOld = process.readAllStandardOutput().trimmed();
+
         if(m_defaultGwOld.isEmpty()){
-            qWarning() << "Not found old gateway, looks like its better to restart the network";
-            return;
+            qWarning() << "There is no default gateway, maybe we broke it last time? Trying to check that...";
+            process.start("bash", QStringList() << "-c" << QString("netstat -rn | grep %1 | awk '{print $2;}'").arg(upstreamAddress()));
+            process.waitForFinished(-1);
+            m_defaultGwOld = process.readAllStandardOutput().trimmed();
+
+            if(m_defaultGwOld.isEmpty()){
+                qWarning() << "Not found old gateway, looks like it's better to restart the network";
+                return;
+            }
+
+            QString run = QString("route add -host %2 gw %1")
+                    .arg(m_defaultGwOld).arg(upstreamAddress()).toLatin1().constData();
+            ::system(run.toLatin1().constData() );
         }
-        
-        QString run = QString("route add -host %2 gw %1")
-                .arg(m_defaultGwOld).arg(upstreamAddress()).toLatin1().constData();
-        ::system(run.toLatin1().constData() );
-        
-    }
 
-    DapNetworkMonitor::instance()->sltSetDefaultGateway(m_defaultGwOld);
+        // Add all CDBs into routing exeption
+        for (const auto &str : m_routingExceptionAddrs){
+            QString run = QString("route add -host %2 gw %1")
+                    .arg(m_defaultGwOld).arg(str);
+            ::system(run.toLatin1().constData() );
+        }
 
-    QString run = QString("ip route del default via %1").arg(m_defaultGwOld);
-    qDebug() << "cmd run [" << run << ']';
-     ::system(run.toLatin1().constData() );
-        
-    ::system("nmcli c delete " DAP_BRAND);
-    
-    if(!isLocalAddress(upstreamAddress()))
-    {
-        // This route dont need if address is local
-        QString run = QString("route add -host %2 gw %1 metric 10")
-                .arg(m_defaultGwOld).arg(upstreamAddress()).toLatin1().constData();
-        qDebug() << "Execute "<<run;
+        DapNetworkMonitor::instance()->sltSetDefaultGateway(m_defaultGwOld);
+
+        QString run = QString("ip route del default via %1").arg(m_defaultGwOld);
+        qDebug() << "cmd run [" << run << ']';
         ::system(run.toLatin1().constData());
     }
 
-    QString cmdConnAdd = QString(
+    qDebug() << "nmcli c delete " DAP_BRAND;
+    ::system("nmcli c delete " DAP_BRAND);
+    
+    if( updateRouteTable ){
+        if(!isLocalAddress(upstreamAddress()))
+        {
+            // This route dont need if address is local
+            QString run = QString("route add -host %2 gw %1 metric 10")
+                    .arg(m_defaultGwOld).arg(upstreamAddress()).toLatin1().constData();
+            qDebug() << "Execute "<<run;
+            ::system(run.toLatin1().constData());
+        }
+    }
+    QString cmdConnAdd;
+    if( updateRouteTable ){
+        cmdConnAdd = QString(
                 "nmcli connection add type tun con-name " DAP_BRAND " autoconnect false ifname %1 "
                 "mode tun ip4 %2 gw4 %3")
             .arg(tunDeviceName()).arg(addr()).arg(gw());
+    }else{
+        cmdConnAdd = QString(
+                "nmcli connection add type tun con-name " DAP_BRAND " autoconnect false ifname %1 "
+                "mode tun ip4 %2")
+            .arg(tunDeviceName()).arg(addr());
+    }
     
     qDebug() << "[Cmd to created interface: " <<  cmdConnAdd.toLatin1().constData();
     
     ::system(cmdConnAdd.toLatin1().constData());
 
-    ::system("nmcli connection modify " DAP_BRAND
-             " +ipv4.ignore-auto-routes true");
-    
-    ::system("nmcli connection modify " DAP_BRAND
-             " +ipv4.ignore-auto-dns true");
-    
-    ::system((QString("nmcli connection modify " DAP_BRAND
-        " +ipv4.dns-search " DAP_BRAND)
-        ).toLatin1().constData());
+    if (!connectionExists(DAP_BRAND)) {
+        qCritical() << "Failed to create connection " DAP_BRAND;
+        return;
+    }
 
-    ::system("nmcli connection modify " DAP_BRAND " ipv4.dns-priority 10");
-    
+    // qDebug() << "nmcli connection down " DAP_BRAND;
+    // ::system(QString("nmcli connection down " DAP_BRAND).toLatin1().constData());
+
+    // qDebug() << "nmcli connection up " DAP_BRAND;
+    // ::system(QString("nmcli connection up " DAP_BRAND).toLatin1().constData());
+
+    if( updateRouteTable ){
+        qDebug() << "nmcli connection modify " DAP_BRAND " +ipv4.ignore-auto-routes true";
+        ::system("nmcli connection modify " DAP_BRAND
+                 " +ipv4.ignore-auto-routes true");
+
+        qDebug() << "nmcli connection modify " DAP_BRAND " +ipv4.ignore-auto-dns true";
+        ::system("nmcli connection modify " DAP_BRAND
+                 " +ipv4.ignore-auto-dns true");
+
+        QString dnsSearchCmd = QString("nmcli connection modify " DAP_BRAND " +ipv4.dns-search " DAP_BRAND).toLatin1().constData();
+        qDebug() << dnsSearchCmd;
+        ::system(dnsSearchCmd.toLatin1().constData());
+
+        qDebug() << "nmcli connection modify " DAP_BRAND " ipv4.dns-priority 10";
+        ::system("nmcli connection modify " DAP_BRAND " ipv4.dns-priority 10");
+    }
+    qDebug() << "nmcli connection modify " DAP_BRAND " +ipv4.method manual";
     ::system("nmcli connection modify " DAP_BRAND
              " +ipv4.method manual");
 
-    ::system((QString("nmcli connection modify %1 +ipv4.dns %2")
-              .arg(DAP_BRAND).arg(gw())).toLatin1().constData());
 
-    ::system("nmcli connection modify " DAP_BRAND
-             " +ipv4.route-metric 10");
-    
-    ::system("nmcli connection up " DAP_BRAND);
+
+    if( updateRouteTable ){
+        QString dnsCmd = QString("nmcli connection modify %1 +ipv4.dns %2")
+                             .arg(DAP_BRAND).arg(gw()).toLatin1().constData();
+        qDebug() << dnsCmd;
+        ::system(dnsCmd.toLatin1().constData());
+
+        qDebug() << "nmcli connection modify " DAP_BRAND " +ipv4.route-metric 10";
+        ::system("nmcli connection modify " DAP_BRAND
+                 " +ipv4.route-metric 10");
+    }
+
+
+    QString connUpCmd = QString("nmcli connection up %1").arg(DAP_BRAND).toLatin1().constData();
+    qDebug() << connUpCmd;
+    int result = ::system(connUpCmd.toLatin1().constData());
+    if (result != 0) {
+        qCritical() << "Failed to bring up connection " DAP_BRAND;
+        return;
+    }
+
+    QString cmdRouteToGW = QString("route add -host %1 dev %2").arg(gw()).arg(tunDeviceName());
+    qDebug() << "Executing cmdRouteToGW: " <<cmdRouteToGW;
+    ::system(cmdRouteToGW.toLatin1());
+
+
     m_isCreated = true;
     emit created();
 }
@@ -281,19 +326,36 @@ void DapTunLinux::onWorkerStarted()
  */
 void DapTunLinux::tunDeviceDestroy()
 {
-    ::system(QString("ifconfig %1 down")
-             .arg(tunDeviceName()).toLatin1().constData());
+    if (!connectionExists(DAP_BRAND)) {
+        qWarning() << "Connection " DAP_BRAND " does not exist, skipping deletion.";
+        return;
+    }
+
+    bool updateRouteTable = ( upstreamSocket() != -1);// We expect that its could be only no-route situation
+
+    ::system(QString("ifconfig %1 down").arg(tunDeviceName()).toLatin1().constData());
     ::system("nmcli connection down " DAP_BRAND);
     ::system("nmcli connection delete " DAP_BRAND);
 
-    QString run = QString("ip route add default via %1").arg(m_defaultGwOld);
+    if (updateRouteTable)    {
+        QString run = QString("ip route add default via %1").arg(m_defaultGwOld);
         qDebug() << "cmd run [" << run << ']';
-         ::system(run.toLatin1().constData() );
+        ::system(run.toLatin1().constData());
 
-    enableIPV6();
+        for (const auto &str : m_routingExceptionAddrs)
+        {
+            QString run = QString("route del %1")
+                    .arg(str);
+            ::system(run.toLatin1().constData() );
+        }
 
-    ::system(QString("nmcli connection up \"%1\"")
-             .arg(m_lastUsedConnectionName).toLatin1().constData());
+        enableIPV6();
+
+        ::system(QString("nmcli connection up \"%1\"")
+                     .arg(m_lastUsedConnectionName).toLatin1().constData());
+    }
+
+    // resetNetworkSettingsToDefault();
 
     DapTunUnixAbstract::tunDeviceDestroy();
 }

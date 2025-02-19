@@ -19,7 +19,9 @@ TextField {
     property string backgroundColor: currTheme.secondaryBackground
     property string placeholderColor: currTheme.gray
     property string textColor: currTheme.white
+    property string passwordChar: ""
 
+    property int indicatorTopMargin: 0
     property bool indicatorVisible: false
     property string indicatorSourceEnabled: ""
     property string indicatorSourceDisabled: ""
@@ -51,16 +53,18 @@ TextField {
 
     DapImageRender{
         id: indicator
-
+        z:10
         property bool isActive: false
 
+        anchors.top: parent.top
         anchors.right: parent.right
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.topMargin: parent.height / 2 - indicator.height / 2 + indicatorTopMargin
 
         visible: indicatorVisible
         source: indicatorSourceDisabled
 
         MouseArea{
+            id: area
             anchors.fill: parent
             hoverEnabled: true
             onEntered: {
@@ -92,6 +96,26 @@ TextField {
                     else
                         indicator.source = indicatorSourceDisabled
                 }
+            }
+        }
+
+        //A temporary solution for manual switching of the indicator state + resource change.
+        function programClick()
+        {
+            indicator.isActive = !indicator.isActive
+
+            if(area.containsMouse){
+                if(indicator.isActive)
+                    indicator.source = indicatorSourceEnabledHover
+                else
+                    indicator.source = indicatorSourceDisabledHover
+            }
+            else
+            {
+                if(indicator.isActive)
+                    indicator.source = indicatorSourceEnabled
+                else
+                    indicator.source = indicatorSourceDisabled
             }
         }
     }

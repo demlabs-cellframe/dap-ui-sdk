@@ -18,7 +18,7 @@ static bool mDebugMore = false;
  * @brief DapTunWorkerUnix::DapTunWorkerUnix
  */
 DapTunWorkerUnix::DapTunWorkerUnix(DapTunAbstract *a_tun)
-                :DapTunWorkerAbstract(a_tun)
+    :DapTunWorkerAbstract(a_tun)
 {
     m_breakerSet[0] = m_breakerSet[1] = -1;
     if (::pipe(m_breakerSet) < 0){
@@ -125,9 +125,8 @@ void DapTunWorkerUnix::loop()
                 if(mDebugMore)
                     qDebug() << "Wrote"<< writeRet<<" bytes";
                 if (writeRet < 0) {
-               //     emit loopError(QString("write() returned %1 (%2)").arg(writeRet).arg(::strerror(errno)));
                     qCritical() << "Write returned "<< writeRet;
-               //     break;
+                    break;
                 }
                 pktOutPos += writeRet;
                 if(pktOutPos>= pktOut->header.op_data.data_size ){ // Packet is sent into the tunnel
@@ -162,5 +161,5 @@ void DapTunWorkerUnix::loop()
     }while(1);
 
     qDebug() << "[SapStreamChSF] Listen thread finished!";
-    //emit loopStopped();
+    emit loopStopped();
 }

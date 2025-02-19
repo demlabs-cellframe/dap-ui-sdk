@@ -3,7 +3,7 @@
 
 /* INCLUDES */
 #include <QAbstractListModel>
-#include <QLinkedList>
+#include <QList>
 
 #include "DapServerInfo.h"
 
@@ -200,7 +200,7 @@ class DapSortedServerListIterator
 {
   friend class DapSortedServerListConstIterator;
 public:
-  typedef QLinkedList<int>::iterator Iterator;
+  typedef QList<int>::iterator Iterator;
 protected:
   DapSortedServerList *p;
   Iterator i;
@@ -251,7 +251,7 @@ class DapSortedServerListConstIterator
 {
   friend class DapSortedServerListIterator;
 public:
-  typedef QLinkedList<int>::const_iterator ConstIterator;
+  typedef QList<int>::const_iterator ConstIterator;
 protected:
   const DapSortedServerList *p;
   ConstIterator i;
@@ -342,7 +342,7 @@ protected:
   /// unsorted list
   DapServerList _list;
   /// sorted indexes that points to items from unsorted list
-  QLinkedList<int> _sortedIndexes;
+  QList<int> _sortedIndexes;
   /// used for debug purposes
   QPair<IndexData, IndexData> m_sortIndexData;
   /// @}
@@ -386,6 +386,8 @@ public:
   int indexOfName (const QString &a_name) const;
   /// search an item with provided address value
   int indexOfAddress (const QString &a_address) const;
+  /// search an item with provided order hash value
+  int indexOfOrderHash (const QString &a_hash) const;
   void erase (Iterator it);
   Iterator begin();
   ConstIterator begin() const;
@@ -415,7 +417,7 @@ public:
   /// sort only provided indexes
   void update (const QList<int> &a_indexes);
   /// get sorted items indexes
-  const QLinkedList<int> &getSortedIndexes() const;
+  const QList<int> &getSortedIndexes() const;
   QPair<IndexData, IndexData> sortIndexData() const;
 
   operator DapServerList() const;

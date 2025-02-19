@@ -28,7 +28,10 @@ enum class DapJsonCmdType
     REQUEST_PURCHASE_VERIFY,
     CLIENT_INFO,
     CDB_CTL,
+    NODE_INFO,
     UPDATE_OPERATION,
+    GEO_IP,
+    DATA_LOCAL,
     UNKNOWN
 };
 
@@ -36,9 +39,9 @@ class DapJsonParams
 {
 public:
     enum Params {
-        VALUE, STATE_NAME, READ_BYTES, WRITE_BYTES,
+        VALUE, STATE_NAME,
         MESSAGE, ADDRESS, PORT, USER, PASSWORD, DISCONNECT,
-        READ_PACKAGE, WRITE_PACKAGE, LAST_CONNECTION, GATEWAY, UPSTREAM_SOCKET,
+        LAST_CONNECTION, GATEWAY, UPSTREAM_SOCKET,
         ACTION, HOST, CDB
     };
     static const QString& toString(Params p);

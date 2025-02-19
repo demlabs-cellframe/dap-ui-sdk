@@ -4,7 +4,7 @@
 /// @param params Command parameters.
 void DapCmdUserData::handle(const QJsonObject *params)
 {
-    Q_UNUSED(params);
+    DapCmdServiceAbstract::handle(params);
     
     QJsonObject response;
     response["user"] = mUser;
@@ -30,5 +30,12 @@ void DapCmdUserData::sendLicenseTermTill(const QString &date)
 {
     QJsonObject response;
     response["license_term_till"] = date;
+    sendCmd(&response);
+}
+
+void DapCmdUserData::sendCountryISO(const QString &iso)
+{
+    QJsonObject response;
+    response["country_iso"] = iso;
     sendCmd(&response);
 }

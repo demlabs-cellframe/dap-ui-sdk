@@ -13,5 +13,6 @@ DapCmdPurchase::DapCmdPurchase(QObject *parent)
 
 void DapCmdPurchase::handle(const QJsonObject* params)
 {
+    DapCmdServiceAbstract::handle(params);
     emit requestPurchase(params);
 }

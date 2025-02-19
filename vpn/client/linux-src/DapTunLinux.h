@@ -5,13 +5,15 @@
 
 class DapTunLinux : public DapTunUnixAbstract
 {
+    Q_OBJECT
 public:
     DapTunLinux();
     ~DapTunLinux() {}
 protected:
-    void tunDeviceCreate();
-    void tunDeviceDestroy();
-    void onWorkerStarted();
+    void tunDeviceCreate() override;
+    void tunDeviceDestroy() override;
+    void onWorkerStarted() override;
+    void resetNetworkSettingsToDefault();
 
     // Getting currently using connection interface name from nmcli command-line tool
     // and save to m_lastUsedConnectionName and m_lastUsedConnectionDevice
@@ -32,6 +34,8 @@ private:
     void enableIPV6();
 
     QString runBashCmd(const QString& cmd);
+
+    bool connectionExists(const QString &connName);
 
     // if metric is 0 upping to 15
     void checkDefaultGetaweyMetric();

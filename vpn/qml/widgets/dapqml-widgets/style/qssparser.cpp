@@ -29,7 +29,7 @@ static callback method  = none;
 static int index        = 0;
 
 static QRegularExpression reNewline ("[\r\n]");
-static QRegularExpression reTab ("[\t]");
+static QRegularExpression reTabAndComment ("/\\*.*?\\*/|\\t");
 
 /********************************************
  * METHODS
@@ -48,7 +48,7 @@ void QssParser::perform (const QString &styleSheet)
 //    //.replace (' ', "")
 //    .replace ('\t', "");
   simpleSheet.replace (reNewline, " ");
-  simpleSheet.remove (reTab);
+  simpleSheet.remove (reTabAndComment);
 
   /* split by combo of new lines and dots */
   for (auto i = simpleSheet.cbegin(),

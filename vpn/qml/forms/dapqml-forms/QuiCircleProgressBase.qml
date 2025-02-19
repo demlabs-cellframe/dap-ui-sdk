@@ -171,7 +171,7 @@ Item {
         id: btnConfirn
         x: (parent.width - width) / 2
         z: 15
-        qss: "progress-circle-btn-confirm"
+        qss: "progress-circle-btn-confirm push-button"
         text: root.buttonText
         onClicked: root.buttonClicked()
         enabled: buttonActive

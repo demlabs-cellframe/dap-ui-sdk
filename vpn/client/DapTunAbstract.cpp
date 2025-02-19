@@ -71,8 +71,8 @@ void DapTunAbstract::initWorker()
  * @details Create tunnel with pointed address, gateway and protection of upstream socket and address
  */
 void DapTunAbstract::create(const QString &a_addr, const QString &a_gw,
-                            const QString & a_upstreamAddress, qint16 a_upstreamPort,
-                            int a_upstreamSocket)
+                            const QString & a_upstreamAddress , qint16 a_upstreamPort,
+                            int a_upstreamSocket, QStringList a_routing_exceptions)
 {
     qInfo() << "address = "        << a_addr
             << "gw ="              << a_gw
@@ -83,6 +83,7 @@ void DapTunAbstract::create(const QString &a_addr, const QString &a_gw,
     m_sUpstreamAddress = a_upstreamAddress;
     m_iUpstreamPort = a_upstreamPort;
     m_upstreamSocket = a_upstreamSocket;
+    m_routingExceptionAddrs = a_routing_exceptions;
     tunDeviceCreate();
 }
 

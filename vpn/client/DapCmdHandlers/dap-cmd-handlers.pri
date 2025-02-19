@@ -1,6 +1,8 @@
 SOURCES += \
     $$PWD/DapCmdBugReportsStatus.cpp \
     $$PWD/DapCmdCdbCtl.cpp \
+    $$PWD/DapCmdDataLocalSrv.cpp \
+    $$PWD/DapCmdGeoIP.cpp \
     $$PWD/DapCmdLastConnectionData.cpp \
     $$PWD/DapCmdNews.cpp \
     $$PWD/DapCmdPingServer.cpp \
@@ -17,7 +19,8 @@ SOURCES += \
     $$PWD/DapCmdStats.cpp \
     $$PWD/DapCmdServersList.cpp \
     $$PWD/DapCmdServerData.cpp \
-    $$PWD/DapCmdAndroidTunnel.cpp
+    $$PWD/DapCmdAndroidTunnel.cpp \
+    $$PWD/DapCmdNode.cpp
     
 equals(BUILD_VARIANT, "GooglePlay") {
 	SOURCES += $$PWD/DapCmdPurchase.cpp
@@ -26,6 +29,8 @@ equals(BUILD_VARIANT, "GooglePlay") {
 HEADERS += \
     $$PWD/DapCmdBugReportsStatus.h \
     $$PWD/DapCmdCdbCtl.h \
+    $$PWD/DapCmdDataLocalSrv.h \
+    $$PWD/DapCmdGeoIP.h \
     $$PWD/DapCmdLastConnectionData.h \
     $$PWD/DapCmdNews.h \
     $$PWD/DapCmdPingServer.h \
@@ -42,7 +47,8 @@ HEADERS += \
     $$PWD/DapCmdServersList.h \
     $$PWD/DapCmdServerData.h \
     $$PWD/DapCmdAndroidTunnel.h \
-    $$PWD/DapCmdSystemTray.h
+    $$PWD/DapCmdSystemTray.h \
+    $$PWD/DapCmdNode.h
 
 equals(BUILD_VARIANT, "GooglePlay") {
 	HEADERS += $$PWD/DapCmdPurchase.h

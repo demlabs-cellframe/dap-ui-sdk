@@ -17,7 +17,7 @@ Item
     property string currentState: "Recommended"
 
     id: root
-    width: 278
+    //width: 278
     height: 82
 
     ListModel

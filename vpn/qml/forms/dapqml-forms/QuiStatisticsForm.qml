@@ -9,14 +9,6 @@ import DapQmlStyle 1.0
 /****************************************//**
  * @brief Statistics Form
  * @ingroup groupDapQmlForms
- *
- * ### Structure
- *
- * Form is built using:
- * - 2 resizers
- * - Graph provided by QmlSchedulePainter
- * - 2 rows of indicators
- *
  * @date 06.06.22
  * @author Mikhail Shilenko
  *******************************************/
@@ -35,11 +27,15 @@ Item {
     /// Used to connect interface via Manager
     property string formName: "Statistics"
 
-    /// @brief coordinate for left row items (calculated on resize)
-    property int leftColumnPos: 42
-
-    /// @brief coordinate for right row items (calculated on resize)
-    property int rightColumnPos: 228
+    property QtObject internal: QtObject {
+        property string bytesRec:       "0"
+        property string bytesSent:      "0"
+        property string packetsRec:     "0"
+        property string packetsSend:    "0"
+        property string downSpeed:      "0"
+        property string upSpeed:        "0"
+        property string upTime:         "0"
+    }
 
     /// @}
     /****************************************//**
@@ -53,54 +49,115 @@ Item {
                               a_uploadSpeed, a_downloadSpeed,
                               a_uploadSpeedString, a_downloadSpeedString)
     {
-        stBytesRec.mainText     = a_bytesReceived;
-        stBytesSent.mainText    = a_bytesSent;
-        stPacketsRec.mainText   = a_packetsReceived;
-        stPacketsSent.mainText  = a_packetsSent;
-        stDownSpeed.mainText    = a_downloadSpeedString;
-        stUpSpeed.mainText      = a_downloadSpeedString;
+        root.internal.bytesRec      = a_bytesReceived;
+        root.internal.bytesSent     = a_bytesSent;
+        root.internal.packetsRec    = a_packetsReceived;
+        root.internal.packetsSend   = a_packetsSent;
+        root.internal.downSpeed     = a_downloadSpeedString;
+        root.internal.upSpeed       = a_downloadSpeedString;
     }
 
     /// @brief change uptime label text
     function setUptime (a_text) {
-        stUptime.mainText   = a_text;
+        root.internal.upTime        = a_text;
     }
-
-    /// @brief resize font for provided DapQmlButton
-    function resizeFont(a_btn) {
-        if (a_btn === undefined
-            || a_btn.labelMain === undefined
-            || a_btn.labelSub === undefined)
-            return;
-        a_btn.labelMain.fontSize    = fontScalerIndicator.fontSize;
-        a_btn.labelMain.fontWeight  = fontScalerIndicator.fontWeight;
-        a_btn.labelSub.fontSize     = fontScalerSubLabel.fontSize;
-    }
-
-    /// @brief calculate column positions
-    function moveColumns() {
-        leftColumnPos   = (root.width / 2 - fontScalerIndicator.width) / 2
-        rightColumnPos  = (root.width / 2 - fontScalerIndicator.width) / 2 + root.width / 2
-    }
-
-    onWidthChanged: moveColumns()
-    onHeightChanged: moveColumns()
 
     /// @}
+    /****************************************//**
+     * Components
+     ********************************************/
+
+    Component {
+        id: compStatButton
+
+        //property string topText
+        //property string bottomText
+
+        ColumnLayout {
+            Layout.minimumWidth: container.width / 2
+            height: scalerButtonFrame.height
+
+            Text {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                text: parent.parent.topText
+                color: fontScalerIndicator.color
+                font.pixelSize: fontScalerIndicator.fontSize
+                font.weight: fontScalerIndicator.fontWeight
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignBottom
+            }
+
+            Text {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                text: parent.parent.bottomText
+                color: fontScalerSubLabel.color
+                font.pixelSize: fontScalerSubLabel.fontSize
+                font.weight: fontScalerSubLabel.fontWeight
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignTop
+            }
+        }
+    }
+
+    Component {
+        id: compStatButtonRow
+
+//        property string leftTopText
+//        property string leftBottomText
+
+//        property string rightTopText
+//        property string rightBottomText
+
+        RowLayout {
+            width: root.width
+            height: scalerButtonFrame.height
+
+            Loader {
+                Layout.minimumWidth: container.width / 2
+                Layout.fillHeight: true
+                sourceComponent: compStatButton
+                property string topText:    parent.parent.leftTopText
+                property string bottomText: parent.parent.leftBottomText
+            }
+
+            Loader {
+                Layout.minimumWidth: container.width / 2
+                Layout.fillHeight: true
+                sourceComponent: compStatButton
+                property string topText:    parent.parent.rightTopText
+                property string bottomText: parent.parent.rightBottomText
+            }
+        }
+    }
+
     /****************************************//**
      * Resizers
      ********************************************/
 
-    DapQmlLabel {
-        id: fontScalerIndicator
+    DapQmlDummy {
+        id: scalerButtonFrame
         visible: false
-        qss: "stat-scaler-ind"
+        qss: "stat-speed"
     }
 
-    DapQmlLabel {
+    DapQmlDummy {
+        id: fontScalerIndicator
+        visible: false
+        qss: "stat-scaler-ind stat-item-main"
+        property string color
+        property int fontSize
+        property int fontWeight: Font.DemiBold
+    }
+
+    DapQmlDummy {
         id: fontScalerSubLabel
         visible: false
-        qss: "stat-scaler-sub"
+        qss: "stat-scaler-sub stat-item-sub"
+        property string color
+        property int fontSize
+        property int fontWeight: Font.Normal
     }
 
     /****************************************//**
@@ -124,163 +181,54 @@ Item {
     }
 
     /****************************************//**
-     * Font resize event
+     * Indicators
      ********************************************/
 
-    Timer {
-        interval: 500
-        running: true
-        repeat: false
-        onTriggered: {
-            resizeFont(stDownSpeed);
-            resizeFont(stUpSpeed);
-            resizeFont(stBytesRec);
-            resizeFont(stBytesSent);
-            resizeFont(stPacketsRec);
-            resizeFont(stPacketsSent);
-            resizeFont(stUptime);
-            resizeFont(stPing);
-            moveColumns();
+    ColumnLayout {
+        id: container
+        width: parent.width
+        DapQmlStyle { item: container; qss: "stat-indicators-container" }
+
+        Loader {
+            Layout.minimumWidth: container.width / 2
+            Layout.fillHeight: true
+            sourceComponent: compStatButtonRow
+            property string leftTopText:        root.internal.downSpeed
+            property string leftBottomText:     qsTr ("DOWNLOAD SPEED") + lang.notifier
+            property string rightTopText:       root.internal.upSpeed
+            property string rightBottomText:    qsTr ("UPLOAD SPEED") + lang.notifier
+        }
+
+        Loader {
+            Layout.minimumWidth: container.width / 2
+            Layout.fillHeight: true
+            sourceComponent: compStatButtonRow
+            property string leftTopText:        root.internal.bytesRec
+            property string leftBottomText:     qsTr ("BYTES RECEIVED") + lang.notifier
+            property string rightTopText:       root.internal.bytesSent
+            property string rightBottomText:    qsTr ("BYTES SENT") + lang.notifier
+        }
+
+        Loader {
+            Layout.minimumWidth: container.width / 2
+            Layout.fillHeight: true
+            sourceComponent: compStatButtonRow
+            property string leftTopText:        root.internal.packetsRec
+            property string leftBottomText:     qsTr ("PACKETS RECEIVED") + lang.notifier
+            property string rightTopText:       root.internal.packetsSend
+            property string rightBottomText:    qsTr ("PACKETS SENT") + lang.notifier
+        }
+
+        Loader {
+            Layout.minimumWidth: container.width / 2
+            Layout.fillHeight: true
+            sourceComponent: compStatButtonRow
+            property string leftTopText:        root.internal.upTime
+            property string leftBottomText:     qsTr ("UPTIME") + lang.notifier
+            property string rightTopText
+            property string rightBottomText
         }
     }
-
-    /****************************************//**
-     * Speed
-     ********************************************/
-
-    DapQmlButton {
-        id: stDownSpeed
-        x: leftColumnPos
-
-        buttonStyle: DapQmlButton.Style.TopMainBottomSub
-        mainText: "10 205 Mbps"
-        subText: qsTr("DOWNLOAD SPEED") + lang.notifier
-        mainQss: "stat-item-main"
-        subQss: "stat-item-sub"
-        qss: "stat-speed"
-
-        onWidthChanged: resizeFont(stDownSpeed);
-        onHeightChanged: resizeFont(stDownSpeed);
-    }
-
-    DapQmlButton {
-        id: stUpSpeed
-        x: rightColumnPos
-
-        buttonStyle: DapQmlButton.Style.TopMainBottomSub
-        mainText: "20 896 Mbps"
-        subText: qsTr("UPLOAD SPEED") + lang.notifier
-        mainQss: "stat-item-main"
-        subQss: "stat-item-sub"
-        qss: "stat-speed"
-
-        onWidthChanged: resizeFont(stUpSpeed);
-        onHeightChanged: resizeFont(stUpSpeed);
-    }
-
-    /****************************************//**
-     * Bytes
-     ********************************************/
-
-    DapQmlButton {
-        id: stBytesRec
-        x: leftColumnPos
-
-        buttonStyle: DapQmlButton.Style.TopMainBottomSub
-        mainText: "29 896 Gb"
-        subText: qsTr("BYTES RECEIVED") + lang.notifier
-        mainQss: "stat-item-main"
-        subQss: "stat-item-sub"
-        qss: "stat-bytes"
-
-        onWidthChanged: resizeFont(stBytesRec);
-        onHeightChanged: resizeFont(stBytesRec);
-   }
-
-    DapQmlButton {
-        id: stBytesSent
-        x: rightColumnPos
-
-        buttonStyle: DapQmlButton.Style.TopMainBottomSub
-        mainText: "20 896 Mb"
-        subText: qsTr("BYTES SENT") + lang.notifier
-        mainQss: "stat-item-main"
-        subQss: "stat-item-sub"
-        qss: "stat-bytes"
-
-        onWidthChanged: resizeFont(stBytesSent);
-        onHeightChanged: resizeFont(stBytesSent);
-    }
-
-    /****************************************//**
-     * Packets
-     ********************************************/
-
-    DapQmlButton {
-        id: stPacketsRec
-        x: leftColumnPos
-
-        buttonStyle: DapQmlButton.Style.TopMainBottomSub
-        mainText: "454 086"
-        subText: qsTr("PACKETS RECEIVED") + lang.notifier
-        mainQss: "stat-item-main"
-        subQss: "stat-item-sub"
-        qss: "stat-packets"
-
-        onWidthChanged: resizeFont(stPacketsRec);
-        onHeightChanged: resizeFont(stPacketsRec);
-    }
-
-    DapQmlButton {
-        id: stPacketsSent
-        x: rightColumnPos
-
-        buttonStyle: DapQmlButton.Style.TopMainBottomSub
-        mainText: "4 086"
-        subText: qsTr("PACKETS SENT") + lang.notifier
-        mainQss: "stat-item-main"
-        subQss: "stat-item-sub"
-        qss: "stat-packets"
-
-        onWidthChanged: resizeFont(stPacketsSent);
-        onHeightChanged: resizeFont(stPacketsSent);
-    }
-
-    /****************************************//**
-     * Misc
-     ********************************************/
-
-    DapQmlButton {
-        id: stUptime
-        x: leftColumnPos
-
-        buttonStyle: DapQmlButton.Style.TopMainBottomSub
-        mainText: "146:7:27"
-        subText: qsTr("UPTIME") + lang.notifier
-        mainQss: "stat-item-main"
-        subQss: "stat-item-sub"
-        qss: "stat-misc"
-
-        onWidthChanged: resizeFont(stUptime);
-        onHeightChanged: resizeFont(stUptime);
-    }
-
-    DapQmlButton {
-        id: stPing
-        x: rightColumnPos
-        visible: false
-
-        buttonStyle: DapQmlButton.Style.TopMainBottomSub
-        mainText: "34 ms"
-        subText: qsTr("PING") + lang.notifier
-        mainQss: "stat-item-main"
-        subQss: "stat-item-sub"
-        qss: "stat-misc"
-
-        onWidthChanged: resizeFont(stPing);
-        onHeightChanged: resizeFont(stPing);
-    }
-
 }
 
 /*-----------------------------------------*/

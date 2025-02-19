@@ -8,13 +8,16 @@
 class DapCmdStates: public DapCmdServiceAbstract
 {
     Q_OBJECT
-private:
-    void _sendUserRequestState();
-    DapStateMachine *_activeStateMachine;
 public:
     explicit DapCmdStates(QObject *parent = nullptr);
     void handle(const QJsonObject* params) override;
+    void sendServerChanged();
+private:
     void sendCmdStates(const QString& stateName, const QString stateVal);
+    void sendUserRequestState();
+    QString getUserRequestState();
+private:
+    DapStateMachine *_activeStateMachine;
 };
 
 #endif // DAPCMDSTATESHANDLER_H

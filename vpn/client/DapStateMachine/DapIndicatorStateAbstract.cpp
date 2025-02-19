@@ -1,5 +1,6 @@
 #include "DapIndicatorStateAbstract.h"
 #include <QDebug>
+#include <QSignalTransition>
 
 void DapIndicatorStateAbstract::init(DapState *s, const QString& stateName)
 {
@@ -27,13 +28,35 @@ void DapIndicatorStateAbstract::addAllowedSubstatesTransitions(DapState *from, D
     _allowedTransitions.insert(from, to);
 }
 
+void DapIndicatorStateAbstract::logTransition()
+{
+    QSignalTransition* transition = qobject_cast<QSignalTransition*>(sender());
+    if (transition) {
+        QAbstractState* fromState = transition->sourceState();
+        QAbstractState* toState = transition->targetState();
+
+        DapState* fromDapState = dynamic_cast<DapState*>(fromState);
+        DapState* toDapState = dynamic_cast<DapState*>(toState);
+
+        QString fromStateName = fromDapState ? fromDapState->name() : "Unknown";
+        QString toStateName = toDapState ? toDapState->name() : "Unknown";
+
+        qDebug() << "[DapIndicatorStateAbstract] From: " << fromStateName << " to: " << toStateName;
+    } else {
+        qDebug() << "Error";
+    }
+}
+
 void DapIndicatorStateAbstract::addTransition(DapState *from, DapState *to, const QObject *sender, const char *signal)
 {
     if (!isAllowedSubstateTransitions(from, to)){
-        qWarning() << "Transition not allowed";
+        qWarning() << "Transition not allowed. From: " << from->objectName() << " to: " << to->objectName();
         return;
     }
-    from->addTransition(sender, signal, to);
+    QSignalTransition* transition = from->addTransition(sender, signal, to);
+    if (transition) {
+        connect(transition, &QSignalTransition::triggered, this, &DapIndicatorStateAbstract::logTransition);
+    }
 }
 
 bool DapIndicatorStateAbstract::isAllowedSubstateTransitions(DapState *from, DapState *to)

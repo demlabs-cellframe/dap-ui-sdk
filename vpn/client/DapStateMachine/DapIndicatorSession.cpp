@@ -12,6 +12,12 @@ void DapIndicatorSession::init(DapState *s, const QString& stateName)
     cdbLogined          = new DapState(_true->name()        + "_cdbLogined",        _true);
     cdbKeyActivation    = new DapState(_falseToTrue->name() + "_cdbKeyActivation",  _falseToTrue);
 
+    no_cdbModeConnect       = new DapState(_true->name()            + "no_cdbModeConnect",       _true);
+    no_cdbModeConnecting    = new DapState(_falseToTrue->name()     + "no_cdbModeConnecting",    _falseToTrue);
+
+//    no_cdbDisconnect        = new DapState(_false->name()           + "no_cdbDisconnect",        _false);
+//    no_cdbModeDisconnecting = new DapState(_trueToFalse->name()     + "no_cdbModeDisconnecting", _trueToFalse);
+
     _false->setInitialState(cdbLogouted);
     initAllowedSubstatesTransitions();
 }
@@ -31,4 +37,11 @@ void DapIndicatorSession::initAllowedSubstatesTransitions() {
     addAllowedSubstatesTransitions(cdbKeyActivation,        cdbLogouted);
     addAllowedSubstatesTransitions(cdbLogined,              cdbLogoutRequest);
     addAllowedSubstatesTransitions(cdbLogoutRequest,        cdbLogouted);
+
+
+    addAllowedSubstatesTransitions(cdbLogouted,             no_cdbModeConnecting);
+    addAllowedSubstatesTransitions(no_cdbModeConnecting,    no_cdbModeConnect);
+    addAllowedSubstatesTransitions(no_cdbModeConnect,       cdbLogoutRequest);
+    addAllowedSubstatesTransitions(no_cdbModeConnecting,    networkErr);
+    addAllowedSubstatesTransitions(no_cdbModeConnect,       networkErr);
 }

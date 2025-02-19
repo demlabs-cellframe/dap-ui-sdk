@@ -1,5 +1,4 @@
 #include <QtDebug>
-#include <QSettings>
 #include <QTimer>
 #ifdef Q_OS_ANDROID
 #include <QtAndroid>

@@ -13,7 +13,7 @@ protected:
 public:
     explicit DapCmdServersList(QObject *parent = nullptr);
 signals:
-    void sigServersListUpdate(const DapServerInfoList& servers);
+    void sigServersListUpdate(const DapServerInfoList& servers, QDateTime a_lastUpdateTime);
     void sigEmptyList(const QString &msg);
     void sigErrorNetwork(const QString &msg);
 public slots:

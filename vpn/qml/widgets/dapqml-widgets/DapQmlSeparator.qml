@@ -4,6 +4,8 @@ import QtQuick 2.12
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
 import DapQmlStyle 1.0
+import DapQmlSeparatorItem 1.0
+import Brand 1.0
 
 /****************************************//**
  * @brief Dap QML Separator Widget
@@ -20,7 +22,7 @@ import DapQmlStyle 1.0
 Rectangle {
     id: root
     width: 354
-    height: sep1.height
+    height: sizer.height > 2 ? sizer.height : 2
     color: "transparent"
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
@@ -33,6 +35,10 @@ Rectangle {
     /// @brief widget qss style
     property string qss
 
+    property DapQmlLabel sep1
+    property DapQmlLabel sep2
+    property DapQmlLabel sep3
+
     DapQmlDummy {
         id: sizer
         qss: "sep-rect"
@@ -40,39 +46,75 @@ Rectangle {
 
     /// @}
     /****************************************//**
-     * Left corner image
+     * @name COMPONENTS
      ********************************************/
+    /// @{
 
-    DapQmlLabel {
-        id: sep1
-        x: 0
-        width: sizer.width
-        height: sizer.height > 1 ? sizer.height : 1
-        qss: "sep-left"
+    Component {
+        id: compImage
+
+        Item {
+            anchors.fill: parent
+
+            DapQmlLabel {
+                id: sep1
+                x: 0
+                width: sizer.width
+                height: sizer.height > 2 ? sizer.height : 2
+                qss: "sep-left"
+
+                Component.onCompleted: root.sep1    = sep1
+            }
+
+            DapQmlLabel {
+                id: sep2
+                x: sep1.width - 2
+                width: root.width - sep1.width - sep3.width + 4
+                height: sizer.height > 2 ? sizer.height : 2
+                qss: "sep-mid"
+
+                Component.onCompleted: root.sep2    = sep2
+            }
+
+            DapQmlLabel {
+                id: sep3
+                x: root.width - width
+                width: sizer.width
+                height: sizer.height > 2 ? sizer.height : 2
+                qss: "sep-right"
+
+                Component.onCompleted: root.sep3    = sep3
+            }
+        }
     }
 
-    /****************************************//**
-     * Middle stretched image
-     ********************************************/
+    Component {
+        id: compPainter
 
-    DapQmlLabel {
-        id: sep2
-        x: sep1.width - 2
-        width: root.width - sep1.width - sep3.width + 4
-        height: sizer.height > 1 ? sizer.height : 1
-        qss: "sep-mid"
+        DapQmlSeparatorItem {
+            anchors.fill: parent
+        }
     }
 
+    /// @}
     /****************************************//**
-     * Right corner image
+     * Content
      ********************************************/
 
-    DapQmlLabel {
-        id: sep3
-        x: root.width - width
-        width: sizer.width
-        height: sizer.height > 1 ? sizer.height : 1
-        qss: "sep-right"
+//    Loader {
+//        id: contentLoader
+//        width: root.width + 4
+//        height: Math.floor (sizer.height > 2 ? sizer.height : 2)
+//        sourceComponent: //compImage
+//            Brand.legacyStyle()
+//            ? compImage
+//            : compPainter
+//    }
+    Rectangle {
+        id: rectt
+        width: root.width
+        height: Math.floor (sizer.height > 2 ? sizer.height / 2 : 1)
+        DapQmlStyle { item: rectt; qss: "sep-color" }
     }
 }
 

@@ -18,7 +18,7 @@ DapCmdSendBugReport::~DapCmdSendBugReport()
 
 void DapCmdSendBugReport::handle(const QJsonObject *params)
 {
-    Q_UNUSED(params);
+    DapCmdServiceAbstract::handle(params);
 
     QString serial = params->value("serial").toString();
     QString message = params->value("message").toString();

@@ -4,7 +4,6 @@
 #include "dap_common.h"
 #include "dap_file_utils.h"
 #include "DapLogger.h"
-#include "DapDataLocal.h"
 
 #ifdef Q_OS_WIN
 #include "registry.h"
@@ -16,6 +15,8 @@
 #endif
 
 static DapLogger* m_instance = nullptr;
+QString DapLogger::m_pathToLog = "";
+QString DapLogger::m_pathToFile = "";
 
 DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, TypeLogCleaning typeClean)
     : QObject(parent)
@@ -43,16 +44,18 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, Type
         if (dir.mkpath(m_pathToLog) == false)
           qDebug() << "unable to create dir";
 #ifndef Q_OS_ANDROID
-        system(("chmod -R 667 " + m_pathToLog).toUtf8().data());
+#ifdef TYPE_SERVICE
+        system(("chmod -R 777 " + m_pathToLog).toUtf8().data());
+#endif
 #endif
 
     }
 #ifndef Q_OS_ANDROID
-    system(("chmod 667 $(find " + m_pathToLog + " -type d)").toUtf8().data());
+#ifdef TYPE_SERVICE
+    system(("chmod 777 $(find " + m_pathToLog + " -type d)").toUtf8().data());
+#endif
 #endif
 
-//    connect(DapLogger::instance(), &DapLogger::sigMessageHandler,
-//            this, &DapLogger::updateCurrentLogName);
     m_currentDate = getCurrentDate();
 
     updateCurrentLogName();
@@ -70,7 +73,7 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, Type
 
     QTimer::singleShot(diff, [this]{
         auto t = new QTimer(QCoreApplication::instance());
-        connect(t, &QTimer::timeout, [this]{
+        connect(t, &QTimer::timeout, this, []{
             DapLogger::instance()->updateCurrentLogName();
             DapLogger::instance()->updateLogFiles();
         });
@@ -138,10 +141,9 @@ void DapLogger::setLogFile(const QString& fileName)
     if(isLoggerStarted)
         dap_common_deinit();
 
-    QString filePath = getPathToLog() + "/" + fileName;
-    dap_common_init(DAP_BRAND, qPrintable(filePath), qPrintable(getPathToLog()));
-    DapDataLocal::instance()->setLogPath(getPathToLog());
-    DapDataLocal::instance()->setLogFilePath(filePath);
+    m_pathToFile = getPathToLog() + "/" + fileName;
+    dap_common_init(DAP_BRAND, qPrintable(m_pathToFile));
+
     isLoggerStarted = true;
 }
 
@@ -210,7 +212,7 @@ void DapLogger::clearOldLogs()
 
     QFileInfoList list = dir.entryInfoList();
     QDateTime deleteDate = QDateTime::currentDateTime().addDays(-2);
-    for (auto file : list){
+    for (const auto& file : qAsConst(list)){
         if (file.lastModified() < deleteDate){
             dir.remove(file.fileName());
         }
@@ -270,7 +272,7 @@ void DapLogger::writeMessage(QtMsgType type,
         #error "Not supported platform"
 #endif
         fileName = (fileName == Q_NULLPTR ? ctx.file : fileName + 1);
-        strcpy(prefixBuffer, fileName);
+        strncpy (prefixBuffer, fileName, 128);
         auto dest = strrchr(prefixBuffer, '.');
         if (dest == nullptr)
           dest    = prefixBuffer + strlen(prefixBuffer);
@@ -280,7 +282,7 @@ void DapLogger::writeMessage(QtMsgType type,
     } else {
         _log_it(nullptr, 0, "\0", castQtMsgToDap(type), "%s", qUtf8Printable(msg));
     }
-    printf("%s\n",qUtf8Printable(msg));
+    //printf("%s\n",qUtf8Printable(msg));
 
     std::cerr.flush();
     std::cout.flush();
