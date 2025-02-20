@@ -9,12 +9,17 @@ Item
     property real currentValue: 0.01
     property real spinBoxStep: 0.01
     property real minimalValue: 0.0
+    property real maximumValue: 100.0
 
     property string valueName: "-"
     property int powerRound: 2
 
+    property bool editable: true
+
     property color currentColor: "#CAFC33"
     property string currentState: "Recommended"
+
+    signal valueChange()
 
     id: root
     //width: 278
@@ -121,7 +126,8 @@ Item
                     borderWidth: 0
                     borderRadius: 0
                     placeholderColor: currTheme.gray
-                    selectByMouse: true
+                    selectByMouse: editable
+                    enabled: editable
 
                     onTextChanged:
                     {
@@ -235,12 +241,13 @@ Item
                     PropertyAnimation{duration: 150}
                 }
 
-                MouseArea
-                {
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onClicked: setValue(model.minValue)
-                }
+                //TODO: uncorrect value calculating
+//                MouseArea
+//                {
+//                    anchors.fill: parent
+//                    hoverEnabled: true
+//                    onClicked: setValue(model.minValue)
+//                }
             }
         }
     }
@@ -261,10 +268,8 @@ Item
 
     function calculateStep(forIncrease)
     {
-<<<<<<< Updated upstream
-        var summ = mathWorker.summDouble(currentValue, step)
         if(summ !== "") setValue(summ)
-=======
+
         let step = spinBoxStep
         let value = currentValue
         let minValue = minimalValue
@@ -318,7 +323,6 @@ Item
 
 //        var summ = mathWorker.summDouble(currentValue, step)
 //        if(summ !== "" && summ !== currentValue) setValue(summ)
->>>>>>> Stashed changes
    }
 
     function setValue(value)
@@ -326,16 +330,25 @@ Item
         var number = parseFloat(value)
         if(!isNaN(number))
         {
-            if( number >= minimalValue)
+            if( number >= minimalValue && number <= maximumValue)
             {
                 currentValue = number
                 updateState()
+                valueChange()
             }
+//            else
+//            {
+//                currentValue = "0.0"
+//                updateState()
+//            }
         }
     }
 
     function updateState()
     {
+        if(statesData.count == 0)
+            return
+
         var checkSearch = false
         var idxSearch = -1
 
@@ -343,7 +356,7 @@ Item
         {
             statesData.get(i).enabled = checkSearch
 
-            if(statesData.get(i).minValue >= currentValue || checkSearch)
+            if(statesData.get(i).minValue > currentValue || checkSearch)
                 continue;
 
             idxSearch = i
@@ -383,8 +396,7 @@ Item
         statesData.append(
                     {
                         name: "Very low",
-                        minValue: minimalValue,
-                        maxValue: rangeValues.veryLow,
+                        minValue: rangeValues.veryLow,
                         enabled: false
                     })
 
@@ -392,8 +404,7 @@ Item
         statesData.append(
                     {
                         name: "Low",
-                        minValue: rangeValues.veryLow,
-                        maxValue: rangeValues.low,
+                        minValue: rangeValues.low,
                         enabled: false
                     })
 
@@ -401,8 +412,7 @@ Item
         statesData.append(
                     {
                         name: "Recommended",
-                        minValue: rangeValues.low,
-                        maxValue: rangeValues.middle,
+                        minValue: rangeValues.middle,
                         enabled: false
                     })
 
@@ -410,8 +420,7 @@ Item
         statesData.append(
                     {
                         name: "High",
-                        minValue: rangeValues.middle,
-                        maxValue: rangeValues.high,
+                        minValue: rangeValues.high,
                         enabled: false
                     })
 
@@ -419,8 +428,7 @@ Item
         statesData.append(
                     {
                         name: "Very high",
-                        minValue: rangeValues.high,
-                        maxValue: rangeValues.veryHigh,
+                        minValue: rangeValues.veryHigh,
                         enabled: false
                     })
     }

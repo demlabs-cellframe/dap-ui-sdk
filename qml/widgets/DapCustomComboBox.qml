@@ -59,7 +59,7 @@ Item
     property string disabledIcon:""
 
     signal itemSelected(var index)
-    signal currantDisplayTextChanged(var text)
+    signal currentDisplayTextChanged(var text)
 
     onModelChanged:
     {
@@ -72,7 +72,7 @@ Item
         else
             displayText = getModelData(popupListView.currentIndex, mainTextRole)
 
-        currantDisplayTextChanged(displayText)
+        currentDisplayTextChanged(displayText)
     }
 
     onCountChanged:
@@ -85,7 +85,7 @@ Item
         else
             displayText = getModelData(popupListView.currentIndex, mainTextRole)
 
-        currantDisplayTextChanged(displayText)
+        currentDisplayTextChanged(displayText)
     }
 
     Rectangle
@@ -347,7 +347,7 @@ Item
                 onCurrentIndexChanged:
                 {
                     displayText = getModelData(currentIndex, mainTextRole)
-                    currantDisplayTextChanged(displayText)
+                    currentDisplayTextChanged(displayText)
                     mainItem.currentIndex = currentIndex
                     if(displayText)
                     {
