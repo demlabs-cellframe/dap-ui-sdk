@@ -74,7 +74,8 @@ Item
                 hoverEnabled: true
                 onClicked:
                 {
-                    stepValue(-1 * spinBoxStep)
+                    let step = calculateStep(false);
+                    stepValue(Math.max(currentValue - step, minimalValue), 6)
                 }
             }
         }
@@ -198,7 +199,8 @@ Item
                 hoverEnabled: true
                 onClicked:
                 {
-                    stepValue(spinBoxStep)
+                    let step = calculateStep(true);
+                    stepValue(Math.min(currentValue + step, maximumValue), 6)
                 }
             }
         }
@@ -257,10 +259,66 @@ Item
         }
     }
 
-    function stepValue(step)
+    function calculateStep(forIncrease)
     {
+<<<<<<< Updated upstream
         var summ = mathWorker.summDouble(currentValue, step)
         if(summ !== "") setValue(summ)
+=======
+        let step = spinBoxStep
+        let value = currentValue
+        let minValue = minimalValue
+        let maxValue = maximumValue
+
+        const thresholds = [
+            { limit: 0.00001, step: 0.000001 },  // For value <= 0.00001 step 0.000001
+            { limit: 0.0001, step: 0.00001 },    // For value <= 0.0001 step 0.00001
+            { limit: 0.001, step: 0.0001 },      // For value <= 0.001 step 0.0001
+            { limit: 0.01, step: 0.001 },        // For value <= 0.01 step 0.001
+            { limit: 0.1, step: 0.01 },          // For value <= 0.1 step 0.01
+            { limit: Infinity, step: 0.1 }       // For value > 0.1 step 0.1
+        ];
+
+        if (forIncrease)
+        {
+            //+
+            for (let i = 0; i < thresholds.length; i++)
+            {
+                if (value < thresholds[i].limit)
+                {
+                    step = thresholds[i].step;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            //-
+            for (let i = 0; i < thresholds.length; i++)
+            {
+                if (value <= thresholds[i].limit)
+                {
+                    step = thresholds[i].step;
+                    break;
+                }
+            }
+        }
+
+        step = Math.max(Math.min(step, maxValue), minValue);
+
+        return step;
+    }
+
+
+    function stepValue(num, precision)
+    {
+        let factor = Math.pow(10, precision);
+        let result = Math.round(num * factor) / factor;
+        if(result && result !== currentValue) setValue(result)
+
+//        var summ = mathWorker.summDouble(currentValue, step)
+//        if(summ !== "" && summ !== currentValue) setValue(summ)
+>>>>>>> Stashed changes
    }
 
     function setValue(value)
