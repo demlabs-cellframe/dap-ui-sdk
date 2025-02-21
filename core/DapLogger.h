@@ -29,7 +29,7 @@ class DapLogger : public QObject
 {
     Q_OBJECT
 public:
-    explicit DapLogger(QObject *parent = nullptr, QString appType = "", size_t prefix_width = 10, TypeLogCleaning typeClean = TypeLogCleaning::TWO_DAYS);
+    explicit DapLogger(QObject *parent = nullptr, QString appType = "", size_t prefix_width = 10, TypeLogCleaning typeClean = TypeLogCleaning::TWO_DAYS, QString customLogPath = "");
     ~DapLogger();
 
     static DapLogger* instance();

@@ -18,7 +18,7 @@ static DapLogger* m_instance = nullptr;
 QString DapLogger::m_pathToLog = "";
 QString DapLogger::m_pathToFile = "";
 
-DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, TypeLogCleaning typeClean)
+DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, TypeLogCleaning typeClean, QString customLogPath)
     : QObject(parent)
     , m_day(QDateTime::currentDateTime().toString("dd"))
     , m_typeLogCleaning(typeClean)
@@ -37,19 +37,28 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, Type
     m_appType = appType;
     qDebug() << "App: " DAP_BRAND " " DAP_VERSION " " + appType;
     qDebug() << systemInfo();
-    setPathToLog(defaultLogPath(DAP_BRAND));
-    QDir dir(m_pathToLog);
-    if (!dir.exists()) {
-        qDebug() << "dir not exists";
-        if (dir.mkpath(m_pathToLog) == false)
-          qDebug() << "unable to create dir";
-#ifndef Q_OS_ANDROID
-#ifdef TYPE_SERVICE
-        system(("chmod -R 777 " + m_pathToLog).toUtf8().data());
-#endif
-#endif
 
+    if(!customLogPath.isEmpty())
+    {
+        setPathToLog(customLogPath);
     }
+    else
+    {
+        setPathToLog(defaultLogPath(DAP_BRAND));
+    }
+
+    QDir dir(m_pathToLog);
+    if (!dir.exists())
+    {
+        qDebug() << "dir not exists";
+        if (dir.mkpath(m_pathToLog) == false) qDebug() << "unable to create dir";
+    #ifndef Q_OS_ANDROID
+    #ifdef TYPE_SERVICE
+        system(("chmod -R 777 " + m_pathToLog).toUtf8().data());
+    #endif
+    #endif
+    }
+
 #ifndef Q_OS_ANDROID
 #ifdef TYPE_SERVICE
     system(("chmod 777 $(find " + m_pathToLog + " -type d)").toUtf8().data());
