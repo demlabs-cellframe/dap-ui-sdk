@@ -80,7 +80,7 @@ Item
                 onClicked:
                 {
                     let step = calculateStep(false);
-                    stepValue(Math.max(currentValue - step, minimalValue), 6)
+                    stepValue(Math.max(currentValue - step, minimalValue), 4)
                 }
             }
         }
@@ -206,7 +206,7 @@ Item
                 onClicked:
                 {
                     let step = calculateStep(true);
-                    stepValue(Math.min(currentValue + step, maximumValue), 6)
+                    stepValue(Math.min(currentValue + step, maximumValue), 4)
                 }
             }
         }
@@ -268,8 +268,6 @@ Item
 
     function calculateStep(forIncrease)
     {
-        if(summ !== "") setValue(summ)
-
         let step = spinBoxStep
         let value = currentValue
         let minValue = minimalValue
