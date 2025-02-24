@@ -97,8 +97,9 @@ void DapCmdConnect::handle(const QJsonObject* params)
 
     QString runScriptPath = mandatoryConnParams[RUN_SCRIPT_PATH].toString();
 
-    if (!runScriptPath.isEmpty()){
+    if (!runScriptPath.isEmpty()) {
         bool runAfterConnect = mandatoryConnParams[RUN_SCRIPT_AFTER_CONNECT].toBool(true);
+        qDebug() << "Running script path:" << runScriptPath << "Run after connect:" << runAfterConnect;
         emit sigSetRunScript(runScriptPath, runAfterConnect);
     }
 
