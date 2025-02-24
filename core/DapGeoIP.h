@@ -12,9 +12,8 @@
 
 #include "maxminddb/maxminddb.h"
 
-#define PATH_TO_DB ":/GeoLite2-Country.mmdb"
-// #define PATH_TO_DB "/home/danilmartynenko/untitled/GeoLite2-Country.mmdb"
-// #define PATH_TO_DB QCoreApplication::applicationDirPath() + "/GeoLite2-Country.mmdb"
+#define PATH_TO_DB ":/GeoLite2-Country.mmdb" //21.02.2025
+// #define PATH_TO_DB ":/GeoLite2-City.mmdb" //21.02.2025
 
 class DapGeoIP : public QObject
 {
