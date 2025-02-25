@@ -651,8 +651,15 @@ void DapSession::onAuthorize()
                 }
                 else if (m_xmlStreamReader.name() == "ts_active_till")
                 {
-                    DapServiceDataLocal::instance()->serialKeyData()->setLicenseTermTill(m_xmlStreamReader.readElementText());
-                    qDebug() << "ts_active_till: " << DapServiceDataLocal::instance()->serialKeyData()->licenseTermTill().toTime_t();
+                    QString licenseTermTill = m_xmlStreamReader.readElementText();
+                    qDebug() << "Parsed ts_active_till: " << licenseTermTill;
+
+                    DapServiceDataLocal::instance()->serialKeyData()->setLicenseTermTill(licenseTermTill);
+
+                    qDebug() << "ts_active_till (set): "
+                             << DapServiceDataLocal::instance()->serialKeyData()->licenseTermTill().toString(Qt::ISODate);
+                    qDebug() << "ts_active_till (timestamp): "
+                             << DapServiceDataLocal::instance()->serialKeyData()->licenseTermTill().toTime_t();
                 }
                 else
                 {
