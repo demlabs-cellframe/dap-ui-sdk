@@ -71,7 +71,9 @@ void DapCmdConnect::handle(const QJsonObject* params)
     QMap<QString, QJsonValue> mandatoryConnParams = {
         {ADDRESS_KEY, params->value(ADDRESS_KEY)},
         {PORT_KEY, params->value(PORT_KEY)},
-        {UPDATE_ROUTE_TABLE, params->value(UPDATE_ROUTE_TABLE)}
+        {UPDATE_ROUTE_TABLE, params->value(UPDATE_ROUTE_TABLE)},
+        {RUN_SCRIPT_PATH, params->value(RUN_SCRIPT_PATH)},
+        {RUN_SCRIPT_AFTER_CONNECT, params->value(RUN_SCRIPT_AFTER_CONNECT)}
     };
 
     if (!mandatoryConnParams[ADDRESS_KEY].isString() || !mandatoryConnParams[PORT_KEY].isDouble()) {
@@ -92,6 +94,14 @@ void DapCmdConnect::handle(const QJsonObject* params)
 
     uint16_t port = uint16_t(mandatoryConnParams[PORT_KEY].toInt());
     QString address = mandatoryConnParams[ADDRESS_KEY].toString();
+
+    QString runScriptPath = mandatoryConnParams[RUN_SCRIPT_PATH].toString();
+
+    if (!runScriptPath.isEmpty()) {
+        bool runAfterConnect = mandatoryConnParams[RUN_SCRIPT_AFTER_CONNECT].toBool(true);
+        qDebug() << "Running script path:" << runScriptPath << "Run after connect:" << runAfterConnect;
+        emit sigSetRunScript(runScriptPath, runAfterConnect);
+    }
 
     qDebug() << "Address:" << address << ", Port:" << port << ", UpdateRouteTable:" << updateRouteTable;
     qDebug() << "SerialKey:" << (serialKey.isEmpty() ? "No serial key provided" : "Serial key provided");

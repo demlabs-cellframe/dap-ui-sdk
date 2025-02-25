@@ -20,7 +20,28 @@ This file is part of DAP UI SDK the open source project
    You should have received a copy of the GNU General Public License
    along with any DAP based project.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 #pragma once
+
+#include <QtDebug>
+#include <QProcess>
+#include <QFile>
+
+#include <sys/types.h>
+#include <sys/ioctl.h>
+#include <sys/socket.h>
+#include <sys/sys_domain.h>
+#include <sys/kern_control.h>
+#include <net/if_utun.h>
+#include <errno.h>
+#include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+#include "DapTunUnixAbstract.h"
+#include "DapTunWorkerUnix.h"
+#include "DapNetworkMonitor.h"
+#include "SigUnixHandler.h"
 #include "DapTunUnixAbstract.h"
 
 class DapUtun : public DapTunUnixAbstract
@@ -29,9 +50,14 @@ public:
     DapUtun();
     ~DapUtun() {}
 protected:
+    void executeCommand(const QString &cmd);
     void tunDeviceCreate();
     void tunDeviceDestroy();
     void onWorkerStarted();
+    void clearAllDNS();
+    void configureDNS(const QMap<QString, QString> &dnsMap);
+    QString getCurrentNetworkInterface();
+
 
     // Getting currently using connection interface name from nmcli command-line tool
     // and save to m_lastUsedConnectionName and m_lastUsedConnectionDevice
@@ -39,14 +65,23 @@ protected:
 
 private:
 
+    QStringList getNetworkServices();
+    QString getDNSServers(const QString &service);
+    bool setDNS(const QString &service, const QString &dnsServer);
+
     // Connection witch used before creating utun Interface
     QString m_lastUsedConnectionName;
     QString m_lastUsedConnectionDevice;
 
+    QString m_currentInterface;
+
     QStringList appleAdditionalRoutes; // List of Apple addresses needed to be routed directly through the tunnel
 
-    QString runShellCmd(const QString& cmd);
+    // QString runShellCmd(const QString& cmd);
 
     // Get current active internet interface
     QString getInternetInterface();
+
+    QMap<QString, QString> m_dnsMap;
+
 };
