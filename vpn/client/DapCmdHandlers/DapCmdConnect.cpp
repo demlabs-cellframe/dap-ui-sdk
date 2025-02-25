@@ -83,11 +83,11 @@ void DapCmdConnect::handle(const QJsonObject* params)
     QString serialKey = "";
 
     if (params->contains("serial")) {
-        serialKey = params->value("serial").toString().remove('-');
+        serialKey = params->value("serial").toString();
     }
 
     if (serialKey.isEmpty()) {
-        serialKey = DapServiceDataLocal::instance()->serialKeyData()->serialKey().remove('-');
+        serialKey = DapServiceDataLocal::instance()->serialKeyData()->serialKey();
     }
 
     uint16_t port = uint16_t(mandatoryConnParams[PORT_KEY].toInt());
