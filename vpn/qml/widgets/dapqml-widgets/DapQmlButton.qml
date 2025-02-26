@@ -570,23 +570,23 @@ Rectangle {
                             ""
                         ]
                         Action {
-                            text: "Cut"
+                            text: "Cut" + lang.notifier
                             shortcut: "Ctrl+X"
                             onTriggered: ctxMenu.execCut();
                         }
                         Action {
-                            text: "Copy"
+                            text: "Copy" + lang.notifier
                             shortcut: "Ctrl+C"
                             onTriggered: ctxMenu.execCopy();
                         }
                         Action {
-                            text: "Paste"
+                            text: "Paste" + lang.notifier
                             shortcut: "Ctrl+V"
                             onTriggered: ctxMenu.execPaste();
                         }
                         Action {
-                            text: "Delete"
-                            //shortcut: "Delete"
+                            text: "Delete" + lang.notifier
+                            shortcut: "Delete"
                             onTriggered: ctxMenu.execDelete();
                         }
                     }
