@@ -180,6 +180,14 @@ Item {
         DapQmlStyle { item: schedulePainter; qss: "stat-graph"; }
     }
 
+    function forceUpdate() {
+        schedulePainter.update();
+    }
+
+    function clearGraphData() {
+        schedulePainter.clear();
+    }
+
     /****************************************//**
      * Indicators
      ********************************************/
