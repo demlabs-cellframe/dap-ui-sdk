@@ -6,136 +6,93 @@ TextField {
     id: root
     property bool bottomLineVisible: false
     property int bottomLineSpacing: 8
-    property string bottomLineColor: borderColor
+    property color bottomLineColor: borderColor
     property int bottomLineLeftRightMargins: 0
     property alias bottomLine: bottomLine
 
-    property int borderWidth:0
-    property int borderRadius:0
+    property int borderWidth: 0
+    property int borderRadius: 0
 
-    property string selectColor: currTheme.inputActive
-    property string selectTextColor: currTheme.mainBackground
-    property string borderColor: currTheme.input
-    property string backgroundColor: currTheme.secondaryBackground
-    property string placeholderColor: currTheme.gray
-    property string textColor: currTheme.white
+    property color selectColor: currTheme.inputActive
+    property color selectTextColor: currTheme.mainBackground
+    property color borderColor: currTheme.input
+    property color backgroundColor: currTheme.secondaryBackground
+    property color placeholderColor: currTheme.gray
+    property color textColor: currTheme.white
     property string passwordChar: ""
 
     property int indicatorTopMargin: 0
     property bool indicatorVisible: false
-    property string indicatorSourceEnabled: ""
-    property string indicatorSourceDisabled: ""
-    property string indicatorSourceEnabledHover: ""
-    property string indicatorSourceDisabledHover: ""
+    property url indicatorSourceEnabled: ""
+    property url indicatorSourceDisabled: ""
+    property url indicatorSourceEnabledHover: ""
+    property url indicatorSourceDisabledHover: ""
     property alias indicator: indicator
 
     Keys.onReturnPressed: focus = false
 
-    style:
-        TextFieldStyle
-        {
-            id: style
-            textColor: root.textColor
-            placeholderTextColor: placeholderColor
-            selectionColor: selectColor
-            selectedTextColor: selectTextColor
+    style: TextFieldStyle {
+        textColor: root.textColor
+        placeholderTextColor: root.placeholderColor
+        selectionColor: root.selectColor
+        selectedTextColor: root.selectTextColor
+        padding.right: indicatorVisible ? indicator.width + 8 : 4
 
-            background:
-                Rectangle
-                {
-                    radius: borderRadius 
-                    border.width: borderWidth
-                    border.color: borderColor
-                    color: backgroundColor
-                }
+        background: Rectangle {
+            radius: root.borderRadius
+            border.width: root.borderWidth
+            border.color: root.borderColor
+            color: root.backgroundColor
         }
+    }
 
-
-    DapImageRender{
+    DapImageRender {
         id: indicator
-        z:10
+        z: 10
         property bool isActive: false
 
         anchors.top: parent.top
         anchors.right: parent.right
-        anchors.topMargin: parent.height / 2 - indicator.height / 2 + indicatorTopMargin
+        anchors.topMargin: parent.height / 2 - height / 2 + root.indicatorTopMargin
 
-        visible: indicatorVisible
-        source: indicatorSourceDisabled
+        visible: root.indicatorVisible
+        source: root.indicatorSourceDisabled
 
-        MouseArea{
+        MouseArea {
             id: area
             anchors.fill: parent
             hoverEnabled: true
-            onEntered: {
-                if(indicator.isActive)
-                    indicator.source = indicatorSourceEnabledHover
-                else
-                    indicator.source = indicatorSourceDisabledHover
-            }
 
-            onExited: {
-                if(indicator.isActive)
-                    indicator.source = indicatorSourceEnabled
-                else
-                    indicator.source = indicatorSourceDisabled
-            }
+            onEntered: updateIndicator(true)
+            onExited: updateIndicator(false)
             onClicked: {
                 indicator.isActive = !indicator.isActive
-
-                if(containsMouse){
-                    if(indicator.isActive)
-                        indicator.source = indicatorSourceEnabledHover
-                    else
-                        indicator.source = indicatorSourceDisabledHover
-                }
-                else
-                {
-                    if(indicator.isActive)
-                        indicator.source = indicatorSourceEnabled
-                    else
-                        indicator.source = indicatorSourceDisabled
-                }
-            }
-        }
-
-        //A temporary solution for manual switching of the indicator state + resource change.
-        function programClick()
-        {
-            indicator.isActive = !indicator.isActive
-
-            if(area.containsMouse){
-                if(indicator.isActive)
-                    indicator.source = indicatorSourceEnabledHover
-                else
-                    indicator.source = indicatorSourceDisabledHover
-            }
-            else
-            {
-                if(indicator.isActive)
-                    indicator.source = indicatorSourceEnabled
-                else
-                    indicator.source = indicatorSourceDisabled
+                updateIndicator(area.containsMouse)
             }
         }
     }
 
-    //bottom line
+    function updateIndicator(hovered) {
+        if (indicator.isActive) {
+            indicator.source = hovered ? root.indicatorSourceEnabledHover : root.indicatorSourceEnabled;
+        } else {
+            indicator.source = hovered ? root.indicatorSourceDisabledHover : root.indicatorSourceDisabled;
+        }
+    }
+
     Rectangle {
         id: bottomLine
-        visible: bottomLineVisible
+        visible: root.bottomLineVisible
 
         anchors.top: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-
-        anchors.leftMargin: bottomLineLeftRightMargins
-        anchors.rightMargin: bottomLineLeftRightMargins
-        anchors.topMargin: bottomLineSpacing
+        anchors.leftMargin: root.bottomLineLeftRightMargins
+        anchors.rightMargin: root.bottomLineLeftRightMargins
+        anchors.topMargin: root.bottomLineSpacing
 
         height: 1
-
-        color: bottomLineColor
+        color: root.bottomLineColor
 
         Behavior on width {
             NumberAnimation {
