@@ -26,6 +26,7 @@
 const QString DapBaseDataLocal::TEXT_SERIAL_KEY           = "serialkey";
 const QString DapBaseDataLocal::TEXT_SERIAL_KEY_HISTORY   = "serialkeyhistory";
 const QString DapBaseDataLocal::TEXT_PENDING_SERIAL_KEY   = "pendingserialkey";
+const QString DapBaseDataLocal::UPDATE_FILE_PATH          = "updatefilepath";
 const QString DapBaseDataLocal::TEXT_BUGREPORT_HISTORY    = "bugreporthistory";
 const QString DapBaseDataLocal::ROUTING_EXCEPTIONS_LIST   = "routingexceptionslist";
 const QString DapBaseDataLocal::TEXT_LOGIN                = "login";

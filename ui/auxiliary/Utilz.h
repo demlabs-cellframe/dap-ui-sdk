@@ -17,6 +17,7 @@ namespace Utils
     ///Returns the required version type
     enum TypeVersion{MAJOR,MINOR,PAT};
     int getNumberVersion(const QString &version,TypeVersion type);
+    bool isNewerVersion(const QString& availableVer, const QString currVer);
     QString getOSName();
 
     ///The function returns the first integer in the string.
