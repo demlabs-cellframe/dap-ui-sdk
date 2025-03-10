@@ -33,6 +33,7 @@ void DapCmdUpdateOperation::startDownload()
         auto existingUpdateVer = existingUpdate.split("-")[1] + "-" + existingUpdate.split("-")[2];
         if (Utils::isNewerVersion(m_availableVersion, existingUpdateVer))
         {
+            DapDataLocal::instance()->saveValueSetting(DapBaseDataLocal::UPDATE_FILE_PATH, "");
             startDownloadUrl(m_dowmloadUrl, m_dowmloadPack);
         }
         else
@@ -50,6 +51,15 @@ void DapCmdUpdateOperation::startDownloadUrl(QString url, QString pack)
     downloadInfo["url"] = url;
     downloadInfo["pack"] = pack;
     response["start_download"] = downloadInfo;
+    sendCmd(&response);
+}
+
+void DapCmdUpdateOperation::sendDownloadRemove(const QString& downloadPack)
+{
+    QJsonObject response;
+    QJsonObject downloadRemoveInfo;
+    downloadRemoveInfo["pack"] = downloadPack;
+    response["download_remove"] = downloadRemoveInfo;
     sendCmd(&response);
 }
 

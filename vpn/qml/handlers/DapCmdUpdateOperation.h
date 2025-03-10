@@ -29,6 +29,7 @@ public slots:
     void setDownloadPack(QString pack);
     void startDownloadUrl(QString url, QString path);
     void startUpadte();
+    void sendDownloadRemove(const QString& downloadPack);
 
 signals:
     void downloadProgress(qint64 load, qint64 total);
