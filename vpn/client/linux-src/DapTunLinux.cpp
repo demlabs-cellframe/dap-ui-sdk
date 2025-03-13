@@ -172,7 +172,7 @@ void DapTunLinux::checkDefaultGetaweyMetric()
 
 bool DapTunLinux::connectionExists(const QString &connName)
 {
-    QString result = runBashCmd(QString("nmcli -t --fields NAME connection show | grep -w '%1'").arg(connName));
+    QString result = runBashCmd(QString("nmcli -t --fields %1 connection show | grep -w '%1'").arg(connName));
     return !result.isEmpty();
 }
 
