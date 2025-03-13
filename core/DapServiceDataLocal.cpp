@@ -108,6 +108,24 @@ void DapServiceDataLocal::addNewSerialKey()
     emit valueServiceDataLocalUpdated({{JSON_SERIAL_KEY_HISTORY_KEY, serialKeyHistoryToJson()}});
 }
 
+// void DapServiceDataLocal::savePings()
+// {
+
+// }
+// void DapServiceDataLocal::loadPings()
+// {
+
+// }
+void DapServiceDataLocal::addPing(const QString& serverKey, int pingNum)
+{
+    DapBaseDataLocal::addPing(serverKey, pingNum);
+    emit valueServiceDataLocalUpdated({{JSON_PINGS_KEYS, getPing()}});
+}
+QString DapServiceDataLocal::getPing() const
+{
+    return DapBaseDataLocal::getPing();
+}
+
 void DapServiceDataLocal::setBugReportHistory(const QJsonArray& list)
 {
     DapBaseDataLocal::setBugReportHistory(list);
@@ -190,4 +208,5 @@ void DapServiceDataLocal::setMigrationInfo(const QJsonObject& object)
     if(object.contains(JSON_SERIAL_KEY_DATA_LIST_KEY))    setSerialKeyDataList(object[JSON_SERIAL_KEY_DATA_LIST_KEY].toArray());
     if(object.contains(JSON_BUG_REPORT_HISTORY_KEY))      setBugReportHistory(object[JSON_BUG_REPORT_HISTORY_KEY].toArray());
     if(object.contains(JSON_SERIAL_KEY_HISTORY_KEY))      setSerialKeyHistory(object[JSON_SERIAL_KEY_HISTORY_KEY].toArray());
+    if(object.contains(JSON_PINGS_KEYS))                  setPings(object[JSON_PINGS_KEYS].toArray());
 }

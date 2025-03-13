@@ -24,11 +24,17 @@ public:
     void savePendingSerialKey(QString a_serialkey) override;
 
     void setMigrationInfo(const QJsonObject& object);
+
+    QString getPing() const override;
 public slots:
     void setLogin(const QString &login) override;
     void setPassword(const QString &password) override;
 
     void addNewSerialKey() override;
+
+    // void savePings() override;
+    // void loadPings() override;
+    void addPing(const QString& serverKey, int pingNum) override;
 
 protected:
     void setBugReportHistory(const QJsonArray& list) override;

@@ -119,6 +119,11 @@ void DapDataLocal::saveAuthorizationData()
 void DapDataLocal::saveKeysHistory()
 {}
 
+void DapDataLocal::savePings()
+{
+    //emit valueDataLocalUpdated(createJsonObject(JSON_PINGS_KEYS, m_pings.join(',')));
+}
+
 void DapDataLocal::setSettings(const QJsonObject &json)
 {
     QStringList keys = json.keys();

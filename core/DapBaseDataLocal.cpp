@@ -72,6 +72,7 @@ void DapBaseDataLocal::initAuthData()
     loadAuthorizationDatas();
     loadKeysHistory();
     loadBugReport();
+    loadPings();
 }
 
 void DapBaseDataLocal::saveMigrate()
@@ -538,6 +539,27 @@ void DapBaseDataLocal::updateCdbList (const DapCdbServerList &a_newCdbList)
     m_cdbIter = m_cdbServersList.constBegin();
 }
 
+void DapBaseDataLocal::savePings()
+{
+    saveToSettings("serversPings", m_pings);
+}
+
+void DapBaseDataLocal::loadPings()
+{
+    loadFromSettingsBase("serversPings", m_pings);
+}
+
+void DapBaseDataLocal::addPing(const QString& serverKey, int pingNum)
+{
+    m_pings.append(serverKey);
+    savePings();
+}
+
+QString DapBaseDataLocal::getPing() const
+{
+    return m_pings.join(',');
+}
+
 void DapBaseDataLocal::loadKeysHistory()
 {
     QStringList list;
@@ -620,6 +642,7 @@ QJsonObject DapBaseDataLocal::toJson()
     resultObject.insert(JSON_BUG_REPORT_HISTORY_KEY, bugReportHistoryToJson());
     resultObject.insert(JSON_SERIAL_KEY_HISTORY_KEY, serialKeyHistoryToJson());
     resultObject.insert(JSON_SETTINGS_KEY, settingsToJson());
+    resultObject.insert(JSON_PINGS_KEYS, getPingToJson());
 
     return resultObject;
 }
@@ -652,6 +675,7 @@ void DapBaseDataLocal::fromJson(const QJsonObject &json)
     if(json.contains(JSON_SERIAL_KEY_DATA_LIST_KEY))    setSerialKeyDataList(json[JSON_SERIAL_KEY_DATA_LIST_KEY].toArray());
     if(json.contains(JSON_BUG_REPORT_HISTORY_KEY))      setBugReportHistory(json[JSON_BUG_REPORT_HISTORY_KEY].toArray());
     if(json.contains(JSON_SERIAL_KEY_HISTORY_KEY))      setSerialKeyHistory(json[JSON_SERIAL_KEY_HISTORY_KEY].toArray());
+    if(json.contains(JSON_PINGS_KEYS))                  setPings(json[JSON_PINGS_KEYS].toArray());
 }
 
 void DapBaseDataLocal::jsonToValue(QString& data, const QJsonObject& object, const QString& key)
@@ -901,6 +925,18 @@ const QJsonArray DapBaseDataLocal::serialKeyHistoryToJson() const
     return serialKeyHistory;
 }
 
+const QJsonArray DapBaseDataLocal::getPingToJson() const
+{
+    QJsonArray serverPingsArr;
+    // for (const auto& item : m_pings)
+    // {
+    //     serverPings.append(std::move(item));
+    // }
+    // return serverPings;
+    serverPingsArr.append(m_pings.join(','));
+    return serverPingsArr;
+}
+
 void DapBaseDataLocal::setSerialKeyHistory(const QJsonArray& list)
 {
     for(const auto& itemValue: list)
@@ -910,6 +946,18 @@ void DapBaseDataLocal::setSerialKeyHistory(const QJsonArray& list)
     if(!list.isEmpty())
     {
         saveKeysHistory();
+    }
+}
+
+void DapBaseDataLocal::setPings(const QJsonArray& list)
+{
+    for(const auto& itemValue: list)
+    {
+        m_pings.append(itemValue.toString());
+    }
+    if(!list.isEmpty())
+    {
+        savePings();
     }
 }
 

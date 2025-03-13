@@ -163,13 +163,21 @@ public:
     const QJsonArray serialKeyHistoryToJson() const;
     const QJsonObject settingsToJson();
 
+    const QJsonArray getPingToJson() const;
+
     void saveMigrate();
+
+    virtual QString getPing() const;
 public slots:
     virtual void setLogin(const QString &a_login);
     virtual void setPassword(const QString &password);
     virtual void saveAuthorizationData();
 
     virtual void addNewSerialKey();
+
+    virtual void savePings();
+    virtual void loadPings();
+    virtual void addPing(const QString& serverKey, int pingNum);
 signals:
     /// Signal emitted if login has changed.
     /// @param login Login.
@@ -202,6 +210,7 @@ protected:
     void setSerialKeyData(const QJsonObject& object);
     void setSerialKeyDataList(const QJsonArray& list);
     void setSerialKeyHistory(const QJsonArray& list);
+    void setPings(const QJsonArray& list);
 
     virtual void setBugReportHistory(const QJsonArray& list);
 
@@ -232,6 +241,8 @@ protected:
 
     DapSerialKeyData* m_serialKeyData;
     QSet<QString> m_serialKeyDataList;
+
+    QStringList m_pings;
 
     DapBugReportHistory *m_bugReportHistory;
     DapSerialKeyHistory *m_serialKeyHistory;
@@ -270,6 +281,7 @@ protected:
     const QString JSON_BUG_REPORT_HISTORY_KEY = "bugReportHistory";
     const QString JSON_SERIAL_KEY_HISTORY_KEY = "serialKeyHistory";
     const QString JSON_SETTINGS_KEY = "settings";
+    const QString JSON_PINGS_KEYS = "serversPings";
 };
 
 template<typename T>

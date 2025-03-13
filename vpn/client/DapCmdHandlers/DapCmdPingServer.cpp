@@ -1,6 +1,7 @@
 #include "DapCmdPingServer.h"
 #include <QDebug>
 #include "DapHttpPing.h"
+#include "DapServiceDataLocal.h"
 
 DapCmdPingServer::DapCmdPingServer(QObject *parent)
     : DapCmdServiceAbstract(DapJsonCmdType::PING_SERVER, parent)
@@ -24,6 +25,9 @@ void DapCmdPingServer::handle(const QJsonObject* params)
             response["host"] = pingChecker->getHost();
             response["port"] = pingChecker->getPort();
             response["responseTime"] = time;
+
+            DapServiceDataLocal::instance()->addPing(QString ("%1:%2=%3").arg(pingChecker->getHost()).arg(pingChecker->getPort()).arg(time), time);
+
             sendCmd(&response);
             delete pingChecker;
         });
