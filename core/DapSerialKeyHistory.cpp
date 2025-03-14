@@ -203,7 +203,7 @@ void DapSerialKeyHistory::DapSerialKeyHistoryData::importList (const QStringList
 
     for (const auto &key : a_list)
     {
-        auto keyResult  = QString (key).remove ('-').remove (' ');
+        auto keyResult  = QString (key).remove (' ');
         if (!keyResult.isEmpty())
             append (std::move (keyResult));
     }
