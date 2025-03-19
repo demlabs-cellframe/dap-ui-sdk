@@ -7,14 +7,17 @@ DapCmdResetSerialKey::DapCmdResetSerialKey(QObject *parent)
 
 void DapCmdResetSerialKey::handle(const QJsonObject *params)
 {
+    qDebug() << "Handling reset serial key command...";
     DapCmdServiceAbstract::handle(params);
 
     connect(this, &DapCmdResetSerialKey::sigResetSerialKeyReplied, [&] (const QString& reply) {
+        qDebug() << "Received signal: sigResetSerialKeyReplied with reply:" << reply;
         QJsonObject l_obj;
         l_obj["reset_reply"] = reply;
         sendCmd(&l_obj);
     });
 
+    qDebug() << "Emitting sigResetRequestSent signal...";
     emit sigResetRequestSent();
 }
 

@@ -58,6 +58,7 @@ void DapSerialKeyData::reset()
 {
     this->setActivated(false);
     this->setSerialKey("");
+    this->setLicenseTermTill(QDateTime::fromTime_t(0));
 }
 
 const QDateTime &DapSerialKeyData::licenseTermTill() const
