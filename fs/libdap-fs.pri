@@ -10,4 +10,9 @@ android {
 }
 
 
+unix:!android:!macos {
+    LIBS += -lstdc++fs
+
+}
+
 INCLUDEPATH += $$PWD
