@@ -91,7 +91,18 @@ void DapCmdConnect::handleError(int code, const QString& message)
     // unknown error
     if (code == 10053 && message == "Unknown error")
         return;
-    emit errorMessage(message);
+    if (code == 113)
+    {
+        emit connectionFail();
+        emit errorMessage("Server not available. No route to host.");
+        return;
+    }
+    if (code == 101)
+    {
+        emit connectionFail();
+        emit errorMessage("Server not available. Network is unreachable.");
+        return;
+    }
     QString textError = QString("code: %1, message: %2").arg(QString::number(code)).arg(message);
-    emit errorMessageWithCode(textError);
+    emit errorMessage(textError);
 }
