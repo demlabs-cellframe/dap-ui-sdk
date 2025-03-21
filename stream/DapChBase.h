@@ -22,6 +22,7 @@
 #define DAPSACHBASE_H
 
 #include "DapChannelPacket.h"
+#include <memory>
 
 class DapChBase : public QObject
 {
@@ -36,15 +37,17 @@ protected:
 protected slots:
     void write_str(char, const QString&);
 
-    void sendPacket(quint8 a_id, quint8 a_type, void * a_data, quint32 a_dataSize)
+    void sendPacket(quint8 a_id, quint8 a_type, void* a_data, quint32 a_dataSize)
     {
-        DapChannelPacketHdr* hdr= new DapChannelPacketHdr;
-        memset(hdr, 0, sizeof(*hdr));
-        hdr->id=a_id;
-        hdr->type=a_type;
-        hdr->size=a_dataSize;
-        emit pktChOut(hdr,a_data ) ;
+        std::unique_ptr<DapChannelPacketHdr> hdr(new DapChannelPacketHdr());
+        memset(hdr.get(), 0, sizeof(*hdr));
+        hdr->id = a_id;
+        hdr->type = a_type;
+        hdr->size = a_dataSize;
+
+        emit pktChOut(hdr.release(), a_data);
     }
+
 signals:
     void pktChOut(DapChannelPacketHdr* pkt, void* data, uint64_t* dest_addr = NULL);
     void error(const QString& msg);

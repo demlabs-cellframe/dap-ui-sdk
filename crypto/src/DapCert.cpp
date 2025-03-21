@@ -152,7 +152,7 @@ Cert::~Cert()
  */
 void Cert::sign(const QByteArray & a_data, QByteArray & a_output)
 {
-    dap_sign_t * sign = dap_cert_sign( m_cert, a_data.constData(), static_cast<size_t>(a_data.size()), 0 );
+    dap_sign_t * sign = dap_cert_sign( m_cert, a_data.constData(), static_cast<size_t>(a_data.size()));
     qInfo() << "Cert::sign call with pkey_size " << sign->header.sign_pkey_size << " sign_size " << sign->header.sign_size << "and total: " << dap_sign_get_size(sign);
     a_output.append(  QByteArray( reinterpret_cast<char*>(sign), static_cast<int>(dap_sign_get_size( sign )) ));
     DAP_DEL_Z(sign)
