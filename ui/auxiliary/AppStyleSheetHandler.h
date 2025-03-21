@@ -30,7 +30,7 @@
 #include <QObject>
 #include <QString>
 #include <QFile>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QFileInfo>
 #include <QDebug>
 #include <QApplication>

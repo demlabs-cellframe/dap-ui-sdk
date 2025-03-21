@@ -11,11 +11,11 @@ QString fetchColor(const QString &style, const QString key)
     QString a_style(style);
     a_style = a_style.remove(" ");
     QString regExp(key + ":([#0-9a-fA-F]+);");
-    int a = a_style.indexOf(QRegExp(regExp));
+    int a = a_style.indexOf(QRegularExpression(regExp));
     if (a < 0)
         return nullptr;
-    int b = a_style.indexOf(QRegExp(":"), a) + 1;
-    int c = a_style.indexOf(QRegExp(";"), a);
+    int b = a_style.indexOf(QRegularExpression(":"), a) + 1;
+    int c = a_style.indexOf(QRegularExpression(";"), a);
     return a_style.mid(b, c-b);
 }
 

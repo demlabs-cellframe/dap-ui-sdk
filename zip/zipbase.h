@@ -4,6 +4,7 @@
 #include <QtCore>
 #include "zipdef.h"
 #include "zlib.h"
+#include <QStringView>
 
 namespace DapZip {
 

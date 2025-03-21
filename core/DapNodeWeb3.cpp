@@ -135,8 +135,8 @@ QString extractMethod (const QString &inputString)
 }
 
 bool isVersionLessThan(const QString& version1, const QString& version2) {
-    QStringList parts1 = version1.split(QRegExp("[-\\.]"));
-    QStringList parts2 = version2.split(QRegExp("[-\\.]"));
+    QStringList parts1 = version1.split(QRegularExpression("[-\\.]"));
+    QStringList parts2 = version2.split(QRegularExpression("[-\\.]"));
 
     int length = qMax(parts1.size(), parts2.size());
     for (int i = 0; i < length; ++i) {

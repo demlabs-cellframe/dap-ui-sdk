@@ -238,7 +238,7 @@ void AnimatedLineEdit::assignFontSizeFromStylesheet(const QString &a_stylesheet,
     int fontSize = 0;
 
     //find number
-    QRegExp regExp("(\\d+)");
+    QRegularExpression regExp("(\\d+)");
     if (regExp.indexIn(strFontSize, 0) != -1)
         fontSize = regExp.cap(1).toInt();
 
@@ -246,4 +246,4 @@ void AnimatedLineEdit::assignFontSizeFromStylesheet(const QString &a_stylesheet,
        a_state->assignProperty(this, "labelFontSize", fontSize);
     else
         qWarning()<< "font-size of AnimatedLineEdit is not found or incorrect";
-};
+}

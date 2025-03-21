@@ -6,7 +6,7 @@ SerialKeyField::SerialKeyField(QWidget *parent)
 #if defined(Q_OS_MAC)
    this->setAttribute(Qt::WA_MacShowFocusRect,false);
 #endif
-    m_regExp=QRegExp("[a-z"+QString(VALIDATOR)+"]"
+    m_regExp=QRegularExpression("[a-z"+QString(VALIDATOR)+"]"
                    "{0,"+QString::number(MAX_COUNT_CHAR)+"}");
     QValidator* validator=new QRegExpValidator(m_regExp);
     setValidator(validator);

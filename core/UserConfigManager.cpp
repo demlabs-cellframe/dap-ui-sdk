@@ -77,8 +77,8 @@ QString UserConfigManager::getGuiUser() const {
     QStringList lines = output.split('\n');
 
     // Regular expressions to match session identifiers
-    QRegExp guiSessionRegex(":\\d+");       // Matches GUI sessions like :0, :1, etc.
-    QRegExp ttyRegex("tty\\d+");            // Matches tty sessions like tty1, tty2, etc.
+    QRegularExpression guiSessionRegex(":\\d+");       // Matches GUI sessions like :0, :1, etc.
+    QRegularExpression ttyRegex("tty\\d+");            // Matches tty sessions like tty1, tty2, etc.
 
     // Priority check for GUI session identifiers
     for (const QString& line : lines) {
@@ -86,7 +86,7 @@ QString UserConfigManager::getGuiUser() const {
 
         if (line.contains(guiSessionRegex) || line.contains("wayland") || line.contains("seat0")) {
             qDebug() << "Found high-priority GUI session line:" << line;
-            QStringList parts = line.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
+            QStringList parts = line.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
             if (!parts.isEmpty()) {
                 qDebug() << "Returning GUI user (high-priority):" << parts[0];
                 return parts[0];
@@ -99,7 +99,7 @@ QString UserConfigManager::getGuiUser() const {
         qDebug() << "Processing line (secondary):" << line;
         if (line.contains(ttyRegex) || line.contains("pts")) {
             qDebug() << "Found secondary session line:" << line;
-            QStringList parts = line.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
+            QStringList parts = line.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
             if (!parts.isEmpty()) {
                 qDebug() << "Returning user (secondary):" << parts[0];
                 return parts[0];

@@ -50,7 +50,7 @@ QString AppStyleSheetHandler::getWidgetStyleSheet(StyleSheatSearchPar a_searchPa
     if (!a_searchPar.pseudoClass.isEmpty())
         a_searchPar.pseudoClass = ":" + a_searchPar.pseudoClass;
 
-    QRegExp regExp(QString("%1%2%3%4\\s*"
+    QRegularExpression regExp(QString("%1%2%3%4\\s*"
                            "\\{"
                                 "([^\\}]*)"
                            "\\}")
@@ -63,7 +63,7 @@ QString AppStyleSheetHandler::getWidgetStyleSheet(StyleSheatSearchPar a_searchPa
     }
 
     //If found return found capture 1 without spaces and new line symbols
-    return regExp.cap(1).remove(QRegExp("(\\s|\\n)"));
+    return regExp.cap(1).remove(QRegularExpression("(\\s|\\n)"));
 
 }
 
@@ -158,7 +158,7 @@ QApplication *AppStyleSheetHandler::appInstance()
 
 QString AppStyleSheetHandler::convertPointsToPixels(const QString a_stylesheet)
 {
-    const QRegExp regExp("([\\d.])+((pt\\+)|(pt-)|(pt))");
+    const QRegularExpression regExp("([\\d.])+((pt\\+)|(pt-)|(pt))");
     QMap<int, QString> matches;
     auto data = a_stylesheet;
     auto pos = 0;
