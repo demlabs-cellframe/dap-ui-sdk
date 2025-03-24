@@ -1,7 +1,6 @@
-import QtQuick 2.4
-import QtQuick.Controls 2.5
-import QtQuick.Layouts 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 import "qrc:/widgets"
 
 Item
@@ -120,7 +119,7 @@ Item
                     anchors.right: valueNameText.left
                     text: currentValue
                     font: mainFont.dapFont.regular16
-                    validator: RegExpValidator { regExp: /[0-9]*\.?[0-9]{0,18}/ }
+                    regExpValidator: /[0-9]*\.?[0-9]{0,18}/
                     placeholderText: "0.0"
                     horizontalAlignment: Text.AlignRight
                     borderWidth: 0

@@ -1,7 +1,7 @@
-import QtQuick 2.4
-import QtQuick.Controls 2.5
-import QtQuick.Layouts 1.4
-import QtGraphicalEffects 1.0
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import QtQuick.Effects
 import "qrc:/widgets"
 
 Item {
@@ -81,30 +81,26 @@ Item {
         color: currTheme.secondaryBackground
     }
 
-    DropShadow {
-        anchors.fill: rectItem
-        source: rectItem
-        color: currTheme.reflection
-        horizontalOffset: -1
-        verticalOffset: -1
-        radius: 0
-        samples: 0
-        opacity: 1
-        fast: true
-        cached: true
-    }
+    // MultiEffect {
 
-    DropShadow
-    {
-        id: shadow
+    //     anchors.fill: rectItem
+    //     source: rectItem
+    //     shadowBlur: 1.0
+    //     shadowEnabled: true
+    //     shadowColor: currTheme.reflection
+    //     shadowVerticalOffset: -1
+    //     shadowHorizontalOffset: -1
+    // }
+
+    MultiEffect {
+
         anchors.fill: rectItem
-        horizontalOffset: 5
-        verticalOffset: 5
-        radius: 8
-        samples: 10
-        cached: true
-        color: currTheme.shadowColor
         source: rectItem
+        shadowBlur: 1.0
+        shadowEnabled: true
+        shadowColor: currTheme.shadowColor
+        shadowVerticalOffset: 5
+        shadowHorizontalOffset: 5
     }
 
     RowLayout

@@ -1,6 +1,5 @@
-import QtQuick 2.4
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick
+import QtQuick.Controls
 
 TextField {
     id: root
@@ -29,21 +28,23 @@ TextField {
     property url indicatorSourceDisabledHover: ""
     property alias indicator: indicator
 
+    property var regExpValidator
+
+    validator: RegularExpressionValidator { regularExpression: regExpValidator}
+
     Keys.onReturnPressed: focus = false
 
-    style: TextFieldStyle {
-        textColor: root.textColor
-        placeholderTextColor: root.placeholderColor
-        selectionColor: root.selectColor
-        selectedTextColor: root.selectTextColor
-        padding.right: indicatorVisible ? indicator.width + 8 : 4
+    placeholderTextColor: root.placeholderColor
+    color: root.textColor
+    selectionColor: root.selectColor
+    selectedTextColor: root.selectTextColor
+    rightPadding: indicatorVisible ? indicator.width + 8 : 4
 
-        background: Rectangle {
-            radius: root.borderRadius
-            border.width: root.borderWidth
-            border.color: root.borderColor
-            color: root.backgroundColor
-        }
+    background: Rectangle {
+        radius: root.borderRadius
+        border.width: root.borderWidth
+        border.color: root.borderColor
+        color: root.backgroundColor
     }
 
     DapImageRender {

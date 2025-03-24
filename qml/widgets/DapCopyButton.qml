@@ -1,9 +1,7 @@
-import QtQuick 2.4
-import QtQuick.Controls 2.5
-import QtQuick.Controls.Styles 1.4
-import QtQuick.Layouts 1.3
-import QtGraphicalEffects 1.0
-import QtQml 2.12
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import QtQml
 
 import "qrc:/widgets"
 

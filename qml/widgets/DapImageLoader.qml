@@ -1,5 +1,4 @@
-import QtQuick 2.0
-import QtGraphicalEffects 1.0
+import QtQuick
 
 Item {
     property alias source: image.source
@@ -20,11 +19,11 @@ Item {
         visible: true
         antialiasing: true
     }
-    ColorOverlay {
+    Rectangle {
         id: overlay
         anchors.fill: image
-        source: image
         color: "#FFFF0000"
+        opacity: 0.5
         visible: false
-      }
+    }
 }
