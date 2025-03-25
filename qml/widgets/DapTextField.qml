@@ -28,7 +28,7 @@ TextField {
     property url indicatorSourceDisabledHover: ""
     property alias indicator: indicator
 
-    property var regExpValidator
+    property var regExpValidator: /.*/
 
     validator: RegularExpressionValidator { regularExpression: regExpValidator}
 

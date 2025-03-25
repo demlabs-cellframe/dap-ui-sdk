@@ -42,8 +42,8 @@ Page
         heightImageButton: 10 
         widthImageButton: 10 
         activeFrame: false
-        normalImageButton: "qrc:/resources/icons/"+pathTheme+"/close_icon.png"
-        hoverImageButton:  "qrc:/resources/icons/"+pathTheme+"/close_icon_hover.png"
+        normalImageButton: "qrc:/horizontalMode/Resources/icons/"+pathTheme+"/close_icon.png"
+        hoverImageButton:  "qrc:/horizontalMode/Resources/icons/"+pathTheme+"/close_icon_hover.png"
     }
 
     //Header height

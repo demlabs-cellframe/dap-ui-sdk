@@ -22,8 +22,8 @@ Item
         width: parent.width
         height: parent.height
         mipmap: true
-        source: mouseArea.containsMouse ? "qrc:/Resources/" + pathTheme + "/icons/other/copy_hover_small.svg":
-                                          "qrc:/Resources/" + pathTheme + "/icons/other/copy_small.svg"
+        source: mouseArea.containsMouse ? "qrc:/horizontalMode/Resources/" + pathTheme + "/icons/other/copy_hover_small.svg":
+                                          "qrc:/horizontalMode/Resources/" + pathTheme + "/icons/other/copy_small.svg"
     }
 
     MouseArea
