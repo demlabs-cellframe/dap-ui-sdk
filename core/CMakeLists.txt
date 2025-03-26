@@ -3,10 +3,12 @@ add_library(${PROJECT_NAME} STATIC)
 
 file(GLOB_RECURSE SOURCES
     DapLogger.cpp
+    DapLogHandler.cpp
 )
 
 file(GLOB_RECURSE HEADERS
     DapLogger.h
+    DapLogHandler.h
 )
 
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCES} ${HEADERS})
