@@ -5,8 +5,8 @@ import QtQuick.Layouts 1.2
 import Qt5Compat.GraphicalEffects
 
 Image {
-    property string indicatorSrcNormal: "qrc:/Resources/"+ pathTheme +"/icons/other/ic_infoGray.svg"
-    property string indicatorSrcHover: "qrc:/Resources/"+ pathTheme +"/icons/other/ic_infoGray.svg"
+    property string indicatorSrcNormal: "qrc:/horizontalMode/Resources/"+ pathTheme +"/icons/other/ic_infoGray.svg"
+    property string indicatorSrcHover: "qrc:/horizontalMode/Resources/"+ pathTheme +"/icons/other/ic_infoGray.svg"
     property string contentText: ""
     property alias toolTip: toolTip
     property alias text: text
