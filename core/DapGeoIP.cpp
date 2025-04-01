@@ -1,4 +1,5 @@
 #include "DapGeoIP.h"
+#include "DapCdbManager.h"
 #include "DapServiceDataLocal.h"
 
 #include <QDebug>
@@ -6,33 +7,30 @@
 DapGeoIP::DapGeoIP(QObject *parent)
     : QObject(parent), dbPath(PATH_TO_DB), manager(new QNetworkAccessManager(this))
 {
-    if (QFile::exists(dbPath)) {
-
-        connect(manager, &QNetworkAccessManager::finished, this, &DapGeoIP::onIPReceived);
-
-        QFile f(dbPath);
-        f.open(QIODevice::ReadOnly);
-        fmem = f.readAll();
-        int status = MMDB_open_memory(fmem.constData(), fmem.size(), &mmdb);
-        if (status == MMDB_SUCCESS) {
-            isDBOpen = true;
-        } else {
-            qDebug() << "Can't open " << dbPath.toStdString().c_str() << " - " << MMDB_strerror(status);
-        }
-
-        //manager->get(QNetworkRequest(QUrl("http://api.ipify.org")));
-
-        /* get cdb address */
-        auto address  = DapServiceDataLocal::instance()->getCdbIterator()->address;
-        auto url      = QUrl ("http://" + address + "/my_ip");
-
-        /* send request */
-        manager->get (QNetworkRequest (url));
-
-    } else {
-        qDebug() << "Database file does not exist: " << dbPath.toStdString().c_str();
+    if (!QFile::exists(dbPath)) {
+        qDebug() << "Database file does not exist:" << dbPath.toStdString().c_str();
+        return;
     }
 
+    connect(manager, &QNetworkAccessManager::finished, this, &DapGeoIP::onIPReceived);
+
+    QFile f(dbPath);
+    f.open(QIODevice::ReadOnly);
+    fmem = f.readAll();
+    int status = MMDB_open_memory(fmem.constData(), fmem.size(), &mmdb);
+    if (status == MMDB_SUCCESS) {
+        isDBOpen = true;
+    } else {
+        qDebug() << "Can't open" << dbPath.toStdString().c_str() << "-" << MMDB_strerror(status);
+    }
+
+    DapCdbServer* server = DapCdbManager::instance().currentServer();
+    if (server) {
+        QUrl url("http://" + server->address + "/my_ip");
+        manager->get(QNetworkRequest(url));
+    } else {
+        qWarning() << "[DapGeoIP] No available CDB servers, skipping IP request.";
+    }
 }
 
 DapGeoIP::~DapGeoIP() {

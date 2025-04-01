@@ -1,5 +1,7 @@
 #include "DapCmdCdbCtl.h"
 #include "DapDataLocal.h"
+#include "DapCdbManager.h"
+#include "dap_net.h"
 
 enum DapCmdCdbCtlValue
 {
@@ -37,17 +39,28 @@ void DapCmdCdbCtl::sendCmdGetList()
   sendCmd(&obj);
 }
 
-void DapCmdCdbCtl::_updateCmds (const QJsonValue &a_value)
+void DapCmdCdbCtl::_updateCmds(const QJsonValue& a_value)
 {
-  /* get actual list and update */
-  auto src  = a_value.toString();
-  auto list = src.split(',');
-  auto cdbs = DapCdbServerList::toServers (list);
+    QString src = a_value.toString();
+    QStringList list = src.split(',', Qt::SkipEmptyParts);
 
-  auto data = DapDataLocal::instance();
-  data->updateCdbList(cdbs);
+    auto& manager = DapCdbManager::instance();
+    manager.clear();
 
-  emit sigCdbList();
+    for (const QString& item : list)
+    {
+        QString host;
+        uint16_t port = 0;
+
+        QByteArray str = item.toLatin1();
+        char* raw = str.data();
+        char l_host[DAP_HOSTADDR_STRLEN + 1] = {'\0'};
+        if (dap_net_parse_config_address(raw, l_host, &port, nullptr, nullptr)) {
+            manager.addServer(QString(l_host), port ? port : 80);
+        }
+    }
+
+    emit sigCdbList();
 }
 
 void DapCmdCdbCtl::handleResult (const QJsonObject &a_result)
