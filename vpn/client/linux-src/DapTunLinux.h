@@ -14,6 +14,10 @@ protected:
     void tunDeviceDestroy() override;
     void onWorkerStarted() override;
     void resetNetworkSettingsToDefault();
+    void saveRoutingTable();
+    void restoreRoutingTable();
+    void logRoutingTable();
+    void cleanupNetwork();
 
     // Getting currently using connection interface name from nmcli command-line tool
     // and save to m_lastUsedConnectionName and m_lastUsedConnectionDevice
@@ -24,6 +28,8 @@ private:
     static int nmcliVersionMajor;
     static int nmcliVersionMinor;
     static int nmcliVersionBuild;
+
+    QStringList m_savedRoutingTable;
 
     // Connection witch used before creating DiveVPN Interface
     QString m_lastUsedConnectionName;

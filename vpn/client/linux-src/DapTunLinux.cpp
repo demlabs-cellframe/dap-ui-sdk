@@ -39,6 +39,9 @@ DapTunLinux::DapTunLinux()
             qFatal("nmcli client not found");
         }
     }
+
+    cleanupNetwork();
+
     connect(SigUnixHandler::getInstance(), &SigUnixHandler::sigKill,
             this, &DapTunLinux::tunDeviceDestroy, Qt::DirectConnection);
 }
@@ -191,6 +194,9 @@ void DapTunLinux::onWorkerStarted()
 
     bool updateRouteTable = ( upstreamSocket() != -1);// We expect that its could be only no-route situation
     if( updateRouteTable ){
+        qDebug() << "logRoutingTable before connect";
+        logRoutingTable();
+        saveRoutingTable();
         checkDefaultGetaweyMetric();
         saveCurrentConnectionInterfaceData();
         disableIPV6();
@@ -316,6 +322,8 @@ void DapTunLinux::onWorkerStarted()
     qDebug() << "Executing cmdRouteToGW: " <<cmdRouteToGW;
     ::system(cmdRouteToGW.toLatin1());
 
+    qDebug() << "logRoutingTable after connect";
+    logRoutingTable();
 
     m_isCreated = true;
     emit created();
@@ -338,6 +346,10 @@ void DapTunLinux::tunDeviceDestroy()
     ::system("nmcli connection delete " DAP_BRAND);
 
     if (updateRouteTable)    {
+
+        qDebug() << "logRoutingTable before disconnect";
+        logRoutingTable();
+
         QString run = QString("ip route add default via %1").arg(m_defaultGwOld);
         qDebug() << "cmd run [" << run << ']';
         ::system(run.toLatin1().constData());
@@ -350,13 +362,114 @@ void DapTunLinux::tunDeviceDestroy()
         }
 
         enableIPV6();
+        restoreRoutingTable();
 
         ::system(QString("nmcli connection up \"%1\"")
                      .arg(m_lastUsedConnectionName).toLatin1().constData());
     }
 
     // resetNetworkSettingsToDefault();
+    qDebug() << "logRoutingTable after disconnect";
+    logRoutingTable();
 
     DapTunUnixAbstract::tunDeviceDestroy();
 }
 
+void DapTunLinux::saveRoutingTable()
+{
+    QProcess process;
+    process.start("bash", QStringList() << "-c" << "ip route");
+    process.waitForFinished(-1);
+
+    QString output = process.readAllStandardOutput().trimmed();
+    if (output.isEmpty()) {
+        qWarning() << "Routing table is empty or failed to retrieve.";
+        return;
+    }
+
+    m_savedRoutingTable = output.split('\n', Qt::SkipEmptyParts);
+    qDebug() << "Routing table saved. Entry count:" << m_savedRoutingTable.size();
+}
+
+
+void DapTunLinux::restoreRoutingTable()
+{
+    if (m_savedRoutingTable.isEmpty()) {
+        qWarning() << "No saved routing table to restore.";
+        return;
+    }
+
+    qDebug() << "Restoring routing table. Total entries:" << m_savedRoutingTable.size();
+
+    for (const QString &routeLine : m_savedRoutingTable) {
+        if (routeLine.trimmed().isEmpty())
+            continue;
+
+        QString delCmd = QString("ip route del %1 2>/dev/null").arg(routeLine);
+        ::system(delCmd.toLatin1().constData());
+
+        QStringList parts = routeLine.split(" ", Qt::SkipEmptyParts);
+        QString cmd = "ip route add";
+
+        for (int i = 0; i < parts.size(); ++i) {
+            QString part = parts[i];
+            if (part == "metric" && i + 1 < parts.size()) {
+                cmd += " metric " + parts[i + 1];
+                ++i;
+            } else {
+                cmd += " " + part;
+            }
+        }
+
+        int result = ::system(cmd.toLatin1().constData());
+
+        if (result != 0) {
+            qWarning() << "Failed to add route:" << cmd;
+        } else {
+            qDebug() << "Restored route:" << cmd;
+        }
+    }
+
+    qDebug() << "Routing table restoration complete.";
+}
+
+void DapTunLinux::logRoutingTable()
+{
+    QProcess process;
+    process.start("bash", QStringList() << "-c" << "ip route");
+    process.waitForFinished(-1);
+
+    QString output = process.readAllStandardOutput().trimmed();
+    if (output.isEmpty()) {
+        qWarning() << "Failed to retrieve routing table or it's empty.";
+        return;
+    }
+
+    qDebug() << "======== Current Routing Table ========";
+    const QStringList routes = output.split('\n');
+    for (const QString &line : routes) {
+        qDebug() << line;
+    }
+    qDebug() << "=======================================";
+}
+
+void DapTunLinux::cleanupNetwork()
+{
+
+    qDebug() << "[cleanupNetwork]: Starting network cleanup";
+    logRoutingTable();
+
+    QProcess::execute("ip", {"link", "delete", "tun0"});
+
+    QProcess checkRoute;
+    checkRoute.start("ip", {"route", "show", "default"});
+    checkRoute.waitForFinished();
+    QString output = checkRoute.readAllStandardOutput();
+    if (output.trimmed().isEmpty()) {
+        qDebug() << "No default route, restoring via 192.168.1.1";
+        QProcess::execute("ip", {"route", "add", "default", "via", "192.168.1.1"});
+    }
+
+    logRoutingTable();
+    qDebug() << "[cleanupNetwork] cleanup complete.";
+}
