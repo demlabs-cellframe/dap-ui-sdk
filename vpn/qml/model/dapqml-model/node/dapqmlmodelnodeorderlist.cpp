@@ -198,7 +198,7 @@ void DapQmlModelNodeOrderList::setOrderListData (const QJsonArray &a_list, bool 
 
       /* get fields */
       QString loc        = joItem.value ("node_location").toString();
-      QString price      = joItem.value ("price").toString();
+      QString price      = joItem.value ("price_coins").toString();
       QString punit      = joItem.value ("price_unit").toString();
       QString unit_value = joItem.value ("units").toString();
       QString server     = joItem.value ("node_location").toString();

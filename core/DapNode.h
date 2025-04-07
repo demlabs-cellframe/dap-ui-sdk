@@ -32,7 +32,7 @@ public:
     uint16_t port;
     QString ipv4;
     void setNodeAddress(const QString& a_address) { address = a_address; }
-    bool serverDataFromList(const QList<QMap<QString, QString>>& nodeDump);
+    bool serverDataFromList(const QList<QMap<QString, QString>>& nodeList);
 };
 
 /****************************************//**
@@ -256,7 +256,7 @@ signals:
     void sigNodeIpRequest();
     void sigGetNodeIpRequest(QJsonArray orderList);
     void sigFeeRequest();
-    void sigNodeDumpReceived();
+    void sigNodeListReceived();
     void sigFeeReceived();
     void sigFeeReceivedData(QJsonObject);
     void sigWalletsRequest();

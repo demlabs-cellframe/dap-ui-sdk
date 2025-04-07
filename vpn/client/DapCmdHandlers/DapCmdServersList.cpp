@@ -4,6 +4,7 @@
 #include "DapJsonParams.h"
 #include "DapConnectClient.h"
 #include "DapServiceDataLocal.h"
+#include "DapCdbManager.h"
 #include <QMetaEnum>
 
 DapCmdServersList::DapCmdServersList(QObject *parent)
@@ -28,7 +29,7 @@ void DapCmdServersList::handle(const QJsonObject* params)
 }
 
 void DapCmdServersList::sendRequestToCDB() {
-    DapNetworkReply* reply = new DapNetworkReply();
+    DapNetworkReply* reply = new DapNetworkReply(this);
 
     connect(reply, &DapNetworkReply::finished, this, [this, reply] {
         handleReplyFinished(reply);
@@ -77,43 +78,70 @@ QJsonArray DapCmdServersList::filterUnavailableServers(const QJsonArray& arr) {
 }
 
 void DapCmdServersList::handleReplyError(DapNetworkReply* reply) {
-    if (!reply) return;
+    if (!reply) {
+        qWarning() << "[DapCmdServersList] handleReplyError called with null reply.";
+        return;
+    }
 
-    qDebug() << "Network error occurred:" << reply->errorString();
+    qWarning() << "[DapCmdServersList] Network error occurred:" << reply->errorString();
 
     if (guiCall) {
+        qInfo() << "[DapCmdServersList] GUI call detected. Attempting to reload server list.";
         if (loadServerList()) {
+            qDebug() << "[DapCmdServersList] Server list reloaded successfully.";
             guiCall = false;
+        } else {
+            qWarning() << "[DapCmdServersList] Failed to reload server list.";
         }
     }
 
-    if (!emitTimer->isActive()) {
+    if (emitTimer && !emitTimer->isActive()) {
+        qDebug() << "[DapCmdServersList] Starting emitTimer.";
         emitTimer->start();
+    } else if (!emitTimer) {
+        qWarning() << "[DapCmdServersList] emitTimer is null!";
     }
 
+    qInfo() << "[DapCmdServersList] Emitting nextCdb() signal.";
     emit nextCdb();
+
     sendSimpleError(reply->error(), reply->errorString());
 }
 
-void DapCmdServersList::processNextCDB(int errorCode, const QString& errorMessage) {
-    DapServiceDataLocal::instance()->nextCbdIterator();
 
-    auto cdbIterator = DapServiceDataLocal::instance()->getCdbIterator();
-    if (cdbIterator == DapServiceDataLocal::instance()->cdbServersList().end()) {
-        DapServiceDataLocal::instance()->setNewCbdIterator(DapServiceDataLocal::instance()->cdbServersList().begin());
+void DapCmdServersList::processNextCDB(int errorCode, const QString& errorMessage) {
+    auto& manager = DapCdbManager::instance();
+
+    if (!manager.hasServers()) {
+        qWarning() << "[DapCmdServersList] No CDB servers available.";
+        sendSimpleError(errorCode, errorMessage);
+        return;
+    }
+
+    if (!manager.nextServer()) {
+        qInfo() << "[DapCmdServersList] Reached end of server list. Resetting index.";
+        manager.resetIndex();
 
         if (loadServerList()) {
+            qDebug() << "[DapCmdServersList] Server list reloaded successfully.";
             return;
         }
     }
 
+    qWarning() << "[DapCmdServersList] Sending error:" << errorCode << errorMessage;
     sendSimpleError(errorCode, errorMessage);
 }
 
+
 void DapCmdServersList::sendRequestToCurrentCDB(DapNetworkReply* reply) {
-    auto it = DapServiceDataLocal::instance()->getCdbIterator();
-    qDebug() << "Sending request to:" << it->address << ":" << it->port;
-    DapConnectClient::instance()->request_GET(it->address, it->port, "nodelist", *reply);
+    DapCdbServer* server = DapCdbManager::instance().currentServer();
+    if (!server) {
+        qWarning() << "[DapCmdServersList] No CDB server available to send request.";
+        return;
+    }
+
+    qDebug() << "Sending request to:" << server->address << ":" << server->port;
+    DapConnectClient::instance()->request_GET(server->address, server->port, "nodelist", *reply);
 }
 
 void DapCmdServersList::updateServerList(const QJsonArray& arr) {

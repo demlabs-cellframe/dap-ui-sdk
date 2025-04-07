@@ -1,5 +1,7 @@
 #include "DapCmdCdbCtl.h"
 #include "DapServiceDataLocal.h"
+#include "DapCdbManager.h"
+#include "dap_net.h"
 
 enum DapCmdCdbCtlValue
 {
@@ -43,7 +45,7 @@ void DapCmdCdbCtl::handle (const QJsonObject *params)
     case DapCmdCdbCtlValue::GET:
     {
         /* collect servers into string list */
-        const auto &list  = DapServiceDataLocal::instance()->cdbServersList();
+        const auto& list = DapCdbManager::instance().servers();
         QStringList result;
 
         for (const auto &item : list)
@@ -58,21 +60,34 @@ void DapCmdCdbCtl::handle (const QJsonObject *params)
         static const QString SETTING_CDB { "cdb" };
 
         /* get new cdb servers list and check */
-        auto cdb  = params->value (s_fieldCdb);
-        if (value == QJsonValue::Undefined)
+        auto cdb = params->value(s_fieldCdb);
+        if (cdb == QJsonValue::Undefined)
         {
             qWarning() << "Invalid cdb list" << params;
             return;
         }
 
-        /* get actual list and update */
-        auto src  = cdb.toString();
-        auto list = src.split(',');
-        auto cdbs = DapCdbServerList::toServers (list);
+        /* parse string into servers and update manager */
+        auto src = cdb.toString();
+        auto list = src.split(',', Qt::SkipEmptyParts);
 
-        auto data = DapServiceDataLocal::instance();
-        data->updateCdbList(cdbs);
-        data->saveSetting (SETTING_CDB, src.toLatin1().toBase64());
+        auto& manager = DapCdbManager::instance();
+        manager.clear();
+
+        for (const QString& item : list)
+        {
+            QByteArray str = item.toLatin1();
+            char* raw = str.data();
+            char l_host[257] = {};
+            uint16_t port = 0;
+
+            if (dap_net_parse_config_address(raw, l_host, &port, nullptr, nullptr))
+            {
+                manager.addServer(QString(l_host), port ? port : 80);
+            }
+        }
+
+        DapServiceDataLocal::instance()->saveSetting(SETTING_CDB, src.toLatin1().toBase64());
     } break;
 
     };

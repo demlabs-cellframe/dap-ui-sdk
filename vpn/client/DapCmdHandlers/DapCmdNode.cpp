@@ -88,16 +88,43 @@ void DapCmdNode::sendWalletsData(const QJsonObject& a_walletsData)
     DEBUGINFO << "sendWalletsData";
 }
 
-void DapCmdNode::sendOrderList(const QJsonArray& orderList)
-{
+QJsonObject DapCmdNode::transformKeys(const QJsonObject& inputObj) {
+    QJsonObject result;
+    for (const QString& key : inputObj.keys()) {
+        QString newKey = key;
+        newKey.replace(' ', '_');
+
+        if (inputObj[key].isObject()) {
+            result[newKey] = transformKeys(inputObj[key].toObject());
+        } else if (inputObj[key].isArray()) {
+            QJsonArray newArray;
+            for (const QJsonValue& value : inputObj[key].toArray()) {
+                if (value.isObject()) {
+                    newArray.append(transformKeys(value.toObject()));
+                } else {
+                    newArray.append(value);
+                }
+            }
+            result[newKey] = newArray;
+        } else {
+            result[newKey] = inputObj[key];
+        }
+    }
+    return result;
+}
+
+void DapCmdNode::sendOrderList(const QJsonArray& orderList) {
     DEBUGINFO << __PRETTY_FUNCTION__;
 
-    for (const auto order : orderList) {
-        qDebug() << order["hash"] << " " << order["node_addr"] << " " << order["node_location"];
+    QJsonArray transformedOrderList;
+    for (const auto& order : orderList) {
+        QJsonObject transformedOrder = transformKeys(order.toObject());
+        qDebug() << transformedOrder["hash"] << " " << transformedOrder["node_addr"] << " " << transformedOrder["node_location"];
+        transformedOrderList.append(transformedOrder);
     }
 
     QJsonObject response;
-    response["order_list"] = orderList;
+    response["order_list"] = transformedOrderList;
     sendCmd(&response);
     DEBUGINFO << "sendOrderList";
 }

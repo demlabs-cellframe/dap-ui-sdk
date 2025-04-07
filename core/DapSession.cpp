@@ -36,6 +36,7 @@
 #include <QJsonObject>
 #include <QFile>
 #include "DapServiceDataLocal.h"
+#include "DapCdbManager.h"
 #include "DapSerialKeyData.h"
 #include "DapLogger.h"
 
@@ -95,7 +96,7 @@ DapNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QSt
 DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObject *obj, const char *slot, const char *slot_err,
                                                    const QByteArray* data, bool isCDB, bool isCriticalReq)
 {
-    DapNetworkReply *netReply = new DapNetworkReply();
+    DapNetworkReply *netReply = new DapNetworkReply(this);
     if (slot) {
         connect(netReply, SIGNAL(finished()), obj, slot);
     }
@@ -155,8 +156,13 @@ void DapSession::sendBugReport(const QByteArray &data)
 {
     if (!m_dapCryptCDB)
     {
-        auto it = DapServiceDataLocal::instance()->getCdbIterator();
-        this->setDapUri (it->address, it->port); //80);
+        DapCdbServer* server = DapCdbManager::instance().currentServer();
+        if (server) {
+            this->setDapUri(server->address, server->port);
+        } else {
+            qWarning() << "[DapSession] No CDB server available to set!";
+        }
+
         auto *l_tempConn = new QMetaObject::Connection();
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]
                               {
@@ -205,8 +211,13 @@ void DapSession::sendBugReportStatusRequest(const QByteArray &data)
 {
     if (!m_dapCryptCDB)
     {
-        auto it = DapServiceDataLocal::instance()->getCdbIterator();
-        this->setDapUri (it->address, it->port); //80);
+        DapCdbServer* server = DapCdbManager::instance().currentServer();
+        if (server) {
+            this->setDapUri(server->address, server->port);
+        } else {
+            qWarning() << "[DapSession] No CDB server available to set!";
+        }
+
         auto *l_tempConn = new QMetaObject::Connection();
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]
                               {
@@ -250,7 +261,7 @@ QString readJsonFile(const QString& filePath)
 
 void DapSession::getNews()
 {
-    DapNetworkReply *m_netNewsReply = new DapNetworkReply;
+    DapNetworkReply *m_netNewsReply = new DapNetworkReply(this);
     connect(m_netNewsReply, &DapNetworkReply::sigError, this, []() {
         qCritical() << "Couldn't fetch news";
         return;
@@ -301,8 +312,14 @@ void DapSession::getNews()
 
         emit sigReceivedNewsMessage(jsonDoc);
     });
-    auto it = DapServiceDataLocal::instance()->getCdbIterator();
-    DapConnectClient::instance()->request_GET (it->address, it->port, URL_NEWS, *m_netNewsReply);
+
+    DapCdbServer* server = DapCdbManager::instance().currentServer();
+    if (server) {
+        DapConnectClient::instance()->request_GET(server->address, server->port, URL_NEWS, *m_netNewsReply);
+    } else {
+        qWarning() << "[DapChainVpnService] No CDB server available for news request.";
+    }
+
 }
 
 /**
@@ -884,7 +901,7 @@ DapNetworkReply *DapSession::logoutRequest() {
 
 DapNetworkReply * DapSession::requestRawToSite(const QString& dnsName, const QString& url, const QByteArray& bData, const char * slot, bool ssl, const QString& headers)
 {
-    DapNetworkReply * netReply = new DapNetworkReply;
+    DapNetworkReply * netReply = new DapNetworkReply(this);
     DapConnectClient::instance()->request_POST(dnsName, 443, url, bData, *netReply, headers, ssl);
     connect(netReply, SIGNAL(finished()), this, slot);
     return netReply;
@@ -944,8 +961,13 @@ void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domai
     }
 
     if (!m_dapCryptCDB) {
-        auto it = DapServiceDataLocal::instance()->getCdbIterator();
-        this->setDapUri (it->address, it->port);//80);
+        DapCdbServer* server = DapCdbManager::instance().currentServer();
+        if (server) {
+            this->setDapUri(server->address, server->port);
+        } else {
+            qWarning() << "[DapSession] No CDB server available to set!";
+        }
+
         auto *l_tempConn = new QMetaObject::Connection();
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, a_serial, a_domain, a_pkey, l_tempConn]{
             preserveCDBSession();

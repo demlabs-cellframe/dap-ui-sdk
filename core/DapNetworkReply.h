@@ -9,6 +9,7 @@ class DapNetworkReply: public QObject
     Q_OBJECT
 public:
     explicit DapNetworkReply();
+    explicit DapNetworkReply(QObject *parent = nullptr) : QObject(parent) { }
 
     int error() const { return m_error; } // a native, platform-dependent network error (see errno.h)
     QString errorString(){ return m_errorString; }
