@@ -120,7 +120,7 @@ Item
                     text: currentValue
                     font: mainFont.dapFont.regular16
                     regExpValidator: /[0-9]*\.?[0-9]{0,18}/
-                    placeholderText: "0.0"
+                    defaultPlaceholderText: "0.0"
                     horizontalAlignment: Text.AlignRight
                     borderWidth: 0
                     borderRadius: 0

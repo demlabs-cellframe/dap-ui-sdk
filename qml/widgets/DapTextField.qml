@@ -3,6 +3,7 @@ import QtQuick.Controls
 
 TextField {
     id: root
+
     property bool bottomLineVisible: false
     property int bottomLineSpacing: 8
     property color bottomLineColor: borderColor
@@ -19,6 +20,8 @@ TextField {
     property color placeholderColor: currTheme.gray
     property color textColor: currTheme.white
     property string passwordChar: ""
+    property string defaultPlaceholderText: ""
+
 
     property int indicatorTopMargin: 0
     property bool indicatorVisible: false
@@ -27,13 +30,17 @@ TextField {
     property url indicatorSourceEnabledHover: ""
     property url indicatorSourceDisabledHover: ""
     property alias indicator: indicator
+    property bool isActiveCopy: true
 
     property var regExpValidator: /.*/
+
+    signal updateFeild()
 
     validator: RegularExpressionValidator { regularExpression: regExpValidator}
 
     Keys.onReturnPressed: focus = false
 
+    placeholderText: root.defaultPlaceholderText
     placeholderTextColor: root.placeholderColor
     color: root.textColor
     selectionColor: root.selectColor
@@ -47,6 +54,17 @@ TextField {
         color: root.backgroundColor
     }
 
+    onActiveFocusChanged: {
+        // If the TextField is focused, hide the placeholder text
+        if (root.activeFocus) {
+            root.placeholderText = "";
+        } else {
+            root.placeholderText = root.defaultPlaceholderText;  // Or whatever default text you want
+        }
+
+        updateFeild()
+    }
+
     DapImageRender {
         id: indicator
         z: 10
@@ -58,6 +76,8 @@ TextField {
 
         visible: root.indicatorVisible
         source: root.indicatorSourceDisabled
+
+        sourceSize: Qt.size(24 * guiApp.scaleFactor,24 * guiApp.scaleFactor)
 
         MouseArea {
             id: area
@@ -92,13 +112,24 @@ TextField {
         anchors.rightMargin: root.bottomLineLeftRightMargins
         anchors.topMargin: root.bottomLineSpacing
 
-        height: 1
+        height: 1  * guiApp.scaleFactor
         color: root.bottomLineColor
 
         Behavior on width {
             NumberAnimation {
                 duration: 100
                 easing.type: Easing.InOutQuad
+            }
+        }
+    }
+
+    Connections{
+        target: Qt.inputMethod
+        function onVisibleChanged(){
+            if(!Qt.inputMethod.visible)
+            {
+                // keyboard.visible = false
+                root.focus = false
             }
         }
     }
