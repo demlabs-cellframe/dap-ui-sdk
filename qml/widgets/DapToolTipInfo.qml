@@ -12,6 +12,7 @@ Image {
     property alias text: text
     property alias mouseArea: area
     property font textFont: mainFont.dapFont.medium12
+    property double scaleFactor: 1.0
 
     signal clicked()
 
@@ -38,14 +39,14 @@ Image {
     ToolTip{
         id: toolTip
         visible: area.containsMouse
-        width: 213
-        y: -(height + 10)
+        width: 213 * scaleFactor
+        y: -(height + 10 * scaleFactor)
         x: 0
 
         contentItem:
         Item{
             anchors.fill: parent
-            anchors.margins: 8
+            anchors.margins: 8 * scaleFactor
             Text
             {
                 id: text

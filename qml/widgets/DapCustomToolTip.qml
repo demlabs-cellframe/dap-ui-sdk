@@ -12,6 +12,7 @@ ToolTip {
     property string textColor: currTheme.white
     property string contentText
     property alias backgroundToolTip: backgroundToolTip
+    property double scaleFactor: 1.0
 
     contentItem:
     Text
@@ -57,10 +58,9 @@ ToolTip {
             anchors.horizontalCenter: backgroundToolTip.horizontalCenter
             color: backgroundToolTip.color
 
-            width: 12
-            height: 12
+            width: 12 * scaleFactor
+            height: 12 * scaleFactor
             rotation: 45
-
             Connections{
                 target: root
 
