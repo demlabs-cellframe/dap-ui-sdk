@@ -15,6 +15,7 @@ void DapCmdConnect::sendCmdConnect(const QString& a_addr, quint16 a_port,
     obj["address"] = a_addr;
     obj["port"] = a_port;
     obj["updateRouteTable"] = a_updateRouteTable;
+    obj["saveRouteTable"] = bSaveRouting;
     if ( !a_user.isEmpty() )
         obj["user"] = a_user;
     if ( !a_pswd.isEmpty())
@@ -25,7 +26,6 @@ void DapCmdConnect::sendCmdConnect(const QString& a_addr, quint16 a_port,
         obj["run_script_path"] = QString(a_runScriptPath);
         obj["run_script_after_connect"] = a_runAfterConnect;
     }
-
     sendCmd(&obj);
 }
 

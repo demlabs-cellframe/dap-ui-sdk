@@ -22,6 +22,11 @@ protected:
     void workerStop()           override;
     void workerPause()          override;
     void signalWriteQueueProc() override;
+
+    void saveRoutingTable();
+    void restoreRoutingTable();
+    void logRoutingTable();
+    QStringList m_savedRoutingTable;
 };
 
 #endif // DAPTUNWINDOWS_H

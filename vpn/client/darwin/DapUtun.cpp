@@ -42,6 +42,8 @@ DapUtun::DapUtun()
 
     connect(SigUnixHandler::getInstance(), &SigUnixHandler::sigKill,
             this, &DapUtun::tunDeviceDestroy, Qt::DirectConnection);
+
+    cleanupNetwork();
 }
 
 
@@ -294,6 +296,9 @@ void DapUtun::onWorkerStarted()
 
     saveCurrentConnectionInterfaceData();
 
+    logRoutingTable();
+    if (m_saveRouteTable) saveRoutingTable();
+
     m_currentInterface = getCurrentNetworkInterface();
     if (m_currentInterface.isEmpty()) {
         qCritical() << "No active network interface found!";
@@ -444,5 +449,125 @@ void DapUtun::tunDeviceDestroy()
                                 .arg(m_currentInterface)
                                 .arg(m_defaultGwOld);
     executeCommand(cmdRestoreDNS);
+
+    if (m_saveRouteTable) restoreRoutingTable();
+
     qInfo() << "Restored DNS settings for" << m_currentInterface << "to" << m_defaultGwOld;
+
+    logRoutingTable();
 }
+
+void DapUtun::saveRoutingTable()
+{
+    QProcess process;
+    process.start("netstat", QStringList() << "-rn");
+    process.waitForFinished(-1);
+
+    QString output = process.readAllStandardOutput().trimmed();
+    if (output.isEmpty()) {
+        qWarning() << "Routing table is empty or failed to retrieve.";
+        return;
+    }
+
+    QStringList lines = output.split('\n', Qt::SkipEmptyParts);
+
+    m_savedRoutingTable.clear();
+    bool dataSectionStarted = false;
+
+    for (const QString &line : lines) {
+        if (line.contains("Destination") && line.contains("Gateway"))
+            continue;
+
+        if (!dataSectionStarted && line.trimmed().startsWith("default"))
+            dataSectionStarted = true;
+
+        if (dataSectionStarted)
+            m_savedRoutingTable << line.trimmed();
+    }
+
+    qDebug() << "Routing table saved. Entry count:" << m_savedRoutingTable.size();
+}
+
+void DapUtun::restoreRoutingTable()
+{
+    if (m_savedRoutingTable.isEmpty()) {
+        qWarning() << "No saved routing table to restore.";
+        return;
+    }
+
+    qDebug() << "Restoring routing table. Total entries:" << m_savedRoutingTable.size();
+
+    for (const QString &routeLine : m_savedRoutingTable) {
+        if (routeLine.trimmed().isEmpty())
+            continue;
+
+        QStringList parts = routeLine.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
+        if (parts.size() < 2) {
+            qWarning() << "Malformed route line, skipping:" << routeLine;
+            continue;
+        }
+
+        QString destination = parts[0];
+        QString gateway = parts[1];
+
+        if (gateway.startsWith("link#") || gateway == "lo0" || gateway == "127.0.0.1")
+            continue;
+
+        QString delCmd = QString("sudo route delete %1 %2").arg(destination, gateway);
+        ::system(delCmd.toLatin1().constData());
+
+        QString addCmd = QString("sudo route add %1 %2").arg(destination, gateway);
+        int result = ::system(addCmd.toLatin1().constData());
+
+        if (result != 0) {
+            qWarning() << "Failed to add route:" << addCmd;
+        } else {
+            qDebug() << "Restored route:" << addCmd;
+        }
+    }
+
+    qDebug() << "Routing table restoration complete.";
+}
+
+void DapUtun::logRoutingTable()
+{
+    QProcess process;
+    process.start("netstat", QStringList() << "-rn");
+    process.waitForFinished(-1);
+
+    QString output = process.readAllStandardOutput().trimmed();
+    if (output.isEmpty()) {
+        qWarning() << "Failed to retrieve routing table or it's empty.";
+        return;
+    }
+
+    qDebug() << "======== Current Routing Table ========";
+    const QStringList routes = output.split('\n');
+    for (const QString &line : routes) {
+        qDebug() << line;
+    }
+    qDebug() << "=======================================";
+}
+
+void DapUtun::cleanupNetwork()
+{
+    qDebug() << "[cleanupNetwork]: Starting network cleanup";
+    logRoutingTable();
+
+    QProcess::execute("ifconfig", {"tun0", "destroy"});
+
+    QProcess checkRoute;
+    checkRoute.start("route", {"-n", "get", "default"});
+    checkRoute.waitForFinished();
+    QString output = checkRoute.readAllStandardOutput();
+    if (!output.contains("gateway")) {
+        qDebug() << "No default route, restoring via 192.168.1.1";
+        QProcess::execute("route", {"add", "default", "192.168.1.1"});
+    }
+
+    logRoutingTable();
+    qDebug() << "[cleanupNetwork] cleanup complete.";
+}
+
+
+

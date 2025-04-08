@@ -21,6 +21,8 @@ DapTunWindows::DapTunWindows()
  */
 void DapTunWindows::tunDeviceCreate()
 {
+    if (m_saveRouteTable) saveRoutingTable();
+
     if (m_tunSocket <= 0) {
         m_tunSocket=TunTap::getInstance().makeTunTapDevice(m_tunDeviceName);
         m_isCreated = true;
@@ -69,6 +71,9 @@ void DapTunWindows::tunDeviceDestroy()
         qDebug() << "Re-flushing DNS...";
         exec_silent("ipconfig /flushdns");
     }
+
+    if (m_saveRouteTable) restoreRoutingTable();
+    logRoutingTable();
 
     emit destroyed();
 }
@@ -208,5 +213,89 @@ void DapTunWindows::addNewUpstreamRoute(const QString &a_addr) {
     TunTap::getInstance().makeRoute(TunTap::ETH, a_addr,  m_defaultGwOld, metric_eth);
 }
 
+void DapTunWindows::saveRoutingTable()
+{
+    QProcess process;
+    process.start("cmd", QStringList() << "/C" << "route print");
+    process.waitForFinished(-1);
 
+    QString output = process.readAllStandardOutput().trimmed();
+    if (output.isEmpty()) {
+        qWarning() << "Routing table is empty or failed to retrieve.";
+        return;
+    }
+
+    m_savedRoutingTable.clear();
+
+    bool parsing = false;
+    const QStringList lines = output.split('\n', Qt::SkipEmptyParts);
+    for (const QString &line : lines) {
+        if (line.contains("IPv4 Route Table"))
+            parsing = true;
+        else if (line.contains("IPv6") || line.contains("==="))
+            parsing = false;
+
+        if (parsing && line.contains('.') && !line.contains("On-link")) {
+            m_savedRoutingTable << line.trimmed();
+        }
+    }
+
+    qDebug() << "Routing table saved. Entry count:" << m_savedRoutingTable.size();
+}
+
+void DapTunWindows::restoreRoutingTable()
+{
+    if (m_savedRoutingTable.isEmpty()) {
+        qWarning() << "No saved routing table to restore.";
+        return;
+    }
+
+    qDebug() << "Restoring routing table. Total entries:" << m_savedRoutingTable.size();
+
+    for (const QString &routeLine : m_savedRoutingTable) {
+        QStringList parts = routeLine.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
+        if (parts.size() < 3) {
+            qWarning() << "Malformed route line, skipping:" << routeLine;
+            continue;
+        }
+
+        QString destination = parts[0];
+        QString netmask     = parts[1];
+        QString gateway     = parts[2];
+
+        QString delCmd = QString("route delete %1").arg(destination);
+        ::system(delCmd.toLatin1().constData());
+
+        QString addCmd = QString("route add %1 mask %2 %3").arg(destination, netmask, gateway);
+        int result = ::system(addCmd.toLatin1().constData());
+
+        if (result != 0) {
+            qWarning() << "Failed to add route:" << addCmd;
+        } else {
+            qDebug() << "Restored route:" << addCmd;
+        }
+    }
+
+    qDebug() << "Routing table restoration complete.";
+}
+
+void DapTunWindows::logRoutingTable()
+{
+    QProcess process;
+    process.start("cmd", QStringList() << "/C" << "route print");
+    process.waitForFinished(-1);
+
+    QString output = process.readAllStandardOutput().trimmed();
+    if (output.isEmpty()) {
+        qWarning() << "Failed to retrieve routing table.";
+        return;
+    }
+
+    qDebug() << "======== Current Routing Table ========";
+    const QStringList lines = output.split('\n');
+    for (const QString &line : lines) {
+        qDebug() << line.trimmed();
+    }
+    qDebug() << "=======================================";
+}
 

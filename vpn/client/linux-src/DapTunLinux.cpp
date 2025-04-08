@@ -196,7 +196,7 @@ void DapTunLinux::onWorkerStarted()
     if( updateRouteTable ){
         qDebug() << "logRoutingTable before connect";
         logRoutingTable();
-        saveRoutingTable();
+        if (m_saveRouteTable) saveRoutingTable();
         checkDefaultGetaweyMetric();
         saveCurrentConnectionInterfaceData();
         disableIPV6();
@@ -362,7 +362,7 @@ void DapTunLinux::tunDeviceDestroy()
         }
 
         enableIPV6();
-        restoreRoutingTable();
+        if (m_saveRouteTable) restoreRoutingTable();
 
         ::system(QString("nmcli connection up \"%1\"")
                      .arg(m_lastUsedConnectionName).toLatin1().constData());

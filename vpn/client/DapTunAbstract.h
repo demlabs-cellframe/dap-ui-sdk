@@ -19,7 +19,7 @@ class DapTunAbstract : public QObject
 public:
     DapTunAbstract();
 
-    void create(const QString &a_addr, const QString &a_gw,
+    void create(const QString &a_addr, const QString &a_gw, bool a_saveRouteTable = false,
                 const QString & a_upstreamAddress = QString(), qint16 a_upstreamPort = 0,
                 int a_upstreamSocket = -1, QStringList a_routing_exceptions = QStringList());
     void destroy();
@@ -97,6 +97,7 @@ protected:
     QString m_ethDevice;
     QString m_defaultGwOld;
     QList<QString> m_routingExceptionAddrs;
+    bool m_saveRouteTable;
 
 private:
     const QString tempNetFileName = "TempConfigurationNetwork.xml";
@@ -108,6 +109,7 @@ private:
     //QQueue<DapSockForwPacket*> m_writeQueue;
     QReadWriteLock m_writeQueueLock;
     QWaitCondition m_writeQueueCond;
+
 
 
 protected:

@@ -19,9 +19,15 @@ public slots:
 
     void sendCmdDisconnect();
     void sendCmdRestartService(bool if_running = false);
+
+    void setSaveRouting(bool a_state){
+        bSaveRouting = a_state;
+    };
 protected:
     void handleResult(const QJsonObject& result) override;
     void handleError(int code, const QString& message) override;
+
+    bool bSaveRouting = true;
 signals:
     void errorMessage(const QString& message);
     void errorMessageWithCode(const QString& message);

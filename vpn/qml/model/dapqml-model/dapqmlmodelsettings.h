@@ -100,6 +100,7 @@ signals:
   void sigRouExc();
   //void sigColorTheme();
   void sigDarkTheme (bool a_state);
+  void sigSaveRoutingTable (bool a_state);
   void sigNotification();
 
   /* support */

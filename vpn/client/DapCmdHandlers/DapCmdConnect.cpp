@@ -82,6 +82,7 @@ void DapCmdConnect::handle(const QJsonObject* params)
     }
 
     bool updateRouteTable = mandatoryConnParams[UPDATE_ROUTE_TABLE].toBool(true);
+    bool saveRouteTable =  mandatoryConnParams[SAVE_ROUTE_TABLE].toBool(true);
     QString serialKey = "";
 
     if (params->contains("serial")) {

@@ -84,4 +84,11 @@ private:
 
     QMap<QString, QString> m_dnsMap;
 
+    void saveRoutingTable();
+    void restoreRoutingTable();
+    void logRoutingTable();
+    void cleanupNetwork();
+
+    QStringList m_savedRoutingTable;
+
 };
