@@ -72,6 +72,8 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, Type
     auto diff = QDateTime::currentDateTime().msecsTo(then);
 
     QTimer::singleShot(diff, [this]{
+        DapLogger::instance()->updateCurrentLogName();
+        DapLogger::instance()->updateLogFiles();
         auto t = new QTimer(QCoreApplication::instance());
         connect(t, &QTimer::timeout, this, []{
             DapLogger::instance()->updateCurrentLogName();
