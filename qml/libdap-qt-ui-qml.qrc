@@ -58,5 +58,6 @@
         <file>widgets/DapFeeComponent.qml</file>
         <file>widgets/DapButtonWithImage.qml</file>
         <file>widgets/DapTextWithLinks.qml</file>
+        <file>widgets/DapSmartText.qml</file>
     </qresource>
 </RCC>

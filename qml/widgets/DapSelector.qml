@@ -7,9 +7,9 @@ Rectangle
 {
     id: selectorItem
 
-    property int itemHorisontalBorder: 10
-    property int itemVerticalBorder: -2
-    property int viewerBorder: 4
+    property int itemHorisontalBorder: 10 * guiApp.scaleFactor
+    property int itemVerticalBorder: -2 * guiApp.scaleFactor
+    property int viewerBorder: 4 * guiApp.scaleFactor
     property int currentIndex: viewerItem.currentIndex
     property int defaultIndex: 0
     property font textFont: mainFont.dapFont.medium14
@@ -109,7 +109,7 @@ Rectangle
                     height: frameItem.height
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
-                    bottomPadding: CURRENT_OS === "win" ? 4 : 0
+                    bottomPadding: CURRENT_OS === "win" ? 4 * guiApp.scaleFactor : 0
                     color: textColor
                     font: textFont
                     text: name

@@ -12,18 +12,20 @@ Item {
     property int hideDelay: 500
     property string iconPath: ""
     property string infoText: ""
-    property int borderWidth: 12
-    property int spacing: 10
-    property int commonHeight: 20
+    property int borderWidth: 12 * scaleFactor
+    property int spacing: 10 * scaleFactor
+    property int commonHeight: 20 * scaleFactor
     property alias textComponent: textItem
 
+    property double scaleFactor: 1.0
+
     property real startX: dapMainWindow.width
-    property real stopX: dapMainWindow.width - (popup.width + 24)
+    property real stopX: dapMainWindow.width - (popup.width + 24 * scaleFactor)
 
     width: rectItem.width
     height: rectItem.height
 
-    y: 84
+    y: 84 * scaleFactor
 
     z: 100
 
@@ -75,9 +77,9 @@ Item {
     Rectangle
     {
         id: rectItem
-        width: 168
-        height: 48
-        radius: 16
+        width: 168 * scaleFactor
+        height: 48 * scaleFactor
+        radius: 16 * scaleFactor
         color: currTheme.secondaryBackground
     }
 
@@ -106,9 +108,9 @@ Item {
     RowLayout
     {
         anchors.fill: rectItem
-        anchors.leftMargin: 16
-        anchors.rightMargin: 16
-        spacing: 10
+        anchors.leftMargin: 16 * scaleFactor
+        anchors.rightMargin: 16 * scaleFactor
+        spacing: 10 * scaleFactor
 
         DapImageLoader
         {
@@ -136,7 +138,7 @@ Item {
         if(width)
         {
             rectItem.width = width
-            stopX = dapMainWindow.width - (popup.width + 24)
+            stopX = dapMainWindow.width - (popup.width + 24 * scaleFactor)
         }
         if(height)
             rectItem.height = height
