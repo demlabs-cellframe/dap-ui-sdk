@@ -39,13 +39,14 @@ protected slots:
 
     void sendPacket(quint8 a_id, quint8 a_type, void* a_data, quint32 a_dataSize)
     {
-        std::unique_ptr<DapChannelPacketHdr> hdr(new DapChannelPacketHdr());
-        memset(hdr.get(), 0, sizeof(*hdr));
+        // std::unique_ptr<DapChannelPacketHdr> hdr((DapChannelPacketHdr *) ::calloc(1, sizeof(DapChannelPacketHdr)));
+        DapChannelPacketHdr *hdr = (DapChannelPacketHdr *) ::calloc(1, sizeof(DapChannelPacketHdr));
+        memset(hdr, 0, sizeof(*hdr));
         hdr->id = a_id;
         hdr->type = a_type;
         hdr->size = a_dataSize;
 
-        emit pktChOut(hdr.release(), a_data);
+        emit pktChOut(hdr, a_data);
     }
 
 signals:

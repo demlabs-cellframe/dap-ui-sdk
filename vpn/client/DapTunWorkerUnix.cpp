@@ -131,7 +131,7 @@ void DapTunWorkerUnix::loop()
                 pktOutPos += writeRet;
                 if(pktOutPos>= pktOut->header.op_data.data_size ){ // Packet is sent into the tunnel
                     emit bytesRead(pktOutPos);
-                    delete pktOut;
+                    ::free(pktOut);
                     pktOut = nullptr;
                     pktOutPos = 0;
                 }

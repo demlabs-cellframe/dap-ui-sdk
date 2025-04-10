@@ -118,7 +118,7 @@ void DapStreamer::writeChannelPacket(DapChannelPacketHdr *a_pktHdr, void *data, 
     writeStreamRaw(m_writeEncDataOut, pktOutDataSize);
 
     ::free(data);
-    delete a_pktHdr;
+    ::free(a_pktHdr);
 }
 
 void DapStreamer::sltStreamStateChanged(QAbstractSocket::SocketState state)
