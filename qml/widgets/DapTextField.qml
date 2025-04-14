@@ -269,6 +269,6 @@ TextField {
     function openMenu()
     {
         contextMenu.open()
-        forceActiveFocus()
+        // forceActiveFocus()
     }
 }
