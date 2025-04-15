@@ -42,7 +42,7 @@ public:
         VALUE, STATE_NAME,
         MESSAGE, ADDRESS, PORT, USER, PASSWORD, DISCONNECT,
         LAST_CONNECTION, GATEWAY, UPSTREAM_SOCKET,
-        ACTION, HOST, CDB
+        ACTION, HOST, CDB, INSTANCE_ID
     };
     static const QString& toString(Params p);
     static Params fromString(QString &param);
