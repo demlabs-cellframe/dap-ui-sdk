@@ -38,8 +38,10 @@ public slots:
     void saveAuthorizationData() override;
 
     void dataFromCommand(const QJsonObject& object);
+
 signals:
     void valueDataLocalUpdated(const QJsonObject& object);
+    void serialKeyDataUpdateFromService();
 
     void allDataReceived();
     void reMigrationSignal();

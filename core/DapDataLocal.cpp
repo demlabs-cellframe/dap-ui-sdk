@@ -179,6 +179,10 @@ void DapDataLocal::dataFromCommand(const QJsonObject& object)
         else {
             fromJson(object);
         }
+    } else if (object.contains(JSON_SERIAL_KEY_DATA_KEY)){
+        QJsonObject serialKeyData = object[JSON_SERIAL_KEY_DATA_KEY].toObject();
+        DapDataLocal::instance()->serialKeyData()->setFromJson(serialKeyData);
+        emit serialKeyDataUpdateFromService();
     }
     else {
         fromJson(object);

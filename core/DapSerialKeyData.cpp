@@ -29,6 +29,23 @@ void DapSerialKeyData::setSerialKey(const QString &a_serialKey)
     emit serialKeyChanged(m_serialKey);
 }
 
+void DapSerialKeyData::setFromJson(const QJsonObject& jsonData)
+{
+    if (jsonData.contains(JSON_SERIAL_KEY_KEY) && jsonData[JSON_SERIAL_KEY_KEY].isString()) {
+        setSerialKey(jsonData[JSON_SERIAL_KEY_KEY].toString());
+    }
+
+    if (jsonData.contains(JSON_IS_ACTIVATED_KEY) && jsonData[JSON_IS_ACTIVATED_KEY].isBool()) {
+        setActivated(jsonData[JSON_IS_ACTIVATED_KEY].toBool());
+    }
+
+    if (jsonData.contains(JSON_LISENSE_TIME_KEY) && jsonData[JSON_LISENSE_TIME_KEY].isString()) {
+        setLicenseTermTill(QString::number(jsonData[JSON_LISENSE_TIME_KEY].toString().toLongLong()));
+    }
+
+    emit sigSerialKeyIsSet();
+}
+
 void DapSerialKeyData::userSerialKeyEntered(const QString &a_serialKey)
 {
     if(m_serialKey != a_serialKey)
@@ -76,32 +93,46 @@ int DapSerialKeyData::daysLeft()
 
 QString DapSerialKeyData::daysLeftString()
 {
+    qDebug() << "[daysLeftString] Method called";
+
     QString text;
-    if (m_isActivated)
-    {
-        int days = this->daysLeft();
-        switch (days) {
-            case -1:
-                return QObject::tr("Unlimited");
-            case 1:
-                return QObject::tr("%1 day left").arg(days);
-            default:
-                return QObject::tr("%1 days left").arg(days);
-        }
-    }
-    else
-    {
-        return QString("");
+
+    qDebug() << "[daysLeftString] License is activated";
+
+    int days = this->daysLeft();
+    qDebug() << "[daysLeftString] Days left:" << days;
+
+    switch (days) {
+    case -1:
+        qDebug() << "[daysLeftString] Unlimited license";
+        return QObject::tr("Unlimited");
+    case 1:
+        qDebug() << "[daysLeftString] 1 day left";
+        return QObject::tr("%1 day left").arg(days);
+    default:
+        qDebug() << "[daysLeftString] Multiple days left:" << days;
+        return QObject::tr("%1 days left").arg(days);
     }
 }
 
 void DapSerialKeyData::setLicenseTermTill(const QString &a_date)
 {
+    qDebug() << "[setLicenseTermTill] Received a_date:" << a_date;
+
     QDateTime tempDate = QDateTime::fromTime_t(a_date.toUInt());
+    qDebug() << "[setLicenseTermTill] Converted a_date to QDateTime:" << tempDate;
+
+    if (tempDate == this->m_licenseTermTill){
+        qDebug() << "[setLicenseTermTill] Converted a_date the same";
+        return;
+    }
 
     this->m_licenseTermTill = tempDate;
+    qDebug() << "[setLicenseTermTill] Updated m_licenseTermTill to:" << this->m_licenseTermTill;
 
-    emit this->daysLeftStringChanged(this->daysLeftString());
+    QString daysLeft = this->daysLeftString();
+    qDebug() << "[setLicenseTermTill] Emitting daysLeftStringChanged with value:" << daysLeft;
+    emit this->daysLeftStringChanged(daysLeft);
 }
 
 void DapSerialKeyData::setLicenseTermTill(const QDateTime &a_date)
