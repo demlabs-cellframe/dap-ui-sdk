@@ -140,7 +140,6 @@ void DapSerialKeyData::operator=(const DapSerialKeyData &a_another)
 {
     this->setSerialKey(a_another.serialKey());
     this->setActivated(a_another.isActivated());
-    this->setDateActivate(a_another.activatedDate());
     this->setLicenseTermTill(QString::number(a_another.licenseTermTill().toTime_t()));
 }
 
