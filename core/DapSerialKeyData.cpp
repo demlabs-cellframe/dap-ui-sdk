@@ -120,7 +120,11 @@ void DapSerialKeyData::setLicenseTermTill(const QString &a_date)
 {
     qDebug() << "[setLicenseTermTill] Received a_date:" << a_date;
 
-    QDateTime tempDate = QDateTime::fromTime_t(a_date.toUInt());
+    QDateTime tempDate;
+    int intDate = a_date.toInt();
+
+    tempDate.setSecsSinceEpoch(intDate);
+
     qDebug() << "[setLicenseTermTill] Converted a_date to QDateTime:" << tempDate;
 
     if (tempDate == this->m_licenseTermTill){
