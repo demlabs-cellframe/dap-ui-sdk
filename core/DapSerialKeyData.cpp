@@ -85,9 +85,6 @@ const QDateTime &DapSerialKeyData::licenseTermTill() const
 
 int DapSerialKeyData::daysLeft()
 {
-    if (this->licenseTermTill().toTime_t() == 0)
-        return -1;
-
     return QDateTime::currentDateTime().daysTo(this->licenseTermTill());
 }
 
@@ -106,13 +103,15 @@ QString DapSerialKeyData::daysLeftString()
     int days = this->daysLeft();
     qDebug() << "[daysLeftString] Days left:" << days;
 
-    switch (days) {
-    case 1:
-        qDebug() << "[daysLeftString] 1 day left";
-        return QObject::tr("%1 day left").arg(days);
-    default:
-        qDebug() << "[daysLeftString] Multiple days left:" << days;
-        return QObject::tr("%1 days left").arg(days);
+    if (days < 0){
+      qDebug() << "[daysLeftString] Expired license";
+      return QObject::tr("");
+    } else if (days == 1){
+      qDebug() << "[daysLeftString] 1 day left";
+      return QObject::tr("%1 day left").arg(days);
+    } else {
+      qDebug() << "[daysLeftString] Multiple days left:" << days;
+      return QObject::tr("%1 days left").arg(days);
     }
 }
 
