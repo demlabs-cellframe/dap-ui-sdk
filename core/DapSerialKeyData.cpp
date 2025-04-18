@@ -75,6 +75,7 @@ void DapSerialKeyData::reset()
 {
     this->setActivated(false);
     this->setSerialKey("");
+    this->m_licenseTermTill = QDateTime::fromTime_t(0);
 }
 
 const QDateTime &DapSerialKeyData::licenseTermTill() const
@@ -94,17 +95,18 @@ QString DapSerialKeyData::daysLeftString()
 {
     qDebug() << "[daysLeftString] Method called";
 
-    QString text;
-
-    qDebug() << "[daysLeftString] License is activated";
+    if (m_licenseTermTill.toSecsSinceEpoch() == 0){
+      qDebug() << "[daysLeftString] Expired license";
+      return QObject::tr("");
+    }else if (m_licenseTermTill.toSecsSinceEpoch() == -1){
+      qDebug() << "[daysLeftString] Unlimited license";
+      return QObject::tr("Unlimited");
+    }
 
     int days = this->daysLeft();
     qDebug() << "[daysLeftString] Days left:" << days;
 
     switch (days) {
-    case -1:
-        qDebug() << "[daysLeftString] Unlimited license";
-        return QObject::tr("Unlimited");
     case 1:
         qDebug() << "[daysLeftString] 1 day left";
         return QObject::tr("%1 day left").arg(days);
@@ -138,6 +140,7 @@ void DapSerialKeyData::operator=(const DapSerialKeyData &a_another)
 {
     this->setSerialKey(a_another.serialKey());
     this->setActivated(a_another.isActivated());
+    this->setDateActivate(a_another.activatedDate());
     this->setLicenseTermTill(QString::number(a_another.licenseTermTill().toTime_t()));
 }
 
