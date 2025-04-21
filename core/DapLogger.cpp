@@ -22,7 +22,8 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, Type
 
     if(TypeLogCleaning::FULL_FILE_SIZE == m_typeLogCleaning)
     {
-        m_timeUpdate = new QTimer();
+        // QTimer is created with parent to ensure auto-deletion
+        m_timeUpdate = new QTimer(this);
         connect(m_timeUpdate,  &QTimer::timeout, this, &DapLogger::updateLogFilesInfo);
         m_timeUpdate->start(m_timeOut);
     }
@@ -141,9 +142,6 @@ void DapLogger::setLogLevel(dap_log_level ll)
 void DapLogger::setLogFile(const QString& fileName)
 {
     qDebug() << "setLogFile: " + fileName;
-
-    if(isLoggerStarted)
-        dap_common_deinit();
 
     m_pathToFile = getPathToLog() + "/" + fileName;
     dap_common_init(DAP_BRAND, qPrintable(m_pathToFile));
@@ -307,52 +305,65 @@ QString DapLogger::systemInfo()
 
 void DapLogger::updateLogFilesInfo()
 {
-    if(m_pathToLog.isEmpty())
-    {
+    if (m_pathToLog.isEmpty()) {
+        qWarning() << "[DapLogger] Log path is empty, skipping update";
         return;
     }
+
     QDir dir(m_pathToLog);
+    if (!dir.exists() || !dir.isReadable()) {
+        qWarning() << "[DapLogger] Log directory is not accessible:" << m_pathToLog;
+        return;
+    }
 
-    foreach (QFileInfo fileInfo, dir.entryInfoList(QStringList() << m_currentLogName, QDir::Files))
-    {
-        if(fileInfo.size() > m_partSize || m_currentDate != getCurrentDate())
-        {
-          qDebug() << "Init new name log file. Current file size: " << QString::number(fileInfo.size()) <<
-              "  Last name: " << m_currentLogName;
+    // Check current log file
+    bool foundCurrentLog = false;
+    for (const QFileInfo &fileInfo : dir.entryInfoList({ m_currentLogName }, QDir::Files)) {
+        foundCurrentLog = true;
 
-          updateCurrentLogName();
-          setLogFile(m_currentLogName);
+        if (fileInfo.size() > m_partSize || m_currentDate != getCurrentDate()) {
+            qDebug() << "[DapLogger] Rotating log file. Size:" << fileInfo.size()
+            << " Name:" << m_currentLogName;
+
+            updateCurrentLogName();
+            setLogFile(m_currentLogName);
         }
     }
 
-    qint64 totalSize = 0;
-    QList<QFileInfo> files;
+    if (!foundCurrentLog) {
+        qDebug() << "[DapLogger] Log file not found. Creating new log:" << m_currentLogName;
+        updateCurrentLogName();
+        setLogFile(m_currentLogName);
+    }
 
-    foreach (QFileInfo fileInfo, dir.entryInfoList(QStringList() << "*service*", QDir::Files))
+    // Collect all log files matching mask
+    QStringList mask = m_appType == "GUI" ?  QStringList()<<"*GUI*" : QStringList()<<"*Service*";
+    QFileInfoList files;
+    qint64 totalSize = 0;
+
+    foreach (QFileInfo fileInfo, dir.entryInfoList(mask, QDir::Files))
     {
         totalSize += fileInfo.size();
         files.append(fileInfo);
     }
 
-    if(totalSize > m_maxSize)
-    {
-        std::sort(files.begin(), files.end(), [](const QFileInfo& fileA,
-                                                     const QFileInfo& fileB)
-            {
-                return fileA.lastModified() < fileB.lastModified();
-            });
+    // Clean old logs if total size exceeds limit
+    if (totalSize > m_maxSize) {
+        std::sort(files.begin(), files.end(), [](const QFileInfo &a, const QFileInfo &b) {
+            return a.lastModified() < b.lastModified();
+        });
 
-        while(totalSize > m_maxSize)
-        {
-          if(files.isEmpty())
-          {
-              qWarning() << "Unexpected behavior";
-          }
-          QFileInfo& file = files.first();
-          qint64 fileSize = file.size();
-          QFile::remove(file.filePath());
-          files.removeFirst();
-          totalSize -= fileSize;
+        while (totalSize > m_maxSize && !files.isEmpty()) {
+            const QFileInfo &file = files.first();
+            qint64 fileSize = file.size();
+            if (QFile::remove(file.filePath())) {
+                totalSize -= fileSize;
+                files.removeFirst();
+                qDebug() << "[DapLogger] Deleted log file:" << file.filePath();
+            } else {
+                qWarning() << "[DapLogger] Failed to delete file:" << file.filePath();
+                break;
+            }
         }
     }
 }
