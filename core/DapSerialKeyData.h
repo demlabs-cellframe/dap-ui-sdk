@@ -25,7 +25,7 @@ public:
     void setActivated(bool a_isActivated);
 
     void setDateActivate(const QDateTime& time) { m_activatedDate = time; }
-    QDateTime activatedDate(){ return m_activatedDate;}
+    QDateTime activatedDate() const { return m_activatedDate;}
 
     void reset();
 
