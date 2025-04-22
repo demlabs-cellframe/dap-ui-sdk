@@ -207,7 +207,6 @@ static const QHash<QString, QString> s_countryMap =
   {"Ukraine", "UA"},
   {"Uganda", "UG"},
   {"United states", "US"},
-  {"Usa", "US"},
   {"Uruguay", "UY"},
   {"Uzbekistan", "UZ"},
   {"Saint vincent and the grinadines", "VC"},
