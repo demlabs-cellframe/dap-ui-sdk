@@ -55,7 +55,7 @@ TextField {
             openMenu()
     }
 
-    onReleased: {
+    onReleased: function(event){
         if(event.button === Qt.RightButton && contextMenuEnabled)
             openMenu()
     }
