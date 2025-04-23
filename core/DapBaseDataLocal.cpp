@@ -12,6 +12,8 @@
 #include "DapSerialKeyData.h"
 #include "DapSerialKeyHistory.h"
 
+#include "DapCdbManager.h"
+
 #include "dap_net.h"
 #include <QJsonDocument>
 
@@ -64,7 +66,6 @@ void DapBaseDataLocal::initData()
     // initSettings();
     parseXML(":/data.xml");
     initSecretKey();
-    syncCdbWithSettings();
 }
 
 void DapBaseDataLocal::initAuthData()
@@ -148,24 +149,30 @@ void DapBaseDataLocal::parseXML(const QString& a_fname)
                 }
                 else if( streamReader->name().toString() == "cdb")
                 {
-                    struct sockaddr_storage l_addr_out = {};
                     QByteArray l_cdb_addr_qstr = streamReader->readElementText().toLatin1();
-                    char *l_cdb_addr = l_cdb_addr_qstr.data();
-                    char l_host[DAP_HOSTADDR_STRLEN + 1] = { '\0' }; uint16_t l_port = 0;
-                    if(dap_net_parse_config_address(l_cdb_addr, l_host, &l_port, NULL, NULL)
-                        && dap_net_resolve_host(l_host, dap_itoa(l_port), false, &l_addr_out, NULL))
-                    {
-                        DapCdbServer l_cdbServerAddr;
-                        char l_addr_out_str[NI_MAXHOST] = {0};
-                        char servInfo[NI_MAXSERV];
-                        if (!getnameinfo((struct sockaddr*)&l_addr_out, sizeof(l_addr_out), l_addr_out_str, NI_MAXHOST, servInfo, NI_MAXSERV, NI_NUMERICHOST | NI_NUMERICSERV))
-                        {
-                            l_cdbServerAddr.address = QString(l_addr_out_str);
-                            l_cdbServerAddr.port = l_port ? l_port : 80;
-                            m_cdbServersList.push_back (l_cdbServerAddr);
-                            qInfo() << "Add CDB address: " << m_cdbServersList.back().address;
+                    char* l_cdb_addr = l_cdb_addr_qstr.data();
+                    char l_host[DAP_HOSTADDR_STRLEN + 1] = { '\0' };
+                    uint16_t l_port = 0;
+
+                    if (dap_net_parse_config_address(l_cdb_addr, l_host, &l_port, NULL, NULL)) {
+                        QString addressToUse = QString(l_host);
+                        uint16_t portToUse = l_port ? l_port : 80;
+
+                        struct sockaddr_storage l_addr_out = {};
+                        if (dap_net_resolve_host(l_host, dap_itoa(portToUse), false, &l_addr_out, NULL)) {
+                            char l_addr_out_str[NI_MAXHOST] = {0};
+                            char servInfo[NI_MAXSERV];
+                            if (!getnameinfo((struct sockaddr*)&l_addr_out, sizeof(l_addr_out),
+                                             l_addr_out_str, NI_MAXHOST,
+                                             servInfo, NI_MAXSERV,
+                                             NI_NUMERICHOST | NI_NUMERICSERV)) {
+                                addressToUse = QString(l_addr_out_str);
+                            }
                         }
+
+                        DapCdbManager::instance().addServer(addressToUse, portToUse);
                     }
+
                 }
                 else if( streamReader->name().toString() == "network-default")
                 {
@@ -184,7 +191,7 @@ void DapBaseDataLocal::parseXML(const QString& a_fname)
                         char servInfo[NI_MAXSERV];
                         if (!getnameinfo((struct sockaddr*)&l_addr_out, sizeof(l_addr_out), l_addr_out_str, NI_MAXHOST, servInfo, NI_MAXSERV, NI_NUMERICHOST | NI_NUMERICSERV)){
                             m_kelvpnPub = QString(l_addr_out_str);
-                            qInfo() << "KelVPN pub address: " << m_kelvpnPub;
+                            qInfo() << "Pub address: " << m_kelvpnPub;
                         }
                     }
                 }
@@ -314,24 +321,6 @@ void DapBaseDataLocal::loadAuthorizationDatas()
     if (m_serialKeyData)
         this->loadFromSettingsBase(TEXT_SERIAL_KEY, *m_serialKeyData);
     this->loadFromSettingsBase(TEXT_PENDING_SERIAL_KEY, m_pendingSerialKey);
-}
-
-void DapBaseDataLocal::syncCdbWithSettings()
-{
-    /* vars */
-    static const QString SETTING_CDB { "cdb" };
-
-    /* get from settings */
-    auto cdbCfg = getValueSetting(SETTING_CDB);
-
-    /* if not found, store cdb's from built-in list (if not empty) */
-    if (!cdbCfg.isValid())
-        return;
-
-    /* if found, replace built-in cdb's with list provided from settings */
-    auto list   = QString::fromLatin1 (QByteArray::fromBase64 (cdbCfg.toByteArray())).split(',');
-    auto result = DapCdbServerList::toServers (list);
-    updateCdbList (result);
 }
 
 void DapBaseDataLocal::initSettings(const QString& path)
@@ -526,18 +515,6 @@ void DapBaseDataLocal::setAuthorizationType(Authorization type)
     saveValueSetting(SETTING_AUTHORIZATION, auth);
 }
 
-void DapBaseDataLocal::updateCdbList (const DapCdbServerList &a_newCdbList)
-{
-    /* clear old and store new */
-    m_cdbServersList.clear();
-
-    for (const auto &cdb : qAsConst(a_newCdbList))
-        m_cdbServersList << cdb;
-
-    /* update iterator */
-    m_cdbIter = m_cdbServersList.constBegin();
-}
-
 void DapBaseDataLocal::loadKeysHistory()
 {
     QStringList list;
@@ -602,7 +579,6 @@ QJsonObject DapBaseDataLocal::toJson()
 {
     QJsonObject resultObject;
 
-    resultObject.insert(JSON_CBD_SERVERS_KEY, cbdServerListToJson());
     resultObject.insert(JSON_KELVPN_PUB_KEY, m_kelvpnPub);
     resultObject.insert(JSON_NETWORK_DEFAULT_KEY, m_networkDefault);
     resultObject.insert(JSON_URL_SITE_KEY, m_urlSite);
@@ -631,7 +607,6 @@ void DapBaseDataLocal::fromJson(const QJsonObject &json)
     if(json.contains(JSON_MIN_NODE_VERSION_KEY))        jsonToValue(m_minNodeVersion, json, JSON_MIN_NODE_VERSION_KEY);
     if(json.contains(JSON_PUB_STAGE_KEY))               jsonToValue(m_pubStage, json, JSON_PUB_STAGE_KEY);
     if(json.contains(JSON_PENDING_SERIAL_KEY_KEY))      jsonToValue(m_pendingSerialKey, json, JSON_PENDING_SERIAL_KEY_KEY);
-    if(json.contains(JSON_CBD_SERVERS_KEY))             setSbdServerList(json[JSON_CBD_SERVERS_KEY].toArray());
     if(json.contains(JSON_KELVPN_PUB_KEY))              jsonToValue(m_kelvpnPub, json, JSON_KELVPN_PUB_KEY);
     if(json.contains(JSON_NETWORK_DEFAULT_KEY))         jsonToValue(m_networkDefault, json, JSON_NETWORK_DEFAULT_KEY);
     if(json.contains(JSON_URL_SITE_KEY))                jsonToValue(m_urlSite, json, JSON_URL_SITE_KEY);
@@ -743,37 +718,6 @@ QJsonObject DapBaseDataLocal::createJsonObject(const QString& itemName, const QS
     QJsonObject result;
     result.insert(itemName, itemValue);
     return result;
-}
-
-const QJsonArray DapBaseDataLocal::cbdServerListToJson() const
-{
-    QJsonArray cbdServerList;
-    for(const auto& server: m_cdbServersList)
-    {
-        QJsonObject item;
-        item.insert(JSON_PORT_KEY, server.port);
-        item.insert(JSON_ADDRESS_KEY, server.address);
-        cbdServerList.append(std::move(item));
-    }
-    return cbdServerList;
-}
-
-void DapBaseDataLocal::setSbdServerList(const QJsonArray& list)
-{
-    for(const auto& itemValue: list)
-    {
-        auto item = itemValue.toObject();
-
-        if(!item.contains(JSON_ADDRESS_KEY) || !item.contains(JSON_PORT_KEY))
-        {
-            qWarning() << "[DapBaseDataLocal][fromJson] Error receiving cbdServerList data";
-            continue;
-        }
-        DapCdbServer server;
-        server.port = item[JSON_PORT_KEY].toInt();
-        server.address = item[JSON_ADDRESS_KEY].toString();
-        m_cdbServersList.append(std::move(server));
-    }
 }
 
 const QJsonObject DapBaseDataLocal::dataToUpdateToJson() const
@@ -951,39 +895,3 @@ const QJsonObject DapBaseDataLocal::settingsToJson()
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------
-QString DapCdbServer::toString() const
-{
-    return QString ("%1:%2").arg (address).arg (port);
-}
-
-void DapCdbServer::fromString(const QString &a_src)
-{
-    auto source = a_src.split (':');
-    address     = source.constFirst();
-    port        = source.constLast().toInt();
-    if (port == 0)
-        port = 80;
-}
-
-DapCdbServer DapCdbServer::serverFromString(const QString &a_src)
-{
-    DapCdbServer result;
-    result.fromString (a_src);
-    return result;
-}
-
-DapCdbServerList DapCdbServerList::toServers(const QStringList &a_src)
-{
-    DapCdbServerList result;
-    for (const auto &item : a_src)
-        result << DapCdbServer::serverFromString (item);
-    return result;
-}
-
-QStringList DapCdbServerList::toStrings(const DapCdbServerList &a_servers)
-{
-    QStringList result;
-    for (const auto &item : a_servers)
-        result << item.toString();
-    return result;
-}

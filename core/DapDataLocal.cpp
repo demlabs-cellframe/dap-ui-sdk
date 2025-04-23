@@ -154,11 +154,6 @@ void DapDataLocal::setSettings(const QJsonObject &json)
     }
 }
 
-void DapDataLocal::updateCdbList (const DapCdbServerList &a_newCdbList)
-{
-    Q_UNUSED(a_newCdbList)
-}
-
 void DapDataLocal::dataFromCommand(const QJsonObject& object)
 {
     QString action;

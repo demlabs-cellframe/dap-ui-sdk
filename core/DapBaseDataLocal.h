@@ -22,30 +22,10 @@ class DapSerialKeyData;
 enum class Authorization;
 class DapSerialKeyHistory;
 
-class DapCdbServer
-{
-public:
-    QString address;
-    int port;
-public:
-    QString toString() const;
-    void fromString (const QString &a_src);
-    static DapCdbServer serverFromString (const QString &a_src);
-};
-
-class DapCdbServerList : public QList<DapCdbServer>
-{
-public:
-    static DapCdbServerList toServers (const QStringList &a_src);
-    static QStringList toStrings (const DapCdbServerList &a_servers);
-};
-
 class DapBaseDataLocal : public QObject
 {
     Q_OBJECT
 public:
-    using CdbIterator = DapCdbServerList::const_iterator;
-
     static const QString TEXT_SERIAL_KEY;
     static const QString TEXT_SERIAL_KEY_HISTORY;
     static const QString TEXT_PENDING_SERIAL_KEY;
@@ -83,30 +63,11 @@ public:
     QString login() const;
 
     QString getPub() {return m_pubStage;}
-    const CdbIterator& getCdbIterator() const {
-        if (m_cdbServersList.empty()) {
-            qWarning() << "[DapBaseDataLocal] m_cdbIter is uninitialized. Initializing...";
-            auto nonConstThis = const_cast<DapBaseDataLocal*>(this);
-            nonConstThis->setNewCbdIterator(m_cdbServersList.begin());
-        }
-
-        return m_cdbIter;
-    }
-
 
     QString password() const;
 
     DataToUpdate& getDataToUpdate(){return m_dataToUpdate;}
 
-    void setNewCbdIterator(const CdbIterator& iter) {
-        if (iter != m_cdbServersList.end()) {
-            m_cdbIter = iter;
-        } else {
-            qWarning() << "[DapBaseDataLocal] Attempt to set m_cdbIter to an invalid iterator.";
-        }
-    }
-    void nextCbdIterator() {m_cdbIter++;}
-    const DapCdbServerList &cdbServersList()  { return m_cdbServersList; }
     const QString & KelvpnPub()               { return m_kelvpnPub;}
     const QString & networkDefault()          { return m_networkDefault; }
 
@@ -147,15 +108,12 @@ public:
     Authorization authorizationType();
     void setAuthorizationType(Authorization type);
 
-    virtual void updateCdbList (const DapCdbServerList &a_newCdbList);
-
     QJsonObject toJson();
     virtual void fromJson (const QJsonObject &json);
 
     virtual void loadBugReport();
     virtual void saveBugReport();
 
-    const QJsonArray cbdServerListToJson() const;
     const QJsonObject dataToUpdateToJson() const;
     const QJsonObject serialKeyDataToJson() const;
     const QJsonArray serialKeyDataListToJson() const;
@@ -187,7 +145,6 @@ protected:
     void initAuthData();
 
     void loadAuthorizationDatas();
-    void syncCdbWithSettings();
     void initSettings(const QString &path = "");
 
 
@@ -197,7 +154,6 @@ protected:
     QJsonObject createJsonObject(const QString& itemName, const QString& itemValue);
 
 
-    void setSbdServerList(const QJsonArray& list);
     void setDataToUpdate(const QJsonObject& object);
     void setSerialKeyData(const QJsonObject& object);
     void setSerialKeyDataList(const QJsonArray& list);
@@ -210,9 +166,6 @@ protected:
     template<typename T>
     bool loadFromSettingsBase(const QString &a_setting, T& a_value);
 protected:
-    DapCdbServerList::const_iterator m_cdbIter;
-
-    DapCdbServerList  m_cdbServersList;
 
     QString m_kelvpnPub;
     QString m_networkDefault;

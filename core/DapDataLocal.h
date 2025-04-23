@@ -24,7 +24,6 @@ public:
     void saveBugReport() override;
 
     void savePendingSerialKey(QString a_serialkey) override;
-    void updateCdbList (const DapCdbServerList &a_newCdbList) override;
     void setSettings(const QJsonObject &json) override;
 
     bool isNeedMigrate() const { return m_needMigration; }
