@@ -121,8 +121,11 @@ Rectangle
                     anchors.fill: parent
 
                     onClicked: {
-                        viewerItem.currentIndex = index
-                        itemSelected()
+                        if(viewerItem.currentIndex !== index)
+                        {
+                            viewerItem.currentIndex = index
+                            itemSelected()
+                        }
                     }
                 }
             }
