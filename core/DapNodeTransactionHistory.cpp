@@ -63,9 +63,6 @@ static const QHash<QByteArray, FieldId> s_fieldMap =
 DapNodeTransactionHistory::DapNodeTransactionHistory (QObject *parent)
   : QAbstractListModel (parent)
 {
-  /* restore data */
-  load();
-
   /* fill roles */
   if (s_roles.isEmpty())
   {
@@ -258,28 +255,12 @@ int DapNodeTransactionHistory::indexOf (const QString &a_orderHash) const
 
 void DapNodeTransactionHistory::load()
 {
-  beginResetModel();
-
-  /* vars */
-  QByteArray source;
-  QJsonArray jarr;
-
   /* get data */
-  DapDataLocal::instance()->loadFromSettings (DapDataLocal::NODE_ORDER_HISTORY, source);
-  jarr  = QJsonDocument::fromJson (source).array();
-
-  /* prepare parsing */
-  _list.clear();
-
-  /* parse json array */
-  for (const auto &jitem : qAsConst (jarr))
+  if (m_pCmdDataLocal != nullptr)
   {
-    DapNodeTransactionHistory::Transaction item;
-    item.fromJson (jitem.toObject());
-    _list.append (std::move (item));
+    m_isFromSend = false;
+    m_pCmdDataLocal->requestValue(DapDataLocal::NODE_ORDER_HISTORY);
   }
-
-  endResetModel();
 }
 
 void DapNodeTransactionHistory::save() const
@@ -292,13 +273,47 @@ void DapNodeTransactionHistory::save() const
 
   /* store result json array */
   QByteArray result = QJsonDocument (jarr).toJson (QJsonDocument::JsonFormat::Compact);
-  DapDataLocal::instance()->saveToSettings (DapDataLocal::NODE_ORDER_HISTORY, result);
+  if (m_pCmdDataLocal != nullptr)
+  {
+    m_isFromSend = true;
+    m_pCmdDataLocal->sendValue(DapDataLocal::NODE_ORDER_HISTORY, result);
+  }
 }
 
 void DapNodeTransactionHistory::itemUpdated (int a_index)
 {
   emit dataChanged (index (a_index), index (a_index));
   _delayedSave();
+}
+
+void DapNodeTransactionHistory::setCmdDataLocal(DapCmdDataLocal * pCmdDataLocal)
+{
+    m_pCmdDataLocal = pCmdDataLocal;
+    QObject::connect(m_pCmdDataLocal, &DapCmdDataLocal::sigGotValue, [this](QString name, QVariant value, const int a_msgId) {
+        Q_UNUSED(a_msgId);
+        if (name == DapDataLocal::NODE_ORDER_HISTORY && !m_isFromSend)
+        {
+            beginResetModel();
+
+            auto source = value.toByteArray();
+            QJsonArray jarr  = QJsonDocument::fromJson (source).array();
+
+            /* prepare parsing */
+            _list.clear();
+
+            /* parse json array */
+            for (const auto &jitem : qAsConst (jarr))
+            {
+                DapNodeTransactionHistory::Transaction item;
+                item.fromJson (jitem.toObject());
+                _list.append (std::move (item));
+            }
+
+            endResetModel();
+
+            emit listUpdated();
+        }
+    });
 }
 
 void DapNodeTransactionHistory::_delayedSave() const

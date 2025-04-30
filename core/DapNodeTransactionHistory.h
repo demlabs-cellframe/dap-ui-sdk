@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <QAbstractListModel>
 #include "DapNodeOrderInfo.h"
+#include "DapCmdDataLocal.h"
 
 /****************************************//**
  * @brief node order history
@@ -63,6 +64,8 @@ public:
 private:
   OrderList _list;
   int m_currentIndex;
+  DapCmdDataLocal * m_pCmdDataLocal;
+  mutable bool m_isFromSend = false;
   /// @}
 
   /****************************************//**
@@ -109,6 +112,8 @@ public:
 
   /// sends dataChanged signal
   void itemUpdated (int a_index);
+
+  void setCmdDataLocal(DapCmdDataLocal * pCmdDataLocal);
 protected:
   void _delayedSave() const;
   /// @}
@@ -129,6 +134,7 @@ public:
   /// @{
 signals:
   void currentIndexChanged();
+  void listUpdated();
   /// @}
 
   /****************************************//**
