@@ -18,6 +18,7 @@ public:
     DapState *networkErr;
     DapState *srvProvided;
     DapState *configProvided;
+    DapState *streamReconnecting;
 };
 
 #endif // DAPINDICATORSTREAM_H

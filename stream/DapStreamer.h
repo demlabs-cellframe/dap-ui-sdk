@@ -53,6 +53,7 @@ public:
     ~DapStreamer();
     bool isConnected() { return m_streamSocket.isOpen(); }
     int upstreamSocket() { return m_streamSocket.isOpen() ? m_streamSocket.socketDescriptor(): -1; }
+    bool isStreamOpen() { return m_isStreamOpened; }
     void addChProc(char chId, DapChBase* obj);
     void setStreamOpened(bool b) { m_isStreamOpened = b; }
     void setStreamTimeoutCheck(bool b) { m_timeoutStreamCheck = b; }

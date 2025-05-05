@@ -10,6 +10,7 @@ void DapIndicatorStream::init(DapState *s, const QString& stateName)
     networkErr          = new DapState(_false->name()       + "_networkError",      _false, true);
     srvProvided         = new DapState(_falseToTrue->name() + "_serviceProvided",   _falseToTrue);
     configProvided      = new DapState(_true->name()        + "_netconfigProvided", _true);
+    streamReconnecting  = new DapState(_false->name()       + "_reconnecting",      _false);
 
     _false->setInitialState(upsDisconnected);
 
@@ -36,4 +37,8 @@ void DapIndicatorStream::initAllowedSubstatesTransitions()
     addAllowedSubstatesTransitions(configProvided,          upsHandshakeRequest);
     addAllowedSubstatesTransitions(networkErr,              upsHandshakeRequest);
     addAllowedSubstatesTransitions(networkErr,              upsDisconnected);
+    addAllowedSubstatesTransitions(networkErr,              streamReconnecting);
+    addAllowedSubstatesTransitions(streamReconnecting,      upsDisconnected);
+    addAllowedSubstatesTransitions(streamReconnecting,      upsChannelsOpen);
+    addAllowedSubstatesTransitions(streamReconnecting,      configProvided);
 }
