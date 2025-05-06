@@ -26,7 +26,7 @@ void DapHttpPing::sendRequest(const QString& host, quint16 port)
   });
 }
 
-void DapHttpPing::responseCallback(void * a_response, size_t a_response_size, void * a_obj, http_status_code_t a_status)
+void DapHttpPing::responseCallback(void * a_response, size_t a_response_size, void * a_obj)
 {
     DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
     reply->setReply(QByteArray(reinterpret_cast<const char*>(a_response), static_cast<int>(a_response_size)));

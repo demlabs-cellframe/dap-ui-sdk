@@ -22,6 +22,10 @@ DapCmdGeoIP::~DapCmdGeoIP()
 
 }
 
+void DapCmdGeoIP::sendRequest(){
+  sendCmd();
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/

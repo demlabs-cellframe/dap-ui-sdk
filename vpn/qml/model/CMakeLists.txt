@@ -45,6 +45,7 @@ set(PROJECT_SOURCES
   dapqml-model/node/dapqmlmodelnodetokenslist.cpp
   dapqml-model/node/dapqmlmodelnodeunitslist.cpp
   dapqml-model/node/dapqmlmodelnodewalletslist.cpp
+  dapqml-model/node/dapqmlmodelnodetransactionoverview.cpp
 )
 
 set(PROJECT_HEADERS
@@ -73,6 +74,7 @@ set(PROJECT_HEADERS
   dapqml-model/node/dapqmlmodelnodetokenslist.h
   dapqml-model/node/dapqmlmodelnodeunitslist.h
   dapqml-model/node/dapqmlmodelnodewalletslist.h
+  dapqml-model/node/dapqmlmodelnodetransactionoverview.h
 )
 
 set(PROJECT_ASSETS
@@ -114,6 +116,8 @@ target_link_libraries(
   Qt6::Quick
   DapUiSdk::Core
   dap_crypto
+  DapUiSdk::Vpn::Qml::Handlers
+  DapUiSdk::Vpn::Common
 )
 
 # ------------------------------------------------------------------------- #

@@ -42,7 +42,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE DapUiSdk::Vpn::Client)
 target_link_libraries(${PROJECT_NAME} PRIVATE DapUiSdk::Vpn::Common)
 target_link_libraries(${PROJECT_NAME} PRIVATE DapUiSdk::Zip)
 target_link_libraries(${PROJECT_NAME} PRIVATE dap_client)
-
+target_link_libraries(${PROJECT_NAME} PUBLIC maxminddb)
 
 
 message("[*] DAP-UI-SDK: include core")

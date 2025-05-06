@@ -162,23 +162,23 @@ void DapTunAbstract::readNetrowkInformFromFile()
     while (!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
 
-        if(xml.name() == "tunAddr") {
+        if(xml.name().toString() == "tunAddr") {
             xml.readNext();
             qDebug() << "tunAddr = " << xml.text();
             xml.readNext();
-        } else if(xml.name() == "tunDest") {
+        } else if(xml.name().toString() == "tunDest") {
             xml.readNext();
             qDebug() << "tunDest = " << xml.text();
             xml.readNext();
-        } else if(xml.name() == "ip_host") {
+        } else if(xml.name().toString() == "ip_host") {
             xml.readNext();
             qDebug() << "ip_host = " << xml.text();
             xml.readNext();
-        } else if(xml.name() == "default_gw") {
+        } else if(xml.name().toString() == "default_gw") {
             xml.readNext();
             qDebug() << "default_gw = " << xml.text();
             xml.readNext();
-        } else if(xml.name() == "date_create") {
+        } else if(xml.name().toString() == "date_create") {
             xml.readNext();
             QString strDate = xml.text().toString();
             int year  = parseTextToInt(strDate, 0, 0, '.');

@@ -37,7 +37,7 @@ void DapNetworkAccessManager::requestHttp_GET_for_ping(const QString &address, c
                             headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
 }
 
-void DapNetworkAccessManager::responseCallback(void * a_response, size_t a_response_size, void * a_obj, http_status_code_t a_status)
+void DapNetworkAccessManager::responseCallback(void * a_response, size_t a_response_size, void * a_obj)
 {
     DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
     reply->setReply(QByteArray(reinterpret_cast<const char*>(a_response), static_cast<int>(a_response_size)));

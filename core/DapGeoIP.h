@@ -10,7 +10,7 @@
 #include <QFile>
 #include <QByteArray>
 
-#include "maxminddb/maxminddb.h"
+#include "maxminddb.h"
 
 #define PATH_TO_DB ":/GeoLite2-Country.mmdb"
 // #define PATH_TO_DB "/home/danilmartynenko/untitled/GeoLite2-Country.mmdb"

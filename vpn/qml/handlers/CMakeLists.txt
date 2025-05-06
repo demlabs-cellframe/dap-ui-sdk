@@ -46,6 +46,7 @@ set(PROJECT_SOURCES
   DapCmdNode.cpp
   DapCmdSystemTray.cpp
   DapCmdPurchase.cpp
+  DapCmdGeoIP.cpp
 )
 
 set(PROJECT_HEADERS
@@ -71,6 +72,7 @@ set(PROJECT_HEADERS
   DapCmdNode.h
   vpnDefine.h
   DapCmdPurchase.h
+  DapCmdGeoIP.h
 )
 
 set(PROJECT_ASSETS

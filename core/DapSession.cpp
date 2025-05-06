@@ -524,35 +524,35 @@ void DapSession::onAuthorize()
             return;
         }
 
-        if (m_xmlStreamReader.name() == "auth_info") {
+        if (m_xmlStreamReader.name().toString() == "auth_info") {
             while(m_xmlStreamReader.readNextStartElement()) {
                 qDebug() << " auth_info = " << m_xmlStreamReader.name();
-                if (m_xmlStreamReader.name() == "cookie") {
+                if (m_xmlStreamReader.name().toString() == "cookie") {
                     m_cookie = m_xmlStreamReader.readElementText();
                     qDebug() << "m_cookie: " << m_cookie;
                     isCookie = true;
                     //requestServerList();
                     emit authorized(m_cookie);
-                } else if (m_xmlStreamReader.name() == "tx_cond_tpl") {
+                } else if (m_xmlStreamReader.name().toString() == "tx_cond_tpl") {
                     while(m_xmlStreamReader.readNextStartElement()) {
                         qDebug() << " tx_cond_tpl: " << m_xmlStreamReader.name();
-                        if (m_xmlStreamReader.name() == "net") {
+                        if (m_xmlStreamReader.name().toString() == "net") {
                             m_cdbAuthNet = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvNet: " << m_cdbAuthNet;
-                        } else if (m_xmlStreamReader.name() == "token") {
+                        } else if (m_xmlStreamReader.name().toString() == "token") {
                              m_cdbAuthToken = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvToken: " << m_cdbAuthToken;
-                        } else if (m_xmlStreamReader.name() == "tx_cond") {
+                        } else if (m_xmlStreamReader.name().toString() == "tx_cond") {
                              m_cdbAuthTxCond = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvTxCond: " << m_cdbAuthTxCond;
-                        } else if (m_xmlStreamReader.name() == "max_price") {
+                        } else if (m_xmlStreamReader.name().toString() == "max_price") {
                             m_cdbMaxPrice = m_xmlStreamReader.readElementText();
                            qDebug() << "m_srvMaxPrice: " << m_cdbMaxPrice;
                         } else {
                             qWarning() <<"Unknown element" << m_xmlStreamReader.readElementText();
                         }
                     }
-                } else if (m_xmlStreamReader.name() == "ts_active_till"){
+                } else if (m_xmlStreamReader.name().toString() == "ts_active_till"){
                     DapDataLocal::instance()->serialKeyData()->setLicenseTermTill(m_xmlStreamReader.readElementText());
                     qDebug() << "ts_active_till: " << DapDataLocal::instance()->serialKeyData()->licenseTermTill().toSecsSinceEpoch();
                 } else {
@@ -634,22 +634,22 @@ void DapSession::onNewTxCond(){
     while(m_xmlStreamReader.readNextStartElement())
     {
         qDebug() << " name = " << m_xmlStreamReader.name();
-        if (m_xmlStreamReader.name() == "auth_info") {
+        if (m_xmlStreamReader.name().toString() == "auth_info") {
             while(m_xmlStreamReader.readNextStartElement()) {
                 qDebug() << " auth_info = " << m_xmlStreamReader.name();
-                if (m_xmlStreamReader.name() == "tx_cond_tpl") {
+                if (m_xmlStreamReader.name().toString() == "tx_cond_tpl") {
                     while(m_xmlStreamReader.readNextStartElement()) {
                         qDebug() << " tx_cond_tpl: " << m_xmlStreamReader.name();
-                        if (m_xmlStreamReader.name() == "net") {
+                        if (m_xmlStreamReader.name().toString() == "net") {
                             m_cdbAuthNet = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvNet: " << m_cdbAuthNet;
-                        } else if (m_xmlStreamReader.name() == "token") {
+                        } else if (m_xmlStreamReader.name().toString() == "token") {
                              m_cdbAuthToken = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvToken: " << m_cdbAuthToken;
-                        } else if (m_xmlStreamReader.name() == "tx_cond") {
+                        } else if (m_xmlStreamReader.name().toString() == "tx_cond") {
                              m_cdbAuthTxCond = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvTxCond: " << m_cdbAuthTxCond;
-                        } else if (m_xmlStreamReader.name() == "max_price") {
+                        } else if (m_xmlStreamReader.name().toString() == "max_price") {
                             m_cdbMaxPrice = m_xmlStreamReader.readElementText();
                            qDebug() << "m_srvMaxPrice: " << m_cdbMaxPrice;
                         } else {

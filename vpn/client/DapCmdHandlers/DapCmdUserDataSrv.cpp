@@ -33,7 +33,7 @@ void DapCmdUserDataSrv::sendLicenseTermTill(const QString &date)
     sendCmd(&response);
 }
 
-void DapCmdUserData::sendCountryISO(const QString &iso)
+void DapCmdUserDataSrv::sendCountryISO(const QString &iso)
 {
     QJsonObject response;
     response["country_iso"] = iso;
