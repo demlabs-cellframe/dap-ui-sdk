@@ -34,7 +34,7 @@ Rectangle
         id: viewerItem
         x: viewerBorder
         y: viewerBorder
-        width: contentItem.width + viewerBorder * 2
+        width: contentWidth + viewerBorder * 2
         height: selectorItem.height
 //        clip: true
         orientation: ListView.Horizontal
