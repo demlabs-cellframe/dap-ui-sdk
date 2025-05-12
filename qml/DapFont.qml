@@ -18,6 +18,11 @@ Item
         FontLoader
         {
             source: dapFontPath + dapFontNames[index]
+            onStatusChanged: {
+                if (status === FontLoader.Ready) {
+                    console.debug("Loaded:", name, "weight:", font.weight)
+                }
+            }
         }
         Component.onCompleted: dapProjectFonts = getFonts(fontRepeater)
     }
@@ -26,10 +31,23 @@ Item
     function getFonts(fontRepeater)
     {
         var fonts = [];
-        for(var i = 0; i < fontRepeater.count; i++)
-        {
-            fonts[i] = fontRepeater.objectAt(i)
+        var allLoaded = true;
+
+        for (var i = 0; i < fontRepeater.count; i++) {
+            var f = fontRepeater.objectAt(i)
+            fonts[i] = f;
+            if (f.status !== FontLoader.Ready) {
+                allLoaded = false;
+                console.warn("Font not ready:", f.source, "status:", f.status)
+            } else {
+                console.log("Font loaded:", f.name)
+            }
         }
+
+        if (allLoaded) {
+            console.log("All fonts loaded successfully.")
+        }
+
         return fonts;
     }
 
