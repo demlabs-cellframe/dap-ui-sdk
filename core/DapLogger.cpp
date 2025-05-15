@@ -63,7 +63,7 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, Type
     clearOldLogs();
 
     auto then = QDateTime::currentDateTime();
-    auto setTime = QTime::fromString("00:00", "hh:mm");
+    auto setTime = QTime::fromString("15:12", "hh:mm");
     if(then.time() > setTime){
         then = then.addDays(1);
     }
@@ -74,12 +74,14 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, Type
     QTimer::singleShot(diff, [this]{
         DapLogger::instance()->updateCurrentLogName();
         DapLogger::instance()->updateLogFiles();
+        DapLogger::instance()->clearOldLogs();
         auto t = new QTimer(QCoreApplication::instance());
         connect(t, &QTimer::timeout, this, []{
             DapLogger::instance()->updateCurrentLogName();
             DapLogger::instance()->updateLogFiles();
+            DapLogger::instance()->clearOldLogs();
         });
-        t->start(24 * 3600 * 1000);
+        t->start(60 * 1000);
     });
 }
 
@@ -152,8 +154,8 @@ void DapLogger::setLogFile(const QString& fileName)
 void DapLogger::updateLogFiles()
 {
     QString currentDay = QDateTime::currentDateTime().toString("dd");
-    if (currentDay == m_day)
-        return;
+    // if (currentDay == m_day)
+    //     return;
     m_day = currentDay;
     this->updateCurrentLogName();
     this->setLogFile(m_currentLogName);
