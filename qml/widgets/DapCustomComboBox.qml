@@ -68,10 +68,12 @@ Item
               "popupListView.currentIndex", popupListView.currentIndex)
 
         if (popupListView.currentIndex < 0)
-//            displayText = getModelData(0, mainTextRole)
-            displayText = defaultText
+           displayText = getModelData(0, mainTextRole)
         else
             displayText = getModelData(popupListView.currentIndex, mainTextRole)
+
+        if(displayText === "")
+            displayText = defaultText
 
         currentDisplayTextChanged(displayText)
     }
@@ -85,6 +87,9 @@ Item
             displayText = getModelData(0, mainTextRole)
         else
             displayText = getModelData(popupListView.currentIndex, mainTextRole)
+
+        if(displayText === "")
+            displayText = defaultText
 
         currentDisplayTextChanged(displayText)
     }
@@ -123,7 +128,7 @@ Item
                 id: mainTextItem
                 Layout.fillWidth: true
 
-                text: mainItem.displayText
+                text: mainItem.displayText === "" ? defaultText : mainItem.displayText
                 font: mainItem.font
                 color: popupVisible && !isHighlightDisplayTextPopup ?
                            displayTextPopupColor : displayTextNormalColor
@@ -376,7 +381,7 @@ Item
                         id: fakeMainTextItem
                         Layout.fillWidth: true
 
-                        text: mainItem.displayText
+                        text: mainItem.displayText === "" ? defaultText : mainItem.displayText
                         font: mainItem.font
                         color: popupVisible ?
                                 displayTextPopupColor : displayTextNormalColor
