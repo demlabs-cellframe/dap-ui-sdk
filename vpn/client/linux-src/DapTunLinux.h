@@ -9,6 +9,8 @@ class DapTunLinux : public DapTunUnixAbstract
 public:
     DapTunLinux();
     ~DapTunLinux() {}
+
+    void addCdbRoute(const QString &cdbAddress) override;
 protected:
     void tunDeviceCreate() override;
     void tunDeviceDestroy() override;

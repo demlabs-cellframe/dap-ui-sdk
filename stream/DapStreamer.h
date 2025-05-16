@@ -99,8 +99,11 @@ private:
     void initStreamSocket();
     QQueue<QPair<QDateTime, int>> m_packetLossQueue;
     QTimer m_timer;
+    QTimer m_packetLossTimer;
+    int m_packetLossCount = 0;
 
     void _removeOldEntries();
+    void _resetPacketLossCounter();
 
 private slots:
     void sltStreamProcess();
@@ -128,6 +131,29 @@ public slots:
                    ,"");
     }
 
+    void openChannelsWithAddress(const QString & a_channels, const QString& address, quint16 port)
+    {
+        streamOpen(QString("stream_ctl,channels=%1,enc_type=%2,enc_headers=%3")
+                   .arg(a_channels)
+                   .arg(DAP_ENC_KEY_TYPE_SALSA2012)
+                   .arg(0)
+                   ,"", address, port);
+    }
+
+    void openChannelsKeepAlive(const QString &a_channels)
+    {
+        QString ctl = QString("stream_ctl,channels=%1,enc_type=%2,enc_headers=%3")
+                          .arg(a_channels)
+                          .arg(DAP_ENC_KEY_TYPE_SALSA2012)
+                          .arg(0);
+
+        streamOpenKeepAlive(QString("stream_ctl,channels=%1,enc_type=%2,enc_headers=%3")
+                            .arg(a_channels)
+                            .arg(DAP_ENC_KEY_TYPE_SALSA2012)
+                            .arg(0)
+                            ,"");
+    }
+
     void sendRemainServiceRequest(const QString & a_channels, const QString & a_query,
                                   const QString& address, quint16 port) {
         streamOpen(QString("stream_ctl,channels=%1,enc_type=%2,enc_headers=%3")
@@ -141,7 +167,9 @@ public slots:
 
     void streamOpen(const QString& subUrl, const QString& query);
     void streamOpen(const QString& subUrl, const QString& query, const QString& address, quint16 port);
+    void streamOpenKeepAlive(const QString& subUrl, const QString& query);
     void streamClose();
+    bool streamCloseSilent();
 
     void writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, uint64_t *dest_addr = Q_NULLPTR);
 
@@ -165,6 +193,8 @@ signals:
 
     void streamSessionRequested();
     void streamServKeyRecieved();
+
+    void sigCriticalPacketLossThreshold();
 
     void sigStreamPacketLoosed(quint64 countLoosedPackets);
     void sigNetworkMonitor();

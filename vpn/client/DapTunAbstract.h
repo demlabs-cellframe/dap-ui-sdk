@@ -38,6 +38,7 @@ public:
     }
     virtual void workerStart() = 0;
     virtual void addNewUpstreamRoute(const QString&)=0;
+    virtual void addCdbRoute(const QString &cdbAddress) = 0;
 
     QQueue<Dap::Stream::Packet*>* writeQueue(){ return &_m_writeQueue; }
     QReadWriteLock* writeQueueLock(){ return &m_writeQueueLock; }

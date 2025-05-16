@@ -19,6 +19,7 @@ public:
     DapState *srvProvided;
     DapState *configProvided;
     DapState *streamReconnecting;
+    DapState *cdbReinitializeConnection;
 };
 
 #endif // DAPINDICATORSTREAM_H

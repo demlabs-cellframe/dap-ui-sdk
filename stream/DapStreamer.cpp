@@ -49,6 +49,9 @@ DapStreamer::DapStreamer(DapSession *session, QObject* parent) :
     connect(&m_timer, &QTimer::timeout, this, &DapStreamer::_printPacketLossStatistics);
     m_timer.start(5*60000);
 
+    connect(&m_packetLossTimer, &QTimer::timeout, this, &DapStreamer::_resetPacketLossCounter);
+    m_packetLossTimer.start(5000);
+
     initStreamSocket();
 
     m_session = session;
@@ -168,40 +171,70 @@ void DapStreamer::logSocketState(QAbstractSocket::SocketState state)
 
 void DapStreamer::streamOpen(const QString& subUrl, const QString& query)
 {
-    if(m_streamSocket.isOpen())
-    {
+    if (m_streamSocket.isOpen()) {
+
         qWarning() << "Stream socket already open. "
                       "Closing current open socket";
-        //streamClose();
+
         m_streamSocket.close();
+
+        // m_streamSocket.disconnectFromHost();
+
+        // if (!m_streamSocket.waitForDisconnected(3000)) {
+        //     qWarning() << "Socket did not disconnect in time. Forcing close.";
+        //     m_streamSocket.abort();
+        // }
+
+        m_isStreamOpened = false;
     }
+
     qDebug() << "Stream open SubUrl = " << subUrl;
     qDebug() << "Stream open query =" << query;
+
     m_streamID.clear();
+
     m_network_reply = m_session->streamOpenRequest(subUrl, query, this, SLOT(sltStreamOpenCallback()), QT_STRINGIFY(errorNetwork));
 }
 
 void DapStreamer::streamOpen(const QString& subUrl, const QString& query, const QString& address, quint16 port) {
-    if (m_streamSocket.isOpen())
-    {
+    if (m_streamSocket.isOpen()) {
         qWarning() << "Stream socket already open. "
                       "Closing current open socket";
-        //streamClose();
         m_streamSocket.close();
+        m_isStreamOpened = false;
     }
+
     qDebug() << "Stream open SubUrl = " << subUrl;
-    qDebug() << "Stream open query =" << query;
+    qDebug() << "Stream open query = " << query;
+    qDebug() << "Attempting to connect to host: " << address << " on port: " << port;
 
     m_streamSocket.connectToHost(address, port);
+    qDebug() << "Socket state after connectToHost: " << m_streamSocket.state();
+
     if (m_streamSocket.waitForConnected(15000)) {
         QByteArray data = QString("%1?%2").arg(subUrl).arg(query).toLatin1();
-        m_streamSocket.write(data);
-    }
-    else
-    {
+        qDebug() << "Sending data: " << data;
+        qint64 bytesWritten = m_streamSocket.write(data);
+
+        if (bytesWritten == -1) {
+            qWarning() << "Failed to write data: " << m_streamSocket.errorString();
+        } else {
+            qDebug() << "Successfully wrote" << bytesWritten << "bytes to the socket.";
+        }
+
+    } else {
         qWarning() << "Failed to connect to server" << address << ":" << port;
-        emit errorNetwork (tr ("Socket connection timeout"));
+        qWarning() << "Socket error:" << m_streamSocket.errorString();
+        qWarning() << "Socket state after failure: " << m_streamSocket.state();
+        emit errorNetwork(tr("Socket connection timeout"));
     }
+}
+
+void DapStreamer::streamOpenKeepAlive(const QString& subUrl, const QString& query)
+{
+    qDebug() << "Stream open SubUrl = " << subUrl;
+    qDebug() << "Stream open query =" << query;
+    m_network_reply = m_session->streamOpenRequest(subUrl, query, this, SLOT(sltStreamOpenCallback()), QT_STRINGIFY(errorNetwork));
 }
 
 void DapStreamer::streamClose()
@@ -217,6 +250,20 @@ void DapStreamer::streamClose()
     qDebug() << "STREAM CLOSED - DapStreamer::streamClose()";
     m_pktOutLastSeqID = 0;
     m_isStreamOpened=false;
+}
+
+bool DapStreamer::streamCloseSilent()
+{
+    qDebug() <<"[DapStreamer] streamCloseSilent()";
+    if(m_streamSocket.isOpen())
+    {
+        qDebug() <<"[SC] close the stream silently";
+        m_streamSocket.close();
+        m_pktOutLastSeqID = 0;
+        m_isStreamOpened = false;
+        return true;
+    }
+    return false;
 }
 
 qint64 DapStreamer::writeStreamRaw(const void *data, size_t data_size)
@@ -364,21 +411,22 @@ void DapStreamer::sltStreamOpenCallback()
 
         if (!m_streamSocket.isOpen())
         {
-            m_streamSocket.connectToHost(m_session->upstreamAddress(), m_session->upstreamPort(), QIODevice::ReadWrite);
+            qWarning() << "Stream socket already open. "
+                          "Closing current open socket";
+            m_streamSocket.close();
+            m_isStreamOpened=false;
+        }
 
-            if (m_streamSocket.waitForConnected(15000))
-            {
-                return;
-            }
-            else
-            {
-                qCritical() << "Socket connection timeout:" << m_streamSocket.errorString();
-                emit errorNetwork(tr("Socket connection timeout"));
-            }
+        m_streamSocket.connectToHost(m_session->upstreamAddress(), m_session->upstreamPort(), QIODevice::ReadWrite);
+
+        if (m_streamSocket.waitForConnected(15000))
+        {
+            return;
         }
         else
         {
-            qCritical() << "Stream already open";
+            qCritical() << "Socket connection timeout:" << m_streamSocket.errorString();
+            emit errorNetwork(tr("Socket connection timeout"));
         }
     }
     else
@@ -476,6 +524,7 @@ void DapStreamer::sltStreamConnected()
     {
         qDebug() << "[DapConnectStream] HTTP stream request sent " << ret<< " bytes";
         qDebug() << "STREAM OPENED";
+        m_isStreamOpened = true;
         emit streamOpened();
     }
     else
@@ -655,7 +704,7 @@ void DapStreamer::_detectPacketLoose(quint64 currentSeqId)
 
 void DapStreamer::_removeOldEntries()
 {
-    QDateTime tenMinutesAgo = QDateTime::currentDateTime().addSecs(-600); // 10 минут назад
+    QDateTime tenMinutesAgo = QDateTime::currentDateTime().addSecs(-600);
     while (!m_packetLossQueue.isEmpty() && m_packetLossQueue.head().first < tenMinutesAgo)
     {
         m_packetLossQueue.dequeue();
@@ -671,6 +720,11 @@ void DapStreamer::_printPacketLossStatistics()
         totalLostPackets += entry.second;
     }
     qInfo() << "Total packet loss in the last 5 minutes:" << totalLostPackets;
+}
+
+void DapStreamer::_resetPacketLossCounter()
+{
+    m_packetLossCount = 0;
 }
 
 void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)
@@ -691,6 +745,12 @@ void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)
     else
     {
         qWarning() << "Error decode. Packet loosed";
+        m_packetLossCount++;
+        
+        if (m_packetLossCount >= 40) {
+            emit sigCriticalPacketLossThreshold();
+            m_packetLossCount = 0;
+        }
     }
 
     m_procPktInData.clear();

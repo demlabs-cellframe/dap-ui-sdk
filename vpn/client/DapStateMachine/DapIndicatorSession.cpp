@@ -46,4 +46,6 @@ void DapIndicatorSession::initAllowedSubstatesTransitions() {
     addAllowedSubstatesTransitions(no_cdbModeConnecting,    networkErr);
     addAllowedSubstatesTransitions(no_cdbModeConnect,       networkErr);
     addAllowedSubstatesTransitions(no_cdbModeConnect,       networkErr);
+
+    addAllowedSubstatesTransitions(cdbLogined,              cdbHandshakeRequest);
 }

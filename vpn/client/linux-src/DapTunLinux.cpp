@@ -360,3 +360,10 @@ void DapTunLinux::tunDeviceDestroy()
     DapTunUnixAbstract::tunDeviceDestroy();
 }
 
+void DapTunLinux::addCdbRoute(const QString &cdbAddress)
+{
+    QString run = QString("route add -host %2 gw %1")
+            .arg(m_defaultGwOld).arg(cdbAddress);
+    ::system(run.toLatin1().constData());
+}
+
