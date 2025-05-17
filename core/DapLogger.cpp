@@ -271,6 +271,8 @@ void DapLogger::writeMessage(QtMsgType type,
         const char *fileName = strrchr(ctx.file, '/');
 #elif defined(Q_OS_WIN)
         const char *fileName = strrchr(ctx.file, '\\');
+#elif defined(Q_OS_IOS)
+        const char *fileName = strrchr(ctx.file, '/');
 #else
         #error "Not supported platform"
 #endif
