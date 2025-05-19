@@ -267,6 +267,12 @@ Item {
                 else
                     root.sigSerialNotFinished();
             }
+
+            Binding {
+                target: root.interfaceObject
+                property: "textFieldFocused"
+                value: enterKeyField.labelMain ? enterKeyField.labelMain.activeFocus : false
+            }
         }
 
         /****************************************//**
