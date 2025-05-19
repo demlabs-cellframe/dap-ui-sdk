@@ -51,10 +51,10 @@ void DapNetworkAccessManager::responseCallbackError(int a_err_code, void * a_obj
     DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
     reply->setError(a_err_code);
     char buf[400] = { };
-    strerror_r(a_err_code, buf, sizeof(buf));
+    const QString resStr(strerror_r(a_err_code, buf, sizeof(buf)));
     qWarning() << "[DapNetworkAccessManager]Dap Client HTTP Request: error code " << a_err_code
-               << ": " << buf;
-    reply->setErrorStr(buf);
+               << ": " << resStr;
+    reply->setErrorStr(resStr);
 /*#else
                ;
     {
