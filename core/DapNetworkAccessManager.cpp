@@ -51,7 +51,19 @@ void DapNetworkAccessManager::responseCallbackError(int a_err_code, void * a_obj
     DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
     reply->setError(a_err_code);
     char buf[400] = { };
-    const QString resStr(strerror_r(a_err_code, buf, sizeof(buf)));
+    QString resStr;
+#if defined(Q_OS_LINUX)
+    resStr = QString(strerror_r(a_err_code, buf, sizeof(buf)));
+#elif defined(Q_OS_WIN)
+    if (strerror_s(buf, sizeof(buf), a_err_code) != 0) {
+        snprintf(buf, sizeof(buf), "Unknown error %d", a_err_code);
+    }
+    resStr = QString(buf);
+#else
+    if (strerror_r(a_err_code, buf, sizeof(buf)) != 0)
+        snprintf(buf, sizeof(buf), "Unknown error %d", a_err_code);
+    resStr = QString(buf);
+#endif
     qWarning() << "[DapNetworkAccessManager]Dap Client HTTP Request: error code " << a_err_code
                << ": " << resStr;
     reply->setErrorStr(resStr);
