@@ -101,9 +101,15 @@ void DapCmdServersList::sendRequestToCDB(){
         sendSimpleError(reply->error(), reply->errorString());
     });
 
-    auto it = DapServiceDataLocal::instance()->getCdbIterator();
-    qDebug() << "Sending request to: " << it->address << ":" << it->port;
-    DapConnectClient::instance()->request_GET (it->address, it->port, "nodelist", *reply);
+    if (!DapServiceDataLocal::instance()->cdbServersList().empty()){
+      auto it = DapServiceDataLocal::instance()->getCdbIterator();
+      qDebug() << "Sending request to: " << it->address << ":" << it->port;
+      DapConnectClient::instance()->request_GET (it->address, it->port, "nodelist", *reply);
+    } else {
+      //send empty get request
+      qDebug() << "CDB list is empty";
+      DapConnectClient::instance()->request_GET ("", 0, "nodelist", *reply);
+    }
 }
 
 

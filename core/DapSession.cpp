@@ -302,8 +302,14 @@ void DapSession::getNews()
 
         emit sigReceivedNewsMessage(jsonDoc);
     });
-    auto it = DapServiceDataLocal::instance()->getCdbIterator();
-    DapConnectClient::instance()->request_GET (it->address, it->port, URL_NEWS, *m_netNewsReply);
+    if (!DapServiceDataLocal::instance()->cdbServersList().empty()){
+      auto it = DapServiceDataLocal::instance()->getCdbIterator();
+      DapConnectClient::instance()->request_GET (it->address, it->port, URL_NEWS, *m_netNewsReply);
+    }else {
+      qDebug() << "CDB list is empty";
+      //send empty get request
+      DapConnectClient::instance()->request_GET ("", 0, URL_NEWS, *m_netNewsReply);
+    }
 }
 
 /**

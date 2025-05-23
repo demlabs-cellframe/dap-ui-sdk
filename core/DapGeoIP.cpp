@@ -23,11 +23,15 @@ DapGeoIP::DapGeoIP(QObject *parent)
         //manager->get(QNetworkRequest(QUrl("http://api.ipify.org")));
 
         /* get cdb address */
-        auto address  = DapServiceDataLocal::instance()->getCdbIterator()->address;
-        auto url      = QUrl ("http://" + address + "/my_ip");
+        if (!DapServiceDataLocal::instance()->cdbServersList().empty()){
+          auto address  = DapServiceDataLocal::instance()->getCdbIterator()->address;
+          auto url      = QUrl ("http://" + address + "/my_ip");
+          /* send request */
+          manager->get (QNetworkRequest (url));
+        } else{
+          qDebug() << "CDB list is empty";
+        }
 
-        /* send request */
-        manager->get (QNetworkRequest (url));
 
     } else {
         qDebug() << "Database file does not exist: " << dbPath.toStdString().c_str();
