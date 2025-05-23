@@ -4,6 +4,7 @@
 #include "DapServiceDataLocal.h"
 #include "DapSession.h"
 #include "DapSerialKeyData.h"
+#include "DapNetworkMonitor.h"
 
 DapCmdConnect::DapCmdConnect(QObject *parent)
     : DapCmdServiceAbstract(DapJsonCmdType::CONNECTION, parent) 
@@ -19,6 +20,8 @@ DapCmdConnect::~DapCmdConnect()
  */
 void DapCmdConnect::sendCmdError(int a_errorCode, const QString a_errorMsg)
 {
+    DapNetworkMonitor::instance()->sltSetHostReachable(false);
+
     qWarning() << "Error message: " << a_errorMsg << " | code: " << QString::number(a_errorCode);
     QJsonObject response;
     QJsonObject errorObj;
