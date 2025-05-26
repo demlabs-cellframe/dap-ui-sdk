@@ -158,6 +158,19 @@ Item {
     }
 
     /// @}
+
+    MouseArea {
+        id: dummyFocus
+        anchors.fill: parent
+        z: 0
+        hoverEnabled: false
+        propagateComposedEvents: true
+        onClicked: {
+            Qt.inputMethod.hide();
+            connectionOverlay.forceActiveFocus();
+        }
+    }
+
     /****************************************//**
      * Ticker & Update tools
      ********************************************/
@@ -268,10 +281,12 @@ Item {
                     root.sigSerialNotFinished();
             }
 
-            Binding {
-                target: root.interfaceObject
-                property: "textFieldFocused"
-                value: enterKeyField.labelMain ? enterKeyField.labelMain.activeFocus : false
+            Keys.onLeftPressed: {
+                event.accepted = true
+            }
+
+            Keys.onRightPressed: {
+                event.accepted = true
             }
         }
 
