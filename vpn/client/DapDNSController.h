@@ -4,7 +4,10 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+
+#ifdef Q_OS_ANDROID
 #include <QAndroidJniObject>
+#endif
 
 #ifdef Q_OS_WINDOWS
 #define WIN32_LEAN_AND_MEAN
@@ -17,6 +20,7 @@
 #pragma comment(lib, "dnsapi.lib")
 #pragma comment(lib, "ws2_32.lib")
 
+// Define structure for Windows XP and above
 typedef struct _IP_ADAPTER_DNS_SERVER_ADDRESS_XP {
     union {
         struct sockaddr Address;
@@ -38,11 +42,6 @@ typedef struct _IP_ADAPTER_DNS_SERVER_ADDRESS_XP {
 
 #ifdef Q_OS_MACOS
 #include <SystemConfiguration/SystemConfiguration.h>
-#endif
-
-#ifdef Q_OS_ANDROID
-#include <jni.h>
-#include <QAndroidJniEnvironment>
 #endif
 
 #ifdef Q_OS_IOS
