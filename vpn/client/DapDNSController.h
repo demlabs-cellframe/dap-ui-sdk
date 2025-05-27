@@ -27,6 +27,56 @@
 #define GAA_FLAG_INCLUDE_PREFIX 0x0010
 #endif
 
+// Forward declarations for Windows types
+typedef struct _IP_ADAPTER_UNICAST_ADDRESS {
+    union {
+        ULONGLONG Alignment;
+        struct {
+            ULONG Length;
+            DWORD Flags;
+        };
+    };
+    struct _IP_ADAPTER_UNICAST_ADDRESS* Next;
+    SOCKET_ADDRESS Address;
+} IP_ADAPTER_UNICAST_ADDRESS, *PIP_ADAPTER_UNICAST_ADDRESS;
+
+typedef struct _IP_ADAPTER_ANYCAST_ADDRESS {
+    union {
+        ULONGLONG Alignment;
+        struct {
+            ULONG Length;
+            DWORD Flags;
+        };
+    };
+    struct _IP_ADAPTER_ANYCAST_ADDRESS* Next;
+    SOCKET_ADDRESS Address;
+} IP_ADAPTER_ANYCAST_ADDRESS, *PIP_ADAPTER_ANYCAST_ADDRESS;
+
+typedef struct _IP_ADAPTER_MULTICAST_ADDRESS {
+    union {
+        ULONGLONG Alignment;
+        struct {
+            ULONG Length;
+            DWORD Flags;
+        };
+    };
+    struct _IP_ADAPTER_MULTICAST_ADDRESS* Next;
+    SOCKET_ADDRESS Address;
+} IP_ADAPTER_MULTICAST_ADDRESS, *PIP_ADAPTER_MULTICAST_ADDRESS;
+
+typedef struct _IP_ADAPTER_PREFIX {
+    union {
+        ULONGLONG Alignment;
+        struct {
+            ULONG Length;
+            DWORD Flags;
+        };
+    };
+    struct _IP_ADAPTER_PREFIX* Next;
+    SOCKET_ADDRESS Address;
+    ULONG PrefixLength;
+} IP_ADAPTER_PREFIX, *PIP_ADAPTER_PREFIX;
+
 // Define structure for Windows XP and above
 typedef struct _IP_ADAPTER_DNS_SERVER_ADDRESS_XP {
     union {
@@ -36,7 +86,7 @@ typedef struct _IP_ADAPTER_DNS_SERVER_ADDRESS_XP {
     struct _IP_ADAPTER_DNS_SERVER_ADDRESS_XP* Next;
 } IP_ADAPTER_DNS_SERVER_ADDRESS_XP, *PIP_ADAPTER_DNS_SERVER_ADDRESS_XP;
 
-// Forward declarations for Windows types
+// Define main adapter addresses structure
 typedef struct _IP_ADAPTER_ADDRESSES {
     union {
         ULONGLONG Alignment;

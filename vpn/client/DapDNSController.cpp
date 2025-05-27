@@ -321,7 +321,7 @@ QStringList DapDNSController::getCurrentDNSServersWindows()
                 PIP_ADAPTER_DNS_SERVER_ADDRESS_XP pDnsServer = pCurrAddresses->FirstDnsServerAddress;
                 while (pDnsServer) {
                     char ipAddress[INET_ADDRSTRLEN];
-                    if (inet_ntop(AF_INET, &(pDnsServer->Address.lpSockaddr->sa_data[2]), ipAddress, INET_ADDRSTRLEN)) {
+                    if (inet_ntop(AF_INET, &(pDnsServer->AddressIn.sin_addr), ipAddress, INET_ADDRSTRLEN)) {
                         dnsServers.append(QString(ipAddress));
                     }
                     pDnsServer = pDnsServer->Next;
