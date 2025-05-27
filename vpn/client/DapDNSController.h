@@ -7,6 +7,8 @@
 
 #ifdef Q_OS_ANDROID
 #include <QAndroidJniObject>
+#include <QAndroidJniEnvironment>
+#include <jni.h>
 #endif
 
 #ifdef Q_OS_WINDOWS
@@ -20,6 +22,11 @@
 #pragma comment(lib, "dnsapi.lib")
 #pragma comment(lib, "ws2_32.lib")
 
+// Define Windows-specific constants if not defined
+#ifndef GAA_FLAG_INCLUDE_PREFIX
+#define GAA_FLAG_INCLUDE_PREFIX 0x0010
+#endif
+
 // Define structure for Windows XP and above
 typedef struct _IP_ADAPTER_DNS_SERVER_ADDRESS_XP {
     union {
@@ -28,6 +35,35 @@ typedef struct _IP_ADAPTER_DNS_SERVER_ADDRESS_XP {
     };
     struct _IP_ADAPTER_DNS_SERVER_ADDRESS_XP* Next;
 } IP_ADAPTER_DNS_SERVER_ADDRESS_XP, *PIP_ADAPTER_DNS_SERVER_ADDRESS_XP;
+
+// Forward declarations for Windows types
+typedef struct _IP_ADAPTER_ADDRESSES {
+    union {
+        ULONGLONG Alignment;
+        struct {
+            ULONG Length;
+            DWORD IfIndex;
+        };
+    };
+    struct _IP_ADAPTER_ADDRESSES* Next;
+    PCHAR AdapterName;
+    PIP_ADAPTER_UNICAST_ADDRESS FirstUnicastAddress;
+    PIP_ADAPTER_ANYCAST_ADDRESS FirstAnycastAddress;
+    PIP_ADAPTER_MULTICAST_ADDRESS FirstMulticastAddress;
+    PIP_ADAPTER_DNS_SERVER_ADDRESS_XP FirstDnsServerAddress;
+    PWCHAR Description;
+    PWCHAR FriendlyName;
+    BYTE PhysicalAddress[MAX_ADAPTER_ADDRESS_LENGTH];
+    DWORD PhysicalAddressLength;
+    DWORD Flags;
+    DWORD Mtu;
+    DWORD IfType;
+    IF_OPER_STATUS OperStatus;
+    DWORD Ipv6IfIndex;
+    DWORD ZoneIndices[16];
+    PIP_ADAPTER_PREFIX FirstPrefix;
+} IP_ADAPTER_ADDRESSES, *PIP_ADAPTER_ADDRESSES;
+
 #endif
 
 #ifdef Q_OS_LINUX
