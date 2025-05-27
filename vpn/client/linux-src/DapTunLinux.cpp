@@ -15,11 +15,14 @@
 #include "DapTunWorkerUnix.h"
 #include "DapNetworkMonitor.h"
 #include "SigUnixHandler.h"
+#include "DapDNSController.h"
 
 /**
  * @brief DapTunLinux::DapTunLinux
  */
-DapTunLinux::DapTunLinux()
+DapTunLinux::DapTunLinux(QObject *parent)
+    : DapTunUnixAbstract()
+    , m_dnsController(new DapDNSController(this))
 {
     if(nmcliVersion.size()==0){ // If not detected before - detect nmcli version
         QProcess cmdProcess;
@@ -41,6 +44,17 @@ DapTunLinux::DapTunLinux()
     }
     connect(SigUnixHandler::getInstance(), &SigUnixHandler::sigKill,
             this, &DapTunLinux::tunDeviceDestroy, Qt::DirectConnection);
+}
+
+/**
+ * @brief DapTunLinux::~DapTunLinux
+ */
+DapTunLinux::~DapTunLinux()
+{
+    if (m_dnsController) {
+        delete m_dnsController;
+        m_dnsController = nullptr;
+    }
 }
 
 /**
@@ -285,6 +299,11 @@ void DapTunLinux::onWorkerStarted()
 
         qDebug() << "nmcli connection modify " DAP_BRAND " ipv4.dns-priority 10";
         ::system("nmcli connection modify " DAP_BRAND " ipv4.dns-priority 10");
+
+        // Set DNS through DapDNSController
+        if (!m_dnsController->setDNSServers(QStringList{gw()})) {
+            qWarning() << "Failed to set DNS servers";
+        }
     }
     qDebug() << "nmcli connection modify " DAP_BRAND " +ipv4.method manual";
     ::system("nmcli connection modify " DAP_BRAND
@@ -332,6 +351,13 @@ void DapTunLinux::tunDeviceDestroy()
     }
 
     bool updateRouteTable = ( upstreamSocket() != -1);// We expect that its could be only no-route situation
+
+    // Restore original DNS settings
+    if (updateRouteTable) {
+        if (!m_dnsController->restoreDefaultDNS()) {
+            qWarning() << "Failed to restore original DNS settings";
+        }
+    }
 
     ::system(QString("ifconfig %1 down").arg(tunDeviceName()).toLatin1().constData());
     ::system("nmcli connection down " DAP_BRAND);

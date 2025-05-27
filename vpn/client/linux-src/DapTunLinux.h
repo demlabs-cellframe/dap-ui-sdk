@@ -2,13 +2,14 @@
 #define DAPTUNLINUX_H
 
 #include "DapTunUnixAbstract.h"
+#include "DapDNSController.h"
 
 class DapTunLinux : public DapTunUnixAbstract
 {
     Q_OBJECT
 public:
-    DapTunLinux();
-    ~DapTunLinux() {}
+    explicit DapTunLinux(QObject *parent = nullptr);
+    ~DapTunLinux();
 protected:
     void tunDeviceCreate() override;
     void tunDeviceDestroy() override;
@@ -39,6 +40,8 @@ private:
 
     // if metric is 0 upping to 15
     void checkDefaultGetaweyMetric();
+
+    DapDNSController *m_dnsController;
 };
 
 #endif // DAPTUNLINUX_H

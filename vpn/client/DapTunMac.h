@@ -2,31 +2,34 @@
 #define DAPTUNMAC_H
 
 #include "DapTunAbstract.h"
+#include "DapTunWorkerMac.h"
 
-class DapTunWorkerMac;
+class DapDNSController;
 
 class DapTunMac : public DapTunAbstract
 {
+    Q_OBJECT
 public:
-    DapTunMac();
-    void addNewUpstreamRoute(const QString&);
+    explicit DapTunMac();
     ~DapTunMac();
+
+    void tunDeviceCreate() override;
+    void tunDeviceDestroy() override;
+    void workerPrepare() override;
+    void workerStart() override;
+    void workerStop() override;
+    void workerPause() override;
+    void signalWriteQueueProc() override;
+
 protected:
-    void tunDeviceCreate();
-    void tunDeviceDestroy();
-    void onWorkerStarted();
+    void onWorkerStarted() override;
+    void onWorkerStopped() override;
 
-    void workerPrepare();
-    void workerStop();
-    void workerPause();
-    void signalWriteQueueProc();
-
-    void backupAndApplyDNS();
-    void getBackDNS();
-
-    int breaker0,breaker1;
-    DapTunWorkerMac * tunWorkerMac;
-
+private:
+    DapTunWorkerMac *tunWorker;
+    QThread *tunThread;
+    int breaker0, breaker1;
+    DapDNSController *m_dnsController;
 };
 
 #endif // DAPTUNMAC_H

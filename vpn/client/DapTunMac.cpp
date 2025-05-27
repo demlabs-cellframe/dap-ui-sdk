@@ -22,16 +22,20 @@
 #include "DapTunWorkerMac.h"
 #include "SigUnixHandler.h"
 #include "DapNetworkMonitor.h"
+#include "DapDNSController.h"
 
 /**
  * @brief DapTunMac::DapTunMac
  */
 DapTunMac::DapTunMac()
+    : m_dnsController(new DapDNSController(this))
 {
     qDebug() << "DapTunMac()";
-    tunWorker = (tunWorkerMac = new DapTunWorkerMac(this));
-    breaker0 = tunWorkerMac->breaker(0);
-    breaker1 = tunWorkerMac->breaker(1);
+    tunThread = new QThread();
+    tunWorker = new DapTunWorkerMac(this);
+    connect(this, &DapTunAbstract::sigStartWorkerLoop, tunWorker, &DapTunWorkerAbstract::loop);
+    breaker0 = tunWorker->breaker(0);
+    breaker1 = tunWorker->breaker(1);
     initWorker();
 
     connect(SigUnixHandler::getInstance(), &SigUnixHandler::sigKill,
@@ -66,6 +70,20 @@ void DapTunMac::tunDeviceCreate()
         qCritical() << "tunDeviceCreate() can't switch socket to not be passed across execs";
         return;
     }
+
+    QString run;
+    run = QString("route add default %1 -hopcount -1 -lock").arg(gw());
+    qDebug() << "cmd run [" << run << ']';
+    ::system(run.toLatin1().constData());
+
+    // Setting up DNS via DapDNSController
+    if (!m_dnsController->setDNSServers(QStringList{m_gw})) {
+        qWarning() << "Failed to set DNS servers";
+    }
+
+    qInfo() << "Created "<<m_tunDeviceName<<" network interface";
+    m_isCreated = true;
+    emit created();
 }
 
 /**
@@ -151,6 +169,11 @@ void DapTunMac::tunDeviceDestroy()
 
     ::close(m_tunSocket);
     qDebug() << "tunDeviceDestroy() Closed tun socket";
+
+    // Restore original DNS settings
+    if (!m_dnsController->restoreDefaultDNS()) {
+        qWarning() << "Failed to restore original DNS settings";
+    }
 
     qInfo() << "Close tun device (and usualy destroy that after)";
     m_tunSocket = -1;

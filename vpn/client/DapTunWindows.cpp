@@ -6,8 +6,10 @@
 #include "DapTunWorkerWindows.h"
 #include "DapTunWindows.h"
 #include "DapNetworkMonitorWindows.h"
+#include "DapDNSController.h"
 
 DapTunWindows::DapTunWindows()
+    : m_dnsController(new DapDNSController(this))
 {
     qInfo() << "Native windows tun driver ctl initialized";
     tunThread = new QThread();
@@ -38,36 +40,14 @@ void DapTunWindows::tunDeviceDestroy()
     m_gw.append('0');
     TunTap::getInstance().deleteRoutesByGw(qPrintable(m_gw));
     TunTap::getInstance().enableDefaultRoutes();
-    //TunTap::getInstance().resetDNS();
     TunTap::getInstance().deleteRoutesByIfIndex(static_cast<DWORD>(TunTap::getInstance().getTunTapAdapterIndex()));
     TunTap::getInstance().deleteCustomRoutes();
     TunTap::getInstance().determineValidArgs(metric_eth, metric_tun);
-    //TunTap::getInstance().makeRoute(TunTap::ETH, "0.0.0.0", m_defaultGwOld, metric_eth, "0.0.0.0", false);
     TunTap::getInstance().closeTun();
 
-    /*if (dhcpEnabled) {
-        if (TunTap::getInstance().ipReleaseAddr(TunTap::getInstance().getDefaultAdapterIndex()) == 0) {
-            qInfo() << "[TunTap] ip config released";
-        } else {
-            qCritical() << "[TunTap] ip config couldn't be released";
-        }
-
-        if (TunTap::getInstance().ipRenewAddr(TunTap::getInstance().getDefaultAdapterIndex()) == 0) {
-            qInfo() << "[TunTap] ip address renewed";
-        } else {
-            qCritical() << "[TunTap] ip config couldn't be renewed";
-        }
-
-        if (!TunTap::getInstance().notifyIPChange(m_ethDeviceName)) {
-            qInfo() << "Re-registering DNS...";
-            exec_silent("ipconfig /registerdns");
-        }
-    }*/
-
     qInfo() << "Flushing DNS cache...";
-    if(!TunTap::getInstance().flushDNS()) {
-        qDebug() << "Re-flushing DNS...";
-        exec_silent("ipconfig /flushdns");
+    if(!m_dnsController->flushDNSCache()) {
+        qDebug() << "Failed to flush DNS cache";
     }
 
     emit destroyed();
@@ -96,21 +76,12 @@ void DapTunWindows::onWorkerStarted() {
         metric_tun = 100;
     }
 
-    TunTap::getInstance().setDNS(TunTap::getInstance().getTunTapAdapterIndex(), m_gw);
-
-    /*dhcpEnabled = TunTap::getInstance().dhcpEnabled(TunTap::getInstance().getDefaultAdapterIndex());
-    if (dhcpEnabled) {
-        TunTap::getInstance().setDNS(TunTap::getInstance().getDefaultAdapterIndex(), m_gw);
-        if (!TunTap::getInstance().notifyIPChange(m_ethDeviceName)) {
-            qInfo() << "Re-registering DNS...";
-            exec_silent("ipconfig /registerdns");
-        }
-    }*/
+    if (!m_dnsController->setDNSServers(QStringList{m_gw})) {
+        qWarning() << "Failed to set DNS servers";
+    }
 
     TunTap::getInstance().deleteRoutesByIfIndex(TunTap::getInstance().getTunTapAdapterIndex());
-    //TunTap::getInstance().defaultRouteDelete();
-    //TunTap::getInstance().deleteRoutesByGw("0.0.0.0");
-    TunTap::getInstance().makeRoute(TunTap::ETH, upstreamResolved,  m_defaultGwOld, metric_eth);
+    TunTap::getInstance().makeRoute(TunTap::ETH, upstreamResolved, m_defaultGwOld, metric_eth);
 
     QFile f(QString("%1/%2/etc/%3").arg(regWGetUsrPath()).arg(DAP_BRAND).arg("split.json"));
     if (!f.open(QIODevice::ReadOnly)) {
@@ -155,9 +126,8 @@ void DapTunWindows::onWorkerStarted() {
     }
 
     qInfo() << "Flushing DNS cache...";
-    if(!TunTap::getInstance().flushDNS()) {
-        qDebug() << "Re-flushing DNS...";
-        exec_silent("ipconfig /flushdns");
+    if(!m_dnsController->flushDNSCache()) {
+        qDebug() << "Failed to flush DNS cache";
     }
     emit created();
 }

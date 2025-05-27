@@ -1,9 +1,9 @@
-
 SOURCES += \
     #$$PWD/DapChSockForw.cpp \
     $$PWD/DapTunAbstract.cpp\
     $$PWD/DapTunWorkerAbstract.cpp \
-    $$PWD/DapTunNative.cpp
+    $$PWD/DapTunNative.cpp \
+    $$PWD/DapDNSController.cpp
 
 HEADERS += \
     #$$PWD/DapChSockForw.h \
@@ -11,7 +11,8 @@ HEADERS += \
     $$PWD/DapTunWorkerAbstract.h \
     $$PWD/DapTunNative.h \
     $$PWD/DapSockForwPacket.h \
-    $$PWD/DapStreamChChainVpnPacket.h
+    $$PWD/DapStreamChChainVpnPacket.h \
+    $$PWD/DapDNSController.h
 
 INCLUDEPATH += $$PWD
 
