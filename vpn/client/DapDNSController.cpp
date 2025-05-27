@@ -146,7 +146,9 @@ bool DapDNSController::isValidIPAddress(const QString &ipAddress)
 int DapDNSController::exec_silent(const QString &cmd)
 {
     QProcess process;
-    process.start(cmd);
+    QStringList args = QProcess::splitCommand(cmd);
+    QString program = args.takeFirst();
+    process.start(program, args);
     process.waitForFinished();
     return process.exitCode();
 }
@@ -545,21 +547,20 @@ QStringList DapDNSController::getCurrentDNSServersAndroid()
     }
 
     // Call Java method to get DNS servers
-    jobjectArray dnsArray = m_activity.callObjectMethod<jobjectArray>("getDNSServers", "()[Ljava/lang/String;");
+    QAndroidJniObject dnsArray = m_activity.callObjectMethod("getDNSServers", "()[Ljava/lang/String;");
     
-    if (dnsArray) {
+    if (dnsArray.isValid()) {
         QAndroidJniEnvironment env;
-        jsize size = env->GetArrayLength(dnsArray);
+        jobjectArray array = dnsArray.object<jobjectArray>();
+        jsize size = env->GetArrayLength(array);
         
         for (jsize i = 0; i < size; i++) {
-            jstring dnsString = (jstring)env->GetObjectArrayElement(dnsArray, i);
+            jstring dnsString = (jstring)env->GetObjectArrayElement(array, i);
             const char* dnsChars = env->GetStringUTFChars(dnsString, nullptr);
             dnsServers.append(QString(dnsChars));
             env->ReleaseStringUTFChars(dnsString, dnsChars);
             env->DeleteLocalRef(dnsString);
         }
-        
-        env->DeleteLocalRef(dnsArray);
     }
     
     return dnsServers;
