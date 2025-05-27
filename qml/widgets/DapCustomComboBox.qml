@@ -139,7 +139,7 @@ Item
             Image
             {
                 id: indicator
-                source: "qrc:/horizontalMode/Resources/" + pathTheme + "/icons/other/icon_arrowDown.svg"
+                source: pathResources + pathTheme + "/icons/other/icon_arrowDown.svg"
                 rotation: popupVisible ? 180 : 0
                 mipmap: true
 
@@ -392,7 +392,7 @@ Item
                     Image
                     {
                         id: fakeIndicator
-                        source: "qrc:/horizontalMode/Resources/" + pathTheme + "/icons/other/icon_arrowDown.svg"
+                        source: pathResources + pathTheme + "/icons/other/icon_arrowDown.svg"
                         rotation: popupVisible ? 180 : 0
                         mipmap: true
 
