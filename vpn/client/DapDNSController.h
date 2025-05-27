@@ -9,8 +9,11 @@
 #include <windows.h>
 #include <iphlpapi.h>
 #include <windns.h>
+#include <ws2tcpip.h>
+#include <winsock2.h>
 #pragma comment(lib, "iphlpapi.lib")
 #pragma comment(lib, "dnsapi.lib")
+#pragma comment(lib, "ws2_32.lib")
 #endif
 
 #ifdef Q_OS_LINUX
@@ -76,7 +79,7 @@ private:
     int exec_silent(const QString &cmd);
 
 #ifdef Q_OS_WINDOWS
-    IP_ADAPTER_DNS_SERVER_ADDRESS_XP* m_originalDNSConfig;
+    IP_ADAPTER_DNS_SERVER_ADDRESS* m_originalDNSConfig;
     bool setDNSServersWindows(const QStringList &dnsServers);
     bool restoreDefaultDNSWindows();
     QStringList getCurrentDNSServersWindows();

@@ -5,6 +5,17 @@
 #include <QFile>
 #include <QTextStream>
 
+#ifdef Q_OS_WINDOWS
+#include <windows.h>
+#include <iphlpapi.h>
+#include <windns.h>
+#include <ws2tcpip.h>
+#include <winsock2.h>
+#pragma comment(lib, "iphlpapi.lib")
+#pragma comment(lib, "dnsapi.lib")
+#pragma comment(lib, "ws2_32.lib")
+#endif
+
 DapDNSController::DapDNSController(QObject *parent)
     : QObject(parent)
     , m_isDNSSet(false)
@@ -217,7 +228,7 @@ bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
         while (pCurrAddresses) {
             if (pCurrAddresses->OperStatus == IfOperStatusUp) {
                 // Find active network adapter
-                PIP_ADAPTER_DNS_SERVER_ADDRESS_XP pDnsServer = pCurrAddresses->FirstDnsServerAddress;
+                PIP_ADAPTER_DNS_SERVER_ADDRESS pDnsServer = pCurrAddresses->FirstDnsServerAddress;
                 if (pDnsServer) {
                     // Save original settings
                     m_originalDNSConfig = pDnsServer;
@@ -292,7 +303,7 @@ QStringList DapDNSController::getCurrentDNSServersWindows()
         PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses;
         while (pCurrAddresses) {
             if (pCurrAddresses->OperStatus == IfOperStatusUp) {
-                PIP_ADAPTER_DNS_SERVER_ADDRESS_XP pDnsServer = pCurrAddresses->FirstDnsServerAddress;
+                PIP_ADAPTER_DNS_SERVER_ADDRESS pDnsServer = pCurrAddresses->FirstDnsServerAddress;
                 while (pDnsServer) {
                     char ipAddress[INET_ADDRSTRLEN];
                     inet_ntop(AF_INET, &(pDnsServer->Address.lpSockaddr->sa_data[2]), ipAddress, INET_ADDRSTRLEN);
