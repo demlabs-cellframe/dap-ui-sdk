@@ -207,15 +207,18 @@ bool DapDNSController::registerDNS()
 #ifdef Q_OS_WINDOWS
 bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
 {
-    PIP_ADAPTER_ADDRESSES pAddresses = nullptr;
     ULONG outBufLen = 0;
-    ULONG Iterations = 0;
     DWORD dwRetVal = 0;
 
-    // Get buffer size
-    GetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_PREFIX, nullptr, pAddresses, &outBufLen);
-    pAddresses = (PIP_ADAPTER_ADDRESSES)malloc(outBufLen);
+    // Get buffer size for adapter addresses
+    dwRetVal = GetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_PREFIX, nullptr, nullptr, &outBufLen);
+    if (dwRetVal != ERROR_BUFFER_OVERFLOW) {
+        qWarning() << "Failed to get adapter addresses buffer size";
+        emit errorOccurred("Failed to get adapter addresses buffer size");
+        return false;
+    }
 
+    PIP_ADAPTER_ADDRESSES pAddresses = (PIP_ADAPTER_ADDRESSES)malloc(outBufLen);
     if (pAddresses == nullptr) {
         qWarning() << "Failed to allocate memory for adapter addresses";
         emit errorOccurred("Failed to allocate memory for adapter addresses");
@@ -224,55 +227,63 @@ bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
 
     // Get adapter information
     dwRetVal = GetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_PREFIX, nullptr, pAddresses, &outBufLen);
-
-    if (dwRetVal == NO_ERROR) {
-        PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses;
-        while (pCurrAddresses) {
-            if (pCurrAddresses->OperStatus == IfOperStatusUp) {
-                // Find active network adapter
-                PIP_ADAPTER_DNS_SERVER_ADDRESS pDnsServer = pCurrAddresses->FirstDnsServerAddress;
-                if (pDnsServer) {
-                    // Save original settings
-                    m_originalDNSConfig = pDnsServer;
-
-                    // Set new DNS servers
-                    for (const QString &dnsServer : dnsServers) {
-                        // Convert string to IP address
-                        struct in_addr addr;
-                        inet_pton(AF_INET, dnsServer.toStdString().c_str(), &addr);
-
-                        // Set DNS server
-                        DWORD dwRetVal = DnsSetConfig(
-                            DnsConfigDnsServerList,
-                            DNS_CONFIG_FLAG_ALLOC,
-                            &addr,
-                            nullptr
-                        );
-
-                        if (dwRetVal != ERROR_SUCCESS) {
-                            qWarning() << "Failed to set DNS server:" << dnsServer;
-                            emit errorOccurred(QString("Failed to set DNS server: %1").arg(dnsServer));
-                            free(pAddresses);
-                            return false;
-                        }
-                    }
-                    free(pAddresses);
-                    return true;
-                }
-            }
-            pCurrAddresses = pCurrAddresses->Next;
-        }
+    if (dwRetVal != NO_ERROR) {
+        qWarning() << "Failed to get adapter addresses";
+        emit errorOccurred("Failed to get adapter addresses");
+        free(pAddresses);
+        return false;
     }
 
-    qWarning() << "No active network adapter found";
-    emit errorOccurred("No active network adapter found");
+    bool success = false;
+    PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses;
+    while (pCurrAddresses) {
+        if (pCurrAddresses->OperStatus == IfOperStatusUp) {
+            PIP_ADAPTER_DNS_SERVER_ADDRESS_XP pDnsServer = pCurrAddresses->FirstDnsServerAddress;
+            if (pDnsServer) {
+                // Save original DNS settings
+                m_originalDNSConfig = pDnsServer;
+
+                // Set new DNS servers
+                for (const QString &dnsServer : dnsServers) {
+                    // Convert string to IP address
+                    struct in_addr addr;
+                    if (inet_pton(AF_INET, dnsServer.toStdString().c_str(), &addr) != 1) {
+                        qWarning() << "Invalid IP address format:" << dnsServer;
+                        emit errorOccurred(QString("Invalid IP address format: %1").arg(dnsServer));
+                        free(pAddresses);
+                        return false;
+                    }
+
+                    // Set DNS server using Windows API
+                    dwRetVal = DnsSetConfig(
+                        DnsConfigDnsServerList,
+                        DNS_CONFIG_FLAG_ALLOC,
+                        &addr,
+                        nullptr
+                    );
+
+                    if (dwRetVal != ERROR_SUCCESS) {
+                        qWarning() << "Failed to set DNS server:" << dnsServer;
+                        emit errorOccurred(QString("Failed to set DNS server: %1").arg(dnsServer));
+                        free(pAddresses);
+                        return false;
+                    }
+                }
+                success = true;
+                break;
+            }
+        }
+        pCurrAddresses = pCurrAddresses->Next;
+    }
+
     free(pAddresses);
-    return false;
+    return success;
 }
 
 bool DapDNSController::restoreDefaultDNSWindows()
 {
     if (m_originalDNSConfig) {
+        // Restore original DNS settings using Windows API
         DWORD dwRetVal = DnsSetConfig(
             DnsConfigDnsServerList,
             DNS_CONFIG_FLAG_ALLOC,
@@ -287,29 +298,32 @@ bool DapDNSController::restoreDefaultDNSWindows()
 QStringList DapDNSController::getCurrentDNSServersWindows()
 {
     QStringList dnsServers;
-    PIP_ADAPTER_ADDRESSES pAddresses = nullptr;
     ULONG outBufLen = 0;
-    ULONG Iterations = 0;
     DWORD dwRetVal = 0;
 
-    GetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_PREFIX, nullptr, pAddresses, &outBufLen);
-    pAddresses = (PIP_ADAPTER_ADDRESSES)malloc(outBufLen);
+    // Get buffer size for adapter addresses
+    dwRetVal = GetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_PREFIX, nullptr, nullptr, &outBufLen);
+    if (dwRetVal != ERROR_BUFFER_OVERFLOW) {
+        return dnsServers;
+    }
 
+    PIP_ADAPTER_ADDRESSES pAddresses = (PIP_ADAPTER_ADDRESSES)malloc(outBufLen);
     if (pAddresses == nullptr) {
         return dnsServers;
     }
 
+    // Get adapter information and extract DNS servers
     dwRetVal = GetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_PREFIX, nullptr, pAddresses, &outBufLen);
-
     if (dwRetVal == NO_ERROR) {
         PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses;
         while (pCurrAddresses) {
             if (pCurrAddresses->OperStatus == IfOperStatusUp) {
-                PIP_ADAPTER_DNS_SERVER_ADDRESS pDnsServer = pCurrAddresses->FirstDnsServerAddress;
+                PIP_ADAPTER_DNS_SERVER_ADDRESS_XP pDnsServer = pCurrAddresses->FirstDnsServerAddress;
                 while (pDnsServer) {
                     char ipAddress[INET_ADDRSTRLEN];
-                    inet_ntop(AF_INET, &(pDnsServer->Address.lpSockaddr->sa_data[2]), ipAddress, INET_ADDRSTRLEN);
-                    dnsServers.append(QString(ipAddress));
+                    if (inet_ntop(AF_INET, &(pDnsServer->Address.lpSockaddr->sa_data[2]), ipAddress, INET_ADDRSTRLEN)) {
+                        dnsServers.append(QString(ipAddress));
+                    }
                     pDnsServer = pDnsServer->Next;
                 }
                 break;

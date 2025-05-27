@@ -4,8 +4,10 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QAndroidJniObject>
 
 #ifdef Q_OS_WINDOWS
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <iphlpapi.h>
 #include <windns.h>
@@ -14,6 +16,14 @@
 #pragma comment(lib, "iphlpapi.lib")
 #pragma comment(lib, "dnsapi.lib")
 #pragma comment(lib, "ws2_32.lib")
+
+typedef struct _IP_ADAPTER_DNS_SERVER_ADDRESS_XP {
+    union {
+        struct sockaddr Address;
+        struct sockaddr_in AddressIn;
+    };
+    struct _IP_ADAPTER_DNS_SERVER_ADDRESS_XP* Next;
+} IP_ADAPTER_DNS_SERVER_ADDRESS_XP, *PIP_ADAPTER_DNS_SERVER_ADDRESS_XP;
 #endif
 
 #ifdef Q_OS_LINUX
@@ -32,7 +42,6 @@
 
 #ifdef Q_OS_ANDROID
 #include <jni.h>
-#include <QAndroidJniObject>
 #include <QAndroidJniEnvironment>
 #endif
 
@@ -79,7 +88,7 @@ private:
     int exec_silent(const QString &cmd);
 
 #ifdef Q_OS_WINDOWS
-    IP_ADAPTER_DNS_SERVER_ADDRESS* m_originalDNSConfig;
+    PIP_ADAPTER_DNS_SERVER_ADDRESS_XP m_originalDNSConfig;
     bool setDNSServersWindows(const QStringList &dnsServers);
     bool restoreDefaultDNSWindows();
     QStringList getCurrentDNSServersWindows();
