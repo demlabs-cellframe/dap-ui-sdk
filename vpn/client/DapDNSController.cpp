@@ -205,7 +205,7 @@ bool DapDNSController::registerDNS()
 }
 
 #ifdef Q_OS_WINDOWS
-bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
+bool DapDNSController::getInterfaceName()
 {
     ULONG outBufLen = 0;
     DWORD dwRetVal = 0;
@@ -234,65 +234,105 @@ bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
         return false;
     }
 
-    bool success = false;
+    bool found = false;
     PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses;
     while (pCurrAddresses) {
         if (pCurrAddresses->OperStatus == IfOperStatusUp) {
-            PIP_ADAPTER_DNS_SERVER_ADDRESS_XP pDnsServer = pCurrAddresses->FirstDnsServerAddress;
-            if (pDnsServer) {
-                // Save original DNS settings
-                m_originalDNSConfig = pDnsServer;
-
-                // Set new DNS servers
-                for (const QString &dnsServer : dnsServers) {
-                    // Convert string to IP address
-                    struct in_addr addr;
-                    if (inet_pton(AF_INET, dnsServer.toStdString().c_str(), &addr) != 1) {
-                        qWarning() << "Invalid IP address format:" << dnsServer;
-                        emit errorOccurred(QString("Invalid IP address format: %1").arg(dnsServer));
-                        free(pAddresses);
-                        return false;
-                    }
-
-                    // Set DNS server using Windows API
-                    dwRetVal = DnsSetConfig(
-                        DnsConfigDnsServerList,
-                        DNS_CONFIG_FLAG_ALLOC,
-                        &addr,
-                        nullptr
-                    );
-
-                    if (dwRetVal != ERROR_SUCCESS) {
-                        qWarning() << "Failed to set DNS server:" << dnsServer;
-                        emit errorOccurred(QString("Failed to set DNS server: %1").arg(dnsServer));
-                        free(pAddresses);
-                        return false;
-                    }
-                }
-                success = true;
-                break;
-            }
+            m_interfaceName = QString::fromWCharArray(pCurrAddresses->FriendlyName);
+            found = true;
+            break;
         }
         pCurrAddresses = pCurrAddresses->Next;
     }
 
     free(pAddresses);
-    return success;
+    return found;
+}
+
+bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
+{
+    if (dnsServers.isEmpty()) {
+        qWarning() << "Empty DNS servers list provided";
+        emit errorOccurred("Empty DNS servers list provided");
+        return false;
+    }
+
+    // Get interface name if not already set
+    if (m_interfaceName.isEmpty() && !getInterfaceName()) {
+        qWarning() << "Failed to get interface name";
+        emit errorOccurred("Failed to get interface name");
+        return false;
+    }
+
+    // Set primary DNS server
+    QString cmd = QString("netsh interface ip set dns name=\"%1\" static %2")
+        .arg(m_interfaceName)
+        .arg(dnsServers.first());
+    
+    if (QProcess::execute(cmd) != 0) {
+        qWarning() << "Failed to set primary DNS server";
+        emit errorOccurred("Failed to set primary DNS server");
+        return false;
+    }
+
+    // Add additional DNS servers
+    for (int i = 1; i < dnsServers.size(); ++i) {
+        cmd = QString("netsh interface ip add dns name=\"%1\" addr=%2 index=%3")
+            .arg(m_interfaceName)
+            .arg(dnsServers[i])
+            .arg(i + 1);
+        
+        if (QProcess::execute(cmd) != 0) {
+            qWarning() << "Failed to add DNS server:" << dnsServers[i];
+            emit errorOccurred(QString("Failed to add DNS server: %1").arg(dnsServers[i]));
+            return false;
+        }
+    }
+
+    return true;
 }
 
 bool DapDNSController::restoreDefaultDNSWindows()
 {
-    if (m_originalDNSConfig) {
-        // Restore original DNS settings using Windows API
-        DWORD dwRetVal = DnsSetConfig(
-            DnsConfigDnsServerList,
-            DNS_CONFIG_FLAG_ALLOC,
-            m_originalDNSConfig,
-            nullptr
-        );
-        return dwRetVal == ERROR_SUCCESS;
+    if (m_originalDNSServers.isEmpty()) {
+        qWarning() << "No original DNS servers to restore";
+        emit errorOccurred("No original DNS servers to restore");
+        return false;
     }
-    return false;
+
+    // Get interface name if not already set
+    if (m_interfaceName.isEmpty() && !getInterfaceName()) {
+        qWarning() << "Failed to get interface name";
+        emit errorOccurred("Failed to get interface name");
+        return false;
+    }
+
+    // Set primary DNS server
+    QString cmd = QString("netsh interface ip set dns name=\"%1\" static %2")
+        .arg(m_interfaceName)
+        .arg(m_originalDNSServers.first());
+    
+    if (QProcess::execute(cmd) != 0) {
+        qWarning() << "Failed to restore primary DNS server";
+        emit errorOccurred("Failed to restore primary DNS server");
+        return false;
+    }
+
+    // Add additional DNS servers
+    for (int i = 1; i < m_originalDNSServers.size(); ++i) {
+        cmd = QString("netsh interface ip add dns name=\"%1\" addr=%2 index=%3")
+            .arg(m_interfaceName)
+            .arg(m_originalDNSServers[i])
+            .arg(i + 1);
+        
+        if (QProcess::execute(cmd) != 0) {
+            qWarning() << "Failed to restore DNS server:" << m_originalDNSServers[i];
+            emit errorOccurred(QString("Failed to restore DNS server: %1").arg(m_originalDNSServers[i]));
+            return false;
+        }
+    }
+
+    return true;
 }
 
 QStringList DapDNSController::getCurrentDNSServersWindows()

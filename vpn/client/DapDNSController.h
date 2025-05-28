@@ -28,10 +28,6 @@
 #define GAA_FLAG_INCLUDE_PREFIX 0x0010
 #endif
 
-#ifndef DNS_CONFIG_FLAG_ALLOC
-#define DNS_CONFIG_FLAG_ALLOC 0x0001
-#endif
-
 // Define types if not already defined
 typedef IP_ADAPTER_DNS_SERVER_ADDRESS* PIP_ADAPTER_DNS_SERVER_ADDRESS_XP;
 
@@ -43,13 +39,6 @@ extern "C" {
         PVOID Reserved,
         PIP_ADAPTER_ADDRESSES AdapterAddresses,
         PULONG SizePointer
-    );
-
-    DWORD WINAPI DnsSetConfig(
-        DNS_CONFIG_TYPE Config,
-        DWORD Flag,
-        PVOID pConfigInfo,
-        PDWORD pConfigInfoSize
     );
 
     DWORD WINAPI DnsFlushResolverCache();
@@ -107,6 +96,7 @@ private:
     // Store original DNS settings
     QStringList m_originalDNSServers;
     bool m_isDNSSet;
+    QString m_interfaceName;  // Store interface name for DNS operations
 
     // Helper methods
     bool isValidIPAddress(const QString &ipAddress);
@@ -117,6 +107,7 @@ private:
     bool setDNSServersWindows(const QStringList &dnsServers);
     bool restoreDefaultDNSWindows();
     QStringList getCurrentDNSServersWindows();
+    bool getInterfaceName();  // New method to get interface name
 #endif
 
 #ifdef Q_OS_LINUX
