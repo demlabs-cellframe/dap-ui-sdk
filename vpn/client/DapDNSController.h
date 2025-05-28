@@ -31,29 +31,6 @@
 #define DNS_CONFIG_FLAG_ALLOC 0x0001
 #endif
 
-#ifndef DnsConfigDnsServerList
-#define DnsConfigDnsServerList 0x0003
-#endif
-
-// Define DNS_CONFIG_TYPE if not already defined
-#ifndef DNS_CONFIG_TYPE
-typedef enum _DNS_CONFIG_TYPE {
-    DnsConfigPrimaryDomainName_W = 0,
-    DnsConfigPrimaryDomainName_A = 1,
-    DnsConfigPrimaryDomainName_UTF8 = 2,
-    DnsConfigAdapterDomainName_W = 3,
-    DnsConfigAdapterDomainName_A = 4,
-    DnsConfigAdapterDomainName_UTF8 = 5,
-    DnsConfigDnsServerList = 6,
-    DnsConfigSearchList = 7,
-    DnsConfigAdapterInfo = 8,
-    DnsConfigSetHostName = 9,
-    DnsConfigHostName = 10,
-    DnsConfigFullHostName = 11,
-    DnsConfigNameServer = 12
-} DNS_CONFIG_TYPE;
-#endif
-
 // Forward declarations for Windows types
 typedef struct _IP_ADAPTER_UNICAST_ADDRESS {
     union {
@@ -157,6 +134,8 @@ extern "C" {
         PVOID pConfigInfo,
         PDWORD pConfigInfoSize
     );
+
+    DWORD WINAPI DnsFlushResolverCache();
 }
 #endif
 
