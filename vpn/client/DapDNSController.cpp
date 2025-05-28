@@ -320,9 +320,14 @@ QStringList DapDNSController::getCurrentDNSServersWindows()
             if (pCurrAddresses->OperStatus == IfOperStatusUp) {
                 PIP_ADAPTER_DNS_SERVER_ADDRESS_XP pDnsServer = pCurrAddresses->FirstDnsServerAddress;
                 while (pDnsServer) {
-                    char ipAddress[INET_ADDRSTRLEN];
-                    if (inet_ntop(AF_INET, &(pDnsServer->AddressIn.sin_addr), ipAddress, INET_ADDRSTRLEN)) {
-                        dnsServers.append(QString(ipAddress));
+                    if (pDnsServer->Address.lpSockaddr) {
+                        SOCKADDR_IN* sockaddr_ipv4 = (SOCKADDR_IN*)pDnsServer->Address.lpSockaddr;
+                        if (sockaddr_ipv4->sin_family == AF_INET) {
+                            char ipAddress[INET_ADDRSTRLEN];
+                            if (inet_ntop(AF_INET, &(sockaddr_ipv4->sin_addr), ipAddress, INET_ADDRSTRLEN)) {
+                                dnsServers.append(QString::fromUtf8(ipAddress));
+                            }
+                        }
                     }
                     pDnsServer = pDnsServer->Next;
                 }
