@@ -27,6 +27,33 @@
 #define GAA_FLAG_INCLUDE_PREFIX 0x0010
 #endif
 
+#ifndef DNS_CONFIG_FLAG_ALLOC
+#define DNS_CONFIG_FLAG_ALLOC 0x0001
+#endif
+
+#ifndef DnsConfigDnsServerList
+#define DnsConfigDnsServerList 0x0003
+#endif
+
+// Define DNS_CONFIG_TYPE if not already defined
+#ifndef DNS_CONFIG_TYPE
+typedef enum _DNS_CONFIG_TYPE {
+    DnsConfigPrimaryDomainName_W = 0,
+    DnsConfigPrimaryDomainName_A = 1,
+    DnsConfigPrimaryDomainName_UTF8 = 2,
+    DnsConfigAdapterDomainName_W = 3,
+    DnsConfigAdapterDomainName_A = 4,
+    DnsConfigAdapterDomainName_UTF8 = 5,
+    DnsConfigDnsServerList = 6,
+    DnsConfigSearchList = 7,
+    DnsConfigAdapterInfo = 8,
+    DnsConfigSetHostName = 9,
+    DnsConfigHostName = 10,
+    DnsConfigFullHostName = 11,
+    DnsConfigNameServer = 12
+} DNS_CONFIG_TYPE;
+#endif
+
 // Forward declarations for Windows types
 typedef struct _IP_ADAPTER_UNICAST_ADDRESS {
     union {
@@ -114,6 +141,23 @@ typedef struct _IP_ADAPTER_ADDRESSES {
     PIP_ADAPTER_PREFIX FirstPrefix;
 } IP_ADAPTER_ADDRESSES, *PIP_ADAPTER_ADDRESSES;
 
+// Declare Windows API functions
+extern "C" {
+    DWORD WINAPI GetAdaptersAddresses(
+        ULONG Family,
+        DWORD Flags,
+        PVOID Reserved,
+        PIP_ADAPTER_ADDRESSES AdapterAddresses,
+        PULONG SizePointer
+    );
+
+    DWORD WINAPI DnsSetConfig(
+        DNS_CONFIG_TYPE Config,
+        DWORD Flag,
+        PVOID pConfigInfo,
+        PDWORD pConfigInfoSize
+    );
+}
 #endif
 
 #ifdef Q_OS_LINUX
