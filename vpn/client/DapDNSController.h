@@ -14,10 +14,11 @@
 #ifdef Q_OS_WINDOWS
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
 #include <iphlpapi.h>
 #include <windns.h>
-#include <ws2tcpip.h>
-#include <winsock2.h>
+
 #pragma comment(lib, "iphlpapi.lib")
 #pragma comment(lib, "dnsapi.lib")
 #pragma comment(lib, "ws2_32.lib")
@@ -30,6 +31,9 @@
 #ifndef DNS_CONFIG_FLAG_ALLOC
 #define DNS_CONFIG_FLAG_ALLOC 0x0001
 #endif
+
+// Define types if not already defined
+typedef IP_ADAPTER_DNS_SERVER_ADDRESS* PIP_ADAPTER_DNS_SERVER_ADDRESS_XP;
 
 // Declare Windows API functions
 extern "C" {
