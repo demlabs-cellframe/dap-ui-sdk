@@ -20,6 +20,7 @@ public:
     void workerStop() override;
     void workerPause() override;
     void signalWriteQueueProc() override;
+    void addNewUpstreamRoute(const QString &a_addr);
 
 protected:
     void onWorkerStarted() override;
@@ -33,6 +34,8 @@ private:
     QString m_tunDeviceReg;
     QString upstreamResolved;
     DapDNSController *m_dnsController;
+    ulong metric_eth;
+    ulong metric_tun;
 };
 
 #endif // DAPTUNWINDOWS_H
