@@ -134,6 +134,18 @@ Item {
                 onClicked: {
                     openedFlag = !openedFlag;
                     root.internal.checkboxes[model.index] = !root.internal.checkboxes[model.index];
+
+                    //Scroll to the end of answer
+                    if (openedFlag) {
+                        const item = listview.itemAtIndex(model.index);
+                        if (item) {
+                            const expHeight = faqItemSizer.height + faqItemContent.height + faqItemSpacer.height + faqItemSep.height;
+                            const targetY = item.y + expHeight - listview.height;
+                            if (targetY > listview.contentY) {
+                                listview.contentY = targetY;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -154,6 +166,13 @@ Item {
         clip: true
 
         delegate: faqItem
+
+        Behavior on contentY {
+            NumberAnimation {
+                duration: 250
+                easing.type: Easing.InOutQuad
+            }
+        }
     }
 }
 
