@@ -19,8 +19,8 @@ Item {
 
     property double scaleFactor: 1.0
 
-    property real startX: dapMainWindow.width
-    property real stopX: dapMainWindow.width - (popup.width + 24 * scaleFactor)
+    property real startX: mainWindow.width
+    property real stopX: mainWindow.width - (popup.width + 24 * scaleFactor)
 
     width: rectItem.width
     height: rectItem.height
@@ -138,7 +138,7 @@ Item {
         if(width)
         {
             rectItem.width = width
-            stopX = dapMainWindow.width - (popup.width + 24 * scaleFactor)
+            stopX = mainWindow.width - (popup.width + 24 * scaleFactor)
         }
         if(height)
             rectItem.height = height
