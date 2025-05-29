@@ -237,10 +237,21 @@ bool DapDNSController::getInterfaceName()
     bool found = false;
     PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses;
     while (pCurrAddresses) {
-        if (pCurrAddresses->OperStatus == IfOperStatusUp) {
-            m_interfaceName = QString::fromWCharArray(pCurrAddresses->FriendlyName);
-            found = true;
-            break;
+        // Check if adapter is up and not a loopback
+        if (pCurrAddresses->OperStatus == IfOperStatusUp && 
+            pCurrAddresses->IfType != IF_TYPE_SOFTWARE_LOOPBACK) {
+            
+            // Check if adapter has IPv4 address
+            PIP_ADAPTER_UNICAST_ADDRESS pUnicast = pCurrAddresses->FirstUnicastAddress;
+            while (pUnicast) {
+                if (pUnicast->Address.lpSockaddr->sa_family == AF_INET) {
+                    m_interfaceName = QString::fromWCharArray(pCurrAddresses->FriendlyName);
+                    found = true;
+                    break;
+                }
+                pUnicast = pUnicast->Next;
+            }
+            if (found) break;
         }
         pCurrAddresses = pCurrAddresses->Next;
     }
@@ -264,16 +275,28 @@ bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
         return false;
     }
 
+    // Run netsh commands with elevated privileges
+    QProcess process;
+    process.setProcessChannelMode(QProcess::MergedChannels);
+
     // Set primary DNS server
-    QString cmd = QString("netsh interface ip set dns name=\"%1\" static %2")
+    QString cmd = QString("netsh interface ip set dns name=\"%1\" static %2 primary")
         .arg(m_interfaceName)
         .arg(dnsServers.first());
     
-    if (QProcess::execute(cmd) != 0) {
-        qWarning() << "Failed to set primary DNS server";
+    process.start("cmd.exe", QStringList() << "/c" << cmd);
+    process.waitForFinished();
+    
+    if (process.exitCode() != 0) {
+        qWarning() << "Failed to set primary DNS server:" << process.readAllStandardOutput();
         emit errorOccurred("Failed to set primary DNS server");
         return false;
     }
+
+    // Remove any existing secondary DNS servers
+    cmd = QString("netsh interface ip delete dns name=\"%1\" all").arg(m_interfaceName);
+    process.start("cmd.exe", QStringList() << "/c" << cmd);
+    process.waitForFinished();
 
     // Add additional DNS servers
     for (int i = 1; i < dnsServers.size(); ++i) {
@@ -282,12 +305,19 @@ bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
             .arg(dnsServers[i])
             .arg(i + 1);
         
-        if (QProcess::execute(cmd) != 0) {
-            qWarning() << "Failed to add DNS server:" << dnsServers[i];
+        process.start("cmd.exe", QStringList() << "/c" << cmd);
+        process.waitForFinished();
+        
+        if (process.exitCode() != 0) {
+            qWarning() << "Failed to add DNS server:" << dnsServers[i] << process.readAllStandardOutput();
             emit errorOccurred(QString("Failed to add DNS server: %1").arg(dnsServers[i]));
             return false;
         }
     }
+
+    // Flush DNS cache
+    process.start("cmd.exe", QStringList() << "/c" << "ipconfig /flushdns");
+    process.waitForFinished();
 
     return true;
 }
@@ -307,16 +337,27 @@ bool DapDNSController::restoreDefaultDNSWindows()
         return false;
     }
 
+    QProcess process;
+    process.setProcessChannelMode(QProcess::MergedChannels);
+
     // Set primary DNS server
-    QString cmd = QString("netsh interface ip set dns name=\"%1\" static %2")
+    QString cmd = QString("netsh interface ip set dns name=\"%1\" static %2 primary")
         .arg(m_interfaceName)
         .arg(m_originalDNSServers.first());
     
-    if (QProcess::execute(cmd) != 0) {
-        qWarning() << "Failed to restore primary DNS server";
+    process.start("cmd.exe", QStringList() << "/c" << cmd);
+    process.waitForFinished();
+    
+    if (process.exitCode() != 0) {
+        qWarning() << "Failed to restore primary DNS server:" << process.readAllStandardOutput();
         emit errorOccurred("Failed to restore primary DNS server");
         return false;
     }
+
+    // Remove any existing secondary DNS servers
+    cmd = QString("netsh interface ip delete dns name=\"%1\" all").arg(m_interfaceName);
+    process.start("cmd.exe", QStringList() << "/c" << cmd);
+    process.waitForFinished();
 
     // Add additional DNS servers
     for (int i = 1; i < m_originalDNSServers.size(); ++i) {
@@ -325,12 +366,19 @@ bool DapDNSController::restoreDefaultDNSWindows()
             .arg(m_originalDNSServers[i])
             .arg(i + 1);
         
-        if (QProcess::execute(cmd) != 0) {
-            qWarning() << "Failed to restore DNS server:" << m_originalDNSServers[i];
+        process.start("cmd.exe", QStringList() << "/c" << cmd);
+        process.waitForFinished();
+        
+        if (process.exitCode() != 0) {
+            qWarning() << "Failed to restore DNS server:" << m_originalDNSServers[i] << process.readAllStandardOutput();
             emit errorOccurred(QString("Failed to restore DNS server: %1").arg(m_originalDNSServers[i]));
             return false;
         }
     }
+
+    // Flush DNS cache
+    process.start("cmd.exe", QStringList() << "/c" << "ipconfig /flushdns");
+    process.waitForFinished();
 
     return true;
 }
