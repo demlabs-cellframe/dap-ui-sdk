@@ -120,6 +120,7 @@ Item
                     text: currentValue
                     font: mainFont.dapFont.regular16
                     regExpValidator: /[0-9]*\.?[0-9]{0,18}/
+                    inputMethodHints: CURRENT_OS === "ios" ? Qt.ImhNone : Qt.ImhFormattedNumbersOnly
                     defaultPlaceholderText: "0.0"
                     horizontalAlignment: Text.AlignRight
                     borderWidth: 0
@@ -127,6 +128,9 @@ Item
                     placeholderColor: currTheme.gray
                     selectByMouse: editable
                     enabled: editable
+                    
+                    Keys.onReturnPressed: focus = false
+                    Keys.onEnterPressed: focus = false
 
                     onTextChanged:
                     {
