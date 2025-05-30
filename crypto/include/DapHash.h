@@ -36,6 +36,7 @@ namespace Dap {
             const dap_chain_hash_fast_t& value() const { return m_value; }
             HashFast(){ ::memset(m_value.raw,0,sizeof (m_value)); }
             HashFast(const dap_chain_hash_fast_t& a_value) { memcpy(&m_value, &a_value, sizeof (a_value)); }
+            HashFast(const HashFast& a_hashFast) { memcpy(&m_value, &a_hashFast.m_value, sizeof (m_value)); }
             HashFast(const QString& a_value) {
                 if (dap_chain_hash_fast_from_str(qUtf8Printable(a_value), &m_value) != 0)
                     memset(m_value.raw, 0, sizeof (m_value));
