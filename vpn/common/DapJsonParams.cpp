@@ -61,6 +61,7 @@ const QString& DapJsonParams::toString(Params p) {
         {GATEWAY, "gateway"},
         {UPSTREAM_SOCKET, "upstream_socket"},
         {CDB, "cdb"},
+        {INSTANCE_ID, "instance_id"}
     };
 
     if (!paramsName.contains(p)) {

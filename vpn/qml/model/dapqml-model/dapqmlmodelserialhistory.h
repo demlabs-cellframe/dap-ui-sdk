@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <QAbstractTableModel>
 #include <QTimer>
+#include "DapCmdDataLocal.h"
 class QQmlEngine;
 class QJSEngine;
 
@@ -54,7 +55,10 @@ public:
    *******************************************/
   /// @{
 public slots:
-  void slotSetup();
+  void slotSetup(DapCmdDataLocal * pCmdDataLocal);
+  void update();
+private:
+  DapCmdDataLocal * m_pCmdDataLocal;
   /// @}
 };
 
