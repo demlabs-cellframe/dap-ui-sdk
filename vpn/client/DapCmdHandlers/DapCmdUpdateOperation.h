@@ -21,6 +21,7 @@ public slots:
 signals:
     void startDownload(QString url, QString path);
     void startUpdate();
+    void removeDownload(const QString& downloadFileName);
 };
 
 #endif // DAPCMDUPDATEOPERATION_H
