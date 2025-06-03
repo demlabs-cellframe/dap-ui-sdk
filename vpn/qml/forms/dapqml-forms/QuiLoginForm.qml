@@ -158,6 +158,19 @@ Item {
     }
 
     /// @}
+
+    MouseArea {
+        id: dummyFocus
+        anchors.fill: parent
+        z: 0
+        hoverEnabled: false
+        propagateComposedEvents: true
+        onClicked: {
+            Qt.inputMethod.hide();
+            connectionOverlay.forceActiveFocus();
+        }
+    }
+
     /****************************************//**
      * Ticker & Update tools
      ********************************************/
@@ -266,6 +279,14 @@ Item {
                     root.sigSerialCleaned();
                 else
                     root.sigSerialNotFinished();
+            }
+
+            Keys.onLeftPressed: {
+                event.accepted = true
+            }
+
+            Keys.onRightPressed: {
+                event.accepted = true
             }
         }
 

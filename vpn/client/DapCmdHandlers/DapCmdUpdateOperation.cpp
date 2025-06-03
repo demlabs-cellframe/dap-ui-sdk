@@ -26,4 +26,10 @@ void DapCmdUpdateOperation::handle(const QJsonObject *params)
     }
     if (params->value("start_update") != QJsonValue::Undefined)
         emit startUpdate();
+
+    if (params->value("download_remove") != QJsonValue::Undefined)
+    {
+        QJsonObject downloadRemoveInfo = params->value("download_remove").toObject();
+        emit removeDownload(downloadRemoveInfo.value("pack").toString());
+    }
 }
