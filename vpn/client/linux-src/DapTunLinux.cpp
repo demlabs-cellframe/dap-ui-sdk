@@ -300,10 +300,19 @@ void DapTunLinux::onWorkerStarted()
         qDebug() << "nmcli connection modify " DAP_BRAND " ipv4.dns-priority 10";
         ::system("nmcli connection modify " DAP_BRAND " ipv4.dns-priority 10");
 
-        // Set DNS through DapDNSController
+        // Set DNS through DapDNSController - ensure only one DNS server is set
         if (!m_dnsController->setDNSServers(QStringList{gw()})) {
             qWarning() << "Failed to set DNS servers";
         }
+
+        // Remove any existing DNS servers from NetworkManager
+        ::system("nmcli connection modify " DAP_BRAND " ipv4.dns \"\"");
+
+        // Set only the required DNS server through NetworkManager
+        QString dnsCmd = QString("nmcli connection modify %1 ipv4.dns %2")
+                             .arg(DAP_BRAND).arg(gw()).toLatin1().constData();
+        qDebug() << dnsCmd;
+        ::system(dnsCmd.toLatin1().constData());
     }
     qDebug() << "nmcli connection modify " DAP_BRAND " +ipv4.method manual";
     ::system("nmcli connection modify " DAP_BRAND
@@ -312,11 +321,6 @@ void DapTunLinux::onWorkerStarted()
 
 
     if( updateRouteTable ){
-        QString dnsCmd = QString("nmcli connection modify %1 +ipv4.dns %2")
-                             .arg(DAP_BRAND).arg(gw()).toLatin1().constData();
-        qDebug() << dnsCmd;
-        ::system(dnsCmd.toLatin1().constData());
-
         qDebug() << "nmcli connection modify " DAP_BRAND " +ipv4.route-metric 10";
         ::system("nmcli connection modify " DAP_BRAND
                  " +ipv4.route-metric 10");

@@ -451,6 +451,13 @@ bool DapDNSController::setDNSServersLinux(const QStringList &dnsServers)
         }
     }
 
+    // Validate that we have exactly one DNS server
+    if (dnsServers.size() != 1) {
+        qWarning() << "Expected exactly one DNS server, got" << dnsServers.size();
+        emit errorOccurred("Expected exactly one DNS server");
+        return false;
+    }
+
     // Open resolv.conf for writing
     QFile resolvConf("/etc/resolv.conf");
     if (!resolvConf.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -460,10 +467,8 @@ bool DapDNSController::setDNSServersLinux(const QStringList &dnsServers)
     }
 
     QTextStream out(&resolvConf);
-    // Write new DNS servers
-    for (const QString &dnsServer : dnsServers) {
-        out << "nameserver " << dnsServer << "\n";
-    }
+    // Write only the required DNS server
+    out << "nameserver " << dnsServers.first() << "\n";
     resolvConf.close();
 
     // Set correct permissions
@@ -472,6 +477,9 @@ bool DapDNSController::setDNSServersLinux(const QStringList &dnsServers)
         emit errorOccurred("Failed to set permissions on /etc/resolv.conf");
         return false;
     }
+
+    // Flush DNS cache
+    flushDNSCache();
 
     return true;
 }
