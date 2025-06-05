@@ -224,6 +224,75 @@ int DapDNSController::exec_silent(const QString &cmd)
     return process.exitCode();
 }
 
+bool DapDNSController::runNetshCommand(const QString &cmd, QString *output, int timeout)
+{
+#ifdef Q_OS_WINDOWS
+    QProcess process;
+    process.setProcessChannelMode(QProcess::MergedChannels);
+    
+    process.start("cmd.exe", QStringList() << "/c" << cmd);
+    
+    if (!process.waitForStarted(timeout)) {
+        qWarning() << "Failed to start command:" << cmd << "Error:" << process.errorString();
+        emit errorOccurred(QString("Failed to start command: %1").arg(process.errorString()));
+        return false;
+    }
+
+    if (!process.waitForFinished(timeout)) {
+        qWarning() << "Command timed out after" << timeout << "ms:" << cmd;
+        emit errorOccurred(QString("Command timed out after %1 ms").arg(timeout));
+        process.kill();
+        return false;
+    }
+
+    QByteArray processOutput = process.readAll();
+    QString outputStr = QString::fromLocal8Bit(processOutput);
+
+    if (output) {
+        *output = outputStr;
+    }
+
+    // Check exit code first
+    int exitCode = process.exitCode();
+    if (exitCode != 0) {
+        // Check for specific error conditions
+        if (exitCode == ERROR_ELEVATION_REQUIRED || 
+            outputStr.contains("The requested operation requires elevation") ||
+            outputStr.contains("requires elevated privileges")) {
+            qWarning() << "Command requires elevation:" << cmd;
+            emit errorOccurred("The operation requires administrator privileges");
+            return false;
+        }
+
+        qWarning() << "Command failed with exit code" << exitCode << ":" << cmd
+                  << "Output:" << outputStr;
+        emit errorOccurred(QString("Command failed with exit code %1: %2")
+                         .arg(exitCode)
+                         .arg(outputStr.trimmed()));
+        return false;
+    }
+
+    // Check for common error patterns even if exit code is 0
+    if (outputStr.contains("The system cannot find the file specified") ||
+        outputStr.contains("File not found") ||
+        outputStr.contains("The command failed to complete successfully") ||
+        outputStr.contains("Command execution failed")) {
+        qWarning() << "Command failed:" << cmd << "Output:" << outputStr;
+        emit errorOccurred(QString("Command failed: %1").arg(outputStr.trimmed()));
+        return false;
+    }
+
+    return true;
+#else
+    // On non-Windows platforms, use exec_silent
+    int exitCode = exec_silent(cmd);
+    if (output) {
+        *output = QString();  // Clear output on non-Windows platforms
+    }
+    return exitCode == 0;
+#endif
+}
+
 bool DapDNSController::flushDNSCache()
 {
     bool result = false;
@@ -435,66 +504,6 @@ bool DapDNSController::verifyIfaceStatus()
     if (!output.contains("Connect state: Connected")) {
         qWarning() << "Interface is not connected:" << m_ifaceName;
         emit errorOccurred(QString("Interface %1 is not in connected state").arg(m_ifaceName));
-        return false;
-    }
-
-    return true;
-}
-
-bool DapDNSController::runNetshCommand(const QString &cmd, QString *output, int timeout)
-{
-    QProcess process;
-    process.setProcessChannelMode(QProcess::MergedChannels);
-    
-    process.start("cmd.exe", QStringList() << "/c" << cmd);
-    
-    if (!process.waitForStarted(timeout)) {
-        qWarning() << "Failed to start command:" << cmd << "Error:" << process.errorString();
-        emit errorOccurred(QString("Failed to start command: %1").arg(process.errorString()));
-        return false;
-    }
-
-    if (!process.waitForFinished(timeout)) {
-        qWarning() << "Command timed out after" << timeout << "ms:" << cmd;
-        emit errorOccurred(QString("Command timed out after %1 ms").arg(timeout));
-        process.kill();
-        return false;
-    }
-
-    QByteArray processOutput = process.readAll();
-    QString outputStr = QString::fromLocal8Bit(processOutput);
-
-    if (output) {
-        *output = outputStr;
-    }
-
-    // Check exit code first
-    int exitCode = process.exitCode();
-    if (exitCode != 0) {
-        // Check for specific error conditions
-        if (exitCode == ERROR_ELEVATION_REQUIRED || 
-            outputStr.contains("The requested operation requires elevation") ||
-            outputStr.contains("требует повышения прав")) {
-            qWarning() << "Command requires elevation:" << cmd;
-            emit errorOccurred("The operation requires administrator privileges");
-            return false;
-        }
-
-        qWarning() << "Command failed with exit code" << exitCode << ":" << cmd
-                  << "Output:" << outputStr;
-        emit errorOccurred(QString("Command failed with exit code %1: %2")
-                         .arg(exitCode)
-                         .arg(outputStr.trimmed()));
-        return false;
-    }
-
-    // Check for common error patterns even if exit code is 0
-    if (outputStr.contains("The system cannot find the file specified") ||
-        outputStr.contains("Не удается найти указанный файл") ||
-        outputStr.contains("The command failed to complete successfully") ||
-        outputStr.contains("Не удалось выполнить команду")) {
-        qWarning() << "Command failed:" << cmd << "Output:" << outputStr;
-        emit errorOccurred(QString("Command failed: %1").arg(outputStr.trimmed()));
         return false;
     }
 

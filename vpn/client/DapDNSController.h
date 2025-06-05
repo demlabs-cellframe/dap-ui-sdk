@@ -117,6 +117,12 @@ signals:
     void dnsRestored();
     void errorOccurred(const QString &error);
 
+protected:
+    // Helper methods
+    bool isValidIPAddress(const QString &ipAddress);
+    int exec_silent(const QString &cmd);
+    bool runNetshCommand(const QString &cmd, QString *output = nullptr, int timeout = 5000);
+
 private:
     // Mutex for thread safety
     mutable QMutex m_mutex;
@@ -125,10 +131,6 @@ private:
     QStringList m_originalDNSServers;
     bool m_isDNSSet;
     QString m_ifaceName;  // Store network interface name for DNS operations
-
-    // Helper methods
-    bool isValidIPAddress(const QString &ipAddress);
-    int exec_silent(const QString &cmd);
 
 #ifdef Q_OS_WINDOWS
     PIP_ADAPTER_DNS_SERVER_ADDRESS_XP m_originalDNSConfig;
@@ -139,7 +141,6 @@ private:
     
     // New helper methods for Windows
     bool isRunAsAdmin();
-    bool runNetshCommand(const QString &cmd, QString *output = nullptr, int timeout = 5000);
     bool verifyIfaceStatus();
     bool verifyDNSSettings(const QStringList &expected, const QStringList &current);
     void updateOriginalDNSServers();
