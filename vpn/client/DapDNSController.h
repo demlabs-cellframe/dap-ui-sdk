@@ -122,8 +122,6 @@ private:
     bool verifyInterfaceStatus();
     bool verifyDNSSettings(const QStringList &expected, const QStringList &current);
     void updateOriginalDNSServers();
-    bool flushDNSCache();
-    bool registerDNS();
     bool restoreDNSFromList(const QString &interface, const QStringList &dnsList);
 #endif
 
