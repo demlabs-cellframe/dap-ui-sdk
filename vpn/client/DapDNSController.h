@@ -1,9 +1,13 @@
 #ifndef DAPDNSCONTROLLER_H
 #define DAPDNSCONTROLLER_H
 
+// Qt includes
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QProcess>
+#include <QHostAddress>
+#include <QSet>
 
 #ifdef Q_OS_ANDROID
 #include <QAndroidJniObject>
@@ -42,6 +46,7 @@ extern "C" {
     );
 
     DWORD WINAPI DnsFlushResolverCache();
+    DWORD WINAPI DnsRegisterAdapterName(PCWSTR Adapter, PVOID Reserved);
 }
 #endif
 
@@ -114,6 +119,11 @@ private:
     bool runNetshCommand(const QString &cmd, QString *output = nullptr, int timeout = 5000);
     QStringList getCurrentDNSIndexes(const QString &interface);
     bool resetInterfaceDNS(const QString &interface, bool useDHCP = false);
+    bool verifyInterfaceStatus();
+    bool verifyDNSSettings(const QStringList &expected, const QStringList &current);
+    void updateOriginalDNSServers();
+    bool flushDNSCache();
+    bool registerDNS();
     bool restoreDNSFromList(const QString &interface, const QStringList &dnsList);
 #endif
 

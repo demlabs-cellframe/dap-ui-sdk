@@ -264,9 +264,9 @@ bool DapDNSController::getInterfaceName()
         emit errorOccurred("Failed to determine best network interface");
     } else {
         // Try to find the best interface first
-        auto [addresses, error] = getAdapterAddresses(GAA_FLAG_INCLUDE_PREFIX | 
-                                                    GAA_FLAG_INCLUDE_GATEWAYS);
-        pAddresses = addresses;
+        auto result = getAdapterAddresses(GAA_FLAG_INCLUDE_PREFIX | GAA_FLAG_INCLUDE_GATEWAYS);
+        pAddresses = result.first;
+        DWORD error = result.second;
 
         if (error == NO_ERROR && pAddresses) {
             PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses;
@@ -304,9 +304,9 @@ bool DapDNSController::getInterfaceName()
 
     // If best interface method failed, try fallback method
     if (!found) {
-        auto [addresses, error] = getAdapterAddresses(GAA_FLAG_INCLUDE_PREFIX | 
-                                                    GAA_FLAG_INCLUDE_GATEWAYS);
-        pAddresses = addresses;
+        auto result = getAdapterAddresses(GAA_FLAG_INCLUDE_PREFIX | GAA_FLAG_INCLUDE_GATEWAYS);
+        pAddresses = result.first;
+        DWORD error = result.second;
 
         if (error == NO_ERROR && pAddresses) {
             PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses;
@@ -828,6 +828,16 @@ bool DapDNSController::isRunAsAdmin()
 
     CloseHandle(hToken);
     return elevation.TokenIsElevated != 0;
+}
+
+void DapDNSController::updateOriginalDNSServers()
+{
+    if (m_originalDNSServers.isEmpty()) {
+        m_originalDNSServers = getCurrentDNSServersWindows();
+        if (!m_originalDNSServers.isEmpty()) {
+            qDebug() << "Cached original DNS servers:" << m_originalDNSServers;
+        }
+    }
 }
 #endif
 
