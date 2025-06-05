@@ -8,7 +8,6 @@
 #include <QRegularExpression>
 #include <QMutexLocker>
 #include <QCoreApplication>
-#include <comdef.h>
 
 #ifdef Q_OS_WINDOWS
 #include <windows.h>
@@ -16,6 +15,7 @@
 #include <windns.h>
 #include <ws2tcpip.h>
 #include <winsock2.h>
+#include <comdef.h>
 #pragma comment(lib, "iphlpapi.lib")
 #pragma comment(lib, "dnsapi.lib")
 #pragma comment(lib, "ws2_32.lib")
