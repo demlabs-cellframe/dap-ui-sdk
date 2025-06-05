@@ -102,8 +102,8 @@ public:
     bool registerDNS();
 
     // Thread-safe accessors
-    QString getInterfaceName() const;
-    void setInterfaceName(const QString &name);
+    QString getIfaceName() const;
+    void setIfaceName(const QString &name);
     QStringList getOriginalDNSServers() const;
     void setOriginalDNSServers(const QStringList &servers);
 
@@ -120,7 +120,7 @@ private:
     // Store original DNS settings
     QStringList m_originalDNSServers;
     bool m_isDNSSet;
-    QString m_interfaceName;  // Store interface name for DNS operations
+    QString m_ifaceName;  // Store network interface name for DNS operations
 
     // Helper methods
     bool isValidIPAddress(const QString &ipAddress);
@@ -131,14 +131,14 @@ private:
     bool setDNSServersWindows(const QStringList &dnsServers);
     bool restoreDefaultDNSWindows();
     QStringList getCurrentDNSServersWindows();
-    bool getInterfaceName();
+    bool getIfaceName();
     
     // New helper methods for Windows
     bool isRunAsAdmin();
     bool runNetshCommand(const QString &cmd, QString *output = nullptr, int timeout = 5000);
     QStringList getCurrentDNSIndexes(const QString &iface);
     bool resetInterfaceDNS(const QString &iface, bool useDHCP = false);
-    bool verifyInterfaceStatus();
+    bool verifyIfaceStatus();
     bool verifyDNSSettings(const QStringList &expected, const QStringList &current);
     void updateOriginalDNSServers();
     bool restoreDNSFromList(const QString &iface, const QStringList &dnsList);

@@ -77,18 +77,17 @@ DapDNSController::~DapDNSController()
 #endif
 }
 
-// Add thread-safe accessor for interface name
-QString DapDNSController::getInterfaceName() const
+// Update getter/setter implementations
+QString DapDNSController::getIfaceName() const
 {
     QMutexLocker locker(&m_mutex);
-    return m_interfaceName;
+    return m_ifaceName;
 }
 
-// Add thread-safe setter for interface name
-void DapDNSController::setInterfaceName(const QString &name)
+void DapDNSController::setIfaceName(const QString &name)
 {
     QMutexLocker locker(&m_mutex);
-    m_interfaceName = name;
+    m_ifaceName = name;
 }
 
 // Add thread-safe accessor for original DNS servers
@@ -308,7 +307,7 @@ namespace {
     }
 }
 
-bool DapDNSController::getInterfaceName()
+bool DapDNSController::getIfaceName()
 {
     bool found = false;
     PIP_ADAPTER_ADDRESSES pAddresses = nullptr;
@@ -352,7 +351,7 @@ bool DapDNSController::getInterfaceName()
                             if (pUnicast->Address.lpSockaddr->sa_family == AF_INET ||
                                 pUnicast->Address.lpSockaddr->sa_family == AF_INET6) {
                                 
-                                m_interfaceName = QString::fromWCharArray(pCurrAddresses->FriendlyName);
+                                m_ifaceName = QString::fromWCharArray(pCurrAddresses->FriendlyName);
                                 qDebug() << "Found best interface:" 
                                         << QString::fromWCharArray(pCurrAddresses->FriendlyName)
                                         << "(" << QString::fromUtf16((const ushort*)pCurrAddresses->Description) << ")";
@@ -389,7 +388,7 @@ bool DapDNSController::getInterfaceName()
                         if (pUnicast->Address.lpSockaddr->sa_family == AF_INET ||
                             pUnicast->Address.lpSockaddr->sa_family == AF_INET6) {
                             
-                            m_interfaceName = QString::fromWCharArray(pCurrAddresses->FriendlyName);
+                            m_ifaceName = QString::fromWCharArray(pCurrAddresses->FriendlyName);
                             qDebug() << "Found fallback interface:" 
                                     << QString::fromWCharArray(pCurrAddresses->FriendlyName)
                                     << "(" << QString::fromUtf16((const ushort*)pCurrAddresses->Description) << ")";
@@ -409,7 +408,31 @@ bool DapDNSController::getInterfaceName()
     if (!found) {
         qWarning() << "No suitable network interface found";
         emit errorOccurred("No suitable network interface found");
-        m_interfaceName.clear();
+        m_ifaceName.clear();
+        return false;
+    }
+
+    return true;
+}
+
+bool DapDNSController::verifyIfaceStatus()
+{
+    if (m_ifaceName.isEmpty()) {
+        qWarning() << "Interface name is empty";
+        emit errorOccurred("Interface name is empty");
+        return false;
+    }
+
+    QString output;
+    QString cmd = QString("netsh interface show interface \"%1\"").arg(m_ifaceName);
+    
+    if (!runNetshCommand(cmd, &output)) {
+        return false;
+    }
+
+    if (!output.contains("Connect state: Connected")) {
+        qWarning() << "Interface is not connected:" << m_ifaceName;
+        emit errorOccurred(QString("Interface %1 is not in connected state").arg(m_ifaceName));
         return false;
     }
 
@@ -534,20 +557,20 @@ bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
     }
 
     // Get interface name if not already set
-    if (m_interfaceName.isEmpty() && !getInterfaceName()) {
+    if (m_ifaceName.isEmpty() && !getIfaceName()) {
         qWarning() << "Failed to get interface name";
         emit errorOccurred("Failed to get interface name");
         return false;
     }
 
     // Verify interface is connected and operational
-    if (!verifyInterfaceStatus()) {
+    if (!verifyIfaceStatus()) {
         return false;
     }
 
     // Reset current DNS settings
     QString resetCmd = QString("netsh interface ip set dns name=\"%1\" source=none")
-        .arg(m_interfaceName);
+        .arg(m_ifaceName);
     
     if (!runNetshCommand(resetCmd)) {
         qWarning() << "Failed to reset DNS settings";
@@ -557,7 +580,7 @@ bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
 
     // Set primary DNS server
     QString cmd = QString("netsh interface ip set dns name=\"%1\" static %2 primary")
-        .arg(m_interfaceName)
+        .arg(m_ifaceName)
         .arg(dnsServers.first());
     
     if (!runNetshCommand(cmd)) {
@@ -569,7 +592,7 @@ bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
     // Add additional DNS servers
     for (int i = 1; i < dnsServers.size(); ++i) {
         cmd = QString("netsh interface ip add dns name=\"%1\" addr=%2 index=%3")
-            .arg(m_interfaceName)
+            .arg(m_ifaceName)
             .arg(dnsServers[i])
             .arg(i + 1);
         
@@ -585,7 +608,7 @@ bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
     if (!verifyDNSSettings(dnsServers, currentDNS)) {
         // Try to restore original DNS settings
         if (!m_originalDNSServers.isEmpty()) {
-            restoreDNSFromList(m_interfaceName, m_originalDNSServers);
+            restoreDNSFromList(m_ifaceName, m_originalDNSServers);
         }
         return false;
     }
@@ -634,20 +657,20 @@ bool DapDNSController::restoreDefaultDNSWindows()
     }
 
     // Check and get interface name if not set
-    if (m_interfaceName.isEmpty() && !getInterfaceName()) {
+    if (m_ifaceName.isEmpty() && !getIfaceName()) {
         qWarning() << "Failed to get interface name";
         emit errorOccurred("Failed to get interface name");
         return false;
     }
 
     // Verify interface is connected and operational
-    if (!verifyInterfaceStatus()) {
+    if (!verifyIfaceStatus()) {
         return false;
     }
 
     // Reset current DNS settings
     QString resetCmd = QString("netsh interface ip set dns name=\"%1\" source=none")
-        .arg(m_interfaceName);
+        .arg(m_ifaceName);
     
     if (!runNetshCommand(resetCmd)) {
         qWarning() << "Failed to reset DNS settings";
@@ -657,7 +680,7 @@ bool DapDNSController::restoreDefaultDNSWindows()
 
     // Restore DNS servers
     QString cmd = QString("netsh interface ip set dns name=\"%1\" static %2 primary")
-        .arg(m_interfaceName)
+        .arg(m_ifaceName)
         .arg(m_originalDNSServers.first());
     
     if (!runNetshCommand(cmd)) {
@@ -669,7 +692,7 @@ bool DapDNSController::restoreDefaultDNSWindows()
     // Add additional DNS servers
     for (int i = 1; i < m_originalDNSServers.size(); ++i) {
         cmd = QString("netsh interface ip add dns name=\"%1\" addr=%2 index=%3")
-            .arg(m_interfaceName)
+            .arg(m_ifaceName)
             .arg(m_originalDNSServers[i])
             .arg(i + 1);
         
@@ -852,30 +875,6 @@ QStringList DapDNSController::getCurrentDNSServersWindows()
     }
 
     return dnsServers;
-}
-
-bool DapDNSController::verifyInterfaceStatus()
-{
-    if (m_interfaceName.isEmpty()) {
-        qWarning() << "Interface name is empty";
-        emit errorOccurred("Interface name is empty");
-        return false;
-    }
-
-    QString output;
-    QString cmd = QString("netsh interface show interface \"%1\"").arg(m_interfaceName);
-    
-    if (!runNetshCommand(cmd, &output)) {
-        return false;
-    }
-
-    if (!output.contains("Connect state: Connected")) {
-        qWarning() << "Interface is not connected:" << m_interfaceName;
-        emit errorOccurred(QString("Interface %1 is not in connected state").arg(m_interfaceName));
-        return false;
-    }
-
-    return true;
 }
 
 bool DapDNSController::isRunAsAdmin()
