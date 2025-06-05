@@ -16,24 +16,13 @@
 #include <jni.h>
 #endif
 
-// Forward declarations for Windows types
-#ifdef Q_OS_WINDOWS
-struct _IP_ADAPTER_DNS_SERVER_ADDRESS;
-typedef _IP_ADAPTER_DNS_SERVER_ADDRESS IP_ADAPTER_DNS_SERVER_ADDRESS;
-typedef IP_ADAPTER_DNS_SERVER_ADDRESS* PIP_ADAPTER_DNS_SERVER_ADDRESS;
-typedef IP_ADAPTER_DNS_SERVER_ADDRESS* PIP_ADAPTER_DNS_SERVER_ADDRESS_XP;
-struct _IP_ADAPTER_ADDRESSES;
-typedef _IP_ADAPTER_ADDRESSES IP_ADAPTER_ADDRESSES;
-typedef IP_ADAPTER_ADDRESSES* PIP_ADAPTER_ADDRESSES;
-#endif
-
 // Platform specific includes
 #ifdef Q_OS_WINDOWS
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <iphlpapi.h>
+#include <windows.h>
 #include <windns.h>
 
 #pragma comment(lib, "iphlpapi.lib")
