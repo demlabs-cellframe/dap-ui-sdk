@@ -5,6 +5,8 @@
 #include <QFile>
 #include <QTextStream>
 #include <QTextCodec>
+#include <QRegularExpression>
+#include <QMutexLocker>
 
 #ifdef Q_OS_WINDOWS
 #include <windows.h>
@@ -29,6 +31,29 @@ DapDNSController::DapDNSController(QObject *parent)
 {
     // Save current DNS settings
     m_originalDNSServers = getCurrentDNSServers();
+    
+#ifdef Q_OS_ANDROID
+    // Initialize Android activity
+    m_activity = QAndroidJniObject::callStaticObjectMethod(
+        "org/qtproject/qt5/android/QtNative",
+        "activity",
+        "()Landroid/app/Activity;"
+    );
+    if (!m_activity.isValid()) {
+        qWarning() << "Failed to get Android activity";
+    }
+#endif
+
+#ifdef Q_OS_MACOS
+    // Initialize store reference
+    m_store = SCDynamicStoreCreate(nullptr, 
+                                  CFSTR("DapDNSController"),
+                                  nullptr, 
+                                  nullptr);
+    if (!m_store) {
+        qWarning() << "Failed to create SCDynamicStore";
+    }
+#endif
 }
 
 DapDNSController::~DapDNSController()
@@ -36,6 +61,48 @@ DapDNSController::~DapDNSController()
     if (m_isDNSSet) {
         restoreDefaultDNS();
     }
+
+#ifdef Q_OS_WINDOWS
+    if (m_originalDNSConfig) {
+        free(m_originalDNSConfig);
+        m_originalDNSConfig = nullptr;
+    }
+#endif
+
+#ifdef Q_OS_MACOS
+    if (m_store) {
+        CFRelease(m_store);
+        m_store = nullptr;
+    }
+#endif
+}
+
+// Add thread-safe accessor for interface name
+QString DapDNSController::getInterfaceName() const
+{
+    QMutexLocker locker(&m_mutex);
+    return m_interfaceName;
+}
+
+// Add thread-safe setter for interface name
+void DapDNSController::setInterfaceName(const QString &name)
+{
+    QMutexLocker locker(&m_mutex);
+    m_interfaceName = name;
+}
+
+// Add thread-safe accessor for original DNS servers
+QStringList DapDNSController::getOriginalDNSServers() const
+{
+    QMutexLocker locker(&m_mutex);
+    return m_originalDNSServers;
+}
+
+// Add thread-safe setter for original DNS servers
+void DapDNSController::setOriginalDNSServers(const QStringList &servers)
+{
+    QMutexLocker locker(&m_mutex);
+    m_originalDNSServers = servers;
 }
 
 bool DapDNSController::setDNSServers(const QStringList &dnsServers)
@@ -69,6 +136,7 @@ bool DapDNSController::setDNSServers(const QStringList &dnsServers)
 #endif
 
     if (result) {
+        QMutexLocker locker(&m_mutex);
         m_isDNSSet = true;
         emit dnsServersChanged(dnsServers);
     } else {
@@ -79,7 +147,8 @@ bool DapDNSController::setDNSServers(const QStringList &dnsServers)
 
 bool DapDNSController::restoreDefaultDNS()
 {
-    if (m_originalDNSServers.isEmpty()) {
+    QStringList originalServers = getOriginalDNSServers();
+    if (originalServers.isEmpty()) {
         qWarning() << "No original DNS servers to restore";
         emit errorOccurred("No original DNS servers to restore");
         return false;
@@ -99,6 +168,7 @@ bool DapDNSController::restoreDefaultDNS()
 #endif
 
     if (result) {
+        QMutexLocker locker(&m_mutex);
         m_isDNSSet = false;
         emit dnsRestored();
     } else {
@@ -120,8 +190,6 @@ QStringList DapDNSController::getCurrentDNSServers()
     servers = getCurrentDNSServersAndroid();
 #elif defined(Q_OS_IOS)
     servers = getCurrentDNSServersIOS();
-#else
-    servers = QStringList();
 #endif
 
     if (servers.isEmpty()) {
@@ -131,8 +199,9 @@ QStringList DapDNSController::getCurrentDNSServers()
     return servers;
 }
 
-bool DapDNSController::isDNSSet()
+bool DapDNSController::isDNSSet() const
 {
+    QMutexLocker locker(&m_mutex);
     return m_isDNSSet;
 }
 
@@ -148,9 +217,8 @@ bool DapDNSController::isValidIPAddress(const QString &ipAddress)
 int DapDNSController::exec_silent(const QString &cmd)
 {
     QProcess process;
-    QStringList args = QProcess::splitCommand(cmd);
-    QString program = args.takeFirst();
-    process.start(program, args);
+    process.setProcessChannelMode(QProcess::MergedChannels);
+    process.start(cmd);
     process.waitForFinished();
     return process.exitCode();
 }
@@ -634,9 +702,9 @@ bool DapDNSController::restoreDefaultDNSWindows()
     return true;
 }
 
-bool DapDNSController::restoreDNSFromList(const QString &interface, const QStringList &dnsList)
+bool DapDNSController::restoreDNSFromList(const QString &iface, const QStringList &dnsList)
 {
-    if (interface.isEmpty()) {
+    if (iface.isEmpty()) {
         qWarning() << "Empty interface name provided";
         emit errorOccurred("Empty interface name provided");
         return false;
@@ -650,21 +718,21 @@ bool DapDNSController::restoreDNSFromList(const QString &interface, const QStrin
 
     // First reset current DNS settings
     QString resetCmd = QString("netsh interface ip set dns name=\"%1\" source=none")
-        .arg(interface);
+        .arg(iface);
     
     if (!runNetshCommand(resetCmd)) {
-        qWarning() << "Failed to reset DNS settings for interface" << interface;
-        emit errorOccurred(QString("Failed to reset DNS settings for interface %1").arg(interface));
+        qWarning() << "Failed to reset DNS settings for interface" << iface;
+        emit errorOccurred(QString("Failed to reset DNS settings for interface %1").arg(iface));
         return false;
     }
 
     // Set primary DNS server
     QString cmd = QString("netsh interface ip set dns name=\"%1\" static %2 primary")
-        .arg(interface)
+        .arg(iface)
         .arg(dnsList.first());
 
     if (!runNetshCommand(cmd)) {
-        qWarning() << "Failed to set primary DNS server" << dnsList.first() << "for interface" << interface;
+        qWarning() << "Failed to set primary DNS server" << dnsList.first() << "for interface" << iface;
         emit errorOccurred(QString("Failed to set primary DNS server %1").arg(dnsList.first()));
         return false;
     }
@@ -672,13 +740,13 @@ bool DapDNSController::restoreDNSFromList(const QString &interface, const QStrin
     // Add remaining DNS servers
     for (int i = 1; i < dnsList.size(); ++i) {
         cmd = QString("netsh interface ip add dns name=\"%1\" addr=%2 index=%3")
-            .arg(interface)
+            .arg(iface)
             .arg(dnsList[i])
             .arg(i + 1);
 
         if (!runNetshCommand(cmd)) {
             qWarning() << "Failed to add DNS server" << dnsList[i] << "with index" << (i + 1) 
-                      << "for interface" << interface;
+                      << "for interface" << iface;
             emit errorOccurred(QString("Failed to add DNS server %1").arg(dnsList[i]));
             return false;
         }
@@ -1135,3 +1203,108 @@ QStringList DapDNSController::getCurrentDNSServersIOS()
     return dnsServers;
 }
 #endif 
+
+/**
+ * Get list of DNS server indexes for the specified network interface
+ * Expected netsh output format (examples):
+ * English:
+ *   Configuration for interface "Ethernet"
+ *   DNS servers configured through DHCP:  8.8.8.8 (1)
+ *                                        8.8.4.4 (2)
+ *   Statically Configured DNS Servers:    1.1.1.1 (1)
+ *                                        1.0.0.1 (2)
+ * 
+ * @param iface Network interface name
+ * @return List of DNS server indexes found in the output
+ * @note Returns empty list if no DNS servers found or command failed
+ */
+QStringList DapDNSController::getCurrentDNSIndexes(const QString &iface)
+{
+    QStringList indexes;
+    QString output;
+    QString cmd = QString("netsh interface ip show dns \"%1\"").arg(iface);
+    qDebug() << "Executing command:" << cmd;
+    
+    if (!runNetshCommand(cmd, &output)) {
+        qWarning() << "getCurrentDNSIndexes: Failed to get DNS configuration for interface" << iface;
+        return indexes;
+    }
+
+    if (output.isEmpty()) {
+        qDebug() << "getCurrentDNSIndexes: Empty output from netsh command";
+        return indexes;
+    }
+
+    // Modern regex pattern that matches both IP and index in one go
+    // Matches: IP address followed by index in parentheses, with optional whitespace
+    // Example: "8.8.8.8 (1)" or "8.8.8.8(1)" or "   8.8.8.8 (1)"
+    static const QRegularExpression dnsPattern(
+        R"((\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s*\((\d+)\))",
+        QRegularExpression::MultilineOption
+    );
+
+    QRegularExpressionMatchIterator matchIterator = dnsPattern.globalMatch(output);
+    while (matchIterator.hasNext()) {
+        QRegularExpressionMatch match = matchIterator.next();
+        QString ip = match.captured(1);
+        QString index = match.captured(2);
+        
+        // Validate IP address format
+        if (QHostAddress(ip).isNull()) {
+            qWarning() << "getCurrentDNSIndexes: Invalid IP address found:" << ip;
+            continue;
+        }
+
+        if (!indexes.contains(index)) {
+            indexes.append(index);
+            qDebug() << "getCurrentDNSIndexes: Found DNS server" << ip << "with index" << index;
+        }
+    }
+
+    if (indexes.isEmpty()) {
+        qDebug() << "getCurrentDNSIndexes: No DNS servers found in output:" << output;
+    }
+
+    return indexes;
+}
+
+/**
+ * Reset DNS settings for the specified network interface
+ * 
+ * @param iface Network interface name
+ * @param useDHCP If true, sets DNS to DHCP mode; if false, removes all DNS servers
+ * @return true if operation succeeded, false otherwise
+ */
+bool DapDNSController::resetInterfaceDNS(const QString &iface, bool useDHCP)
+{
+    // Validate input
+    if (iface.isEmpty()) {
+        qWarning() << "resetInterfaceDNS: Empty interface name provided";
+        emit errorOccurred("Empty interface name provided");
+        return false;
+    }
+
+    // Prepare command
+    QString cmd = QString("netsh interface ip set dns name=\"%1\" source=%2")
+        .arg(iface)
+        .arg(useDHCP ? "dhcp" : "none");
+
+    qDebug() << "resetInterfaceDNS: Executing command:" << cmd;
+
+    // Execute command and capture output
+    QString output;
+    if (!runNetshCommand(cmd, &output)) {
+        qWarning() << "resetInterfaceDNS: Command failed for interface" << iface;
+        qWarning() << "resetInterfaceDNS: Command output:" << output;
+        
+        QString errorMsg = QString("Failed to reset DNS settings for interface %1: %2")
+            .arg(iface)
+            .arg(output.trimmed());
+        emit errorOccurred(errorMsg);
+        return false;
+    }
+
+    qDebug() << "resetInterfaceDNS: Successfully reset DNS settings for interface" 
+             << iface << "to" << (useDHCP ? "DHCP" : "none");
+    return true;
+} 

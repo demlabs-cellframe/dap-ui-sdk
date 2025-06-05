@@ -1,13 +1,14 @@
 #ifndef DAPDNSCONTROLLER_H
 #define DAPDNSCONTROLLER_H
 
-// Qt includes
+// Qt includes first
 #include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QProcess>
 #include <QHostAddress>
 #include <QSet>
+#include <QMutex>
 
 #ifdef Q_OS_ANDROID
 #include <QAndroidJniObject>
@@ -15,6 +16,18 @@
 #include <jni.h>
 #endif
 
+// Forward declarations for Windows types
+#ifdef Q_OS_WINDOWS
+struct _IP_ADAPTER_DNS_SERVER_ADDRESS;
+typedef _IP_ADAPTER_DNS_SERVER_ADDRESS IP_ADAPTER_DNS_SERVER_ADDRESS;
+typedef IP_ADAPTER_DNS_SERVER_ADDRESS* PIP_ADAPTER_DNS_SERVER_ADDRESS;
+typedef IP_ADAPTER_DNS_SERVER_ADDRESS* PIP_ADAPTER_DNS_SERVER_ADDRESS_XP;
+struct _IP_ADAPTER_ADDRESSES;
+typedef _IP_ADAPTER_ADDRESSES IP_ADAPTER_ADDRESSES;
+typedef IP_ADAPTER_ADDRESSES* PIP_ADAPTER_ADDRESSES;
+#endif
+
+// Platform specific includes
 #ifdef Q_OS_WINDOWS
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -31,9 +44,6 @@
 #ifndef GAA_FLAG_INCLUDE_PREFIX
 #define GAA_FLAG_INCLUDE_PREFIX 0x0010
 #endif
-
-// Define types if not already defined
-typedef IP_ADAPTER_DNS_SERVER_ADDRESS* PIP_ADAPTER_DNS_SERVER_ADDRESS_XP;
 
 // Declare Windows API functions
 extern "C" {
@@ -85,11 +95,17 @@ public:
     bool setDNSServers(const QStringList &dnsServers);
     bool restoreDefaultDNS();
     QStringList getCurrentDNSServers();
-    bool isDNSSet();
+    bool isDNSSet() const;
 
     // New methods for DNS cache and registration management
     bool flushDNSCache();
     bool registerDNS();
+
+    // Thread-safe accessors
+    QString getInterfaceName() const;
+    void setInterfaceName(const QString &name);
+    QStringList getOriginalDNSServers() const;
+    void setOriginalDNSServers(const QStringList &servers);
 
 signals:
     // Signals for change notifications
@@ -98,6 +114,9 @@ signals:
     void errorOccurred(const QString &error);
 
 private:
+    // Mutex for thread safety
+    mutable QMutex m_mutex;
+
     // Store original DNS settings
     QStringList m_originalDNSServers;
     bool m_isDNSSet;
@@ -117,12 +136,12 @@ private:
     // New helper methods for Windows
     bool isRunAsAdmin();
     bool runNetshCommand(const QString &cmd, QString *output = nullptr, int timeout = 5000);
-    QStringList getCurrentDNSIndexes(const QString &interface);
-    bool resetInterfaceDNS(const QString &interface, bool useDHCP = false);
+    QStringList getCurrentDNSIndexes(const QString &iface);
+    bool resetInterfaceDNS(const QString &iface, bool useDHCP = false);
     bool verifyInterfaceStatus();
     bool verifyDNSSettings(const QStringList &expected, const QStringList &current);
     void updateOriginalDNSServers();
-    bool restoreDNSFromList(const QString &interface, const QStringList &dnsList);
+    bool restoreDNSFromList(const QString &iface, const QStringList &dnsList);
 #endif
 
 #ifdef Q_OS_LINUX
