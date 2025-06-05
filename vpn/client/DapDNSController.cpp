@@ -4,6 +4,7 @@
 #include <QHostAddress>
 #include <QFile>
 #include <QTextStream>
+#include <QTextCodec>
 
 #ifdef Q_OS_WINDOWS
 #include <windows.h>
@@ -139,7 +140,8 @@ bool DapDNSController::isDNSSet()
 bool DapDNSController::isValidIPAddress(const QString &ipAddress)
 {
     QHostAddress address(ipAddress);
-    return !address.isNull() && address.protocol() == QAbstractSocket::IPv4Protocol;
+    return !address.isNull() && (address.protocol() == QAbstractSocket::IPv4Protocol || 
+                                address.protocol() == QAbstractSocket::IPv6Protocol);
 }
 
 // Helper function to execute commands silently
@@ -205,66 +207,261 @@ bool DapDNSController::registerDNS()
 }
 
 #ifdef Q_OS_WINDOWS
+namespace {
+    // Helper function to get adapter addresses with proper error handling
+    std::pair<PIP_ADAPTER_ADDRESSES, DWORD> getAdapterAddresses(ULONG flags) {
+        ULONG outBufLen = 0;
+        PIP_ADAPTER_ADDRESSES pAddresses = nullptr;
+        
+        // Get required buffer size
+        DWORD dwRetVal = GetAdaptersAddresses(AF_UNSPEC, flags, nullptr, nullptr, &outBufLen);
+        if (dwRetVal != ERROR_BUFFER_OVERFLOW) {
+            qWarning() << "Failed to get adapter addresses buffer size, error:" << dwRetVal;
+            return {nullptr, dwRetVal};
+        }
+
+        // Allocate memory
+        pAddresses = (PIP_ADAPTER_ADDRESSES)malloc(outBufLen);
+        if (!pAddresses) {
+            qWarning() << "Failed to allocate" << outBufLen << "bytes for adapter addresses";
+            return {nullptr, ERROR_NOT_ENOUGH_MEMORY};
+        }
+
+        // Get actual data
+        dwRetVal = GetAdaptersAddresses(AF_UNSPEC, flags, nullptr, pAddresses, &outBufLen);
+        if (dwRetVal != NO_ERROR) {
+            free(pAddresses);
+            pAddresses = nullptr;
+            qWarning() << "GetAdaptersAddresses failed with error:" << dwRetVal;
+            return {nullptr, dwRetVal};
+        }
+
+        return {pAddresses, NO_ERROR};
+    }
+}
+
 bool DapDNSController::getInterfaceName()
 {
-    ULONG outBufLen = 0;
-    DWORD dwRetVal = 0;
-
-    // Get buffer size for adapter addresses
-    dwRetVal = GetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_PREFIX, nullptr, nullptr, &outBufLen);
-    if (dwRetVal != ERROR_BUFFER_OVERFLOW) {
-        qWarning() << "Failed to get adapter addresses buffer size";
-        emit errorOccurred("Failed to get adapter addresses buffer size");
-        return false;
-    }
-
-    PIP_ADAPTER_ADDRESSES pAddresses = (PIP_ADAPTER_ADDRESSES)malloc(outBufLen);
-    if (pAddresses == nullptr) {
-        qWarning() << "Failed to allocate memory for adapter addresses";
-        emit errorOccurred("Failed to allocate memory for adapter addresses");
-        return false;
-    }
-
-    // Get adapter information
-    dwRetVal = GetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_PREFIX, nullptr, pAddresses, &outBufLen);
-    if (dwRetVal != NO_ERROR) {
-        qWarning() << "Failed to get adapter addresses";
-        emit errorOccurred("Failed to get adapter addresses");
-        free(pAddresses);
-        return false;
-    }
-
     bool found = false;
-    PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses;
-    while (pCurrAddresses) {
-        // Check if adapter is up and not a loopback
-        if (pCurrAddresses->OperStatus == IfOperStatusUp && 
-            pCurrAddresses->IfType != IF_TYPE_SOFTWARE_LOOPBACK) {
-            
-            // Check if adapter has IPv4 address
-            PIP_ADAPTER_UNICAST_ADDRESS pUnicast = pCurrAddresses->FirstUnicastAddress;
-            while (pUnicast) {
-                if (pUnicast->Address.lpSockaddr->sa_family == AF_INET) {
-                    m_interfaceName = QString::fromWCharArray(pCurrAddresses->FriendlyName);
-                    found = true;
-                    break;
-                }
-                pUnicast = pUnicast->Next;
-            }
-            if (found) break;
-        }
-        pCurrAddresses = pCurrAddresses->Next;
+    PIP_ADAPTER_ADDRESSES pAddresses = nullptr;
+
+    // First try to get the best interface using GetBestInterface
+    DWORD bestIfIndex = 0;
+    struct sockaddr_in destAddr;
+    memset(&destAddr, 0, sizeof(destAddr));
+    destAddr.sin_family = AF_INET;
+    destAddr.sin_addr.s_addr = inet_addr("8.8.8.8"); // Google DNS as a reference point
+
+    if (destAddr.sin_addr.s_addr == INADDR_NONE) {
+        qWarning() << "inet_addr failed for 8.8.8.8";
+        emit errorOccurred("Failed to resolve reference IP address");
+        return false;
     }
 
-    free(pAddresses);
-    return found;
+    DWORD bestIfResult = GetBestInterfaceEx((struct sockaddr*)&destAddr, &bestIfIndex);
+    if (bestIfResult != NO_ERROR) {
+        qWarning() << "GetBestInterfaceEx failed with code:" << GetLastError();
+        emit errorOccurred("Failed to determine best network interface");
+    } else {
+        // Try to find the best interface first
+        auto [addresses, error] = getAdapterAddresses(GAA_FLAG_INCLUDE_PREFIX | 
+                                                    GAA_FLAG_INCLUDE_GATEWAYS);
+        pAddresses = addresses;
+
+        if (error == NO_ERROR && pAddresses) {
+            PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses;
+            while (pCurrAddresses && !found) {
+                if (pCurrAddresses->IfIndex == bestIfIndex || 
+                    pCurrAddresses->Ipv6IfIndex == bestIfIndex) {
+                    
+                    // Check if adapter is up and has gateway
+                    if (pCurrAddresses->OperStatus == IfOperStatusUp && 
+                        pCurrAddresses->FirstGatewayAddress != nullptr) {
+                        
+                        // Check for IPv4 or IPv6 connectivity
+                        PIP_ADAPTER_UNICAST_ADDRESS pUnicast = pCurrAddresses->FirstUnicastAddress;
+                        while (pUnicast && !found) {
+                            if (pUnicast->Address.lpSockaddr->sa_family == AF_INET ||
+                                pUnicast->Address.lpSockaddr->sa_family == AF_INET6) {
+                                
+                                m_interfaceName = QString::fromWCharArray(pCurrAddresses->FriendlyName);
+                                qDebug() << "Found best interface:" 
+                                        << QString::fromWCharArray(pCurrAddresses->FriendlyName)
+                                        << "(" << QString::fromUtf16((const ushort*)pCurrAddresses->Description) << ")";
+                                found = true;
+                                break;
+                            }
+                            pUnicast = pUnicast->Next;
+                        }
+                    }
+                }
+                pCurrAddresses = pCurrAddresses->Next;
+            }
+            free(pAddresses);
+            pAddresses = nullptr;
+        }
+    }
+
+    // If best interface method failed, try fallback method
+    if (!found) {
+        auto [addresses, error] = getAdapterAddresses(GAA_FLAG_INCLUDE_PREFIX | 
+                                                    GAA_FLAG_INCLUDE_GATEWAYS);
+        pAddresses = addresses;
+
+        if (error == NO_ERROR && pAddresses) {
+            PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses;
+            while (pCurrAddresses && !found) {
+                // Check if adapter is up, not loopback, and has gateway
+                if (pCurrAddresses->OperStatus == IfOperStatusUp &&
+                    pCurrAddresses->IfType != IF_TYPE_SOFTWARE_LOOPBACK &&
+                    pCurrAddresses->FirstGatewayAddress != nullptr) {
+                    
+                    PIP_ADAPTER_UNICAST_ADDRESS pUnicast = pCurrAddresses->FirstUnicastAddress;
+                    while (pUnicast && !found) {
+                        if (pUnicast->Address.lpSockaddr->sa_family == AF_INET ||
+                            pUnicast->Address.lpSockaddr->sa_family == AF_INET6) {
+                            
+                            m_interfaceName = QString::fromWCharArray(pCurrAddresses->FriendlyName);
+                            qDebug() << "Found fallback interface:" 
+                                    << QString::fromWCharArray(pCurrAddresses->FriendlyName)
+                                    << "(" << QString::fromUtf16((const ushort*)pCurrAddresses->Description) << ")";
+                            found = true;
+                            break;
+                        }
+                        pUnicast = pUnicast->Next;
+                    }
+                }
+                pCurrAddresses = pCurrAddresses->Next;
+            }
+            free(pAddresses);
+            pAddresses = nullptr;
+        }
+    }
+
+    if (!found) {
+        qWarning() << "No suitable network interface found";
+        emit errorOccurred("No suitable network interface found");
+        m_interfaceName.clear();
+        return false;
+    }
+
+    return true;
+}
+
+bool DapDNSController::runNetshCommand(const QString &cmd, QString *output, int timeout)
+{
+    QProcess process;
+    process.setProcessChannelMode(QProcess::MergedChannels);
+    
+    process.start("cmd.exe", QStringList() << "/c" << cmd);
+    
+    if (!process.waitForStarted(timeout)) {
+        qWarning() << "Failed to start command:" << cmd << "Error:" << process.errorString();
+        emit errorOccurred(QString("Failed to start command: %1").arg(process.errorString()));
+        return false;
+    }
+
+    if (!process.waitForFinished(timeout)) {
+        qWarning() << "Command timed out after" << timeout << "ms:" << cmd;
+        emit errorOccurred(QString("Command timed out after %1 ms").arg(timeout));
+        process.kill();
+        return false;
+    }
+
+    QByteArray processOutput = process.readAll();
+    QString outputStr = QString::fromLocal8Bit(processOutput);
+
+    if (output) {
+        *output = outputStr;
+    }
+
+    // Check exit code first
+    int exitCode = process.exitCode();
+    if (exitCode != 0) {
+        // Check for specific error conditions
+        if (exitCode == ERROR_ELEVATION_REQUIRED || 
+            outputStr.contains("The requested operation requires elevation") ||
+            outputStr.contains("требует повышения прав")) {
+            qWarning() << "Command requires elevation:" << cmd;
+            emit errorOccurred("The operation requires administrator privileges");
+            return false;
+        }
+
+        qWarning() << "Command failed with exit code" << exitCode << ":" << cmd
+                  << "Output:" << outputStr;
+        emit errorOccurred(QString("Command failed with exit code %1: %2")
+                         .arg(exitCode)
+                         .arg(outputStr.trimmed()));
+        return false;
+    }
+
+    // Check for common error patterns even if exit code is 0
+    if (outputStr.contains("The system cannot find the file specified") ||
+        outputStr.contains("Не удается найти указанный файл") ||
+        outputStr.contains("The command failed to complete successfully") ||
+        outputStr.contains("Не удалось выполнить команду")) {
+        qWarning() << "Command failed:" << cmd << "Output:" << outputStr;
+        emit errorOccurred(QString("Command failed: %1").arg(outputStr.trimmed()));
+        return false;
+    }
+
+    return true;
+}
+
+bool DapDNSController::verifyDNSSettings(const QStringList &expected, const QStringList &current)
+{
+    if (expected.isEmpty() || current.isEmpty()) {
+        qWarning() << "Expected or current DNS list is empty"
+                  << "Expected:" << expected 
+                  << "Current:" << current;
+        emit errorOccurred("DNS settings verification failed: empty DNS list");
+        return false;
+    }
+
+    // Use QSet for order-independent comparison
+    QSet<QString> expectedSet(expected.begin(), expected.end());
+    QSet<QString> currentSet(current.begin(), current.end());
+
+    if (expectedSet != currentSet) {
+        qWarning() << "DNS settings mismatch."
+                  << "Expected:" << expected 
+                  << "Got:" << current
+                  << "Missing:" << (expectedSet - currentSet).values()
+                  << "Extra:" << (currentSet - expectedSet).values();
+        emit errorOccurred("DNS settings verification failed: mismatched servers");
+        return false;
+    }
+
+    return true;
 }
 
 bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
 {
+    // Update original DNS servers if not set
+    updateOriginalDNSServers();
+
+    // Validate input parameters
     if (dnsServers.isEmpty()) {
         qWarning() << "Empty DNS servers list provided";
         emit errorOccurred("Empty DNS servers list provided");
+        return false;
+    }
+
+    // Validate each DNS server address
+    for (const QString &dns : dnsServers) {
+        QHostAddress addr(dns);
+        if (addr.isNull() || (addr.protocol() != QAbstractSocket::IPv4Protocol && 
+                             addr.protocol() != QAbstractSocket::IPv6Protocol)) {
+            qWarning() << "Invalid DNS server address:" << dns;
+            emit errorOccurred(QString("Invalid DNS server address: %1").arg(dns));
+            return false;
+        }
+    }
+
+    // Check administrator privileges
+    if (!isRunAsAdmin()) {
+        qWarning() << "Application is not running with administrator privileges";
+        emit errorOccurred("DNS settings cannot be changed without administrator privileges");
         return false;
     }
 
@@ -275,28 +472,31 @@ bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
         return false;
     }
 
-    // Run netsh commands with elevated privileges
-    QProcess process;
-    process.setProcessChannelMode(QProcess::MergedChannels);
+    // Verify interface is connected and operational
+    if (!verifyInterfaceStatus()) {
+        return false;
+    }
+
+    // Reset current DNS settings
+    QString resetCmd = QString("netsh interface ip set dns name=\"%1\" source=none")
+        .arg(m_interfaceName);
+    
+    if (!runNetshCommand(resetCmd)) {
+        qWarning() << "Failed to reset DNS settings";
+        emit errorOccurred("Failed to reset DNS settings");
+        return false;
+    }
 
     // Set primary DNS server
     QString cmd = QString("netsh interface ip set dns name=\"%1\" static %2 primary")
         .arg(m_interfaceName)
         .arg(dnsServers.first());
     
-    process.start("cmd.exe", QStringList() << "/c" << cmd);
-    process.waitForFinished();
-    
-    if (process.exitCode() != 0) {
-        qWarning() << "Failed to set primary DNS server:" << process.readAllStandardOutput();
+    if (!runNetshCommand(cmd)) {
+        qWarning() << "Failed to set primary DNS server";
         emit errorOccurred("Failed to set primary DNS server");
         return false;
     }
-
-    // Remove any existing secondary DNS servers
-    cmd = QString("netsh interface ip delete dns name=\"%1\" all").arg(m_interfaceName);
-    process.start("cmd.exe", QStringList() << "/c" << cmd);
-    process.waitForFinished();
 
     // Add additional DNS servers
     for (int i = 1; i < dnsServers.size(); ++i) {
@@ -305,59 +505,98 @@ bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
             .arg(dnsServers[i])
             .arg(i + 1);
         
-        process.start("cmd.exe", QStringList() << "/c" << cmd);
-        process.waitForFinished();
-        
-        if (process.exitCode() != 0) {
-            qWarning() << "Failed to add DNS server:" << dnsServers[i] << process.readAllStandardOutput();
+        if (!runNetshCommand(cmd)) {
+            qWarning() << "Failed to add DNS server:" << dnsServers[i];
             emit errorOccurred(QString("Failed to add DNS server: %1").arg(dnsServers[i]));
             return false;
         }
     }
 
-    // Flush DNS cache
-    process.start("cmd.exe", QStringList() << "/c" << "ipconfig /flushdns");
-    process.waitForFinished();
+    // Verify DNS settings were applied correctly
+    QStringList currentDNS = getCurrentDNSServersWindows();
+    if (!verifyDNSSettings(dnsServers, currentDNS)) {
+        // Try to restore original DNS settings
+        if (!m_originalDNSServers.isEmpty()) {
+            restoreDNSFromList(m_interfaceName, m_originalDNSServers);
+        }
+        return false;
+    }
 
+    // Clear DNS cache
+    if (!flushDNSCache()) {
+        qWarning() << "Failed to flush DNS cache";
+        // Not considered an error since DNS servers are already set and verified
+    }
+
+    // Register DNS settings
+    if (!registerDNS()) {
+        qWarning() << "Failed to register DNS settings";
+        // Not considered a critical error
+    }
+
+    emit dnsServersChanged(dnsServers);
     return true;
 }
 
 bool DapDNSController::restoreDefaultDNSWindows()
 {
+    // Check administrator privileges
+    if (!isRunAsAdmin()) {
+        qWarning() << "Application is not running with administrator privileges";
+        emit errorOccurred("DNS settings cannot be restored without administrator privileges");
+        return false;
+    }
+
+    // Check for saved DNS servers
     if (m_originalDNSServers.isEmpty()) {
         qWarning() << "No original DNS servers to restore";
         emit errorOccurred("No original DNS servers to restore");
         return false;
     }
 
-    // Get interface name if not already set
+    // Validate saved DNS addresses
+    for (const QString &dns : m_originalDNSServers) {
+        QHostAddress addr(dns);
+        if (addr.isNull() || (addr.protocol() != QAbstractSocket::IPv4Protocol && 
+                             addr.protocol() != QAbstractSocket::IPv6Protocol)) {
+            qWarning() << "Invalid saved DNS server address:" << dns;
+            emit errorOccurred(QString("Invalid saved DNS server address: %1").arg(dns));
+            return false;
+        }
+    }
+
+    // Check and get interface name if not set
     if (m_interfaceName.isEmpty() && !getInterfaceName()) {
         qWarning() << "Failed to get interface name";
         emit errorOccurred("Failed to get interface name");
         return false;
     }
 
-    QProcess process;
-    process.setProcessChannelMode(QProcess::MergedChannels);
+    // Verify interface is connected and operational
+    if (!verifyInterfaceStatus()) {
+        return false;
+    }
 
-    // Set primary DNS server
+    // Reset current DNS settings
+    QString resetCmd = QString("netsh interface ip set dns name=\"%1\" source=none")
+        .arg(m_interfaceName);
+    
+    if (!runNetshCommand(resetCmd)) {
+        qWarning() << "Failed to reset DNS settings";
+        emit errorOccurred("Failed to reset DNS settings");
+        return false;
+    }
+
+    // Restore DNS servers
     QString cmd = QString("netsh interface ip set dns name=\"%1\" static %2 primary")
         .arg(m_interfaceName)
         .arg(m_originalDNSServers.first());
     
-    process.start("cmd.exe", QStringList() << "/c" << cmd);
-    process.waitForFinished();
-    
-    if (process.exitCode() != 0) {
-        qWarning() << "Failed to restore primary DNS server:" << process.readAllStandardOutput();
+    if (!runNetshCommand(cmd)) {
+        qWarning() << "Failed to restore primary DNS server";
         emit errorOccurred("Failed to restore primary DNS server");
         return false;
     }
-
-    // Remove any existing secondary DNS servers
-    cmd = QString("netsh interface ip delete dns name=\"%1\" all").arg(m_interfaceName);
-    process.start("cmd.exe", QStringList() << "/c" << cmd);
-    process.waitForFinished();
 
     // Add additional DNS servers
     for (int i = 1; i < m_originalDNSServers.size(); ++i) {
@@ -366,19 +605,84 @@ bool DapDNSController::restoreDefaultDNSWindows()
             .arg(m_originalDNSServers[i])
             .arg(i + 1);
         
-        process.start("cmd.exe", QStringList() << "/c" << cmd);
-        process.waitForFinished();
-        
-        if (process.exitCode() != 0) {
-            qWarning() << "Failed to restore DNS server:" << m_originalDNSServers[i] << process.readAllStandardOutput();
+        if (!runNetshCommand(cmd)) {
+            qWarning() << "Failed to restore DNS server:" << m_originalDNSServers[i];
             emit errorOccurred(QString("Failed to restore DNS server: %1").arg(m_originalDNSServers[i]));
             return false;
         }
     }
 
-    // Flush DNS cache
-    process.start("cmd.exe", QStringList() << "/c" << "ipconfig /flushdns");
-    process.waitForFinished();
+    // Verify DNS settings were restored correctly
+    QStringList currentDNS = getCurrentDNSServersWindows();
+    if (!verifyDNSSettings(m_originalDNSServers, currentDNS)) {
+        return false;
+    }
+
+    // Clear DNS cache
+    if (!flushDNSCache()) {
+        qWarning() << "Failed to flush DNS cache after restoring DNS servers";
+        // Not considered a critical error since DNS servers are already restored and verified
+    }
+
+    // Register DNS settings
+    if (!registerDNS()) {
+        qWarning() << "Failed to register restored DNS settings";
+        // Not considered a critical error
+    }
+
+    emit dnsRestored();
+    return true;
+}
+
+bool DapDNSController::restoreDNSFromList(const QString &interface, const QStringList &dnsList)
+{
+    if (interface.isEmpty()) {
+        qWarning() << "Empty interface name provided";
+        emit errorOccurred("Empty interface name provided");
+        return false;
+    }
+
+    if (dnsList.isEmpty()) {
+        qWarning() << "Empty DNS servers list provided";
+        emit errorOccurred("Empty DNS servers list provided");
+        return false;
+    }
+
+    // First reset current DNS settings
+    QString resetCmd = QString("netsh interface ip set dns name=\"%1\" source=none")
+        .arg(interface);
+    
+    if (!runNetshCommand(resetCmd)) {
+        qWarning() << "Failed to reset DNS settings for interface" << interface;
+        emit errorOccurred(QString("Failed to reset DNS settings for interface %1").arg(interface));
+        return false;
+    }
+
+    // Set primary DNS server
+    QString cmd = QString("netsh interface ip set dns name=\"%1\" static %2 primary")
+        .arg(interface)
+        .arg(dnsList.first());
+
+    if (!runNetshCommand(cmd)) {
+        qWarning() << "Failed to set primary DNS server" << dnsList.first() << "for interface" << interface;
+        emit errorOccurred(QString("Failed to set primary DNS server %1").arg(dnsList.first()));
+        return false;
+    }
+
+    // Add remaining DNS servers
+    for (int i = 1; i < dnsList.size(); ++i) {
+        cmd = QString("netsh interface ip add dns name=\"%1\" addr=%2 index=%3")
+            .arg(interface)
+            .arg(dnsList[i])
+            .arg(i + 1);
+
+        if (!runNetshCommand(cmd)) {
+            qWarning() << "Failed to add DNS server" << dnsList[i] << "with index" << (i + 1) 
+                      << "for interface" << interface;
+            emit errorOccurred(QString("Failed to add DNS server %1").arg(dnsList[i]));
+            return false;
+        }
+    }
 
     return true;
 }
@@ -388,45 +692,142 @@ QStringList DapDNSController::getCurrentDNSServersWindows()
     QStringList dnsServers;
     ULONG outBufLen = 0;
     DWORD dwRetVal = 0;
+    PIP_ADAPTER_ADDRESSES pAddresses = nullptr;
+    constexpr ULONG INITIAL_BUFFER_SIZE = 15000;
 
-    // Get buffer size for adapter addresses
-    dwRetVal = GetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_PREFIX, nullptr, nullptr, &outBufLen);
-    if (dwRetVal != ERROR_BUFFER_OVERFLOW) {
+    // Flags to optimize and get only required data
+    const ULONG flags = GAA_FLAG_SKIP_ANYCAST | 
+                       GAA_FLAG_SKIP_MULTICAST | 
+                       GAA_FLAG_SKIP_FRIENDLY_NAME;
+
+    // First attempt with fixed buffer size
+    outBufLen = INITIAL_BUFFER_SIZE;
+    pAddresses = (PIP_ADAPTER_ADDRESSES)malloc(outBufLen);
+    if (!pAddresses) {
+        qWarning() << "Failed to allocate memory for adapter addresses";
         return dnsServers;
     }
 
-    PIP_ADAPTER_ADDRESSES pAddresses = (PIP_ADAPTER_ADDRESSES)malloc(outBufLen);
-    if (pAddresses == nullptr) {
-        return dnsServers;
-    }
-
-    // Get adapter information and extract DNS servers
-    dwRetVal = GetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_PREFIX, nullptr, pAddresses, &outBufLen);
-    if (dwRetVal == NO_ERROR) {
-        PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses;
-        while (pCurrAddresses) {
-            if (pCurrAddresses->OperStatus == IfOperStatusUp) {
-                PIP_ADAPTER_DNS_SERVER_ADDRESS_XP pDnsServer = pCurrAddresses->FirstDnsServerAddress;
-                while (pDnsServer) {
-                    if (pDnsServer->Address.lpSockaddr) {
-                        SOCKADDR_IN* sockaddr_ipv4 = (SOCKADDR_IN*)pDnsServer->Address.lpSockaddr;
-                        if (sockaddr_ipv4->sin_family == AF_INET) {
-                            char ipAddress[INET_ADDRSTRLEN];
-                            if (inet_ntop(AF_INET, &(sockaddr_ipv4->sin_addr), ipAddress, INET_ADDRSTRLEN)) {
-                                dnsServers.append(QString::fromUtf8(ipAddress));
-                            }
-                        }
-                    }
-                    pDnsServer = pDnsServer->Next;
-                }
-                break;
-            }
-            pCurrAddresses = pCurrAddresses->Next;
+    // Get adapter information
+    dwRetVal = GetAdaptersAddresses(AF_UNSPEC, flags, nullptr, pAddresses, &outBufLen);
+    
+    // If buffer is too small, reallocate memory
+    if (dwRetVal == ERROR_BUFFER_OVERFLOW) {
+        free(pAddresses); // Free the initial allocation
+        pAddresses = nullptr;
+        
+        pAddresses = (PIP_ADAPTER_ADDRESSES)malloc(outBufLen);
+        if (!pAddresses) {
+            qWarning() << "Failed to allocate memory for adapter addresses after size query";
+            return dnsServers;
         }
+        dwRetVal = GetAdaptersAddresses(AF_UNSPEC, flags, nullptr, pAddresses, &outBufLen);
     }
 
-    free(pAddresses);
+    if (dwRetVal == NO_ERROR) {
+        // Iterate through all adapters
+        for (PIP_ADAPTER_ADDRESSES adapter = pAddresses; adapter; adapter = adapter->Next) {
+            // Skip inactive adapters
+            if (adapter->OperStatus != IfOperStatusUp) {
+                continue;
+            }
+
+            // Get DNS servers for current adapter
+            for (PIP_ADAPTER_DNS_SERVER_ADDRESS dnsAddr = adapter->FirstDnsServerAddress;
+                 dnsAddr; 
+                 dnsAddr = dnsAddr->Next) 
+            {
+                if (!dnsAddr->Address.lpSockaddr) {
+                    continue;
+                }
+
+                char ipStr[INET6_ADDRSTRLEN] = {};
+                QString ipAddress;
+
+                switch (dnsAddr->Address.lpSockaddr->sa_family) {
+                    case AF_INET: {
+                        struct sockaddr_in* ipv4 = (struct sockaddr_in*)dnsAddr->Address.lpSockaddr;
+                        if (inet_ntop(AF_INET, &(ipv4->sin_addr), ipStr, INET_ADDRSTRLEN)) {
+                            ipAddress = QString::fromLatin1(ipStr);
+                        }
+                        break;
+                    }
+                    case AF_INET6: {
+                        struct sockaddr_in6* ipv6 = (struct sockaddr_in6*)dnsAddr->Address.lpSockaddr;
+                        if (inet_ntop(AF_INET6, &(ipv6->sin6_addr), ipStr, INET6_ADDRSTRLEN)) {
+                            ipAddress = QString::fromLatin1(ipStr);
+                        }
+                        break;
+                    }
+                    default:
+                        continue; // Skip unknown address types
+                }
+
+                // Add only unique addresses
+                if (!ipAddress.isEmpty() && !dnsServers.contains(ipAddress)) {
+                    dnsServers.append(ipAddress);
+                    qDebug() << "Found DNS server:" << ipAddress 
+                            << "on adapter:" << QString::fromUtf16((const ushort*)adapter->Description);
+                }
+            }
+        }
+    } else {
+        qWarning() << "GetAdaptersAddresses failed with error:" << dwRetVal;
+    }
+
+    if (pAddresses) {
+        free(pAddresses);
+    }
+
+    if (dnsServers.isEmpty()) {
+        qWarning() << "No DNS servers found on any active network adapter";
+    }
+
     return dnsServers;
+}
+
+bool DapDNSController::verifyInterfaceStatus()
+{
+    if (m_interfaceName.isEmpty()) {
+        qWarning() << "Interface name is empty";
+        emit errorOccurred("Interface name is empty");
+        return false;
+    }
+
+    QString output;
+    QString cmd = QString("netsh interface show interface \"%1\"").arg(m_interfaceName);
+    
+    if (!runNetshCommand(cmd, &output)) {
+        return false;
+    }
+
+    if (!output.contains("Connect state: Connected")) {
+        qWarning() << "Interface is not connected:" << m_interfaceName;
+        emit errorOccurred(QString("Interface %1 is not in connected state").arg(m_interfaceName));
+        return false;
+    }
+
+    return true;
+}
+
+bool DapDNSController::isRunAsAdmin()
+{
+    HANDLE hToken = nullptr;
+    if (!OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken)) {
+        qWarning() << "Failed to open process token:" << GetLastError();
+        return false;
+    }
+
+    TOKEN_ELEVATION elevation;
+    DWORD dwSize;
+    if (!GetTokenInformation(hToken, TokenElevation, &elevation, sizeof(elevation), &dwSize)) {
+        qWarning() << "Failed to get token information:" << GetLastError();
+        CloseHandle(hToken);
+        return false;
+    }
+
+    CloseHandle(hToken);
+    return elevation.TokenIsElevated != 0;
 }
 #endif
 

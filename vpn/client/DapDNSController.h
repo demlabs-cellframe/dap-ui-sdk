@@ -107,7 +107,14 @@ private:
     bool setDNSServersWindows(const QStringList &dnsServers);
     bool restoreDefaultDNSWindows();
     QStringList getCurrentDNSServersWindows();
-    bool getInterfaceName();  // New method to get interface name
+    bool getInterfaceName();
+    
+    // New helper methods for Windows
+    bool isRunAsAdmin();
+    bool runNetshCommand(const QString &cmd, QString *output = nullptr, int timeout = 5000);
+    QStringList getCurrentDNSIndexes(const QString &interface);
+    bool resetInterfaceDNS(const QString &interface, bool useDHCP = false);
+    bool restoreDNSFromList(const QString &interface, const QStringList &dnsList);
 #endif
 
 #ifdef Q_OS_LINUX
