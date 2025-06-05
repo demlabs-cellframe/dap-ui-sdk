@@ -7,6 +7,8 @@
 #include <QTextCodec>
 #include <QRegularExpression>
 #include <QMutexLocker>
+#include <QCoreApplication>
+#include <comdef.h>
 
 #ifdef Q_OS_WINDOWS
 #include <windows.h>
