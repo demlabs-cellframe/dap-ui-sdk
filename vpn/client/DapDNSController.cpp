@@ -217,7 +217,9 @@ int DapDNSController::exec_silent(const QString &cmd)
 {
     QProcess process;
     process.setProcessChannelMode(QProcess::MergedChannels);
-    process.start(cmd);
+    QStringList args = QProcess::splitCommand(cmd);
+    QString program = args.takeFirst();
+    process.start(program, args);
     process.waitForFinished();
     return process.exitCode();
 }

@@ -107,6 +107,10 @@ public:
     QStringList getOriginalDNSServers() const;
     void setOriginalDNSServers(const QStringList &servers);
 
+    // Helper methods for DNS management
+    QStringList getCurrentDNSIndexes(const QString &iface);
+    bool resetInterfaceDNS(const QString &iface, bool useDHCP = false);
+
 signals:
     // Signals for change notifications
     void dnsServersChanged(const QStringList &servers);
@@ -136,8 +140,6 @@ private:
     // New helper methods for Windows
     bool isRunAsAdmin();
     bool runNetshCommand(const QString &cmd, QString *output = nullptr, int timeout = 5000);
-    QStringList getCurrentDNSIndexes(const QString &iface);
-    bool resetInterfaceDNS(const QString &iface, bool useDHCP = false);
     bool verifyIfaceStatus();
     bool verifyDNSSettings(const QStringList &expected, const QStringList &current);
     void updateOriginalDNSServers();
