@@ -118,8 +118,7 @@ DapShopManager::ProductState DapShopManager::getProdustState(DapShopManager::Pro
 
 void DapShopManager::purchaseVerified(const QString &key)
 {
-    // Acknowledge (подтверждение покупки) делается на сервере
-    // тут делаем Consume (использование покупки), чтобы иметь возможность продать этот товар повторно
+    // Acknowledge (purchase confirmation) is done on the server
 #ifdef Q_OS_ANDROID
     if (!key.isNull() && !key.isEmpty()) {
         m_store.callMethod<void>("purchaseConsume", "(Ljava/lang/String;)V",

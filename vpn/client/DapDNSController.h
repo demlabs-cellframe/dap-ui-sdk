@@ -16,24 +16,13 @@
 #include <jni.h>
 #endif
 
-// Forward declarations for Windows types
-#ifdef Q_OS_WINDOWS
-struct _IP_ADAPTER_DNS_SERVER_ADDRESS;
-typedef _IP_ADAPTER_DNS_SERVER_ADDRESS IP_ADAPTER_DNS_SERVER_ADDRESS;
-typedef IP_ADAPTER_DNS_SERVER_ADDRESS* PIP_ADAPTER_DNS_SERVER_ADDRESS;
-typedef IP_ADAPTER_DNS_SERVER_ADDRESS* PIP_ADAPTER_DNS_SERVER_ADDRESS_XP;
-struct _IP_ADAPTER_ADDRESSES;
-typedef _IP_ADAPTER_ADDRESSES IP_ADAPTER_ADDRESSES;
-typedef IP_ADAPTER_ADDRESSES* PIP_ADAPTER_ADDRESSES;
-#endif
-
 // Platform specific includes
 #ifdef Q_OS_WINDOWS
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <iphlpapi.h>
+#include <windows.h>
 #include <windns.h>
 
 #pragma comment(lib, "iphlpapi.lib")
@@ -107,11 +96,21 @@ public:
     QStringList getOriginalDNSServers() const;
     void setOriginalDNSServers(const QStringList &servers);
 
+    // Helper methods for DNS management
+    QStringList getCurrentDNSIndexes(const QString &iface);
+    bool resetInterfaceDNS(const QString &iface, bool useDHCP = false);
+
 signals:
     // Signals for change notifications
     void dnsServersChanged(const QStringList &servers);
     void dnsRestored();
     void errorOccurred(const QString &error);
+
+protected:
+    // Helper methods
+    bool isValidIPAddress(const QString &ipAddress);
+    int exec_silent(const QString &cmd);
+    bool runNetshCommand(const QString &cmd, QString *output = nullptr, int timeout = 5000);
 
 private:
     // Mutex for thread safety
@@ -122,10 +121,6 @@ private:
     bool m_isDNSSet;
     QString m_ifaceName;  // Store network interface name for DNS operations
 
-    // Helper methods
-    bool isValidIPAddress(const QString &ipAddress);
-    int exec_silent(const QString &cmd);
-
 #ifdef Q_OS_WINDOWS
     PIP_ADAPTER_DNS_SERVER_ADDRESS_XP m_originalDNSConfig;
     bool setDNSServersWindows(const QStringList &dnsServers);
@@ -135,9 +130,6 @@ private:
     
     // New helper methods for Windows
     bool isRunAsAdmin();
-    bool runNetshCommand(const QString &cmd, QString *output = nullptr, int timeout = 5000);
-    QStringList getCurrentDNSIndexes(const QString &iface);
-    bool resetInterfaceDNS(const QString &iface, bool useDHCP = false);
     bool verifyIfaceStatus();
     bool verifyDNSSettings(const QStringList &expected, const QStringList &current);
     void updateOriginalDNSServers();

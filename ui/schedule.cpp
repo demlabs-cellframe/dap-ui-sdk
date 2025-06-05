@@ -69,16 +69,15 @@ void Schedule::showChart(
 
     QPainterPath path = QPainterPath();
 
-    // выставляем на начальные позиции
+    // Set initial positions
     path.moveTo(
         width,
         y_shift(m_elems.begin()->velocity, height, maxVal)
     );
 
     int time_pos = size_of_chart - 2;
-    // отрисовываем путь
-
-     for(int i = 1;i<m_elems.size();i++)
+    // Draw path
+    for(int i = 1;i<m_elems.size();i++)
     {
         int y = 0;
         if (m_elems[i].velocity > y) y = m_elems[i].velocity;
