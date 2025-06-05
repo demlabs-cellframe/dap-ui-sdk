@@ -228,6 +228,7 @@ int DapDNSController::exec_silent(const QString &cmd)
 
 bool DapDNSController::runNetshCommand(const QString &cmd, QString *output, int timeout)
 {
+    qInfo() << "[DNS] Executing netsh command:" << cmd;
 #ifdef Q_OS_WINDOWS
     QProcess process;
     process.setProcessChannelMode(QProcess::MergedChannels);
@@ -235,13 +236,16 @@ bool DapDNSController::runNetshCommand(const QString &cmd, QString *output, int 
     process.start("cmd.exe", QStringList() << "/c" << cmd);
     
     if (!process.waitForStarted(timeout)) {
-        qWarning() << "Failed to start command:" << cmd << "Error:" << process.errorString();
+        qWarning() << "[DNS] Failed to start command:" << cmd;
+        qWarning() << "[DNS] Process error:" << process.errorString();
+        qWarning() << "[DNS] Process state:" << process.state();
         emit errorOccurred(QString("Failed to start command: %1").arg(process.errorString()));
         return false;
     }
 
     if (!process.waitForFinished(timeout)) {
-        qWarning() << "Command timed out after" << timeout << "ms:" << cmd;
+        qWarning() << "[DNS] Command timed out after" << timeout << "ms:" << cmd;
+        qWarning() << "[DNS] Process state before kill:" << process.state();
         emit errorOccurred(QString("Command timed out after %1 ms").arg(timeout));
         process.kill();
         return false;
@@ -254,20 +258,24 @@ bool DapDNSController::runNetshCommand(const QString &cmd, QString *output, int 
         *output = outputStr;
     }
 
-    // Check exit code first
+    qInfo() << "[DNS] Command output:" << outputStr.trimmed();
+    
     int exitCode = process.exitCode();
+    qInfo() << "[DNS] Command exit code:" << exitCode;
+    
     if (exitCode != 0) {
         // Check for specific error conditions
         if (exitCode == ERROR_ELEVATION_REQUIRED || 
             outputStr.contains("The requested operation requires elevation") ||
             outputStr.contains("requires elevated privileges")) {
-            qWarning() << "Command requires elevation:" << cmd;
+            qWarning() << "[DNS] Command requires elevation:" << cmd;
             emit errorOccurred("The operation requires administrator privileges");
             return false;
         }
 
-        qWarning() << "Command failed with exit code" << exitCode << ":" << cmd
+        qWarning() << "[DNS] Command failed with exit code" << exitCode << ":" << cmd
                   << "Output:" << outputStr;
+        qWarning() << "[DNS] Error output:" << process.readAllStandardError();
         emit errorOccurred(QString("Command failed with exit code %1: %2")
                          .arg(exitCode)
                          .arg(outputStr.trimmed()));
@@ -279,7 +287,7 @@ bool DapDNSController::runNetshCommand(const QString &cmd, QString *output, int 
         outputStr.contains("File not found") ||
         outputStr.contains("The command failed to complete successfully") ||
         outputStr.contains("Command execution failed")) {
-        qWarning() << "Command failed:" << cmd << "Output:" << outputStr;
+        qWarning() << "[DNS] Command failed:" << cmd << "Output:" << outputStr;
         emit errorOccurred(QString("Command failed: %1").arg(outputStr.trimmed()));
         return false;
     }
@@ -517,50 +525,6 @@ bool DapDNSController::verifyIfaceStatus()
     }
 
     return true;
-}
-
-bool DapDNSController::runNetshCommand(const QString &cmd, QString *output, int timeout)
-{
-    qInfo() << "[DNS] Executing netsh command:" << cmd;
-    QProcess process;
-    process.setProcessChannelMode(QProcess::MergedChannels);
-    
-    process.start("cmd.exe", QStringList() << "/c" << cmd);
-    
-    if (!process.waitForStarted(timeout)) {
-        qWarning() << "[DNS] Failed to start command:" << cmd;
-        qWarning() << "[DNS] Process error:" << process.errorString();
-        qWarning() << "[DNS] Process state:" << process.state();
-        emit errorOccurred(QString("Failed to start command: %1").arg(process.errorString()));
-        return false;
-    }
-
-    if (!process.waitForFinished(timeout)) {
-        qWarning() << "[DNS] Command timed out after" << timeout << "ms:" << cmd;
-        qWarning() << "[DNS] Process state before kill:" << process.state();
-        emit errorOccurred(QString("Command timed out after %1 ms").arg(timeout));
-        process.kill();
-        return false;
-    }
-
-    QByteArray processOutput = process.readAll();
-    QString outputStr = QString::fromLocal8Bit(processOutput);
-
-    if (output) {
-        *output = outputStr;
-    }
-
-    qInfo() << "[DNS] Command output:" << outputStr.trimmed();
-    
-    int exitCode = process.exitCode();
-    qInfo() << "[DNS] Command exit code:" << exitCode;
-    
-    if (exitCode != 0) {
-        qWarning() << "[DNS] Command failed with exit code:" << exitCode;
-        qWarning() << "[DNS] Error output:" << process.readAllStandardError();
-    }
-
-    return exitCode == 0;
 }
 
 bool DapDNSController::verifyDNSSettings(const QStringList &expected, const QStringList &current)
