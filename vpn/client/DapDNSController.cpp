@@ -382,6 +382,7 @@ namespace {
 
 bool DapDNSController::getIfaceName()
 {
+    qInfo() << "[DNS] Starting interface name detection...";
     bool found = false;
     PIP_ADAPTER_ADDRESSES pAddresses = nullptr;
 
@@ -392,54 +393,59 @@ bool DapDNSController::getIfaceName()
     destAddr.sin_family = AF_INET;
     destAddr.sin_addr.s_addr = inet_addr("8.8.8.8"); // Google DNS as a reference point
 
+    qInfo() << "[DNS] Attempting to find best interface using 8.8.8.8 as reference";
+
     if (destAddr.sin_addr.s_addr == INADDR_NONE) {
-        qWarning() << "inet_addr failed for 8.8.8.8";
+        qWarning() << "[DNS] inet_addr failed for 8.8.8.8";
         emit errorOccurred("Failed to resolve reference IP address");
         return false;
     }
 
     DWORD bestIfResult = GetBestInterfaceEx((struct sockaddr*)&destAddr, &bestIfIndex);
     if (bestIfResult != NO_ERROR) {
-        qWarning() << "GetBestInterfaceEx failed with code:" << GetLastError();
+        qWarning() << "[DNS] GetBestInterfaceEx failed with code:" << GetLastError();
+        qWarning() << "[DNS] System error message:" << QString::fromWCharArray(_com_error(GetLastError()).ErrorMessage());
         emit errorOccurred("Failed to determine best network interface");
     } else {
-        // Try to find the best interface first
-        auto result = getAdapterAddresses(GAA_FLAG_INCLUDE_PREFIX | GAA_FLAG_INCLUDE_GATEWAYS);
-        pAddresses = result.first;
-        DWORD error = result.second;
+        qInfo() << "[DNS] Best interface index found:" << bestIfIndex;
+    }
 
-        if (error == NO_ERROR && pAddresses) {
-            PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses;
-            while (pCurrAddresses && !found) {
-                if (pCurrAddresses->IfIndex == bestIfIndex || 
-                    pCurrAddresses->Ipv6IfIndex == bestIfIndex) {
+    // Try to find the best interface first
+    auto result = getAdapterAddresses(GAA_FLAG_INCLUDE_PREFIX | GAA_FLAG_INCLUDE_GATEWAYS);
+    pAddresses = result.first;
+    DWORD error = result.second;
+
+    if (error == NO_ERROR && pAddresses) {
+        PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses;
+        while (pCurrAddresses && !found) {
+            if (pCurrAddresses->IfIndex == bestIfIndex || 
+                pCurrAddresses->Ipv6IfIndex == bestIfIndex) {
+                
+                // Check if adapter is up and has gateway
+                if (pCurrAddresses->OperStatus == IfOperStatusUp && 
+                    pCurrAddresses->FirstGatewayAddress != nullptr) {
                     
-                    // Check if adapter is up and has gateway
-                    if (pCurrAddresses->OperStatus == IfOperStatusUp && 
-                        pCurrAddresses->FirstGatewayAddress != nullptr) {
-                        
-                        // Check for IPv4 or IPv6 connectivity
-                        PIP_ADAPTER_UNICAST_ADDRESS pUnicast = pCurrAddresses->FirstUnicastAddress;
-                        while (pUnicast && !found) {
-                            if (pUnicast->Address.lpSockaddr->sa_family == AF_INET ||
-                                pUnicast->Address.lpSockaddr->sa_family == AF_INET6) {
-                                
-                                m_ifaceName = QString::fromWCharArray(pCurrAddresses->FriendlyName);
-                                qDebug() << "Found best interface:" 
-                                        << QString::fromWCharArray(pCurrAddresses->FriendlyName)
-                                        << "(" << QString::fromUtf16((const ushort*)pCurrAddresses->Description) << ")";
-                                found = true;
-                                break;
-                            }
-                            pUnicast = pUnicast->Next;
+                    // Check for IPv4 or IPv6 connectivity
+                    PIP_ADAPTER_UNICAST_ADDRESS pUnicast = pCurrAddresses->FirstUnicastAddress;
+                    while (pUnicast && !found) {
+                        if (pUnicast->Address.lpSockaddr->sa_family == AF_INET ||
+                            pUnicast->Address.lpSockaddr->sa_family == AF_INET6) {
+                            
+                            m_ifaceName = QString::fromWCharArray(pCurrAddresses->FriendlyName);
+                            qDebug() << "Found best interface:" 
+                                    << QString::fromWCharArray(pCurrAddresses->FriendlyName)
+                                    << "(" << QString::fromUtf16((const ushort*)pCurrAddresses->Description) << ")";
+                            found = true;
+                            break;
                         }
+                        pUnicast = pUnicast->Next;
                     }
                 }
-                pCurrAddresses = pCurrAddresses->Next;
             }
-            free(pAddresses);
-            pAddresses = nullptr;
+            pCurrAddresses = pCurrAddresses->Next;
         }
+        free(pAddresses);
+        pAddresses = nullptr;
     }
 
     // If best interface method failed, try fallback method
@@ -479,12 +485,13 @@ bool DapDNSController::getIfaceName()
     }
 
     if (!found) {
-        qWarning() << "No suitable network interface found";
+        qWarning() << "[DNS] No suitable network interface found after all attempts";
         emit errorOccurred("No suitable network interface found");
         m_ifaceName.clear();
         return false;
     }
 
+    qInfo() << "[DNS] Successfully found network interface:" << m_ifaceName;
     return true;
 }
 
@@ -510,6 +517,50 @@ bool DapDNSController::verifyIfaceStatus()
     }
 
     return true;
+}
+
+bool DapDNSController::runNetshCommand(const QString &cmd, QString *output, int timeout)
+{
+    qInfo() << "[DNS] Executing netsh command:" << cmd;
+    QProcess process;
+    process.setProcessChannelMode(QProcess::MergedChannels);
+    
+    process.start("cmd.exe", QStringList() << "/c" << cmd);
+    
+    if (!process.waitForStarted(timeout)) {
+        qWarning() << "[DNS] Failed to start command:" << cmd;
+        qWarning() << "[DNS] Process error:" << process.errorString();
+        qWarning() << "[DNS] Process state:" << process.state();
+        emit errorOccurred(QString("Failed to start command: %1").arg(process.errorString()));
+        return false;
+    }
+
+    if (!process.waitForFinished(timeout)) {
+        qWarning() << "[DNS] Command timed out after" << timeout << "ms:" << cmd;
+        qWarning() << "[DNS] Process state before kill:" << process.state();
+        emit errorOccurred(QString("Command timed out after %1 ms").arg(timeout));
+        process.kill();
+        return false;
+    }
+
+    QByteArray processOutput = process.readAll();
+    QString outputStr = QString::fromLocal8Bit(processOutput);
+
+    if (output) {
+        *output = outputStr;
+    }
+
+    qInfo() << "[DNS] Command output:" << outputStr.trimmed();
+    
+    int exitCode = process.exitCode();
+    qInfo() << "[DNS] Command exit code:" << exitCode;
+    
+    if (exitCode != 0) {
+        qWarning() << "[DNS] Command failed with exit code:" << exitCode;
+        qWarning() << "[DNS] Error output:" << process.readAllStandardError();
+    }
+
+    return exitCode == 0;
 }
 
 bool DapDNSController::verifyDNSSettings(const QStringList &expected, const QStringList &current)
@@ -541,12 +592,16 @@ bool DapDNSController::verifyDNSSettings(const QStringList &expected, const QStr
 
 bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
 {
+    qInfo() << "[DNS] Starting DNS server configuration...";
+    qInfo() << "[DNS] Attempting to set DNS servers:" << dnsServers;
+
     // Update original DNS servers if not set
     updateOriginalDNSServers();
+    qInfo() << "[DNS] Original DNS servers:" << m_originalDNSServers;
 
     // Validate input parameters
     if (dnsServers.isEmpty()) {
-        qWarning() << "Empty DNS servers list provided";
+        qWarning() << "[DNS] Empty DNS servers list provided";
         emit errorOccurred("Empty DNS servers list provided");
         return false;
     }
@@ -556,185 +611,180 @@ bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
         QHostAddress addr(dns);
         if (addr.isNull() || (addr.protocol() != QAbstractSocket::IPv4Protocol && 
                              addr.protocol() != QAbstractSocket::IPv6Protocol)) {
-            qWarning() << "Invalid DNS server address:" << dns;
+            qWarning() << "[DNS] Invalid DNS server address:" << dns;
             emit errorOccurred(QString("Invalid DNS server address: %1").arg(dns));
             return false;
         }
+        qInfo() << "[DNS] Validated DNS server:" << dns;
     }
 
     // Check administrator privileges
     if (!isRunAsAdmin()) {
-        qWarning() << "Application is not running with administrator privileges";
+        qWarning() << "[DNS] Application is not running with administrator privileges";
+        qWarning() << "[DNS] Current process ID:" << QCoreApplication::applicationPid();
         emit errorOccurred("DNS settings cannot be changed without administrator privileges");
         return false;
     }
+    qInfo() << "[DNS] Administrator privileges confirmed";
 
     // Get interface name if not already set
-    if (m_ifaceName.isEmpty() && !getIfaceName()) {
-        qWarning() << "Failed to get interface name";
-        emit errorOccurred("Failed to get interface name");
-        return false;
+    if (m_ifaceName.isEmpty()) {
+        qInfo() << "[DNS] Interface name not set, attempting to get it...";
+        if (!getIfaceName()) {
+            qWarning() << "[DNS] Failed to get interface name";
+            emit errorOccurred("Failed to get interface name");
+            return false;
+        }
     }
+    qInfo() << "[DNS] Using network interface:" << m_ifaceName;
 
     // Verify interface is connected and operational
+    qInfo() << "[DNS] Verifying interface status...";
     if (!verifyIfaceStatus()) {
+        qWarning() << "[DNS] Interface verification failed for:" << m_ifaceName;
         return false;
     }
+    qInfo() << "[DNS] Interface status verified successfully";
 
     // Reset current DNS settings
     QString resetCmd = QString("netsh interface ip set dns name=\"%1\" source=none")
         .arg(m_ifaceName);
     
+    qInfo() << "[DNS] Executing reset command:" << resetCmd;
     if (!runNetshCommand(resetCmd)) {
-        qWarning() << "Failed to reset DNS settings";
+        qWarning() << "[DNS] Failed to reset DNS settings";
         emit errorOccurred("Failed to reset DNS settings");
         return false;
     }
+    qInfo() << "[DNS] Successfully reset DNS settings";
 
     // Set primary DNS server
     QString cmd = QString("netsh interface ip set dns name=\"%1\" static %2 primary")
         .arg(m_ifaceName)
         .arg(dnsServers.first());
-    
+
+    qInfo() << "[DNS] Setting primary DNS server with command:" << cmd;
     if (!runNetshCommand(cmd)) {
-        qWarning() << "Failed to set primary DNS server";
-        emit errorOccurred("Failed to set primary DNS server");
+        qWarning() << "[DNS] Failed to set primary DNS server:" << dnsServers.first();
+        emit errorOccurred(QString("Failed to set primary DNS server %1").arg(dnsServers.first()));
         return false;
     }
+    qInfo() << "[DNS] Successfully set primary DNS server:" << dnsServers.first();
 
-    // Add additional DNS servers
+    // Add additional DNS servers if any
     for (int i = 1; i < dnsServers.size(); ++i) {
         cmd = QString("netsh interface ip add dns name=\"%1\" addr=%2 index=%3")
             .arg(m_ifaceName)
             .arg(dnsServers[i])
             .arg(i + 1);
-        
+
+        qInfo() << "[DNS] Adding secondary DNS server with command:" << cmd;
         if (!runNetshCommand(cmd)) {
-            qWarning() << "Failed to add DNS server:" << dnsServers[i];
-            emit errorOccurred(QString("Failed to add DNS server: %1").arg(dnsServers[i]));
+            qWarning() << "[DNS] Failed to add DNS server:" << dnsServers[i] << "with index" << (i + 1);
+            emit errorOccurred(QString("Failed to add DNS server %1").arg(dnsServers[i]));
             return false;
         }
+        qInfo() << "[DNS] Successfully added secondary DNS server:" << dnsServers[i];
     }
 
-    // Verify DNS settings were applied correctly
-    QStringList currentDNS = getCurrentDNSServersWindows();
-    if (!verifyDNSSettings(dnsServers, currentDNS)) {
-        // Try to restore original DNS settings
-        if (!m_originalDNSServers.isEmpty()) {
-            restoreDNSFromList(m_ifaceName, m_originalDNSServers);
-        }
-        return false;
-    }
-
-    // Clear DNS cache
-    if (!flushDNSCache()) {
-        qWarning() << "Failed to flush DNS cache";
-        // Not considered an error since DNS servers are already set and verified
-    }
-
-    // Register DNS settings
-    if (!registerDNS()) {
-        qWarning() << "Failed to register DNS settings";
-        // Not considered a critical error
-    }
-
-    emit dnsServersChanged(dnsServers);
+    qInfo() << "[DNS] DNS configuration completed successfully";
     return true;
 }
 
 bool DapDNSController::restoreDefaultDNSWindows()
 {
+    qInfo() << "[DNS] Starting DNS restoration process...";
+
     // Check administrator privileges
     if (!isRunAsAdmin()) {
-        qWarning() << "Application is not running with administrator privileges";
+        qWarning() << "[DNS] Administrator privileges required for DNS restoration";
+        qWarning() << "[DNS] Current process ID:" << QCoreApplication::applicationPid();
         emit errorOccurred("DNS settings cannot be restored without administrator privileges");
         return false;
     }
+    qInfo() << "[DNS] Administrator privileges confirmed for restoration";
 
     // Check for saved DNS servers
     if (m_originalDNSServers.isEmpty()) {
-        qWarning() << "No original DNS servers to restore";
+        qWarning() << "[DNS] No original DNS servers found to restore";
         emit errorOccurred("No original DNS servers to restore");
         return false;
     }
+    qInfo() << "[DNS] Original DNS servers to restore:" << m_originalDNSServers;
 
     // Validate saved DNS addresses
     for (const QString &dns : m_originalDNSServers) {
         QHostAddress addr(dns);
         if (addr.isNull() || (addr.protocol() != QAbstractSocket::IPv4Protocol && 
                              addr.protocol() != QAbstractSocket::IPv6Protocol)) {
-            qWarning() << "Invalid saved DNS server address:" << dns;
+            qWarning() << "[DNS] Invalid saved DNS server address:" << dns;
             emit errorOccurred(QString("Invalid saved DNS server address: %1").arg(dns));
             return false;
         }
+        qInfo() << "[DNS] Validated original DNS server:" << dns;
     }
 
     // Check and get interface name if not set
-    if (m_ifaceName.isEmpty() && !getIfaceName()) {
-        qWarning() << "Failed to get interface name";
-        emit errorOccurred("Failed to get interface name");
-        return false;
+    if (m_ifaceName.isEmpty()) {
+        qInfo() << "[DNS] Interface name not set for restoration, attempting to get it...";
+        if (!getIfaceName()) {
+            qWarning() << "[DNS] Failed to get interface name for restoration";
+            emit errorOccurred("Failed to get interface name");
+            return false;
+        }
     }
+    qInfo() << "[DNS] Using network interface for restoration:" << m_ifaceName;
 
     // Verify interface is connected and operational
+    qInfo() << "[DNS] Verifying interface status for restoration...";
     if (!verifyIfaceStatus()) {
+        qWarning() << "[DNS] Interface verification failed during restoration for:" << m_ifaceName;
         return false;
     }
+    qInfo() << "[DNS] Interface status verified successfully for restoration";
 
     // Reset current DNS settings
     QString resetCmd = QString("netsh interface ip set dns name=\"%1\" source=none")
         .arg(m_ifaceName);
     
+    qInfo() << "[DNS] Executing reset command for restoration:" << resetCmd;
     if (!runNetshCommand(resetCmd)) {
-        qWarning() << "Failed to reset DNS settings";
+        qWarning() << "[DNS] Failed to reset DNS settings during restoration";
         emit errorOccurred("Failed to reset DNS settings");
         return false;
     }
+    qInfo() << "[DNS] Successfully reset DNS settings for restoration";
 
     // Restore DNS servers
     QString cmd = QString("netsh interface ip set dns name=\"%1\" static %2 primary")
         .arg(m_ifaceName)
         .arg(m_originalDNSServers.first());
-    
+
+    qInfo() << "[DNS] Restoring primary DNS server with command:" << cmd;
     if (!runNetshCommand(cmd)) {
-        qWarning() << "Failed to restore primary DNS server";
-        emit errorOccurred("Failed to restore primary DNS server");
+        qWarning() << "[DNS] Failed to restore primary DNS server:" << m_originalDNSServers.first();
+        emit errorOccurred(QString("Failed to restore primary DNS server %1").arg(m_originalDNSServers.first()));
         return false;
     }
+    qInfo() << "[DNS] Successfully restored primary DNS server:" << m_originalDNSServers.first();
 
-    // Add additional DNS servers
+    // Add remaining DNS servers
     for (int i = 1; i < m_originalDNSServers.size(); ++i) {
         cmd = QString("netsh interface ip add dns name=\"%1\" addr=%2 index=%3")
             .arg(m_ifaceName)
             .arg(m_originalDNSServers[i])
             .arg(i + 1);
-        
+
+        qInfo() << "[DNS] Restoring secondary DNS server with command:" << cmd;
         if (!runNetshCommand(cmd)) {
-            qWarning() << "Failed to restore DNS server:" << m_originalDNSServers[i];
-            emit errorOccurred(QString("Failed to restore DNS server: %1").arg(m_originalDNSServers[i]));
+            qWarning() << "[DNS] Failed to restore DNS server:" << m_originalDNSServers[i] << "with index" << (i + 1);
+            emit errorOccurred(QString("Failed to restore DNS server %1").arg(m_originalDNSServers[i]));
             return false;
         }
+        qInfo() << "[DNS] Successfully restored secondary DNS server:" << m_originalDNSServers[i];
     }
 
-    // Verify DNS settings were restored correctly
-    QStringList currentDNS = getCurrentDNSServersWindows();
-    if (!verifyDNSSettings(m_originalDNSServers, currentDNS)) {
-        return false;
-    }
-
-    // Clear DNS cache
-    if (!flushDNSCache()) {
-        qWarning() << "Failed to flush DNS cache after restoring DNS servers";
-        // Not considered a critical error since DNS servers are already restored and verified
-    }
-
-    // Register DNS settings
-    if (!registerDNS()) {
-        qWarning() << "Failed to register restored DNS settings";
-        // Not considered a critical error
-    }
-
-    emit dnsRestored();
+    qInfo() << "[DNS] DNS restoration completed successfully";
     return true;
 }
 
