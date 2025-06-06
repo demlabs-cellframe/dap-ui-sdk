@@ -723,25 +723,30 @@ bool DapDNSController::restoreDefaultDNSWindows()
     }
     qInfo() << "[DNS] Interface status verified successfully for restoration";
 
+    // Ensure interface name is properly quoted if it contains spaces
+    QString safeIface = m_ifaceName.contains(' ') ? QString("\"%1\"").arg(m_ifaceName) : m_ifaceName;
+
     // Reset current DNS settings
-    QString resetCmd = QString("netsh interface ip set dns name=\"%1\" source=none")
-        .arg(m_ifaceName);
+    QStringList resetArgs = {"interface", "ip", "set", "dns", 
+                           QString("name=%1").arg(safeIface), 
+                           "source=none"};
     
-    qInfo() << "[DNS] Executing reset command for restoration:" << resetCmd;
-    if (!runNetshCommand(resetCmd)) {
+    qInfo() << "[DNS] Executing reset command for restoration with args:" << resetArgs;
+    if (!runNetshCommand("netsh", resetArgs)) {
         qWarning() << "[DNS] Failed to reset DNS settings during restoration";
         emit errorOccurred("Failed to reset DNS settings");
         return false;
     }
     qInfo() << "[DNS] Successfully reset DNS settings for restoration";
 
-    // Restore DNS servers
-    QString cmd = QString("netsh interface ip set dns name=\"%1\" static %2 primary")
-        .arg(m_ifaceName)
-        .arg(m_originalDNSServers.first());
+    // Restore primary DNS server
+    QStringList setPrimaryArgs = {"interface", "ip", "set", "dns",
+                                QString("name=%1").arg(safeIface),
+                                QString("static=%1").arg(m_originalDNSServers.first()),
+                                "primary"};
 
-    qInfo() << "[DNS] Restoring primary DNS server with command:" << cmd;
-    if (!runNetshCommand(cmd)) {
+    qInfo() << "[DNS] Restoring primary DNS server with args:" << setPrimaryArgs;
+    if (!runNetshCommand("netsh", setPrimaryArgs)) {
         qWarning() << "[DNS] Failed to restore primary DNS server:" << m_originalDNSServers.first();
         emit errorOccurred(QString("Failed to restore primary DNS server %1").arg(m_originalDNSServers.first()));
         return false;
@@ -750,13 +755,13 @@ bool DapDNSController::restoreDefaultDNSWindows()
 
     // Add remaining DNS servers
     for (int i = 1; i < m_originalDNSServers.size(); ++i) {
-        cmd = QString("netsh interface ip add dns name=\"%1\" addr=%2 index=%3")
-            .arg(m_ifaceName)
-            .arg(m_originalDNSServers[i])
-            .arg(i + 1);
+        QStringList addArgs = {"interface", "ip", "add", "dns",
+                             QString("name=%1").arg(safeIface),
+                             QString("addr=%1").arg(m_originalDNSServers[i]),
+                             QString("index=%1").arg(i + 1)};
 
-        qInfo() << "[DNS] Restoring secondary DNS server with command:" << cmd;
-        if (!runNetshCommand(cmd)) {
+        qInfo() << "[DNS] Restoring secondary DNS server with args:" << addArgs;
+        if (!runNetshCommand("netsh", addArgs)) {
             qWarning() << "[DNS] Failed to restore DNS server:" << m_originalDNSServers[i] << "with index" << (i + 1);
             emit errorOccurred(QString("Failed to restore DNS server %1").arg(m_originalDNSServers[i]));
             return false;
