@@ -110,7 +110,7 @@ protected:
     // Helper methods
     bool isValidIPAddress(const QString &ipAddress);
     int exec_silent(const QString &cmd);
-    bool runNetshCommand(const QString &cmd, QString *output = nullptr, int timeout = 5000);
+    bool runNetshCommand(const QString &program, const QStringList &args, QString *output = nullptr, int timeout = 3000);
 
 private:
     // Mutex for thread safety

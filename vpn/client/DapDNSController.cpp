@@ -226,17 +226,17 @@ int DapDNSController::exec_silent(const QString &cmd)
     return process.exitCode();
 }
 
-bool DapDNSController::runNetshCommand(const QString &cmd, QString *output, int timeout)
+bool DapDNSController::runNetshCommand(const QString &program, const QStringList &args, QString *output, int timeout)
 {
-    qInfo() << "[DNS] Executing netsh command:" << cmd;
+    qInfo() << "[DNS] Executing netsh:" << program << args;
 #ifdef Q_OS_WINDOWS
     QProcess process;
     process.setProcessChannelMode(QProcess::MergedChannels);
     
-    process.start("cmd.exe", QStringList() << "/c" << cmd);
+    process.start(program, args);
     
     if (!process.waitForStarted(timeout)) {
-        qWarning() << "[DNS] Failed to start command:" << cmd;
+        qWarning() << "[DNS] Failed to start command:" << program << args;
         qWarning() << "[DNS] Process error:" << process.errorString();
         qWarning() << "[DNS] Process state:" << process.state();
         emit errorOccurred(QString("Failed to start command: %1").arg(process.errorString()));
@@ -244,7 +244,7 @@ bool DapDNSController::runNetshCommand(const QString &cmd, QString *output, int 
     }
 
     if (!process.waitForFinished(timeout)) {
-        qWarning() << "[DNS] Command timed out after" << timeout << "ms:" << cmd;
+        qWarning() << "[DNS] Command timed out after" << timeout << "ms:" << program << args;
         qWarning() << "[DNS] Process state before kill:" << process.state();
         emit errorOccurred(QString("Command timed out after %1 ms").arg(timeout));
         process.kill();
@@ -268,12 +268,12 @@ bool DapDNSController::runNetshCommand(const QString &cmd, QString *output, int 
         if (exitCode == ERROR_ELEVATION_REQUIRED || 
             outputStr.contains("The requested operation requires elevation") ||
             outputStr.contains("requires elevated privileges")) {
-            qWarning() << "[DNS] Command requires elevation:" << cmd;
+            qWarning() << "[DNS] Command requires elevation:" << program << args;
             emit errorOccurred("The operation requires administrator privileges");
             return false;
         }
 
-        qWarning() << "[DNS] Command failed with exit code" << exitCode << ":" << cmd
+        qWarning() << "[DNS] Command failed with exit code" << exitCode << ":" << program << args
                   << "Output:" << outputStr;
         qWarning() << "[DNS] Error output:" << process.readAllStandardError();
         emit errorOccurred(QString("Command failed with exit code %1: %2")
@@ -287,7 +287,7 @@ bool DapDNSController::runNetshCommand(const QString &cmd, QString *output, int 
         outputStr.contains("File not found") ||
         outputStr.contains("The command failed to complete successfully") ||
         outputStr.contains("Command execution failed")) {
-        qWarning() << "[DNS] Command failed:" << cmd << "Output:" << outputStr;
+        qWarning() << "[DNS] Command failed:" << program << args << "Output:" << outputStr;
         emit errorOccurred(QString("Command failed: %1").arg(outputStr.trimmed()));
         return false;
     }
@@ -295,6 +295,7 @@ bool DapDNSController::runNetshCommand(const QString &cmd, QString *output, int 
     return true;
 #else
     // On non-Windows platforms, use exec_silent
+    QString cmd = program + " " + args.join(" ");
     int exitCode = exec_silent(cmd);
     if (output) {
         *output = QString();  // Clear output on non-Windows platforms
@@ -512,9 +513,10 @@ bool DapDNSController::verifyIfaceStatus()
     }
 
     QString output;
-    QString cmd = QString("netsh interface show interface \"%1\"").arg(m_ifaceName);
+    QStringList args = {"interface", "show", "interface", 
+                       QString("name=%1").arg(m_ifaceName)};
     
-    if (!runNetshCommand(cmd, &output)) {
+    if (!runNetshCommand("netsh", args, &output)) {
         return false;
     }
 
@@ -610,12 +612,16 @@ bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
     }
     qInfo() << "[DNS] Interface status verified successfully";
 
+    // Ensure interface name is properly quoted if it contains spaces
+    QString safeIface = m_ifaceName.contains(' ') ? QString("\"%1\"").arg(m_ifaceName) : m_ifaceName;
+
     // Reset current DNS settings
-    QString resetCmd = QString("netsh interface ip set dns name=\"%1\" source=none")
-        .arg(m_ifaceName);
+    QStringList resetArgs = {"interface", "ip", "set", "dns", 
+                           QString("name=%1").arg(safeIface), 
+                           "source=none"};
     
-    qInfo() << "[DNS] Executing reset command:" << resetCmd;
-    if (!runNetshCommand(resetCmd)) {
+    qInfo() << "[DNS] Executing reset command with args:" << resetArgs;
+    if (!runNetshCommand("netsh", resetArgs)) {
         qWarning() << "[DNS] Failed to reset DNS settings";
         emit errorOccurred("Failed to reset DNS settings");
         return false;
@@ -623,12 +629,13 @@ bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
     qInfo() << "[DNS] Successfully reset DNS settings";
 
     // Set primary DNS server
-    QString cmd = QString("netsh interface ip set dns name=\"%1\" static %2 primary")
-        .arg(m_ifaceName)
-        .arg(dnsServers.first());
+    QStringList setPrimaryArgs = {"interface", "ip", "set", "dns",
+                                QString("name=%1").arg(safeIface),
+                                QString("static=%1").arg(dnsServers.first()),
+                                "primary"};
 
-    qInfo() << "[DNS] Setting primary DNS server with command:" << cmd;
-    if (!runNetshCommand(cmd)) {
+    qInfo() << "[DNS] Setting primary DNS server with args:" << setPrimaryArgs;
+    if (!runNetshCommand("netsh", setPrimaryArgs)) {
         qWarning() << "[DNS] Failed to set primary DNS server:" << dnsServers.first();
         emit errorOccurred(QString("Failed to set primary DNS server %1").arg(dnsServers.first()));
         return false;
@@ -637,18 +644,27 @@ bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
 
     // Add additional DNS servers if any
     for (int i = 1; i < dnsServers.size(); ++i) {
-        cmd = QString("netsh interface ip add dns name=\"%1\" addr=%2 index=%3")
-            .arg(m_ifaceName)
-            .arg(dnsServers[i])
-            .arg(i + 1);
+        QStringList addArgs = {"interface", "ip", "add", "dns",
+                             QString("name=%1").arg(safeIface),
+                             QString("addr=%1").arg(dnsServers[i]),
+                             QString("index=%1").arg(i + 1)};
 
-        qInfo() << "[DNS] Adding secondary DNS server with command:" << cmd;
-        if (!runNetshCommand(cmd)) {
+        qInfo() << "[DNS] Adding secondary DNS server with args:" << addArgs;
+        if (!runNetshCommand("netsh", addArgs)) {
             qWarning() << "[DNS] Failed to add DNS server:" << dnsServers[i] << "with index" << (i + 1);
             emit errorOccurred(QString("Failed to add DNS server %1").arg(dnsServers[i]));
             return false;
         }
         qInfo() << "[DNS] Successfully added secondary DNS server:" << dnsServers[i];
+    }
+
+    // Verify DNS settings were applied correctly
+    QStringList appliedDns = getCurrentDNSServersWindows();
+    if (!verifyDNSSettings(dnsServers, appliedDns)) {
+        qWarning() << "[DNS] DNS verification failed. Expected:" << dnsServers
+                  << "but got:" << appliedDns;
+        emit errorOccurred("DNS not applied successfully");
+        return false;
     }
 
     qInfo() << "[DNS] DNS configuration completed successfully";
@@ -766,22 +782,27 @@ bool DapDNSController::restoreDNSFromList(const QString &iface, const QStringLis
         return false;
     }
 
+    // Ensure interface name is properly quoted if it contains spaces
+    QString safeIface = iface.contains(' ') ? QString("\"%1\"").arg(iface) : iface;
+
     // First reset current DNS settings
-    QString resetCmd = QString("netsh interface ip set dns name=\"%1\" source=none")
-        .arg(iface);
+    QStringList resetArgs = {"interface", "ip", "set", "dns", 
+                           QString("name=%1").arg(safeIface), 
+                           "source=none"};
     
-    if (!runNetshCommand(resetCmd)) {
+    if (!runNetshCommand("netsh", resetArgs)) {
         qWarning() << "Failed to reset DNS settings for interface" << iface;
         emit errorOccurred(QString("Failed to reset DNS settings for interface %1").arg(iface));
         return false;
     }
 
     // Set primary DNS server
-    QString cmd = QString("netsh interface ip set dns name=\"%1\" static %2 primary")
-        .arg(iface)
-        .arg(dnsList.first());
+    QStringList setPrimaryArgs = {"interface", "ip", "set", "dns",
+                                QString("name=%1").arg(safeIface),
+                                QString("static=%1").arg(dnsList.first()),
+                                "primary"};
 
-    if (!runNetshCommand(cmd)) {
+    if (!runNetshCommand("netsh", setPrimaryArgs)) {
         qWarning() << "Failed to set primary DNS server" << dnsList.first() << "for interface" << iface;
         emit errorOccurred(QString("Failed to set primary DNS server %1").arg(dnsList.first()));
         return false;
@@ -789,17 +810,26 @@ bool DapDNSController::restoreDNSFromList(const QString &iface, const QStringLis
 
     // Add remaining DNS servers
     for (int i = 1; i < dnsList.size(); ++i) {
-        cmd = QString("netsh interface ip add dns name=\"%1\" addr=%2 index=%3")
-            .arg(iface)
-            .arg(dnsList[i])
-            .arg(i + 1);
+        QStringList addArgs = {"interface", "ip", "add", "dns",
+                             QString("name=%1").arg(safeIface),
+                             QString("addr=%1").arg(dnsList[i]),
+                             QString("index=%1").arg(i + 1)};
 
-        if (!runNetshCommand(cmd)) {
+        if (!runNetshCommand("netsh", addArgs)) {
             qWarning() << "Failed to add DNS server" << dnsList[i] << "with index" << (i + 1) 
                       << "for interface" << iface;
             emit errorOccurred(QString("Failed to add DNS server %1").arg(dnsList[i]));
             return false;
         }
+    }
+
+    // Verify DNS settings were applied correctly
+    QStringList appliedDns = getCurrentDNSServersWindows();
+    if (!verifyDNSSettings(dnsList, appliedDns)) {
+        qWarning() << "DNS verification failed. Expected:" << dnsList
+                  << "but got:" << appliedDns;
+        emit errorOccurred("DNS not applied successfully");
+        return false;
     }
 
     return true;
@@ -1248,10 +1278,16 @@ QStringList DapDNSController::getCurrentDNSIndexes(const QString &iface)
 {
     QStringList indexes;
     QString output;
-    QString cmd = QString("netsh interface ip show dns \"%1\"").arg(iface);
-    qDebug() << "Executing command:" << cmd;
     
-    if (!runNetshCommand(cmd, &output)) {
+    // Ensure interface name is properly quoted if it contains spaces
+    QString safeIface = iface.contains(' ') ? QString("\"%1\"").arg(iface) : iface;
+    
+    QStringList args = {"interface", "ip", "show", "dns",
+                       QString("name=%1").arg(safeIface)};
+    
+    qDebug() << "getCurrentDNSIndexes: Executing command: netsh" << args;
+    
+    if (!runNetshCommand("netsh", args, &output)) {
         qWarning() << "getCurrentDNSIndexes: Failed to get DNS configuration for interface" << iface;
         return indexes;
     }
@@ -1319,7 +1355,7 @@ bool DapDNSController::resetInterfaceDNS(const QString &iface, bool useDHCP)
 
     // Execute command and capture output
     QString output;
-    if (!runNetshCommand(cmd, &output)) {
+    if (!runNetshCommand(cmd, QStringList(), &output)) {
         qWarning() << "resetInterfaceDNS: Command failed for interface" << iface;
         qWarning() << "resetInterfaceDNS: Command output:" << output;
         
