@@ -12,6 +12,10 @@ Item
     property string fullText: "-"
     property bool showToolTip: true
     property bool alwaysHoverShow: false
+    
+    // Hover state property and signal
+    property bool isHover: false
+    signal hoverChanged(bool isHovered)
 
     property alias horizontalAlign: textItem.horizontalAlignment
     property alias verticalAlign: textItem.verticalAlignment
@@ -37,6 +41,19 @@ Item
             anchors.fill: parent
             visible: showToolTip
             hoverEnabled: true
+
+            // Handle hover state changes
+            onEntered:
+            {
+                isHover = true
+                hoverChanged(true)
+            }
+            
+            onExited:
+            {
+                isHover = false
+                hoverChanged(false)
+            }
 
             DapCustomToolTip{
                 id: tooltip
