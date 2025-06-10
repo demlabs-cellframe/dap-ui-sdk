@@ -16,6 +16,7 @@
 #include <ws2tcpip.h>
 #include <winsock2.h>
 #include <comdef.h>
+#include <string>
 #pragma comment(lib, "iphlpapi.lib")
 #pragma comment(lib, "dnsapi.lib")
 #pragma comment(lib, "ws2_32.lib")
@@ -24,6 +25,7 @@
 DapDNSController::DapDNSController(QObject *parent)
     : QObject(parent)
     , m_isDNSSet(false)
+    , m_targetIfIndex(0)
 #ifdef Q_OS_WINDOWS
     , m_originalDNSConfig(nullptr)
 #endif
@@ -968,6 +970,323 @@ void DapDNSController::updateOriginalDNSServers()
         }
     }
 }
+
+// New interface-specific methods using registry approach
+bool DapDNSController::setDNSServersForInterface(ulong ifIndex, const QStringList &dnsServers)
+{
+    QMutexLocker locker(&m_mutex);
+    
+    qInfo() << "[DNS] Setting DNS servers for interface index:" << ifIndex;
+    qInfo() << "[DNS] DNS servers to set:" << dnsServers;
+    
+    // Validate input
+    if (dnsServers.isEmpty()) {
+        qWarning() << "[DNS] Empty DNS servers list provided for interface" << ifIndex;
+        emit errorOccurred("Empty DNS servers list provided");
+        return false;
+    }
+    
+    // Validate DNS addresses
+    for (const QString &dns : dnsServers) {
+        if (!isValidIPAddress(dns)) {
+            qWarning() << "[DNS] Invalid DNS server address:" << dns;
+            emit errorOccurred(QString("Invalid DNS server address: %1").arg(dns));
+            return false;
+        }
+    }
+    
+    // Save original DNS servers if not already saved
+    if (!m_originalInterfaceDNS.contains(ifIndex)) {
+        if (!saveOriginalDNSForInterface(ifIndex)) {
+            qWarning() << "[DNS] Failed to save original DNS for interface" << ifIndex;
+        }
+    }
+    
+    // Use registry-based approach
+    bool result = setDNSServersWindowsRegistry(ifIndex, dnsServers);
+    
+    if (result) {
+        qInfo() << "[DNS] Successfully set DNS servers for interface" << ifIndex;
+        emit dnsServersChanged(dnsServers);
+        m_isDNSSet = true;
+    } else {
+        qWarning() << "[DNS] Failed to set DNS servers for interface" << ifIndex;
+        emit errorOccurred("Failed to set DNS servers");
+    }
+    
+    return result;
+}
+
+bool DapDNSController::setDNSServerForInterface(ulong ifIndex, const QString &dnsServer)
+{
+    return setDNSServersForInterface(ifIndex, QStringList{dnsServer});
+}
+
+bool DapDNSController::restoreDNSForInterface(ulong ifIndex)
+{
+    QMutexLocker locker(&m_mutex);
+    
+    qInfo() << "[DNS] Restoring DNS for interface index:" << ifIndex;
+    
+    if (!m_originalInterfaceDNS.contains(ifIndex)) {
+        qWarning() << "[DNS] No original DNS servers saved for interface" << ifIndex;
+        emit errorOccurred("No original DNS servers to restore");
+        return false;
+    }
+    
+    QStringList originalDNS = m_originalInterfaceDNS[ifIndex];
+    qInfo() << "[DNS] Original DNS servers to restore:" << originalDNS;
+    
+    bool result = restoreDNSWindowsRegistry(ifIndex);
+    
+    if (result) {
+        qInfo() << "[DNS] Successfully restored DNS for interface" << ifIndex;
+        emit dnsRestored();
+        m_isDNSSet = false;
+    } else {
+        qWarning() << "[DNS] Failed to restore DNS for interface" << ifIndex;
+        emit errorOccurred("Failed to restore DNS");
+    }
+    
+    return result;
+}
+
+QStringList DapDNSController::getCurrentDNSServersForInterface(ulong ifIndex)
+{
+    Q_UNUSED(ifIndex);
+    qWarning() << "getCurrentDNSServersForInterface: Not implemented on this platform";
+    return QStringList();
+}
+
+// Universal interface index management functions (cross-platform)
+void DapDNSController::setTargetInterfaceIndex(ulong ifIndex)
+{
+    QMutexLocker locker(&m_mutex);
+    m_targetIfIndex = ifIndex;
+    qInfo() << "[DNS] Target interface index set to:" << ifIndex;
+}
+
+ulong DapDNSController::getTargetInterfaceIndex() const
+{
+    QMutexLocker locker(&m_mutex);
+    return m_targetIfIndex;
+}
+
+// Registry-based implementation methods
+bool DapDNSController::setDNSServersWindowsRegistry(ulong ifIndex, const QStringList &dnsServers)
+{
+    qInfo() << "[DNS] Using registry method for interface" << ifIndex;
+    
+    QString registryPath = getInterfaceRegistryPath(ifIndex);
+    if (registryPath.isEmpty()) {
+        qWarning() << "[DNS] Failed to get registry path for interface" << ifIndex;
+        return false;
+    }
+    
+    qInfo() << "[DNS] Registry path:" << registryPath;
+    
+    HKEY hKey;
+    LONG result = RegOpenKeyExW(HKEY_LOCAL_MACHINE,
+                               reinterpret_cast<const wchar_t*>(registryPath.utf16()),
+                               0,
+                               KEY_WRITE,
+                               &hKey);
+    
+    if (result != ERROR_SUCCESS) {
+        qWarning() << "[DNS] Failed to open registry key:" << registryPath;
+        qWarning() << "[DNS] Registry error code:" << result;
+        return false;
+    }
+    
+    // Convert QStringList to space-separated string
+    QString dnsString = dnsServers.join(' ');
+    qInfo() << "[DNS] Setting DNS string:" << dnsString;
+    
+    // Convert to wide string
+    std::wstring wDnsString = dnsString.toStdWString();
+    
+    // Set the DNS servers
+    result = RegSetValueExW(hKey,
+                           L"NameServer",
+                           0,
+                           REG_SZ,
+                           reinterpret_cast<const BYTE*>(wDnsString.c_str()),
+                           static_cast<DWORD>((wDnsString.length() + 1) * sizeof(wchar_t)));
+    
+    RegCloseKey(hKey);
+    
+    if (result != ERROR_SUCCESS) {
+        qWarning() << "[DNS] Failed to set DNS in registry, error code:" << result;
+        return false;
+    }
+    
+    qInfo() << "[DNS] Successfully set DNS servers in registry for interface" << ifIndex;
+    return true;
+}
+
+bool DapDNSController::restoreDNSWindowsRegistry(ulong ifIndex)
+{
+    qInfo() << "[DNS] Restoring DNS using registry method for interface" << ifIndex;
+    
+    if (!m_originalInterfaceDNS.contains(ifIndex)) {
+        qWarning() << "[DNS] No original DNS to restore for interface" << ifIndex;
+        return false;
+    }
+    
+    QStringList originalDNS = m_originalInterfaceDNS[ifIndex];
+    
+    if (originalDNS.isEmpty()) {
+        // Clear DNS settings
+        QString registryPath = getInterfaceRegistryPath(ifIndex);
+        if (registryPath.isEmpty()) {
+            return false;
+        }
+        
+        HKEY hKey;
+        if (RegOpenKeyExW(HKEY_LOCAL_MACHINE,
+                         reinterpret_cast<const wchar_t*>(registryPath.utf16()),
+                         0,
+                         KEY_WRITE,
+                         &hKey) == ERROR_SUCCESS) {
+            
+            RegDeleteValueW(hKey, L"NameServer");
+            RegCloseKey(hKey);
+            qInfo() << "[DNS] Cleared DNS settings for interface" << ifIndex;
+            return true;
+        }
+        return false;
+    } else {
+        // Restore original DNS servers
+        return setDNSServersWindowsRegistry(ifIndex, originalDNS);
+    }
+}
+
+QStringList DapDNSController::getCurrentDNSServersWindowsRegistry(ulong ifIndex)
+{
+    QStringList dnsServers;
+    
+    QString registryPath = getInterfaceRegistryPath(ifIndex);
+    if (registryPath.isEmpty()) {
+        qWarning() << "[DNS] Failed to get registry path for interface" << ifIndex;
+        return dnsServers;
+    }
+    
+    HKEY hKey;
+    LONG result = RegOpenKeyExW(HKEY_LOCAL_MACHINE,
+                               reinterpret_cast<const wchar_t*>(registryPath.utf16()),
+                               0,
+                               KEY_READ,
+                               &hKey);
+    
+    if (result != ERROR_SUCCESS) {
+        qDebug() << "[DNS] Failed to open registry key for reading:" << registryPath;
+        return dnsServers;
+    }
+    
+    wchar_t buffer[1024] = {0};
+    DWORD bufferSize = sizeof(buffer);
+    DWORD valueType;
+    
+    result = RegQueryValueExW(hKey,
+                             L"NameServer",
+                             nullptr,
+                             &valueType,
+                             reinterpret_cast<BYTE*>(buffer),
+                             &bufferSize);
+    
+    RegCloseKey(hKey);
+    
+    if (result == ERROR_SUCCESS && valueType == REG_SZ) {
+        QString dnsString = QString::fromWCharArray(buffer);
+        if (!dnsString.isEmpty()) {
+            dnsServers = dnsString.split(' ', Qt::SkipEmptyParts);
+            qDebug() << "[DNS] Found DNS servers for interface" << ifIndex << ":" << dnsServers;
+        }
+    } else {
+        qDebug() << "[DNS] No DNS servers found in registry for interface" << ifIndex;
+    }
+    
+    return dnsServers;
+}
+
+QString DapDNSController::getInterfaceRegistryPath(ulong ifIndex)
+{
+    QString interfaceName = getInterfaceNameByIndex(ifIndex);
+    if (interfaceName.isEmpty()) {
+        qWarning() << "[DNS] Failed to get interface name for index" << ifIndex;
+        return QString();
+    }
+    
+    QString registryPath = QString("SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces\\%1")
+                          .arg(interfaceName);
+    
+    qDebug() << "[DNS] Registry path for interface" << ifIndex << ":" << registryPath;
+    return registryPath;
+}
+
+QString DapDNSController::getInterfaceNameByIndex(ulong ifIndex)
+{
+    // Check cache first - use thread-safe access
+    {
+        QMutexLocker locker(&m_mutex);
+        if (m_interfaceNames.contains(ifIndex)) {
+            return m_interfaceNames[ifIndex];
+        }
+    }
+    
+    // Get adapter information
+    ULONG outBufLen = 0;
+    DWORD dwRetVal = GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, nullptr, nullptr, &outBufLen);
+    
+    if (dwRetVal != ERROR_BUFFER_OVERFLOW) {
+        qWarning() << "[DNS] Failed to get adapter addresses buffer size";
+        return QString();
+    }
+    
+    PIP_ADAPTER_ADDRESSES pAddresses = reinterpret_cast<PIP_ADAPTER_ADDRESSES>(malloc(outBufLen));
+    if (!pAddresses) {
+        qWarning() << "[DNS] Failed to allocate memory for adapter addresses";
+        return QString();
+    }
+    
+    dwRetVal = GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, nullptr, pAddresses, &outBufLen);
+    
+    QString interfaceName;
+    if (dwRetVal == NO_ERROR) {
+        for (PIP_ADAPTER_ADDRESSES adapter = pAddresses; adapter; adapter = adapter->Next) {
+            if (adapter->IfIndex == ifIndex) {
+                interfaceName = QString::fromLatin1(adapter->AdapterName);
+                qInfo() << "[DNS] Found interface name for index" << ifIndex << ":" << interfaceName;
+                
+                // Cache the result - thread-safe modification
+                {
+                    QMutexLocker locker(&m_mutex);
+                    m_interfaceNames[ifIndex] = interfaceName;
+                }
+                break;
+            }
+        }
+    } else {
+        qWarning() << "[DNS] GetAdaptersAddresses failed with error:" << dwRetVal;
+    }
+    
+    free(pAddresses);
+    
+    if (interfaceName.isEmpty()) {
+        qWarning() << "[DNS] Interface name not found for index" << ifIndex;
+    }
+    
+    return interfaceName;
+}
+
+bool DapDNSController::saveOriginalDNSForInterface(ulong ifIndex)
+{
+    QStringList currentDNS = getCurrentDNSServersWindowsRegistry(ifIndex);
+    m_originalInterfaceDNS[ifIndex] = currentDNS;
+    
+    qInfo() << "[DNS] Saved original DNS for interface" << ifIndex << ":" << currentDNS;
+    return true;
+}
 #endif
 
 #ifdef Q_OS_LINUX
@@ -1374,4 +1693,41 @@ bool DapDNSController::resetInterfaceDNS(const QString &iface, bool useDHCP)
     qDebug() << "resetInterfaceDNS: Successfully reset DNS settings for interface" 
              << iface << "to" << (useDHCP ? "DHCP" : "none");
     return true;
-} 
+}
+
+#ifndef Q_OS_WINDOWS
+// Stub implementations for non-Windows platforms
+bool DapDNSController::setDNSServersForInterface(ulong ifIndex, const QStringList &dnsServers)
+{
+    Q_UNUSED(ifIndex);
+    Q_UNUSED(dnsServers);
+    qWarning() << "setDNSServersForInterface: Not implemented on this platform";
+    emit errorOccurred("Interface-specific DNS management not implemented on this platform");
+    return false;
+}
+
+bool DapDNSController::setDNSServerForInterface(ulong ifIndex, const QString &dnsServer)
+{
+    Q_UNUSED(ifIndex);
+    Q_UNUSED(dnsServer);
+    qWarning() << "setDNSServerForInterface: Not implemented on this platform";
+    emit errorOccurred("Interface-specific DNS management not implemented on this platform");
+    return false;
+}
+
+bool DapDNSController::restoreDNSForInterface(ulong ifIndex)
+{
+    Q_UNUSED(ifIndex);
+    qWarning() << "restoreDNSForInterface: Not implemented on this platform";
+    emit errorOccurred("Interface-specific DNS management not implemented on this platform");
+    return false;
+}
+
+QStringList DapDNSController::getCurrentDNSServersForInterface(ulong ifIndex)
+{
+    Q_UNUSED(ifIndex);
+    qWarning() << "getCurrentDNSServersForInterface: Not implemented on this platform";
+    return QStringList();
+}
+
+#endif

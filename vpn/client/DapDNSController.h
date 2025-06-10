@@ -9,6 +9,7 @@
 #include <QHostAddress>
 #include <QSet>
 #include <QMutex>
+#include <QMap>
 
 #ifdef Q_OS_ANDROID
 #include <QAndroidJniObject>
@@ -96,6 +97,14 @@ public:
     QStringList getOriginalDNSServers() const;
     void setOriginalDNSServers(const QStringList &servers);
 
+    // New interface-specific methods
+    bool setDNSServersForInterface(ulong ifIndex, const QStringList &dnsServers);
+    bool setDNSServerForInterface(ulong ifIndex, const QString &dnsServer);
+    bool restoreDNSForInterface(ulong ifIndex);
+    QStringList getCurrentDNSServersForInterface(ulong ifIndex);
+    void setTargetInterfaceIndex(ulong ifIndex);
+    ulong getTargetInterfaceIndex() const;
+
     // Helper methods for DNS management
     QStringList getCurrentDNSIndexes(const QString &iface);
     bool resetInterfaceDNS(const QString &iface, bool useDHCP = false);
@@ -120,6 +129,11 @@ private:
     QStringList m_originalDNSServers;
     bool m_isDNSSet;
     QString m_ifaceName;  // Store network interface name for DNS operations
+    
+    // New member variables for interface-specific DNS management
+    QMap<ulong, QStringList> m_originalInterfaceDNS;  // Store original DNS per interface
+    QMap<ulong, QString> m_interfaceNames;            // Cache interface names by index
+    ulong m_targetIfIndex;                            // Target interface index
 
 #ifdef Q_OS_WINDOWS
     PIP_ADAPTER_DNS_SERVER_ADDRESS_XP m_originalDNSConfig;
@@ -134,6 +148,14 @@ private:
     bool verifyDNSSettings(const QStringList &expected, const QStringList &current);
     void updateOriginalDNSServers();
     bool restoreDNSFromList(const QString &iface, const QStringList &dnsList);
+    
+    // Registry-based DNS management methods
+    bool setDNSServersWindowsRegistry(ulong ifIndex, const QStringList &dnsServers);
+    bool restoreDNSWindowsRegistry(ulong ifIndex);
+    QStringList getCurrentDNSServersWindowsRegistry(ulong ifIndex);
+    QString getInterfaceRegistryPath(ulong ifIndex);
+    QString getInterfaceNameByIndex(ulong ifIndex);
+    bool saveOriginalDNSForInterface(ulong ifIndex);
 #endif
 
 #ifdef Q_OS_LINUX
