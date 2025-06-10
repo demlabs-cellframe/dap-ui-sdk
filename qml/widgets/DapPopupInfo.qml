@@ -123,13 +123,15 @@ Item {
 
         Text
         {
-//            Layout.alignment: Qt.AlignRight
             id: textItem
             height: commonHeight
+            Layout.leftMargin: 8 * scaleFactor
+            Layout.rightMargin: 8 * scaleFactor
             font: mainFont.dapFont.medium14
             color: currTheme.white
             verticalAlignment: Qt.AlignVCenter
             text: infoText
+            elide: Text.ElideRight
         }
     }
 
