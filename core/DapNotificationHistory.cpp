@@ -365,10 +365,42 @@ void DapNotificationHistory::_delayedSave()
                this, [ = ]
       {
         QJsonArray jarr;
+        
+        // Apply filters before saving: remove old entries and limit count
+        QDate threeDaysAgo = QDate::currentDate().addDays(-3);
+        int notificationCount = 0;
+        const int MAX_NOTIFICATIONS = 50;
 
-        /* collect json items */
+        /* collect json items with filtering */
         for (auto &item : m_list)
           {
+            // Check age limits
+            bool includeItem = false;
+            
+            if (item.isTitle)
+            {
+              // For title entries, check titleDate
+              if (item.titleDate.isValid() && item.titleDate >= threeDaysAgo)
+              {
+                includeItem = true;
+              }
+            }
+            else
+            {
+              // For notification entries, check created date
+              if (item.notification.created().isValid() && 
+                  item.notification.created().date() >= threeDaysAgo)
+              {
+                includeItem = true;
+              }
+            }
+            
+            // Skip if too old or if we've reached the limit
+            if (!includeItem || notificationCount >= MAX_NOTIFICATIONS)
+            {
+              continue;
+            }
+            
             /* get notification fields */
             QJsonObject jobj = item.notification.toJson();
 
@@ -381,11 +413,34 @@ void DapNotificationHistory::_delayedSave()
 
             /* store result */
             jarr.append (jobj);
+            notificationCount++;
           }
 
         /* store result json array */
         QByteArray result = QJsonDocument (jarr).toJson (QJsonDocument::JsonFormat::Compact);
+        
+        // Check size and truncate further if needed
+        const int MAX_NOTIFICATION_JSON_SIZE = 8000; // Leave room for other data
+        if (result.size() > MAX_NOTIFICATION_JSON_SIZE)
+        {
+          qWarning() << "[DapNotificationHistory][_delayedSave] Notification JSON too large (" 
+                     << result.size() << " bytes), truncating further";
+          
+          // Remove entries from the end until size is acceptable
+          while (jarr.size() > 0 && result.size() > MAX_NOTIFICATION_JSON_SIZE)
+          {
+            jarr.removeLast();
+            result = QJsonDocument(jarr).toJson(QJsonDocument::JsonFormat::Compact);
+          }
+          
+          qDebug() << "[DapNotificationHistory][_delayedSave] Notification history truncated to" 
+                   << jarr.size() << "entries, size:" << result.size() << "bytes";
+        }
+        
         DapDataLocal::instance()->saveToSettings (DapDataLocal::NOTIFICATION_HISTORY, result);
+        
+        qDebug() << "[DapNotificationHistory][_delayedSave] Saved" << jarr.size() 
+                 << "notifications, JSON size:" << result.size() << "bytes";
       });
     }
 
