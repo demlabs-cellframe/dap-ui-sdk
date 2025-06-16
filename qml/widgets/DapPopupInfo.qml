@@ -116,6 +116,10 @@ Item {
         {
             Layout.alignment: Qt.AlignLeft
             id: imageItem
+            Layout.minimumHeight: commonHeight
+            Layout.maximumHeight: commonHeight
+            Layout.minimumWidth: commonHeight
+            Layout.maximumWidth: commonHeight
             innerWidth: commonHeight
             innerHeight: commonHeight
             source: iconPath
@@ -125,10 +129,9 @@ Item {
         {
             id: textItem
             height: commonHeight
-            Layout.leftMargin: 8 * scaleFactor
-            Layout.rightMargin: 8 * scaleFactor
             font: mainFont.dapFont.medium14
             color: currTheme.white
+            horizontalAlignment: Qt.AlignLeft
             verticalAlignment: Qt.AlignVCenter
             text: infoText
             elide: Text.ElideRight
