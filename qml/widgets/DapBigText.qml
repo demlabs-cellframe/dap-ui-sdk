@@ -17,6 +17,10 @@ Item
     property bool isHover: false
     signal hoverChanged(bool isHovered)
 
+    // Hover state property and signal
+    property bool isHover: false
+    signal hoverChanged(bool isHovered)
+
     property alias horizontalAlign: textItem.horizontalAlignment
     property alias verticalAlign: textItem.verticalAlignment
 
@@ -48,7 +52,6 @@ Item
                 isHover = true
                 hoverChanged(true)
             }
-            
             onExited:
             {
                 isHover = false
