@@ -12,7 +12,7 @@ Item
     property string fullText: "-"
     property bool showToolTip: true
     property bool alwaysHoverShow: false
-
+    
     // Hover state property and signal
     property bool isHover: false
     signal hoverChanged(bool isHovered)
@@ -48,7 +48,6 @@ Item
                 isHover = true
                 hoverChanged(true)
             }
-
             onExited:
             {
                 isHover = false
