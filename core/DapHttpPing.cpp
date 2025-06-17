@@ -26,11 +26,11 @@ void DapHttpPing::sendRequest(const QString& host, quint16 port)
   });
 }
 
-void DapHttpPing::responseCallback(void * a_response, size_t a_response_size, void * a_obj)
+void DapHttpPing::responseCallback(void * a_response, size_t a_response_size, void * a_obj, http_status_code a_status_code)
 {
     DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
     reply->setReply(QByteArray(reinterpret_cast<const char*>(a_response), static_cast<int>(a_response_size)));
-    qDebug() << "Dap Client HTTP Request: response received, size=" << a_response_size;
+    qDebug() << "Dap Client HTTP Request: response received, size=" << a_response_size << " status=" << a_status_code;
     reply->setError( 0 );
     emit reply->finished();
     reply->deleteLater();
