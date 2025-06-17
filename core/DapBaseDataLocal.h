@@ -29,6 +29,7 @@ public:
     static const QString TEXT_SERIAL_KEY;
     static const QString TEXT_SERIAL_KEY_HISTORY;
     static const QString TEXT_PENDING_SERIAL_KEY;
+    static const QString UPDATE_FILE_PATH;
     static const QString TEXT_BUGREPORT_HISTORY;
     static const QString ROUTING_EXCEPTIONS_LIST;
     static const QString TEXT_LOGIN;
