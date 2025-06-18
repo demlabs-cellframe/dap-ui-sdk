@@ -28,6 +28,7 @@
 const QString DapBaseDataLocal::TEXT_SERIAL_KEY           = "serialkey";
 const QString DapBaseDataLocal::TEXT_SERIAL_KEY_HISTORY   = "serialkeyhistory";
 const QString DapBaseDataLocal::TEXT_PENDING_SERIAL_KEY   = "pendingserialkey";
+const QString DapBaseDataLocal::UPDATE_FILE_PATH          = "updatefilepath";
 const QString DapBaseDataLocal::TEXT_BUGREPORT_HISTORY    = "bugreporthistory";
 const QString DapBaseDataLocal::ROUTING_EXCEPTIONS_LIST   = "routingexceptionslist";
 const QString DapBaseDataLocal::TEXT_LOGIN                = "login";
@@ -597,6 +598,104 @@ QJsonObject DapBaseDataLocal::toJson()
     resultObject.insert(JSON_SERIAL_KEY_HISTORY_KEY, serialKeyHistoryToJson());
     resultObject.insert(JSON_SETTINGS_KEY, settingsToJson());
 
+    // Check if the resulting JSON is too large (MAX_BUFFER_SIZE = 10000 bytes)
+    const int MAX_BUFFER_SIZE = 10000;
+    QByteArray jsonData = QJsonDocument(resultObject).toJson(QJsonDocument::JsonFormat::Compact);
+    
+    if (jsonData.size() > MAX_BUFFER_SIZE)
+    {
+        qWarning() << "[DapBaseDataLocal][toJson] Generated JSON is too large (" 
+                   << jsonData.size() << " bytes), exceeds MAX_BUFFER_SIZE (" 
+                   << MAX_BUFFER_SIZE << " bytes)";
+        
+        // Try to reduce the size by removing less critical data
+        // First, try to reduce settings further
+        QJsonObject reducedSettings = settingsToJson();
+        
+        // If settings contain notification history, try to reduce it more aggressively
+        if (m_settings && m_settings->allKeys().contains(NOTIFICATION_HISTORY))
+        {
+            qDebug() << "[DapBaseDataLocal][toJson] Attempting to reduce notification history size";
+            
+            QByteArray source;
+            loadFromSettingsBase(NOTIFICATION_HISTORY, source);
+            QJsonArray notifications = QJsonDocument::fromJson(source).array();
+            
+            // More aggressive reduction: limit to 20 entries
+            const int REDUCED_MAX_NOTIFICATIONS = 20;
+            QJsonArray reducedNotifications;
+            
+            QDate threeDaysAgo = QDate::currentDate().addDays(-3);
+            int count = 0;
+            
+            for (const auto &item : qAsConst(notifications))
+            {
+                if (count >= REDUCED_MAX_NOTIFICATIONS) break;
+                
+                QJsonObject notification = item.toObject();
+                bool isTitle = notification.value("isTitle").toBool();
+                
+                bool includeItem = false;
+                if (isTitle)
+                {
+                    QString dateString = notification.value("date").toString();
+                    if (!dateString.isEmpty())
+                    {
+                        QDate titleDate = QDate::fromString(dateString, "dd.MM.yyyy");
+                        includeItem = titleDate.isValid() && titleDate >= threeDaysAgo;
+                    }
+                }
+                else
+                {
+                    QString createdString = notification.value("created").toString();
+                    if (!createdString.isEmpty())
+                    {
+                        QDateTime createdDateTime = QDateTime::fromString(createdString, "hh:mm:ss dd.MM.yyyy");
+                        includeItem = createdDateTime.isValid() && createdDateTime.date() >= threeDaysAgo;
+                    }
+                }
+                
+                if (includeItem)
+                {
+                    reducedNotifications.append(notification);
+                    count++;
+                }
+            }
+            
+            QByteArray reducedNotificationData = QJsonDocument(reducedNotifications).toJson(QJsonDocument::JsonFormat::Compact);
+            QJsonValue reducedJsonValue = QJsonValue::fromVariant(QVariant(reducedNotificationData));
+            reducedSettings.insert(NOTIFICATION_HISTORY, reducedJsonValue);
+            
+            resultObject.insert(JSON_SETTINGS_KEY, reducedSettings);
+            
+            // Check size again
+            jsonData = QJsonDocument(resultObject).toJson(QJsonDocument::JsonFormat::Compact);
+            qDebug() << "[DapBaseDataLocal][toJson] After notification reduction, JSON size:" << jsonData.size() << "bytes";
+        }
+        
+        // If still too large, remove less critical components
+        if (jsonData.size() > MAX_BUFFER_SIZE)
+        {
+            qWarning() << "[DapBaseDataLocal][toJson] JSON still too large after notification reduction, removing less critical data";
+            
+            // Remove serial key history as it's less critical
+            resultObject.remove(JSON_SERIAL_KEY_HISTORY_KEY);
+            
+            // Remove bug report history if still too large
+            jsonData = QJsonDocument(resultObject).toJson(QJsonDocument::JsonFormat::Compact);
+            if (jsonData.size() > MAX_BUFFER_SIZE)
+            {
+                resultObject.remove(JSON_BUG_REPORT_HISTORY_KEY);
+                qDebug() << "[DapBaseDataLocal][toJson] Removed bug report history, final size:" 
+                         << QJsonDocument(resultObject).toJson(QJsonDocument::JsonFormat::Compact).size() << "bytes";
+            }
+        }
+    }
+    else
+    {
+        qDebug() << "[DapBaseDataLocal][toJson] JSON size:" << jsonData.size() << "bytes (within limits)";
+    }
+
     return resultObject;
 }
 
@@ -872,7 +971,90 @@ const QJsonObject DapBaseDataLocal::settingsToJson()
             {
                 continue;
             }
-            else if(key == NOTIFICATION_HISTORY || key == NODE_ORDER_HISTORY)
+            else if(key == NOTIFICATION_HISTORY)
+            {
+                QByteArray source;
+                loadFromSettingsBase(key, source);
+                
+                // Parse current notification history
+                QJsonArray originalNotifications = QJsonDocument::fromJson(source).array();
+                QJsonArray filteredNotifications;
+                
+                // Filter notifications: remove older than 3 days and limit to 50 entries
+                QDate threeDaysAgo = QDate::currentDate().addDays(-3);
+                int notificationCount = 0;
+                const int MAX_NOTIFICATIONS = 50;
+                
+                // Iterate through notifications and apply filters
+                for (const auto &item : qAsConst(originalNotifications))
+                {
+                    QJsonObject notification = item.toObject();
+                    
+                    // Check if this is a title entry
+                    bool isTitle = notification.value("isTitle").toBool();
+                    
+                    if (isTitle)
+                    {
+                        // For title entries, check the date field
+                        QString dateString = notification.value("date").toString();
+                        if (!dateString.isEmpty())
+                        {
+                            QDate titleDate = QDate::fromString(dateString, "dd.MM.yyyy");
+                            if (titleDate.isValid() && titleDate >= threeDaysAgo)
+                            {
+                                filteredNotifications.append(notification);
+                                notificationCount++;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // For notification entries, check the created field
+                        QString createdString = notification.value("created").toString();
+                        if (!createdString.isEmpty())
+                        {
+                            QDateTime createdDateTime = QDateTime::fromString(createdString, "hh:mm:ss dd.MM.yyyy");
+                            if (createdDateTime.isValid() && createdDateTime.date() >= threeDaysAgo)
+                            {
+                                filteredNotifications.append(notification);
+                                notificationCount++;
+                            }
+                        }
+                    }
+                    
+                    // Stop if we've reached the maximum number of notifications
+                    if (notificationCount >= MAX_NOTIFICATIONS)
+                    {
+                        qDebug() << "[DapBaseDataLocal][settingsToJson] Notification history truncated to" << MAX_NOTIFICATIONS << "entries";
+                        break;
+                    }
+                }
+                
+                // Convert filtered notifications back to compact JSON
+                QByteArray filteredResult = QJsonDocument(filteredNotifications).toJson(QJsonDocument::JsonFormat::Compact);
+                
+                // Check if the result is too large and truncate further if needed
+                const int MAX_NOTIFICATION_JSON_SIZE = 8000; // Leave some room for other settings
+                if (filteredResult.size() > MAX_NOTIFICATION_JSON_SIZE)
+                {
+                    qWarning() << "[DapBaseDataLocal][settingsToJson] Notification history JSON too large (" 
+                               << filteredResult.size() << " bytes), truncating further";
+                    
+                    // Remove entries from the end until size is acceptable
+                    while (filteredNotifications.size() > 0 && filteredResult.size() > MAX_NOTIFICATION_JSON_SIZE)
+                    {
+                        filteredNotifications.removeLast();
+                        filteredResult = QJsonDocument(filteredNotifications).toJson(QJsonDocument::JsonFormat::Compact);
+                    }
+                    
+                    qDebug() << "[DapBaseDataLocal][settingsToJson] Notification history truncated to" 
+                             << filteredNotifications.size() << "entries, size:" << filteredResult.size() << "bytes";
+                }
+                
+                QJsonValue jsonValue = QJsonValue::fromVariant(QVariant(filteredResult));
+                settings.insert(key, jsonValue);
+            }
+            else if(key == NODE_ORDER_HISTORY)
             {
                 QByteArray source;
                 loadFromSettingsBase(key, source);

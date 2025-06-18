@@ -314,7 +314,7 @@
 .radio-label
 {
     color: "@text";
-    scaled-font: scaled(16);    
+    scaled-font: scaled(16);
     font-weight: Font.Normal;
 }
 
@@ -786,13 +786,13 @@
 
 .splash-logo
 {
-    scaled-rect: scaled(nan,240,276,76,true);
+    scaled-rect: scaled(nan,220,276,76,true);
     qproperty-scaledPixmap: "@splash-logo";
 }
 
 .splash-status
 {
-    scaled-rect: scaled(-1,585,-1,64,false,18);
+    scaled-rect: scaled(-1,435,-1,64,false,18);
 }
 
 .splash-version
