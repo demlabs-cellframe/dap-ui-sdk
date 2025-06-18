@@ -2,11 +2,10 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QProcess>
-#include "DapDataLocal.h"
+#include "DapBaseDataLocal.h"
 #include <QTimer>
 #include <QSignalTransition>
 #include <QDebug>
-#include "dap_client_http.h"
 
 
 //#define SIGERROR (QNetworkReply::NetworkError::UnknownServerError + 1)
@@ -19,15 +18,12 @@ const qint32   DapNode::NODE_DETECT_REQUEST_REPEAT_PERIOD   (10000);
 const qint32   DapNode::NODE_CONNECT_REQUEST_REPEAT_PERIOD  (500);
 const qint32   DapNode::LEDGER_REQUEST_REPEAT_PERIOD        (5000);
 
-static DapNode *s_instance   = nullptr;
-
 
 DapNode:: DapNode(QObject * obj, int requestTimeout) :
     QObject(obj),
 //    m_requestTimeout(requestTimeout),
     m_stm(new NodeConnectStateMachine)
 {
-    s_instance  = this;
     web3 = new DapNodeWeb3();
     initWeb3Connections();
     initStmTransitions();
@@ -39,6 +35,8 @@ DapNode:: DapNode(QObject * obj, int requestTimeout) :
 DapNode::~ DapNode()
 {
 }
+
+static DapNode *s_instance   = nullptr;
 
 DapNode *DapNode::instance()
 {
@@ -74,24 +72,29 @@ void DapNode::startCheckingNodeRequest()
     if (m_stm->initialState.active()) {
         DEBUGINFO << __PRETTY_FUNCTION__ << " uiStartNodeDetection()";
         emit uiStartNodeDetection();
-    } else if (m_stm->nodeConnection.active()) {
+        return;
+    }
+
+    if (m_stm->nodeConnection.active()) {
         DEBUGINFO << __PRETTY_FUNCTION__ << " emit sigRepeatNodeDetecting after GUI restart";
         emit sigNodeDetected();
         emit sigRepeatNodeConnecting();
         return;
-    } else {
-        if (m_stm->ledgerTxHashRequest.active() || m_stm->ledgerTxHashEmpty.active()) {
-            DEBUGINFO << __PRETTY_FUNCTION__ << " sigMempoolContainHash()";
-            emit sigMempoolContainHash();
-            return;
-        }
-        if (nodeDetected) {
-            DEBUGINFO << __PRETTY_FUNCTION__ << " sigNodeDetected()";
-            emit sigNodeDetected();
-            return;
-        }
+    }
+
+    if (m_stm->ledgerTxHashRequest.active() || m_stm->ledgerTxHashEmpty.active()) {
+        DEBUGINFO << __PRETTY_FUNCTION__ << " sigMempoolContainHash()";
+        emit sigMempoolContainHash();
+        return;
+    }
+
+    if (nodeDetected) {
+        DEBUGINFO << __PRETTY_FUNCTION__ << " sigNodeDetected()";
+        emit sigNodeDetected();
+        return;
     }
 }
+
 
 void DapNode::initCommandsStm()
 {
@@ -290,7 +293,7 @@ void DapNode::initStmTransitions()
     &m_stm->initialState);
 
     // getting node ip
-    m_stm->getNodeConnectionData.addTransition(this, &DapNode::sigNodeDumpReceived,
+    m_stm->getNodeConnectionData.addTransition(this, &DapNode::sigNodeListReceived,
     &m_stm->initialState);
     m_stm->getNodeConnectionData.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
@@ -424,7 +427,7 @@ void DapNode::initStmStates()
     });
 
     connect(&m_stm->getNodeConnectionData, &QState::entered, this, [=](){
-        web3->nodeDumpRequest(m_networkName);
+        web3->nodeListRequest(m_networkName);
     });
 }
 
@@ -514,10 +517,10 @@ void DapNode::initWeb3Connections()
         emit sigFeeReceivedData (a_data);
     });
     // connect to stream
-    connect(web3, &DapNodeWeb3::sigNodeDump, this, [=](QList<QMap<QString, QString>> nodeDump) {
+    connect(web3, &DapNodeWeb3::sigNodeList, this, [=](QList<QMap<QString, QString>> nodeList) {
 //         riemann, use dap_chain_net_id_by_name() "0x000000000000dddd"
-        m_nodeInfo.serverDataFromList(nodeDump);
-        emit sigNodeDumpReceived();
+        m_nodeInfo.serverDataFromList(nodeList);
+        emit sigNodeListReceived();
         emit sigConnectByOrder(m_networkName, m_transactionHash, m_tokenName, m_srvUid, m_nodeInfo.ipv4, m_nodeInfo.port);
     });
 
@@ -609,9 +612,9 @@ void DapNode::slotGetNodeIpForOrderListReqest(QString srvUid, QJsonArray orderLi
     emit sigGetNodeIpRequest(orderList);
 }
 
-bool NodeInfo::serverDataFromList(const QList<QMap<QString, QString>>& nodeDump)
+bool NodeInfo::serverDataFromList(const QList<QMap<QString, QString>>& nodeList)
 {
-    foreach (const auto item, nodeDump)
+    foreach (const auto item, nodeList)
     {
         if (item["node address"] == address)
         {

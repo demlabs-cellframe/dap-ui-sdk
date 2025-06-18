@@ -33,7 +33,7 @@ protected:
    *******************************************/
   /// @{
 protected:
-  DapCmdNodeData *nodeData;
+  DapCmdNodeData *_data;
   /// @}
 
   /****************************************//**

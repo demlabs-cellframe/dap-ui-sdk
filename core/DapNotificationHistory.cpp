@@ -1,5 +1,3 @@
-/* INCLUDES */
-
 #include "DapNotificationHistory.h"
 #include "DapDataLocal.h"
 
@@ -8,30 +6,9 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 
-/* DEFS */
-
 //#define TEST_ITEMS
 
 #define ROLEFIELD(a_name) { int (DapNotificationHistory::FieldId::a_name), #a_name }
-
-//class SortedIntList : public QList<int>
-//{
-//public:
-//  void addSorted (int a_value)
-//  {
-//    auto it = begin();
-
-//    while (it != end() && *it < a_value)
-//      ++it;
-
-//    if (*it == a_value)
-//      return;
-
-//    insert (it, a_value);
-//  }
-//};
-
-/* VARS */
 
 static const QHash<int, QByteArray> s_roles =
 {
@@ -60,10 +37,6 @@ static const QStringList s_months =
   "December"
 };
 
-/********************************************
- * CONSTRUCT/DESTRUCT
- *******************************************/
-
 DapNotificationHistory::DapNotificationHistory (QObject *parent)
   : QAbstractListModel (parent)
 {
@@ -83,10 +56,6 @@ DapNotificationHistory::~DapNotificationHistory()
 {
 
 }
-
-/********************************************
- * METHODS
- *******************************************/
 
 DapNotificationHistory *DapNotificationHistory::instance()
 {
@@ -149,11 +118,7 @@ void DapNotificationHistory::append (const QString &a_message, DapNotification::
     if (topDate != today)
       insertDate();
 
-  /* insert item */
-
-  /* ------------------------------------- */
   beginInsertRows (QModelIndex(), 1, 1);
-  /* ------------------------------------- */
 
   DapNotification notification
   {
@@ -170,57 +135,6 @@ void DapNotificationHistory::append (const QString &a_message, DapNotification::
   };
 
   m_list.insert (1, std::move (item));
-
-  /* ------------------------------------- */
-  endInsertRows();
-  /* ------------------------------------- */
-
-//  /* variables */
-//  int index       = m_list.size();
-//  QDate lastItem  = (m_list.isEmpty()) ? QDate() : m_list.last().notification.created().date();
-//  auto todayDT    = QDateTime::currentDateTime();
-//  QDate today     = todayDT.date();
-
-//  /* lambda's */
-//  auto insertDate = [&]
-//  {
-//    beginInsertRows (QModelIndex(), index, index);
-//    m_list.append (Item { true, today, DapNotification() });
-//    endInsertRows();
-//    index++;
-//  };
-
-//  /* insert title */
-//  if (!lastItem.isValid())
-//    insertDate();
-//  else if (lastItem != today)
-//    insertDate();
-
-//  /* insert item */
-
-//  /* ------------------------------------- */
-//  beginInsertRows (QModelIndex(), index, index);
-//  /* ------------------------------------- */
-
-//  DapNotification notification
-//  {
-//    QDateTime::currentDateTime(),
-//    a_message,
-//    a_type,
-//  };
-
-//  Item item
-//  {
-//    false,
-//    QDate(),
-//    std::move (notification)
-//  };
-
-//  m_list.append (std::move (item));
-
-//  /* ------------------------------------- */
-//  endInsertRows();
-//  /* ------------------------------------- */
 
   _delayedSave();
 }
@@ -250,7 +164,7 @@ void DapNotificationHistory::load()
   QJsonArray jarr;
 
   /* get data */
-  DapDataLocal::instance()->loadFromSettings (NOTIFICATION_HISTORY, source);
+  DapDataLocal::instance()->loadFromSettings (DapDataLocal::NOTIFICATION_HISTORY, source);
   jarr  = QJsonDocument::fromJson (source).array();
 
   /* prepare parsing */
@@ -451,10 +365,42 @@ void DapNotificationHistory::_delayedSave()
                this, [ = ]
       {
         QJsonArray jarr;
+        
+        // Apply filters before saving: remove old entries and limit count
+        QDate threeDaysAgo = QDate::currentDate().addDays(-3);
+        int notificationCount = 0;
+        const int MAX_NOTIFICATIONS = 50;
 
-        /* collect json items */
+        /* collect json items with filtering */
         for (auto &item : m_list)
           {
+            // Check age limits
+            bool includeItem = false;
+            
+            if (item.isTitle)
+            {
+              // For title entries, check titleDate
+              if (item.titleDate.isValid() && item.titleDate >= threeDaysAgo)
+              {
+                includeItem = true;
+              }
+            }
+            else
+            {
+              // For notification entries, check created date
+              if (item.notification.created().isValid() && 
+                  item.notification.created().date() >= threeDaysAgo)
+              {
+                includeItem = true;
+              }
+            }
+            
+            // Skip if too old or if we've reached the limit
+            if (!includeItem || notificationCount >= MAX_NOTIFICATIONS)
+            {
+              continue;
+            }
+            
             /* get notification fields */
             QJsonObject jobj = item.notification.toJson();
 
@@ -467,20 +413,39 @@ void DapNotificationHistory::_delayedSave()
 
             /* store result */
             jarr.append (jobj);
+            notificationCount++;
           }
 
         /* store result json array */
         QByteArray result = QJsonDocument (jarr).toJson (QJsonDocument::JsonFormat::Compact);
-        DapDataLocal::instance()->saveToSettings (NOTIFICATION_HISTORY, result);
+        
+        // Check size and truncate further if needed
+        const int MAX_NOTIFICATION_JSON_SIZE = 8000; // Leave room for other data
+        if (result.size() > MAX_NOTIFICATION_JSON_SIZE)
+        {
+          qWarning() << "[DapNotificationHistory][_delayedSave] Notification JSON too large (" 
+                     << result.size() << " bytes), truncating further";
+          
+          // Remove entries from the end until size is acceptable
+          while (jarr.size() > 0 && result.size() > MAX_NOTIFICATION_JSON_SIZE)
+          {
+            jarr.removeLast();
+            result = QJsonDocument(jarr).toJson(QJsonDocument::JsonFormat::Compact);
+          }
+          
+          qDebug() << "[DapNotificationHistory][_delayedSave] Notification history truncated to" 
+                   << jarr.size() << "entries, size:" << result.size() << "bytes";
+        }
+        
+        DapDataLocal::instance()->saveToSettings (DapDataLocal::NOTIFICATION_HISTORY, result);
+        
+        qDebug() << "[DapNotificationHistory][_delayedSave] Saved" << jarr.size() 
+                 << "notifications, JSON size:" << result.size() << "bytes";
       });
     }
 
   s_delay->start();
 }
-
-/********************************************
- * OVERRIDE
- *******************************************/
 
 QHash<int, QByteArray> DapNotificationHistory::roleNames() const
 {
@@ -537,4 +502,3 @@ QVariant DapNotificationHistory::data (const QModelIndex &index, int role) const
   return result;
 }
 
-/*-----------------------------------------*/

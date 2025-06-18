@@ -1,6 +1,6 @@
 #include "zipbase.h"
 #include "zlib.h"
-#include <QStringRef>
+#include <QStringView>
 
 namespace  DapZip {
 
@@ -274,11 +274,11 @@ ZipFileInfo ZipBase::fillFileInfo(int index) const
 
     // fix the file path, if broken (convert separators, eat leading and trailing ones)
     fileInfo.filePath = QDir::fromNativeSeparators(fileInfo.filePath);
-    QStringRef filePathRef(&fileInfo.filePath);
+    QStringView filePathRef(fileInfo.filePath);
     while (filePathRef.startsWith(QLatin1Char('.')) || filePathRef.startsWith(QLatin1Char('/')))
         filePathRef = filePathRef.mid(1);
     while (filePathRef.endsWith(QLatin1Char('/')))
-        filePathRef.chop(1);
+        filePathRef = filePathRef.chopped(1);
 
     fileInfo.filePath = filePathRef.toString();
     return fileInfo;

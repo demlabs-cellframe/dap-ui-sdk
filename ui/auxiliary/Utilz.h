@@ -1,11 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-//#include <QColor>
-//#include <QWidget>
 #include <QVariant>
 #include <QDebug>
-//#include <QBoxLayout>
 #include <QRegularExpression>
 #include <QtMath>
 #include <QDateTime>
@@ -20,17 +17,14 @@ namespace Utils
     ///Returns the required version type
     enum TypeVersion{MAJOR,MINOR,PAT};
     int getNumberVersion(const QString &version,TypeVersion type);
+    bool isNewerVersion(const QString& availableVer, const QString currVer);
     QString getOSName();
 
-//    QColor toColor(const QString &strRGBA);
     ///The function returns the first integer in the string.
     /// 100%=>100 100px=>100 100**=>100 100=>100
     int toIntValue(const QString &a_text);
 
     QString convertByte(const quint64 &byte);
-
-//    QBoxLayout::Direction toQBoxLayoutDirection(Qt::LayoutDirection a_direction);
-//    Qt::LayoutDirection toQtLayoutDirection(QBoxLayout::Direction a_direction);
 
     QString toNativeLanguageName(QLocale::Language a_language);
 
@@ -44,10 +38,6 @@ namespace Utils
 
     template <class T>
     T findParent(QObject* a_object);
-
-//    void setPropertyAndUpdateStyle(QWidget* a_widget, const QString& a_property, const QVariant& a_value = true);
-//    void setPropertyAndUpdateStyle(QWidget* a_widget, const char*    a_property, const QVariant& a_value = true);
-//    void updateStyle(QWidget* a_widget);
 
     QString getTextFromFile(const QString &a_fname);
 };

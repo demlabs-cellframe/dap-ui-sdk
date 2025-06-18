@@ -26,11 +26,11 @@ static const QVector<Item> s_items =
 {
   {
     "Q: I have an issue using KelVPN. How can I get help?",
-    "A: Please send a report using the in-app \"Send bug report\" feature. Describe as much of the details as possible and leave an email address for us to contact you. If you don’t want to give your email address also you can reach out for technical assistance on Telegram using the KelVPN Support Bot (<a href=\"https://t.me/kelvpn_tech_support_bot\" style=\"%%\">https://t.me/kelvpn_tech_support_bot</a>). In some cases, the tech support specialist may ask you to send a bug report to discover the issue."
+    "A: Please send a report using the in-app \"Send bug report\" feature. Describe as much of the details as possible and leave an email address for us to contact you. If you don't want to give your email address also you can reach out for technical assistance on Telegram using the KelVPN Support Bot (<a href=\"https://t.me/kelvpn_tech_support_bot\" style=\"%%\">https://t.me/kelvpn_tech_support_bot</a>). In some cases, the tech support specialist may ask you to send a bug report to discover the issue."
   },
   {
     "Q: Is it possible to use one key on multiple devices?",
-    "A: At the moment, one license key allows the user to use the VPN service on one device. However, if you need to switch to another device, you just need to reset the serial key on the “Settings” page. After you reset the serial key, the expiration time for your subscription freezes for until you switch to another device. This allows users to input the same serial key on another device without wasting any subscription time.<br><br>"
+    "A: At the moment, one license key allows the user to use the VPN service on one device. However, if you need to switch to another device, you just need to reset the serial key on the \"Settings\" page. After you reset the serial key, the expiration time for your subscription freezes for until you switch to another device. This allows users to input the same serial key on another device without wasting any subscription time.<br><br>"
     "An upcoming feature will offer the possibility of using one key on three devices without the resetting while also freezing the expiration timer."
   },
   {
@@ -100,10 +100,10 @@ QVariant DapQmlModelFaq::data (const QModelIndex &index, int role) const
     return QVariant();
 
   /* get theme name */
-  auto themeName   = DapDataLocal::instance()->getSetting (SETTING_THEME).toString().toLower();
+  auto theme = DapDataLocal::instance()->getSetting (DapBaseDataLocal::SETTING_THEME).toString();
 
   /* get theme link style */
-  auto linkStyle  = s_linksStyle.value (themeName);
+  auto linkStyle  = s_linksStyle.value (theme);
 
   switch (role)
     {

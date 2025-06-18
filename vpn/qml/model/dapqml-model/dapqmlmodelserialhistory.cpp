@@ -123,7 +123,6 @@ void DapQmlModelSerialHistory::slotSetup()
 //  };
 
   auto history  = DapDataLocal::instance()->serialKeyHistory();
-  history->load();
 
   *s_history  = history->list();
   endResetModel();

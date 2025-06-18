@@ -1,13 +1,11 @@
 #include "Utilz.h"
 
 #include <QVector>
-//#include <QStyle>
 #include <QVariant>
 #include <QFile>
 #include <QDebug>
 #include <QString>
-//#include <QMainWindow>
-#include <QRegExp>
+#include <QRegularExpression>
 
 
 namespace Utils
@@ -47,6 +45,19 @@ namespace Utils
         return 0;
     }
 
+    bool isNewerVersion(const QString& availableVer, const QString currVer)
+    {
+        auto verTypes = {TypeVersion::MAJOR, TypeVersion::MINOR, TypeVersion::PAT};
+        for (auto verType : verTypes)
+        {
+            if (getNumberVersion(availableVer, verType) > getNumberVersion(currVer, verType))
+                return true;
+            else if (getNumberVersion(availableVer, verType) < getNumberVersion(currVer, verType))
+                break;
+        }
+        return false;
+    }
+
     QString getOSName()
     {
         #if defined(Q_OS_ANDROID)
@@ -64,32 +75,14 @@ namespace Utils
         #endif
     }
 
-//    QColor toColor(const QString &strRGBA)
-//    {
-//        QString strColor(strRGBA.simplified());
-//        if (!strColor.isEmpty() && strColor[0] == '#')
-//            return QColor(strRGBA);
-
-//        QVector<int> result;
-//        QString temp;
-//        for(auto it(strColor.begin()); it != strColor.end(); ++it)
-//        {
-//            if((*it).isDigit() || (*it) == '.')
-//                temp += *it;
-//            else if(!(temp.isEmpty() || temp.isNull()))
-//            {
-//                result.append(temp.contains(".") ? int(temp.toDouble() * 255) : temp.toInt());
-//                temp.clear();
-//            }
-//        }
-//        return (result.size() == 4) ? QColor(result.at(0), result.at(1), result.at(2), result.at(3)) : QColor();
-//    }
-
     int toIntValue(const QString &a_text)
     {
-        QRegExp regString("(\\d+)");
-        regString.indexIn(a_text);
-        return regString.cap(0).toInt();
+        QRegularExpression regString("(\\d+)");
+        QRegularExpressionMatch match = regString.match(a_text);
+        if (match.hasMatch()) {
+            return match.captured(0).toInt();
+        }
+        return 0;
     }
 
     QString convertByte(const quint64 &byte)
@@ -107,29 +100,6 @@ namespace Utils
         } else return QString("%1 %2").arg(QString::number(byte)).arg("bytes");
     }
 
-//    void setPropertyAndUpdateStyle(QWidget *a_widget, const QString &a_property, const QVariant &a_value /*= true*/)
-//    {
-//        QByteArray l_tempStr = a_property.toLatin1();
-//        const char* l_property = l_tempStr.constData();
-//        Utils::setPropertyAndUpdateStyle(a_widget, l_property, a_value);
-//    }
-
-//    void setPropertyAndUpdateStyle(QWidget *a_widget, const char* a_property, const QVariant &a_value /*= true*/)
-//    {
-
-//        if (a_widget->property(a_property) == a_value)
-//            return;
-//        a_widget->setProperty(a_property, a_value);
-
-//        Utils::updateStyle(a_widget);
-//    }
-
-//    void updateStyle(QWidget *a_widget)
-//    {
-//        a_widget->style()->unpolish(a_widget);
-//        a_widget->style()->polish(a_widget);
-//    }
-
     QString getTextFromFile(const QString &a_fname){
         QString fileText;
         QFile file(a_fname);
@@ -139,30 +109,6 @@ namespace Utils
         }
         return fileText;
     }
-
-//    Qt::LayoutDirection toQtLayoutDirection(QBoxLayout::Direction a_direction)
-//    {
-//        switch (a_direction) {
-//            case QBoxLayout::Direction::LeftToRight:
-//                return Qt::LeftToRight;
-//            case QBoxLayout::Direction::RightToLeft:
-//                return Qt::RightToLeft;
-//            default:
-//                return Qt::LayoutDirectionAuto;
-//        }
-//    }
-
-//    QBoxLayout::Direction toQBoxLayoutDirection(Qt::LayoutDirection a_direction)
-//    {
-//        switch (a_direction) {
-//            case Qt::LeftToRight:
-//                return QBoxLayout::Direction::LeftToRight;
-//            case Qt::RightToLeft:
-//                return QBoxLayout::Direction::RightToLeft;
-//            default:
-//                return QBoxLayout::Direction::LeftToRight;
-//        }
-//    }
 
     QString toNativeLanguageName(QLocale::Language a_language)
     {

@@ -7,14 +7,14 @@
  *******************************************/
 
 DapCmdGeoIP::DapCmdGeoIP (QObject *a_parent)
-  : DapCmdServiceAbstract (DapJsonCmdType::GEO_IP, a_parent)
+    : DapCmdServiceAbstract (DapJsonCmdType::GEO_IP, a_parent)
 {
-  connect (this, &DapCmdGeoIP::sigSendGeoIP,
-           [this] (const QString &a_value)
-  {
-    QJsonObject jobj{{ "geo_ip", a_value }};
-    sendCmd (&jobj);
-  });
+    connect (this, &DapCmdGeoIP::sigSendGeoIP,
+            [this] (const QString &a_value)
+            {
+                QJsonObject jobj{{ "geo_ip", a_value }};
+                sendCmd (&jobj);
+            });
 }
 
 DapCmdGeoIP::~DapCmdGeoIP()
@@ -22,17 +22,14 @@ DapCmdGeoIP::~DapCmdGeoIP()
 
 }
 
-void DapCmdGeoIP::sendRequest(){
-  sendCmd();
-}
-
 /********************************************
  * OVERRIDE
  *******************************************/
 
-void DapCmdGeoIP::handle (const QJsonObject *)
+void DapCmdGeoIP::handle (const QJsonObject *params)
 {
-  emit sigGetGeoIP();
+    DapCmdServiceAbstract::handle(params);
+    emit sigGetGeoIP();
 }
 
 /*-----------------------------------------*/

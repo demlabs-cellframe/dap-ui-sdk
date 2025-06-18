@@ -31,6 +31,7 @@ enum class DapJsonCmdType
     NODE_INFO,
     UPDATE_OPERATION,
     GEO_IP,
+    DATA_LOCAL,
     UNKNOWN
 };
 
@@ -38,10 +39,10 @@ class DapJsonParams
 {
 public:
     enum Params {
-        VALUE, STATE_NAME, READ_BYTES, WRITE_BYTES,
+        VALUE, STATE_NAME,
         MESSAGE, ADDRESS, PORT, USER, PASSWORD, DISCONNECT,
-        READ_PACKAGE, WRITE_PACKAGE, LAST_CONNECTION, GATEWAY, UPSTREAM_SOCKET,
-        ACTION, HOST, CDB
+        LAST_CONNECTION, GATEWAY, UPSTREAM_SOCKET,
+        ACTION, HOST, CDB, INSTANCE_ID
     };
     static const QString& toString(Params p);
     static Params fromString(QString &param);

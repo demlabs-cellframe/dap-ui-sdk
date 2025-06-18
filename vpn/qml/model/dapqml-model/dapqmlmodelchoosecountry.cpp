@@ -78,8 +78,8 @@ void DapQmlModelChooseCountry::setRowFilter (const QString &a_filter)
 bool DapQmlModelChooseCountry::countryExist()
 {
 #ifndef BRAND_RISEVPN
-  auto country = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
-  return !country.isNull() && !country.isEmpty();
+  auto countryName = DapDataLocal::instance()->getSetting (DapBaseDataLocal::COUNTRY_NAME).toString().toLower();
+  return !countryName.isNull() && !countryName.isEmpty();
 #else
   return true;
 #endif
@@ -100,7 +100,7 @@ void DapQmlModelChooseCountry::setCurrent (int newCurrent)
     if (m_current == newSortedIndex)
       return;
 
-    int oldCurrent  = _indexes.indexOf (oldSortedIndex);
+    int oldCurrent  = _indexes.indexOf (static_cast<quint32>(oldSortedIndex));
     m_current       = newSortedIndex;
     emit currentChanged();
 
@@ -125,7 +125,7 @@ void DapQmlModelChooseCountry::setCurrent (const QString &a_name)
   DEBUGINFO << a_name;
   if (index == -1)
     return;
-  setCurrent (_indexes.indexOf (index));
+  setCurrent (_indexes.indexOf (static_cast<quint32>(index)));
 }
 
 void DapQmlModelChooseCountry::_applyFiltering()

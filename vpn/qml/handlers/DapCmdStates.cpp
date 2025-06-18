@@ -45,8 +45,6 @@ bool DapCmdStates::allStatesIsTrue()
 {
   auto trueToFalseorTrue = [] (IndicatorState a_state)
   {
-//    return a_state == IndicatorState::True
-//        || a_state == IndicatorState::FalseToTrue;
     return a_state == IndicatorState::True;
   };
 
@@ -72,6 +70,7 @@ void DapCmdStates::handleError(int code, const QString& message)
 
 void DapCmdStates::userHandler(const QString& state)
 {
+    emit sigUserState(state);
     if(state == "Disconnect") {
         emit sigUserStateDisconnect();
     } else if(state == "Connect") {
@@ -92,44 +91,53 @@ void DapCmdStates::serverChangedHandler(const QString& state)
     }
 }
 
-void DapCmdStates::handleResult(const QJsonObject& result) {
+void DapCmdStates::handleResult(const QJsonObject& result)
+{
     static QMap<QString, void(DapCmdStates::*)(IndicatorState)> stateCallbacks = {
-    {"session", &DapCmdStates::sessionHandler},
-    {"tunnel", &DapCmdStates::tunnelHandler},
-    {"stream", &DapCmdStates::streamHandler}
-};
-
+        {"session", &DapCmdStates::sessionHandler},
+        {"tunnel", &DapCmdStates::tunnelHandler},
+        {"stream", &DapCmdStates::streamHandler}
+    };
     qDebug() << "Call stateHandler" << result;
-    if (!result.contains(stateNameParam) ||
-            !result.contains("state")) {
-        qWarning() << "Not found mandatory parameter!";
-        return;
-    }
-    const QString stateName = result.value(stateNameParam).toString();
-    const IndicatorState state = DapIndicator::fromString(result.value("state").toString());
+    QString userRequest = QStringLiteral("user_request_state");
+    QString serverChange = QStringLiteral("server_change_state");
+    QString reconnectingState = QStringLiteral("reconnecting_state");
 
-    if(stateName == "user_request_state") {
-        userHandler(result.value("state").toString());
-        return;
+    if(result.contains(userRequest)){
+        userHandler(result.value(userRequest).toString());
     }
 
-    if(stateName == "server_change_state") {
-        serverChangedHandler(result.value("state").toString());
-        return;
+    if(result.contains(serverChange)){
+        serverChangedHandler(result.value(serverChange).toString());
     }
 
-    if(!stateCallbacks.contains(stateName)) {
-        qWarning() << "Not found handler for " << stateName;
-        return;
+    if (result.value("state_name").toString() == reconnectingState) {
+        emit sigUserStateReconnecting();
     }
-    (this->*stateCallbacks[stateName])(state);
 
-    if(allStatesIsTrue()) {
-        qDebug() << "emit AllStatesIsTrue signal";
-        emit sigAllIndicatorStatesIsTrue();
-    } else if(allStatesIsFalse()) {
-        qDebug() << "emit sigAllStatesIsFalse signal";
-        emit sigAllIndicatorStatesIsFalse();
+
+    if(result.contains("states")){
+        QJsonObject states = result.value("states").toObject();
+
+        emit sigNewState(states);
+
+        for(const auto& stateName: states.keys())
+        {
+            if(!stateCallbacks.contains(stateName)) {
+                qWarning() << "Not found handler for " << stateName;
+                continue;
+            }
+            IndicatorState state = DapIndicator::fromString(states.value(stateName).toString());
+            (this->*stateCallbacks[stateName])(state);
+
+            if(allStatesIsTrue()) {
+                qDebug() << "emit AllStatesIsTrue signal";
+                emit sigAllIndicatorStatesIsTrue();
+            } else if(allStatesIsFalse()) {
+                qDebug() << "emit sigAllStatesIsFalse signal";
+                emit sigAllIndicatorStatesIsFalse();
+            }
+        }
     }
 }
 

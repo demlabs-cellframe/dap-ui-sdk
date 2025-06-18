@@ -11,9 +11,6 @@ QMap<DapJsonCmdType, QVector<Params>> DapJsonParams::availableParams {
                     Params::USER, Params::PASSWORD, Params::DISCONNECT},
     },
 
-    // TODO commands for on and off stats stream
- //   {DapJsonCommands::STATS, {Params::READ_BYTES, Params::WRITE_BYTES, Params::READ_PACKAGE, Params::WRITE_PACKAGE}},
-
     {DapJsonCmdType::GET_STATES, {}}, // GET_STATES Without params
     // Get user data (username, password, server address)
     {DapJsonCmdType::GET_USER_DATA, {}},
@@ -53,8 +50,6 @@ const QString& DapJsonParams::toString(Params p) {
     static QMap<Params, QString> paramsName = {
         {VALUE, "value"},
         {STATE_NAME, "state_name"},
-        {READ_BYTES, "read_bytes"},
-        {WRITE_BYTES, "write_bytes"},
         {ADDRESS, "address"},
         {PORT, "port"},
         {HOST, "host"},
@@ -62,12 +57,11 @@ const QString& DapJsonParams::toString(Params p) {
         {PASSWORD, "password"},
         {DISCONNECT, "disconnect"},
         {MESSAGE, "message"},
-        {READ_PACKAGE, "read_package"},
-        {WRITE_PACKAGE, "write_package"},
         {LAST_CONNECTION, "last_connection"},
         {GATEWAY, "gateway"},
         {UPSTREAM_SOCKET, "upstream_socket"},
         {CDB, "cdb"},
+        {INSTANCE_ID, "instance_id"}
     };
 
     if (!paramsName.contains(p)) {

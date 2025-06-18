@@ -7,19 +7,25 @@ DapCmdConnect::DapCmdConnect(QObject *parent)
 }
 
 void DapCmdConnect::sendCmdConnect(const QString& a_addr, quint16 a_port,
-                                   const QString& a_user, const QString& a_pswd,  const QString& a_serial)
+                                   const QString& a_user, const QString& a_pswd,  const QString& a_serial, const bool a_updateRouteTable,
+                                   const QString& a_runScriptPath, const bool a_runAfterConnect)
 {
     QJsonObject obj;
     obj["action"] = "Connect";
     obj["address"] = a_addr;
-
+    obj["port"] = a_port;
+    obj["updateRouteTable"] = a_updateRouteTable;
     if ( !a_user.isEmpty() )
         obj["user"] = a_user;
     if ( !a_pswd.isEmpty())
         obj["password"] = a_pswd;
     if ( !a_serial.isEmpty() )
         obj["serial"] = QString(a_serial).remove('-');
-    obj["port"] = a_port;
+    if ( !a_runScriptPath.isEmpty() ) {
+        obj["run_script_path"] = QString(a_runScriptPath);
+        obj["run_script_after_connect"] = a_runAfterConnect;
+    }
+
     sendCmd(&obj);
 }
 
@@ -86,4 +92,6 @@ void DapCmdConnect::handleError(int code, const QString& message)
     if (code == 10053 && message == "Unknown error")
         return;
     emit errorMessage(message);
+    QString textError = QString("code: %1, message: %2").arg(QString::number(code)).arg(message);
+    emit errorMessageWithCode(textError);
 }

@@ -3,7 +3,7 @@
 
 /* INCLUDES */
 
-#include "DapCmdServiceAbstract.h"
+#include "DapCmdClientAbstract.h"
 #include <QObject>
 
 /****************************************//**
@@ -12,7 +12,7 @@
  * @author Mikhail Shilenko
  *******************************************/
 
-class DapCmdGeoIP : public DapCmdServiceAbstract
+class DapCmdGeoIP : public DapCmdClientAbstract
 {
   Q_OBJECT
 
@@ -30,9 +30,8 @@ public:
    *******************************************/
   /// @{
 public:
-  /// Process command.
-  /// @param params Command parameters.
-  void handle (const QJsonObject *a_params) override;
+  void handleResult (const QJsonObject &a_params) override;
+  void handleError (int code, const QString &message) override;
   /// @}
 
   /****************************************//**

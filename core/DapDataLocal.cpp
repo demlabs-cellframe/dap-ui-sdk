@@ -1,310 +1,392 @@
-#include <QStandardPaths>
-
-#include <QXmlStreamReader>
-#include <QDir>
-#include <QFile>
-#include <QtDebug>
-#include <QCoreApplication>
-#include <algorithm>
-#include <QTime>
-
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
 #include "DapSerialKeyHistory.h"
-#include "DapLogger.h"
-#include <QRandomGenerator>
-
-
-#ifdef DAP_OS_ANDROID
-#include <sys/sendfile.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#endif
+#include "qjsondocument.h"
+#include <QDate>
+#include <QDateTime>
+#include <QDebug>
 
 DapDataLocal::DapDataLocal()
-  : QObject()
-  , m_serialKeyData(new DapSerialKeyData (this))
-  , m_bugReportHistory(new DapBugReportHistory (this))
-  , m_serialKeyHistory (new DapSerialKeyHistory (this))
+    :DapBaseDataLocal()
 {
-    qDebug() << "[DL] DapDataLocal Constructor";
-    parseXML(":/data.xml");
-    initSecretKey();
-    this->loadAuthorizationDatas();
-    _syncCdbWithSettings();
+    connect(serialKeyData(), &DapSerialKeyData::serialKeyToSave,
+            this, &DapDataLocal::saveSerialKeyData);
+    initSettings();
+    initData();
+    initAuthData();
+
+    QStringList keys = m_settings->allKeys();
+
+    if(keys.contains(SETTING_THEME)) {
+        m_settingsMap[SETTING_THEME] = m_settings->value(SETTING_THEME);
+    }
+    if(!keys.contains(MIGRATION_KEY)) {
+        qDebug() << "[DapDataLocal] Data needs to be migrated";
+        m_needMigration = true;
+    }
 }
 
-void DapDataLocal::parseXML(const QString& a_fname)
-{
-    QFile file(a_fname);
-    if(!file.open(QIODevice::ReadOnly | QIODevice::Text)){
-        qWarning() << "Can't open data.xml from built in resource";
-        return;
-    }
-    qDebug() << "data.xml opened, size "<< file.size();
-    QXmlStreamReader *sr = new QXmlStreamReader(&file);
-    if(sr->readNextStartElement()){
-        if(sr->name().toString() == "data"){
-            while ( sr->readNextStartElement() ){
-                if( sr->name().toString() == "servers"){
-                    while ( sr->readNextStartElement() ){
-                        if( sr->name().toString() == "server") {
-                            DapServerInfo item;
-                            while ( sr->readNextStartElement() ){
-                                if(sr->name().toString() == "name"){
-                                    item.setName (sr->readElementText());
-                                } else if (sr->name().toString() == "address") {
-                                    item.setAddress (sr->readElementText());
-                                } else if( sr->name().toString() == "port") {
-                                    bool ok;
-                                    quint16 port = quint16(sr->readElementText().toInt(&ok));
-                                    if (!ok) {
-                                        throw std::runtime_error("Can't cast port to int "
-                                                                 "from XML file");
-                                    }
-                                    item.setPort (port);
-                                } else if(sr->name().toString() == "location") {
-                                    item.setLocation (sr->readElementText());
-                                } else if (sr->name().toString() == "state") {
-                                    item.setOnline (sr->readElementText());
-                                }
-                                else {
-                                    qWarning() << "[DL] Inside tag 'server': Unknown tag "<<sr->name();
-                                    sr->skipCurrentElement();
+DapDataLocal *DapDataLocal::instance() {
+    static DapDataLocal instance;
+    return &instance;
+}
+
+QVariant DapDataLocal::getSetting(const QString &a_setting) {
+    return instance()->getValueSetting(a_setting);
+}
+
+void DapDataLocal::saveSetting(const QString &a_setting, const QVariant &a_value) {
+    instance()->saveValueSetting(a_setting, a_value);
+}
+
+void DapDataLocal::removeSetting(const QString &a_setting) {
+    instance()->removeValueSetting(a_setting);
+}
+
+QVariant DapDataLocal::getValueSetting(const QString &a_setting) {
+    return m_settingsMap[a_setting];
+}
+
+void DapDataLocal::saveValueSetting(const QString &setting, const QVariant &value) {
+    if(m_settingsMap.value(setting) != value) {
+        m_settingsMap[setting] = value;
+        if(setting != SETTING_THEME) {
+            QJsonObject result;
+            
+            // Special handling for NOTIFICATION_HISTORY to apply filtering before sending to service
+            if (setting == NOTIFICATION_HISTORY) {
+                // Apply filtering similar to settingsToJson() method
+                QByteArray source = value.toByteArray();
+                if (!source.isEmpty()) {
+                    // Parse current notification history
+                    QJsonArray originalNotifications = QJsonDocument::fromJson(source).array();
+                    QJsonArray filteredNotifications;
+                    
+                    // Filter notifications: remove older than 3 days and limit to 50 entries
+                    QDate threeDaysAgo = QDate::currentDate().addDays(-3);
+                    int notificationCount = 0;
+                    const int MAX_NOTIFICATIONS = 50;
+                    
+                    // Iterate through notifications and apply filters
+                    for (const auto &item : qAsConst(originalNotifications))
+                    {
+                        QJsonObject notification = item.toObject();
+                        
+                        // Check if this is a title entry
+                        bool isTitle = notification.value("isTitle").toBool();
+                        
+                        if (isTitle)
+                        {
+                            // For title entries, check the date field
+                            QString dateString = notification.value("date").toString();
+                            if (!dateString.isEmpty())
+                            {
+                                QDate titleDate = QDate::fromString(dateString, "dd.MM.yyyy");
+                                if (titleDate.isValid() && titleDate >= threeDaysAgo)
+                                {
+                                    filteredNotifications.append(notification);
+                                    notificationCount++;
                                 }
                             }
-                            qDebug() << "[DL] Server "<<item.name()<<" added";
-                            DapServerList::instance()->append (std::move (item));
-                        }else{
-                            qDebug() << "[DL] Inside tag 'servers': unknown tag "<<sr->name();
-                            sr->skipCurrentElement();
+                        }
+                        else
+                        {
+                            // For notification entries, check the created field
+                            QString createdString = notification.value("created").toString();
+                            if (!createdString.isEmpty())
+                            {
+                                QDateTime createdDateTime = QDateTime::fromString(createdString, "hh:mm:ss dd.MM.yyyy");
+                                if (createdDateTime.isValid() && createdDateTime.date() >= threeDaysAgo)
+                                {
+                                    filteredNotifications.append(notification);
+                                    notificationCount++;
+                                }
+                            }
+                        }
+                        
+                        // Stop if we've reached the maximum number of notifications
+                        if (notificationCount >= MAX_NOTIFICATIONS)
+                        {
+                            qDebug() << "[DapDataLocal][saveValueSetting] NOTIFICATION_HISTORY truncated to" << MAX_NOTIFICATIONS << "entries";
+                            break;
                         }
                     }
-                }else if( sr->name().toString() == "cdb"){
-                    m_cdbServersList.push_back (DapCdbServer::serverFromString (sr->readElementText()));
-                    qInfo() << "Add CDB address: " << m_cdbServersList.back().address;
-                }else if( sr->name().toString() == "network-default"){
-                    m_networkDefault = sr->readElementText();
-                    qInfo() << "Network defaut: " << m_networkDefault;
-                }else if( sr->name().toString() == "min-node-version"){
-                    m_minNodeVersion = sr->readElementText();
-                    qInfo() << "Min node version: " << m_minNodeVersion;
-                }else if( sr->name().toString() == "pub"){
-                    m_pubStage = sr->readElementText();
-                    qInfo() << "Pub stage domen: " << m_minNodeVersion;
-                }else if( sr->name().toString() == "min-dashboard-version"){
-                    m_minDashboardVersion = sr->readElementText();
-                    qInfo() << "Min dashboard version: " << m_minDashboardVersion;
-                }else if( sr->name().toString() == "title"){
-                    m_brandName = sr->readElementText();
-                    qInfo() << "Network defaut: " << m_networkDefault;
-                }else if( sr->name().toString() == "url_site"){
-                    m_urlSite = sr->readElementText();
-                    qInfo() << "Network defaut: " << m_networkDefault;
-                }else{
-                    qDebug() << "[DL] Inside tag 'data' unknown tag "<<sr->name();
-                    sr->skipCurrentElement();
+                    
+                    // Convert filtered notifications back to compact JSON
+                    QByteArray filteredResult = QJsonDocument(filteredNotifications).toJson(QJsonDocument::JsonFormat::Compact);
+                    
+                    // Check if the result is too large and truncate further if needed
+                    const int MAX_NOTIFICATION_JSON_SIZE = 8000; // Leave some room for other settings
+                    if (filteredResult.size() > MAX_NOTIFICATION_JSON_SIZE)
+                    {
+                        qWarning() << "[DapDataLocal][saveValueSetting] NOTIFICATION_HISTORY JSON too large (" 
+                                   << filteredResult.size() << " bytes), truncating further";
+                        
+                        // Remove entries from the end until size is acceptable
+                        while (filteredNotifications.size() > 0 && filteredResult.size() > MAX_NOTIFICATION_JSON_SIZE)
+                        {
+                            filteredNotifications.removeLast();
+                            filteredResult = QJsonDocument(filteredNotifications).toJson(QJsonDocument::JsonFormat::Compact);
+                        }
+                        
+                        qDebug() << "[DapDataLocal][saveValueSetting] NOTIFICATION_HISTORY truncated to" 
+                                 << filteredNotifications.size() << "entries, size:" << filteredResult.size() << "bytes";
+                    }
+                    
+                    // Update stored value with filtered data
+                    m_settingsMap[setting] = filteredResult;
+                    
+                    result.insert(setting, QJsonValue::fromVariant(QVariant(filteredResult)));
+                }
+                else
+                {
+                    result.insert(setting, QJsonValue::fromVariant(value));
                 }
             }
+            else
+            {
+                result.insert(setting, QJsonValue::fromVariant(value));
+            }
+            
+            emit valueDataLocalUpdated(QJsonObject{{JSON_SETTINGS_KEY, result}});
+        } else {
+            DapBaseDataLocal::saveValueSetting(setting,value);
         }
     }
-    file.close();
-#ifdef  QT_DEBUG
-    DapServerList::instance()->append (DapServerInfo {"UNKNOWN", "local", "127.0.0.1",  8099});
-#endif
-
-
-    delete sr;
 }
 
-/// Get login.
-/// @return Login.
-QString DapDataLocal::login() const
-{
-    return m_login;
+void DapDataLocal::removeValueSetting(const QString &setting) {
+    if(m_settingsMap.contains(setting)) {
+        m_settingsMap.remove(setting);
+        QJsonObject result{{setting, QJsonObject()}};
+        emit valueDataLocalUpdated(QJsonObject{{JSON_SETTINGS_KEY, result}});
+    }
 }
 
-/// Set login.
-/// @param login Login.
-void DapDataLocal::setLogin(const QString &a_login)
-{
-    if (this->m_login == a_login)
-        return;
-    m_login = a_login;
-
-    emit loginChanged(m_login);
-}
-
-/// Get password.
-/// @return Password.
-QString DapDataLocal::password() const
-{
-    return m_password;
-}
-
-/// Set password.
-/// @param password Password.
-void DapDataLocal::setPassword(const QString &a_password)
-{
-    if (this->m_password == a_password)
-        return;
-    this->m_password = a_password;
-
-    emit this->passwordChanged(m_password);
-}
-
-void DapDataLocal::saveAuthorizationData()
-{
-    this->saveEncryptedSetting(TEXT_LOGIN     , this->login());
-    this->saveEncryptedSetting(TEXT_PASSWORD  , this->password());
+void DapDataLocal::setCountryISO(const QString& iso_code) {
+    if(m_coutryISO != iso_code) {
+        DapBaseDataLocal::setCountryISO(iso_code);
+        emit valueDataLocalUpdated(createJsonObject(JSON_COUNTRY_ISO_KEY, m_coutryISO));
+    }
 }
 
 void DapDataLocal::saveSerialKeyData()
 {
     if (m_serialKeyData)
-        this->saveToSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
+    {
+        emit valueDataLocalUpdated(QJsonObject{{JSON_SERIAL_KEY_DATA_KEY, serialKeyDataToJson()}});
+    }
 }
 
 void DapDataLocal::resetSerialKeyData()
 {
-    if (m_serialKeyData){
+    if (m_serialKeyData)
+    {
         m_serialKeyData->reset();
-        this->saveToSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
     }
+}
+
+void DapDataLocal::saveBugReport()
+{
+    emit valueDataLocalUpdated(QJsonObject{{JSON_BUG_REPORT_HISTORY_KEY, bugReportHistoryToJson()}});
 }
 
 void DapDataLocal::savePendingSerialKey(QString a_serialkey)
 {
     m_pendingSerialKey = a_serialkey;
-    this->saveToSettings(TEXT_PENDING_SERIAL_KEY, m_pendingSerialKey);
+    emit valueDataLocalUpdated(createJsonObject(JSON_PENDING_SERIAL_KEY_KEY, m_pendingSerialKey));
 }
 
-//void DapDataLocal::saveHistoryData(QString a_type, QString a_data)
-//{
-//    if (a_data.isEmpty())
-//        return;
-//    QList<QString> m_tempHistoryDataList;
-//    this->loadFromSettings(a_type, m_tempHistoryDataList);
-//    if (!m_tempHistoryDataList.contains(a_data))
-//        m_tempHistoryDataList.prepend(a_data);
-//    this->saveToSettings(a_type, m_tempHistoryDataList);
-
-//    emit sigHistoryDataSaved(a_type);
-//}
-
-//void DapDataLocal::removeItemFromHistory(QString a_type, QString a_item){
-
-//  if (a_item.isEmpty())
-//    return;
-//  QList<QString> m_tempHistoryDataList;
-//  this->loadFromSettings(a_type, m_tempHistoryDataList);
-
-//  a_item.remove(QRegExp("[^0-9]"));
-//  QMutableListIterator<QString> it (m_tempHistoryDataList);
-//  while(it.hasNext()) {
-//    QString item = it.next();
-//    if (item == a_item){
-//      qDebug() << "remove " + item + " from " + a_type;
-//      it.remove();
-//    }
-//  }
-
-//  this->saveToSettings(a_type, m_tempHistoryDataList);
-
-//  emit sigHistoryDataSaved(a_type);
-//}
-
-//QList<QString> DapDataLocal::getHistorySerialKeyData()
-//{
-//    QList<QString> m_tempHistoryDataList;
-//    this->loadFromSettings(TEXT_SERIAL_KEY_HISTORY, m_tempHistoryDataList);
-//    return m_tempHistoryDataList;
-//}
-
-void DapDataLocal::loadAuthorizationDatas()
+void DapDataLocal::setLogin(const QString &login)
 {
-#ifdef Q_OS_ANDROID
-    auto keys = settings()->allKeys();
-    if (keys.isEmpty()) {
-        QSettings oldSettings;
-        for (auto key : oldSettings.allKeys()) {
-            settings()->setValue(key, oldSettings.value(key));
+    DapBaseDataLocal::setLogin(login);
+    emit valueDataLocalUpdated(createJsonObject(JSON_LOGIN_KEY, m_login));
+}
+
+void DapDataLocal::setPassword(const QString &password)
+{
+    DapBaseDataLocal::setPassword(password);
+    emit valueDataLocalUpdated(createJsonObject(JSON_PASSWORD_KEY, m_password));
+}
+
+void DapDataLocal::saveAuthorizationData()
+{
+    saveValueSetting(TEXT_LOGIN, login());
+    saveValueSetting(TEXT_PASSWORD, password());
+}
+
+void DapDataLocal::saveKeysHistory()
+{}
+
+void DapDataLocal::setSettings(const QJsonObject &json)
+{
+    QStringList keys = json.keys();
+    qDebug() << "[DapDataLocal][setSettings] New value of the settings keys - " << keys;
+    for(const auto& key: keys)
+    {
+        if(key == "remove")
+        {
+            m_settingsMap.remove(json[key].toString());
+        }
+        else
+        {
+            if(TEXT_SERIAL_KEY == key || TEXT_PENDING_SERIAL_KEY == key || TEXT_SERIAL_KEY_HISTORY == key ||
+                TEXT_BUGREPORT_HISTORY == key)
+            {
+                continue;
+            }
+            else if(key == ROUTING_EXCEPTIONS_LIST)
+            {
+                m_settingsMap[key] = json[key].toObject();
+            }
+            else if(key == NOTIFICATION_HISTORY || key == NODE_ORDER_HISTORY)
+            {
+                if (key == NOTIFICATION_HISTORY) {
+                    // Apply filtering for NOTIFICATION_HISTORY
+                    QString notificationString = json[key].toString();
+                    auto jsonArray = QJsonDocument::fromJson(notificationString.toUtf8());
+                    QJsonArray originalNotifications = jsonArray.array();
+                    QJsonArray filteredNotifications;
+                    
+                    // Filter notifications: remove older than 3 days and limit to 50 entries
+                    QDate threeDaysAgo = QDate::currentDate().addDays(-3);
+                    int notificationCount = 0;
+                    const int MAX_NOTIFICATIONS = 50;
+                    
+                    // Iterate through notifications and apply filters
+                    for (const auto &item : qAsConst(originalNotifications))
+                    {
+                        QJsonObject notification = item.toObject();
+                        
+                        // Check if this is a title entry
+                        bool isTitle = notification.value("isTitle").toBool();
+                        
+                        if (isTitle)
+                        {
+                            // For title entries, check the date field
+                            QString dateString = notification.value("date").toString();
+                            if (!dateString.isEmpty())
+                            {
+                                QDate titleDate = QDate::fromString(dateString, "dd.MM.yyyy");
+                                if (titleDate.isValid() && titleDate >= threeDaysAgo)
+                                {
+                                    filteredNotifications.append(notification);
+                                    notificationCount++;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // For notification entries, check the created field
+                            QString createdString = notification.value("created").toString();
+                            if (!createdString.isEmpty())
+                            {
+                                QDateTime createdDateTime = QDateTime::fromString(createdString, "hh:mm:ss dd.MM.yyyy");
+                                if (createdDateTime.isValid() && createdDateTime.date() >= threeDaysAgo)
+                                {
+                                    filteredNotifications.append(notification);
+                                    notificationCount++;
+                                }
+                            }
+                        }
+                        
+                        // Stop if we've reached the maximum number of notifications
+                        if (notificationCount >= MAX_NOTIFICATIONS)
+                        {
+                            qDebug() << "[DapDataLocal][setSettings] NOTIFICATION_HISTORY truncated to" << MAX_NOTIFICATIONS << "entries";
+                            break;
+                        }
+                    }
+                    
+                    // Convert filtered notifications back to compact JSON
+                    QByteArray filteredResult = QJsonDocument(filteredNotifications).toJson(QJsonDocument::JsonFormat::Compact);
+                    
+                    // Check if the result is too large and truncate further if needed
+                    const int MAX_NOTIFICATION_JSON_SIZE = 8000; // Leave some room for other settings
+                    if (filteredResult.size() > MAX_NOTIFICATION_JSON_SIZE)
+                    {
+                        qWarning() << "[DapDataLocal][setSettings] NOTIFICATION_HISTORY JSON too large (" 
+                                   << filteredResult.size() << " bytes), truncating further";
+                        
+                        // Remove entries from the end until size is acceptable
+                        while (filteredNotifications.size() > 0 && filteredResult.size() > MAX_NOTIFICATION_JSON_SIZE)
+                        {
+                            filteredNotifications.removeLast();
+                            filteredResult = QJsonDocument(filteredNotifications).toJson(QJsonDocument::JsonFormat::Compact);
+                        }
+                        
+                        qDebug() << "[DapDataLocal][setSettings] NOTIFICATION_HISTORY truncated to" 
+                                 << filteredNotifications.size() << "entries, size:" << filteredResult.size() << "bytes";
+                    }
+                    
+                    m_settingsMap[key] = DapUtils::toByteArray(filteredResult);
+                    
+                    qDebug() << "[DapDataLocal][setSettings] NOTIFICATION_HISTORY filtered:" 
+                             << originalNotifications.size() << "->" << filteredNotifications.size() << "entries";
+                }
+                else {
+                    // Handle NODE_ORDER_HISTORY as before
+                    auto jsonArray = QJsonDocument::fromJson(json[key].toString().toUtf8());
+                    QByteArray result = QJsonDocument (jsonArray).toJson (QJsonDocument::JsonFormat::Compact);
+                    m_settingsMap[key] = DapUtils::toByteArray(result);
+                }
+            }
+            else
+            {
+                m_settingsMap[key] = json[key].toVariant();
+            }
         }
     }
-#endif
-
-    this->setLogin(getEncryptedSetting(TEXT_LOGIN).toString());
-    this->setPassword(getEncryptedSetting(TEXT_PASSWORD).toString());
-
-    if (m_serialKeyData)
-        this->loadFromSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
-    this->loadFromSettings(TEXT_PENDING_SERIAL_KEY, m_pendingSerialKey);
 }
 
-void DapDataLocal::_syncCdbWithSettings()
+void DapDataLocal::dataFromCommand(const QJsonObject& object)
 {
-  /* vars */
-  static const QString SETTING_CDB { "cdb" };
+    QString action;
+    if(object.contains("action"))
+    {
+        action = object["action"].toString();
+    }
+    bool isAll = action == "setAll";
 
-  /* get from settings */
-  auto cdbCfg = getSetting (SETTING_CDB);
+    qDebug() << "[DapDataLocal] [dataFromCommand] action: " << action;
 
-  /* if not found, store cdb's from built-in list (if not empty) */
-  if (!cdbCfg.isValid())
-    return;
-
-  /* if found, replace built-in cdb's with list provided from settings */
-  auto list   = QString::fromLatin1 (QByteArray::fromBase64 (cdbCfg.toByteArray())).split(',');
-  auto result = DapCdbServerList::toServers (list);
-  updateCdbList (result);
-}
-
-QSettings* DapDataLocal::settings()
-{
-#ifdef Q_OS_ANDROID
-    static QString s_path = DapLogger::defaultLogPath(DAP_BRAND).chopped(3).append("settings.ini");
-
-    /* Legacy settings import, will be deprecated on targeting API 30+ */
-    int l_ofd = open(qPrintable(s_path), O_RDONLY);
-    if (l_ofd <= 0) {
-        int _l_fd = open("/sdcard/KelvinVPN/log/settings.ini", O_RDWR);
-        int l_fd = _l_fd > 0 ? _l_fd : open("/sdcard/" DAP_BRAND "/log/settings.ini", O_RDWR);
-        if (l_fd > 0) {
-            int l_ofd = open(qPrintable(s_path), O_CREAT | O_RDWR, S_IWRITE | S_IREAD);
-            struct stat statBuf;
-            fstat(l_fd, &statBuf);
-            qInfo() << "Imported old settings [" << sendfile(l_ofd, l_fd, NULL, statBuf.st_size) << "] bytes";
-            ftruncate(l_fd, 0);
-            close(l_fd);
-            close(l_ofd);
-        } else {
-            qInfo() << "Old settings not found";
+    if(isAll && object.contains(JSON_SERIAL_KEY_HISTORY_KEY)){
+        QStringList keysList = m_serialKeyHistory->getKeysHistory();
+        const auto& serialArray = object[JSON_SERIAL_KEY_HISTORY_KEY].toArray();
+        if(!keysList.isEmpty() && serialArray.isEmpty()) {
+            emit reMigrationSignal();
         }
-    } else {
-        close(l_ofd);
+        else {
+            fromJson(object);
+        }
+    } else if (object.contains(JSON_SERIAL_KEY_DATA_KEY)){
+        QJsonObject serialKeyData = object[JSON_SERIAL_KEY_DATA_KEY].toObject();
+        DapDataLocal::instance()->serialKeyData()->setFromJson(serialKeyData);
+        emit serialKeyDataUpdateFromService();
+    }
+    else {
+        fromJson(object);
     }
 
-    static QSettings s_settings(s_path, QSettings::IniFormat);
-#elif defined(Q_OS_IOS)
-    static QString s_path = DapLogger::defaultLogPath(DAP_BRAND).chopped(3).append("settings.ini");
-    static QSettings s_settings(s_path, QSettings::IniFormat);
-#else
-    static QSettings s_settings;
-#endif
-    return &s_settings;
+    if(isAll) {
+        emit allDataReceived();
+    }
 }
 
-QVariant DapDataLocal::getEncryptedSetting(const QString &a_setting)
+void DapDataLocal::saveEncryptedSetting(const QString &a_setting, const QVariant &a_value)
 {
-    QByteArray outString;
-    this->loadEncryptedSettingString(a_setting, outString);
-    return QString(outString);
+    DapBaseDataLocal::saveEncryptedSetting(a_setting, a_value);
+}
+
+void DapDataLocal::saveEncryptedSetting(const QString &setting, const QByteArray &value)
+{
+    QByteArray result = DapUtils::fromByteArray<QByteArray>(value);
+    saveValueSetting(setting, result);
 }
 
 bool DapDataLocal::loadEncryptedSettingString(const QString &a_setting, QByteArray& a_outString)
 {
-    QVariant varSettings = DapDataLocal::getSetting(a_setting);
+    QVariant varSettings = getValueSetting(a_setting);
 
     if (!varSettings.isValid() || !varSettings.canConvert<QByteArray>())
         return false;
@@ -315,171 +397,6 @@ bool DapDataLocal::loadEncryptedSettingString(const QString &a_setting, QByteArr
         a_outString = "";
         return true;
     }
-    secretKey->decode(encryptedString, a_outString);
-
+    a_outString = encryptedString;
     return true;
-}
-
-
-void DapDataLocal::saveEncryptedSetting(const QString &a_setting, const QVariant &a_value)
-{
-    this->saveEncryptedSetting(a_setting, a_value.toByteArray());
-}
-
-void DapDataLocal::saveEncryptedSetting(const QString &a_setting, const QByteArray &a_string)
-{
-    QByteArray encodedString;
-    secretKey->encode(a_string, encodedString);
-    DapDataLocal::saveSetting(a_setting, encodedString);
-}
-
-QVariant DapDataLocal::getSetting(const QString &a_setting)
-{
-    return settings()->value(a_setting);
-}
-
-void DapDataLocal::saveSetting(const QString &a_setting, const QVariant &a_value)
-{
-    settings()->setValue(a_setting, a_value);
-    settings()->sync();
-}
-
-void DapDataLocal::removeSetting(const QString &a_setting)
-{
-    settings()->remove(a_setting);
-}
-
-DapBugReportData *DapDataLocal::bugReportData()
-{
-    return DapBugReportData::instance();
-}
-
-DapSerialKeyData *DapDataLocal::serialKeyData()
-{
-    return m_serialKeyData;
-}
-
-DapBugReportHistory * DapDataLocal::bugReportHistory()
-{
-  return m_bugReportHistory;
-}
-
-DapSerialKeyHistory *DapDataLocal::serialKeyHistory()
-{
-  return m_serialKeyHistory;
-}
-
-void DapDataLocal::initSecretKey()
-{
-    if (settings()->value("key").toString().isEmpty())
-    {
-        settings()->setValue("key", getRandomString(40));
-    }
-    if (secretKey != nullptr) {
-        delete secretKey;
-    }
-    secretKey = new DapKey(DAP_ENC_KEY_TYPE_IAES, settings()->value("key").toString() + "SLKJGN234njg6vlkkNS3s5dfzkK5O54jhug3KUifw23");
-}
-
-QString DapDataLocal::getRandomString(int size)
-{
-   const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
-   const int randomStringLength = size;
-
-   QString randomString;
-   for(int i=0; i < randomStringLength; ++i){
-       int index = QRandomGenerator::global()->generate() % possibleCharacters.length();
-       QChar nextChar = possibleCharacters.at(index);
-       randomString.append(nextChar);
-   }
-   return randomString;
-}
-
-Authorization DapDataLocal::authorizationType()
-{
-    auto auth = DapDataLocal::instance()->getSetting (SETTING_AUTHORIZATION).toString();
-    if (auth == "serialKey")
-        return Authorization::serialKey;
-    if (auth == "account")
-        return Authorization::account;
-    if (auth == "certificate")
-        return Authorization::certificate;
-#ifdef BRAND_RISEVPN
-    // default value
-    return Authorization::undefined;
-#else
-    // default value
-    return Authorization::account;
-#endif
-}
-
-void DapDataLocal::setAuthorizationType(Authorization type)
-{
-    QString auth;
-    if (type == Authorization::serialKey)
-        auth = "serialKey";
-    if (type == Authorization::account)
-        auth = "account";
-    if (type == Authorization::certificate)
-        auth = "certificate";
-    if (type == Authorization::undefined)
-        auth = "";
-    DapDataLocal::instance()->saveSetting (SETTING_AUTHORIZATION, auth);
-}
-
-void DapDataLocal::updateCdbList (const DapCdbServerList &a_newCdbList)
-{
-  /* clear old and store new */
-  m_cdbServersList.clear();
-
-  for (const auto &cdb : qAsConst(a_newCdbList))
-    m_cdbServersList << cdb;
-
-  /* update iterator */
-  m_cdbIter = m_cdbServersList.constBegin();
-}
-
-DapDataLocal *DapDataLocal::instance()
-{
-    static DapDataLocal s_instance;
-    return &s_instance;
-}
-
-
-
-QString DapCdbServer::toString() const
-{
-  return QString ("%1:%2").arg (address).arg (port);
-}
-
-void DapCdbServer::fromString(const QString &a_src)
-{
-  auto source = a_src.split (':');
-  address     = source.constFirst();
-  port        = source.constLast().toInt();
-  if (port == 0)
-    port = 80;
-}
-
-DapCdbServer DapCdbServer::serverFromString(const QString &a_src)
-{
-  DapCdbServer result;
-  result.fromString (a_src);
-  return result;
-}
-
-DapCdbServerList DapCdbServerList::toServers(const QStringList &a_src)
-{
-  DapCdbServerList result;
-  for (const auto &item : a_src)
-    result << DapCdbServer::serverFromString (item);
-  return result;
-}
-
-QStringList DapCdbServerList::toStrings(const DapCdbServerList &a_servers)
-{
-  QStringList result;
-  for (const auto &item : a_servers)
-    result << item.toString();
-  return result;
 }

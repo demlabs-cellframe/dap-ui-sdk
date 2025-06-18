@@ -1,14 +1,13 @@
 /* INCLUDES */
 #include "DapNodeWeb3.h"
+#include "DapLogger.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QProcess>
 #include <QTimer>
 #include <QDebug>
-#include <QRegularExpression>
-#include "dap_client_http.h"
 
-#include "DapDataLocal.h"
+#include "DapServiceDataLocal.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -70,7 +69,7 @@ static const QHash<QString, ReplyMethod> s_replyMethodMap =
   // get fee
   { "GetFee",             {ReplyMethodID::ParseFee,               false, "Wrong reply when get fee", 1300000}},
   // node dump
-  { "NodeDump",           {ReplyMethodID::ParseNodeDump,          false, "Wrong reply when get node dump", 1400000}},
+  { "NodeList",           {ReplyMethodID::ParseNodeList,          false, "Wrong reply when get node dump", 1400000}},
   // list of delegated keys on the network
   { "GetListKeys",        {ReplyMethodID::ParseListKeys,          false, "Wrong reply when get list of delegated keys", 1500000}},
 
@@ -100,28 +99,36 @@ DapNodeWeb3::~ DapNodeWeb3()
 {
 }
 
-void DapNodeWeb3::request_GET (const QString &host,  quint16 port, const QString &urlPath,
-                               DapNetworkReply &a_netReply, const QString &headers, bool ssl)
+void DapNodeWeb3::request_GET(const QString &host, quint16 port, const QString &urlPath,
+                              DapNetworkReply &a_netReply, const QString &headers, bool ssl)
 {
-  Q_UNUSED (ssl)
-//    qDebug() << urlPath;
-  m_httpClient->requestHttp_GET (host, port, urlPath, headers, a_netReply);
+    Q_UNUSED(ssl)
+
+    qDebug() << "Sending GET request to" << host << ":" << port << urlPath << "with headers:" << headers;
+
+    if (!m_httpClient) {
+        qWarning() << "m_httpClient is null, cannot process GET request";
+        return;
+    }
+
+    m_httpClient->requestHttp_GET(host, port, urlPath, headers, a_netReply);
 }
 
-void DapNodeWeb3::sendRequest (QString request)
+
+void DapNodeWeb3::sendRequest(QString request)
 {
-  m_networkReply =  new DapNetworkReply;
-  connect (m_networkReply, &DapNetworkReply::finished, this, [&]
-  {
-    responseProcessing (m_networkReply->error(), m_networkReply->errorString());
-  });
-  connect (m_networkReply, &DapNetworkReply::sigError, this, [&]
-  {
-    responseProcessing (m_networkReply->error(), m_networkReply->errorString(), false);
-  });
-  // send request
-  m_networkRequest = request;
-  request_GET (WEB3_URL, WEB3_PORT, request, *m_networkReply);
+    m_networkReply = new DapNetworkReply(this);
+
+    connect(m_networkReply, &DapNetworkReply::finished, this, [this]() {
+        responseProcessing(m_networkReply->error(), m_networkReply->errorString());
+    });
+
+    connect(m_networkReply, &DapNetworkReply::sigError, this, [this]() {
+        responseProcessing(m_networkReply->error(), m_networkReply->errorString(), false);
+    });
+
+    m_networkRequest = request;
+    request_GET(WEB3_URL, WEB3_PORT, request, *m_networkReply);
 }
 
 QString extractMethod (const QString &inputString)
@@ -167,14 +174,13 @@ void DapNodeWeb3::responseProcessing (
   // node connection reply
   if (methodName == "GetVersions")
     {
-#ifndef Q_OS_IOS
         if (error == SIGERROR)
         {
           DEBUGINFO  << "DapNodeWeb3::responseProcessing - nodeNotDetected";
           emit nodeNotDetected();
           return;
         }
-#endif
+
         QJsonDocument doc = QJsonDocument::fromJson (m_networkReply->getReplyData());
 
         if (doc["status"].isString()) {
@@ -183,8 +189,8 @@ void DapNodeWeb3::responseProcessing (
                 QString cellframeDashboard = dataObject["cellframe-dashboard"].toString();
                 QString cellframeNode = dataObject["cellframe-node"].toString();
 
-                QString minDashboardVersion = DapDataLocal::instance()->getMinDashboardVersion();
-                QString minNodeVersion = DapDataLocal::instance()->getMinNodeVersion();
+                QString minDashboardVersion = DapServiceDataLocal::instance()->getMinDashboardVersion();
+                QString minNodeVersion = DapServiceDataLocal::instance()->getMinNodeVersion();
 
                 bool isDashboardLess = isVersionLessThan(cellframeDashboard, minDashboardVersion);
                 bool isNodeLess = isVersionLessThan(cellframeNode, minNodeVersion);
@@ -351,7 +357,7 @@ void DapNodeWeb3::responseParsing (
     case ReplyMethodID::ParseOrderList:         parseOrderList (reply,          baseErrorCode); break;
     case ReplyMethodID::ParseNodeIp:            parseNodeIp (reply,             baseErrorCode); break;
     case ReplyMethodID::ParseFee:               parseFee (reply,                baseErrorCode); break;
-    case ReplyMethodID::ParseNodeDump:          parseNodeDump (reply,           baseErrorCode); break;
+    case ReplyMethodID::ParseNodeList:          parseNodeList (reply,           baseErrorCode); break;
     case ReplyMethodID::ParseListKeys:          parseListKeys (reply,           baseErrorCode); break;
     case ReplyMethodID::ParseNetId:             parseNetId (reply,              baseErrorCode); break;
     }
@@ -514,9 +520,9 @@ void DapNodeWeb3::getNetIdRequest (QString networkName)
   sendRequest (requesString);
 }
 
-void DapNodeWeb3::nodeDumpRequest (QString networkName)
+void DapNodeWeb3::nodeListRequest (QString networkName)
 {
-  QString requesString = QString ("?method=NodeDump&"
+  QString requesString = QString ("?method=NodeList&"
                                   "id=%1&net=%2")
                          .arg (m_connectId)
                          .arg (networkName);
@@ -807,10 +813,10 @@ void DapNodeWeb3::parseCondTxCreateReply (const QString &replyData, int baseErro
   if (jsonError())
     return;
 
-  if (doc["data"].isObject() && doc["data"].toObject()["hash"].isString())
+  if (doc["data"].isObject() && doc["data"].toObject()["tx_hash"].isString())
     {
       // get hash
-      QString transactionHash = doc["data"].toObject()["hash"].toString();
+      QString transactionHash = doc["data"].toObject()["tx_hash"].toString();
       emit sigCondTxCreateSuccess (transactionHash);
     }
 }
@@ -886,7 +892,7 @@ void DapNodeWeb3::parseOrderList (const QString &replyData, int baseErrorCode)
   parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
 
   if (jsonError()) {
-      QString fileName = DapDataLocal::instance()->getLogPath() + "/error_replyData.json";
+      QString fileName = DapLogger::getPathToLog() + "/error_replyData.json";
       qDebug() << fileName;
       QFile file(fileName);
       if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -1049,7 +1055,7 @@ void DapNodeWeb3::parseFee (const QString &replyData, int baseErrorCode)
 //    }
 }
 
-void DapNodeWeb3::parseNodeDump (const QString &replyData, int baseErrorCode)
+void DapNodeWeb3::parseNodeList (const QString &replyData, int baseErrorCode)
 {
 //    {
 //        "data": [
@@ -1083,15 +1089,15 @@ void DapNodeWeb3::parseNodeDump (const QString &replyData, int baseErrorCode)
 
   if (doc["data"].isArray())
     {
-      QList<QMap<QString, QString>> nodeDump;
+      QList<QMap<QString, QString>> nodeList;
       foreach (const auto &nodeJo, doc["data"].toArray())
         {
           QMap<QString, QString> itemDump;
           foreach (const QString &key, nodeJo.toObject().keys())
             itemDump[key] = nodeJo[key].toString();
-          nodeDump.append (itemDump);
+          nodeList.append (itemDump);
         }
-      emit sigNodeDump (nodeDump);
+      emit sigNodeList (nodeList);
     }
 }
 

@@ -30,7 +30,7 @@ QString DapBugReportData::email() const
 
 QString DapBugReportData::defaultEmail() const
 {
-    return DapDataLocal::instance()->getEncryptedSetting(TEXT_LOGIN).toString();
+    return DapDataLocal::instance()->getEncryptedSetting(DapBaseDataLocal::TEXT_LOGIN).toString();
 }
 
 QString DapBugReportData::lastSentNumber() const

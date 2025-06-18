@@ -46,9 +46,9 @@ bool DapBugReport::createZipDataBugReport(const QString &serial, const QString &
         QString path;
         switch (i) {
             case 0:
-                path = DapDataLocal::instance()->getLogFilePath(); break;
+                path = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/service.log"; break;
             case 1:
-                path = QString(DapDataLocal::instance()->getLogFilePath()).replace("Service", "GUI"); break;
+                path = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/gui.log"; break;
             case 2:
                 path = infoFileData.path() + "/" + infoFileData.fileName(); break;
             case 3:

@@ -242,7 +242,7 @@ static const QString _findInCountriesMap (const QString &string)
 class InsertServerOperation
 {
   DapSortedServerList &_list;
-  QLinkedList<int> &_sortedIndexes;
+  QList<int> &_sortedIndexes;
   int _insertedIndex;
   int _destination;
   bool _finished;
@@ -252,7 +252,7 @@ class InsertServerOperation
       Append,
   } _result;
   public:
-  InsertServerOperation (DapSortedServerList &a_list, QLinkedList<int> &a_sortedIndexes, const DapServerInfo &a_server, int a_insertedIndex);
+  InsertServerOperation (DapSortedServerList &a_list, QList<int> &a_sortedIndexes, const DapServerInfo &a_server, int a_insertedIndex);
   ~InsertServerOperation(); ///< will call finish
   void finish();
   operator int() const;
@@ -1093,7 +1093,7 @@ void DapSortedServerList::update (const QList<int> &a_indexes)
     }
 }
 
-const QLinkedList<int> &DapSortedServerList::getSortedIndexes() const
+const QList<int> &DapSortedServerList::getSortedIndexes() const
 {
   return _sortedIndexes;
 }
@@ -1428,7 +1428,7 @@ const QHash<QString, QString> &DapAbstractServerList::countryMap()
 
 InsertServerOperation::InsertServerOperation (
   DapSortedServerList &a_list,
-  QLinkedList<int> &a_sortedIndexes,
+  QList<int> &a_sortedIndexes,
   const DapServerInfo &a_server,
   int a_insertedIndex)
   : _list (a_list)
@@ -1481,7 +1481,7 @@ void InsertServerOperation::finish()
 
   switch (_result)
     {
-    case Insert: _sortedIndexes.insert (_list.begin() + _destination, _insertedIndex); break;
+    case Insert: _sortedIndexes.insert (_destination, _insertedIndex); break;
     case Append: _sortedIndexes.append (_insertedIndex); break;
     }
 

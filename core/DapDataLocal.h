@@ -1,220 +1,51 @@
 #pragma once
 
-#include <QList>
-#include <QString>
-#include <QObject>
-#include <QMap>
-#include <QPair>
-#include <QString>
-#include <QSettings>
-#include <QDateTime>
-#include "DapServerInfo.h"
-#include "DapKeyCommon.h"
-#include "DapBugReportData.h"
-#include "DapServerList.h"
-#include "DapBugReportHistory.h"
-#include "DapSignUpData.h"
-#include "DapUtils.h"
-#include "DataToUpdate.h"
+#include "DapBaseDataLocal.h"
 
-#define SERVER_LIST_FILE "vpn-servers.xml"
-
-const QString TEXT_SERIAL_KEY           = "serialkey";
-const QString TEXT_SERIAL_KEY_HISTORY   = "serialkeyhistory";
-const QString TEXT_PENDING_SERIAL_KEY   = "pendingserialkey";
-const QString TEXT_BUGREPORT_HISTORY    = "bugreporthistory";
-const QString ROUTING_EXCEPTIONS_LIST   = "routingexceptionslist";
-const QString TEXT_LOGIN                = "login";
-const QString TEXT_PASSWORD             = "password";
-const QString TEXT_TX_OUT               = "tx_out";
-const QString COUNTRY_NAME              = "Country_code";
-const QString SETTING_AUTHORIZATION     = "authorization";
-const QString LAST_SELECTED_SERVER      = "lastSelectedServer";
-const QString LAST_SELECTED_SERVER_HASH = "lastSelectedServerOrderHash";
-const QString SETTING_THEME             = "ColorTheme";
-const QString SETTING_ROUEXC_MODE       = "rouExcMode";
-const QString NODE_ORDER_HISTORY        = "nodeOrderHistory";
-const QString SERIAL_LOSS_ON_UNINSTALL_FLAG = "serialLossOnUninstallFlag";
-const QString NOTIFICATION_HISTORY      = "notificationHistory";
-const QString NOCDB_DATA                = "NoCdbData";
-const QString COUNTRY_ISO               = "country_iso";
-
-class DapSerialKeyData;
-enum class Authorization;
-class DapSerialKeyHistory;
-
-class DapCdbServer
+class DapDataLocal : public DapBaseDataLocal
 {
-  /* variables */
-public:
-  QString address;
-  int port;
-
-  /* methods */
-public:
-  QString toString() const;
-  void fromString (const QString &a_src);
-  static DapCdbServer serverFromString (const QString &a_src);
-};
-
-class DapCdbServerList : public QList<DapCdbServer>
-{
-  /* methods */
-public:
-  static DapCdbServerList toServers (const QStringList &a_src);
-  static QStringList toStrings (const DapCdbServerList &a_servers);
-};
-
-class DapDataLocal : public QObject
-{
-public:
     Q_OBJECT
     DapDataLocal();
-    const QString ServerListName;
-
-    QString     m_brandName;
-    QString     logFilePath;
-    QString     m_logPath;
-    QString     m_minDashboardVersion;
-    QString     m_minNodeVersion;
-    QString     m_pubStage;
-
-    void parseXML(const QString& a_fname);
-
-    DapKey *secretKey = Q_NULLPTR;
-    void initSecretKey();
-    QString getRandomString(int);
-
 public:
     static DapDataLocal* instance();
 
-    QString login() const;
-
-    void setLogFilePath(QString path){logFilePath = path;}
-    QString getLogFilePath(){return logFilePath;}
-    void setLogPath(QString path){m_logPath = path;}
-    QString getLogPath(){return m_logPath;}
-    QString getPub() {return m_pubStage;}
-
-
-    QString password() const;
-
-    DataToUpdate& getDataToUpdate(){return m_dataToUpdate;}
-
-    const DapCdbServerList &cdbServersList()  { return m_cdbServersList; }
-    const QString & networkDefault()          { return m_networkDefault; }
-    const QString & getUrlSite()              { return m_urlSite;        }
-    const QString & getBrandName()            { return m_brandName;      }
-
-    const QString & getMinDashboardVersion() const { return m_minDashboardVersion; }
-    const QString & getMinNodeVersion()      const { return m_minNodeVersion; }
-    
-    const QString & getCountryISO() { return m_coutryISO; }
-    void setCountryISO(QString iso_code){
-        m_coutryISO = iso_code;
-    }
-
-    DapCdbServerList::const_iterator m_cdbIter;
-
-    void saveEncryptedSetting(const QString &a_setting, const QVariant &a_value);
-    void saveEncryptedSetting(const QString &a_setting, const QByteArray &a_value);
-    QVariant getEncryptedSetting(const QString &a_setting);
-    bool loadEncryptedSettingString(const QString &a_setting, QByteArray& a_outString);
-
-    template<typename T>
-    void saveToSettings(const QString &a_setting, const T& a_value);
-    template<typename T>
-    bool loadFromSettings(const QString &a_setting, T& a_value);
+    QVariant getValueSetting(const QString &a_setting) override;
+    void saveValueSetting(const QString &setting, const QVariant &value) override;
+    void removeValueSetting(const QString &setting) override;
 
     static QVariant getSetting (const QString& a_setting);
     static void     saveSetting(const QString& a_setting, const QVariant& a_value);
     static void     removeSetting(const QString& a_setting);
-    void saveSerialKeyData();
-    void resetSerialKeyData();
 
-    void savePendingSerialKey(QString a_serialkey);
+    void setCountryISO(const QString& iso_code) override;
+    void saveSerialKeyData() override;
+    void resetSerialKeyData() override;
+    void saveKeysHistory() override;
+    void saveBugReport() override;
 
-    //void saveHistoryData(QString a_type, QString a_data);
-    //QList<QString> getHistorySerialKeyData();
-    //void removeItemFromHistory(QString a_type, QString a_item);
+    void savePendingSerialKey(QString a_serialkey) override;
+    void setSettings(const QJsonObject &json) override;
 
-    static DapBugReportData *bugReportData();
-    DapSerialKeyData* serialKeyData();
+    bool isNeedMigrate() const { return m_needMigration; }
 
-    QString pendingSerialKey(){return m_pendingSerialKey;};
-
-    DapBugReportHistory *bugReportHistory();
-    DapSerialKeyHistory *serialKeyHistory();
-
-    Authorization authorizationType();
-    void setAuthorizationType(Authorization type);
-
-    void updateCdbList (const DapCdbServerList &a_newCdbList);
-
+    void saveEncryptedSetting(const QString &a_setting, const QVariant &a_value) override;
+    void saveEncryptedSetting(const QString &a_setting, const QByteArray &a_value) override;
+    bool loadEncryptedSettingString(const QString &a_setting, QByteArray& a_outString) override;
 public slots:
-    void setLogin(const QString &a_login);
-    void setPassword(const QString &password);
-    void saveAuthorizationData();
+    void setLogin(const QString &login) override;
+    void setPassword(const QString &password) override;
+    void saveAuthorizationData() override;
+
+    void dataFromCommand(const QJsonObject& object);
+
 signals:
-    /// Signal emitted if login has changed.
-    /// @param login Login.
-    void loginChanged(const QString& login);
-    /// Signal emitted if password has changed.
-    /// @param password Password.
-    void passwordChanged(const QString& password);
+    void valueDataLocalUpdated(const QJsonObject& object);
+    void serialKeyDataUpdateFromService();
 
-    void licenseTermTillChanged(const QString &a_date);
-
-    //void sigHistoryDataSaved(const QString &type);
-
-protected:
-    DapCdbServerList  m_cdbServersList;
-    QString           m_networkDefault;
-    QString           m_urlSite;
-
-    QString     m_coutryISO;
-
+    void allDataReceived();
+    void reMigrationSignal();
 private:
-    void loadAuthorizationDatas();
-    void _syncCdbWithSettings();
-    static QSettings* settings();
+    QVariantMap m_settingsMap;
 
-    QString m_login;      ///< Login.
-    QString m_password;   ///< Password.
-    QString m_serialKey;  ///< Serial key.
-
-    DataToUpdate m_dataToUpdate; ///data to update
-
-    DapSerialKeyData* m_serialKeyData;
-    QSet <QString> * m_serialKeyDataList;
-    QString m_pendingSerialKey;
-
-    DapBugReportHistory *m_bugReportHistory;
-    DapSerialKeyHistory *m_serialKeyHistory;
-};
-
-template<typename T>
-bool DapDataLocal::loadFromSettings(const QString &a_setting, T &a_value)
-{
-    QByteArray stringFromSettings;
-
-    if (!this->loadEncryptedSettingString(a_setting, stringFromSettings))
-        return false;
-
-    a_value = DapUtils::fromByteArray<T>(stringFromSettings);
-    return true;
-}
-
-template<typename T>
-void DapDataLocal::saveToSettings(const QString &a_setting, const T &a_value)
-{
-    this->saveEncryptedSetting(a_setting, DapUtils::toByteArray(a_value));
-}
-
-enum class Authorization
-{
-    account,
-    serialKey,
-    certificate,
-    undefined
+    bool m_needMigration = false;
 };

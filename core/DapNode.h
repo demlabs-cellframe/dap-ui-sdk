@@ -9,13 +9,14 @@
 #include <QList>
 #include <QThread>
 #include "DapConnectClient.h"
-#include "DapCrypt.h"
-#include "DapDataLocal.h"
+#include <DapCrypt.h>
+#include "DapBaseDataLocal.h"
 
+#include "dap_client_http.h"
 #include "DapNetworkAccessManager.h"
 #include "DapNetworkReply.h"
 
-#include "DapCmdNodeSrv.h"
+#include "DapCmdNode.h"
 #include "DapNodeWeb3.h"
 
 #include <QStateMachine>
@@ -31,7 +32,7 @@ public:
     uint16_t port;
     QString ipv4;
     void setNodeAddress(const QString& a_address) { address = a_address; }
-    bool serverDataFromList(const QList<QMap<QString, QString>>& nodeDump);
+    bool serverDataFromList(const QList<QMap<QString, QString>>& nodeList);
 };
 
 /****************************************//**
@@ -255,7 +256,7 @@ signals:
     void sigNodeIpRequest();
     void sigGetNodeIpRequest(QJsonArray orderList);
     void sigFeeRequest();
-    void sigNodeDumpReceived();
+    void sigNodeListReceived();
     void sigFeeReceived();
     void sigFeeReceivedData(QJsonObject);
     void sigWalletsRequest();

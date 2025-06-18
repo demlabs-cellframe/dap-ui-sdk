@@ -29,8 +29,9 @@
 #include <QList>
 #include "DapConnectClient.h"
 #include <DapCrypt.h>
-#include "DapDataLocal.h"
+#include "DapBaseDataLocal.h"
 
+#include "dap_client_http.h"
 #include "DapNetworkAccessManager.h"
 #include "DapNetworkReply.h"
 
@@ -49,7 +50,6 @@ public:
     static const QString URL_ENCRYPT;
     static const QString URL_STREAM;
     static const QString URL_DB;
-    static const QString URL_DB_LEGACY;
     static const QString URL_CTL;
     static const QString URL_DB_FILE;
     static const QString URL_SERVER_LIST;
@@ -79,6 +79,7 @@ public:
     const QString& cdbAuthNet(){ return  m_cdbAuthNet; }
     const QString& cdbAuthToken(){ return  m_cdbAuthToken; }
     const QString& cdbMaxPrice(){return m_cdbMaxPrice;}
+    const QString& cdbAdress(){return m_CDBaddress;}
 
     QList<QString> usersNames()          { return m_userInform.keys();     }
     const QString userInfo
@@ -95,8 +96,6 @@ public slots:
                                      const QString& a_domain = QString(), const QString& a_pkey = QString(), const QString& a_order_hash = QString());
     DapNetworkReply * authorizeByKeyRequest(const QString& a_serial = QString(),
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() , const QString& a_order_hash = QString());
-    DapNetworkReply * authorizeByKeyRequestLegacy(const QString& a_serial = QString(),
-                                     const QString& a_domain = QString(), const QString& a_pkey = QString());
     DapNetworkReply * activateKeyRequest(const QString& a_serial = QString(), const QByteArray& a_signed = QByteArray(),
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
     void resetKeyRequest(const QString& a_serial = QString(),
@@ -117,7 +116,6 @@ public slots:
 #endif
 protected:
     using HttpHeaders = QVector<HttpRequestHeader>;
-    int m_protocolVer;
     quint16 m_upstreamPort, m_CDBport;
     QString m_upstreamAddress, m_CDBaddress, m_user;
     // HTTP header fields
@@ -146,20 +144,20 @@ protected:
                                  const QString& subUrl, const QString& query);
 
     DapNetworkReply* encRequest(const QString& reqData, const QString& url, const QString& subUrl,
-                               const QString& query, QObject* obj, const char* slot, const char* slot_err, bool isCDB);
+                               const QString& query, QObject* obj, const char* slot, const char* slot_err, bool isCDB, bool isCriticalReq = true);
 
     DapNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url, const QString& subUrl,
                                const QString& query, QObject* obj, const char* slot, const char* slot_err);
 
     DapNetworkReply* encRequest(const QString& reqData,const QString& url,
-                                const QString& subUrl,const QString& query, bool isCDB) {
-        return encRequest(reqData, url, subUrl, query, this, NULL, NULL, isCDB);
+                                const QString& subUrl,const QString& query, bool isCDB, bool isCriticalReq = true) {
+        return encRequest(reqData, url, subUrl, query, this, NULL, NULL, isCDB, isCriticalReq);
     }
 
     DapNetworkReply* encRequest(const QString& reqData, const QString& url,
-                    const QString& subUrl, const QString& query, const char* slot, const char* slot_err, bool isCDB = false)
+                    const QString& subUrl, const QString& query, const char* slot, const char* slot_err, bool isCDB = false, bool isCriticalReq = true)
     {
-        return encRequest(reqData, url, subUrl, query, this, slot, slot_err, isCDB);
+        return encRequest(reqData, url, subUrl, query, this, slot, slot_err, isCDB, isCriticalReq);
     }
 
     DapNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url,
@@ -175,7 +173,7 @@ private:
     DapCrypt* m_dapCrypt, *m_dapCryptCDB;
     bool isSerial = false;
     DapNetworkReply* _buildNetworkReplyReq(const QString& urlPath, QObject *obj, const char *slot, const char *slot_err,
-                                         const QByteArray* data = Q_NULLPTR, bool isCDB = false/*, DapNetworkReply *netReply = nullptr*/);
+                                         const QByteArray* data = Q_NULLPTR, bool isCDB = false, bool isCriticalReq = true/*, DapNetworkReply *netReply = nullptr*/);
 
 //    void requestDapClientHttp(const QString& host,  quint16 port, const QByteArray& data, const QString & urlPath, bool isCDB = false);
 
@@ -201,7 +199,6 @@ private slots:
     void errorResetSerialKey(const QString&);
 
 signals:
-    void errorAuthorizationLegacy();
     void encryptInitialized();
     void errorEncryptInitialization(const QString& msg);
 
@@ -216,9 +213,11 @@ signals:
     void authRequested();
     void keyActRequested();
     void authorized(const QString &);
+    /// TODO: this signal KelVPN not use
     void onAuthorized();
     void onConnectNoCDB();
     void usrDataChanged(const QString &addr, ushort port);
+    
     void logoutRequested();
     void logouted();
     void newTxCondReceived(QString &);

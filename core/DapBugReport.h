@@ -9,6 +9,7 @@
 #include <QJsonDocument>
 #include <QDir>
 #include <QSysInfo>
+#include <QStandardPaths>
 #include "DapDataLocal.h"
 #include "packzip.h"
 

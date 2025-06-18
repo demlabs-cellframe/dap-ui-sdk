@@ -9,6 +9,7 @@ class DapNetworkReply: public QObject
     Q_OBJECT
 public:
     explicit DapNetworkReply();
+    explicit DapNetworkReply(QObject *parent = nullptr) : QObject(parent) { }
 
     int error() const { return m_error; } // a native, platform-dependent network error (see errno.h)
     QString errorString(){ return m_errorString; }
@@ -22,7 +23,6 @@ public:
     bool isFinished(){ return m_finished; }
     void setContentLength(size_t content_length) { m_content_length = content_length; }
     void setResponseSize(size_t response_size) { m_response_size = response_size; }
-    QByteArray m_reply;
 
 signals:
     void finished();
@@ -30,8 +30,9 @@ signals:
     void progressUpdate(size_t bytes);
 
 protected:
+    QByteArray m_reply;
     int m_error;
-    QString m_errorString;
+    QString m_errorString = "";
     bool m_finished;
     size_t m_response_size;
     size_t m_content_length;

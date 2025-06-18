@@ -3,7 +3,7 @@
 
 void DapHttpPing::sendRequest(const QString& host, quint16 port)
 {
-  DapNetworkReply *networkReply =  new DapNetworkReply;
+  DapNetworkReply *networkReply =  new DapNetworkReply(nullptr);
 
   QElapsedTimer *timer = new QElapsedTimer;
   timer->start();
