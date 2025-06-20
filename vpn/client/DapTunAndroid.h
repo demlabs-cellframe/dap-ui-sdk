@@ -5,6 +5,8 @@
 #include "DapTunWorkerUnix.h"
 #include <QFuture>
 
+class DapDNSController;
+
 class DapTunAndroid : public DapTunAbstract
 {
 public:
@@ -24,6 +26,7 @@ private:
     int breaker0,breaker1;
 
     DapTunWorkerUnix * tunWorkerAndroid;
+    DapDNSController *m_dnsController;
 };
 
 #endif // DAPTUNANDROID_H

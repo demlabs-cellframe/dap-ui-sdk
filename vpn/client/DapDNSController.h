@@ -84,12 +84,17 @@ public:
     // Main methods for DNS management
     bool setDNSServers(const QStringList &dnsServers);
     bool restoreDefaultDNS();
-    QStringList getCurrentDNSServers();
+    QStringList getCurrentDNSServers() const;
     bool isDNSSet() const;
 
     // New methods for DNS cache and registration management
     bool flushDNSCache();
     bool registerDNS();
+
+    // Emergency DNS restoration methods
+    bool hasVPNDNSMarkers() const;
+    bool emergencyDNSRestoration();
+    bool detectOrphanedVPNDNS() const;
 
     // Thread-safe accessors
     QString getIfaceName() const;
@@ -117,7 +122,7 @@ signals:
 
 protected:
     // Helper methods
-    bool isValidIPAddress(const QString &ipAddress);
+    bool isValidIPAddress(const QString &ipAddress) const;
     int exec_silent(const QString &cmd);
     bool runNetshCommand(const QString &program, const QStringList &args, QString *output = nullptr, int timeout = 3000);
 
@@ -139,7 +144,7 @@ private:
     PIP_ADAPTER_DNS_SERVER_ADDRESS_XP m_originalDNSConfig;
     bool setDNSServersWindows(const QStringList &dnsServers);
     bool restoreDefaultDNSWindows();
-    QStringList getCurrentDNSServersWindows();
+    QStringList getCurrentDNSServersWindows() const;
     bool getIfaceName();
     
     // New helper methods for Windows
@@ -152,36 +157,36 @@ private:
     // Registry-based DNS management methods
     bool setDNSServersWindowsRegistry(ulong ifIndex, const QStringList &dnsServers);
     bool restoreDNSWindowsRegistry(ulong ifIndex);
-    QStringList getCurrentDNSServersWindowsRegistry(ulong ifIndex);
-    QString getInterfaceRegistryPath(ulong ifIndex);
-    QString getInterfaceNameByIndex(ulong ifIndex);
+    QStringList getCurrentDNSServersWindowsRegistry(ulong ifIndex) const;
+    QString getInterfaceRegistryPath(ulong ifIndex) const;
+    QString getInterfaceNameByIndex(ulong ifIndex) const;
     bool saveOriginalDNSForInterface(ulong ifIndex);
 #endif
 
 #ifdef Q_OS_LINUX
     bool setDNSServersLinux(const QStringList &dnsServers);
     bool restoreDefaultDNSLinux();
-    QStringList getCurrentDNSServersLinux();
+    QStringList getCurrentDNSServersLinux() const;
 #endif
 
 #ifdef Q_OS_MACOS
     SCDynamicStoreRef m_store;
     bool setDNSServersMacOS(const QStringList &dnsServers);
     bool restoreDefaultDNSMacOS();
-    QStringList getCurrentDNSServersMacOS();
+    QStringList getCurrentDNSServersMacOS() const;
 #endif
 
 #ifdef Q_OS_ANDROID
     QAndroidJniObject m_activity;
     bool setDNSServersAndroid(const QStringList &dnsServers);
     bool restoreDefaultDNSAndroid();
-    QStringList getCurrentDNSServersAndroid();
+    QStringList getCurrentDNSServersAndroid() const;
 #endif
 
 #ifdef Q_OS_IOS
     bool setDNSServersIOS(const QStringList &dnsServers);
     bool restoreDefaultDNSIOS();
-    QStringList getCurrentDNSServersIOS();
+    QStringList getCurrentDNSServersIOS() const;
 #endif
 };
 

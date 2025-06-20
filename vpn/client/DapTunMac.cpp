@@ -142,7 +142,8 @@ void DapTunMac::onWorkerStarted()
    qDebug() << "cmd run [" << run << ']';
      ::system(run.toLatin1().constData() );
 
-   backupAndApplyDNS();
+   // DNS is already managed by DapDNSController in tunDeviceCreate()
+   // backupAndApplyDNS(); // Removed - DNS managed by DapDNSController
 
     qInfo() << "Created "<<m_tunDeviceName<<" network interface";
 /* this is the special file descriptor that the caller will use to talk
@@ -178,7 +179,8 @@ void DapTunMac::tunDeviceDestroy()
     qInfo() << "Close tun device (and usualy destroy that after)";
     m_tunSocket = -1;
 
-    getBackDNS();
+    // DNS is already restored by DapDNSController above
+    // getBackDNS(); // Removed - DNS restored by DapDNSController
 
     emit destroyed();
 }

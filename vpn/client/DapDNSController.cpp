@@ -180,7 +180,7 @@ bool DapDNSController::restoreDefaultDNS()
     return result;
 }
 
-QStringList DapDNSController::getCurrentDNSServers()
+QStringList DapDNSController::getCurrentDNSServers() const
 {
     QStringList servers;
 #ifdef Q_OS_WINDOWS
@@ -197,7 +197,7 @@ QStringList DapDNSController::getCurrentDNSServers()
 
     if (servers.isEmpty()) {
         qWarning() << "Failed to get current DNS servers";
-        emit errorOccurred("Failed to get current DNS servers");
+        // Note: Cannot emit errorOccurred from const method, so we just log the warning
     }
     return servers;
 }
@@ -209,11 +209,14 @@ bool DapDNSController::isDNSSet() const
 }
 
 // Helper function to validate IP address
-bool DapDNSController::isValidIPAddress(const QString &ipAddress)
+bool DapDNSController::isValidIPAddress(const QString &ipAddress) const
 {
+    if (ipAddress.isEmpty()) {
+        return false;
+    }
+
     QHostAddress address(ipAddress);
-    return !address.isNull() && (address.protocol() == QAbstractSocket::IPv4Protocol || 
-                                address.protocol() == QAbstractSocket::IPv6Protocol);
+    return !address.isNull() && address.protocol() != QAbstractSocket::UnknownNetworkLayerProtocol;
 }
 
 // Helper function to execute commands silently
@@ -842,7 +845,7 @@ bool DapDNSController::restoreDNSFromList(const QString &iface, const QStringLis
     return true;
 }
 
-QStringList DapDNSController::getCurrentDNSServersWindows()
+QStringList DapDNSController::getCurrentDNSServersWindows() const
 {
     QStringList dnsServers;
     ULONG outBufLen = 0;
@@ -1161,7 +1164,7 @@ bool DapDNSController::restoreDNSWindowsRegistry(ulong ifIndex)
     }
 }
 
-QStringList DapDNSController::getCurrentDNSServersWindowsRegistry(ulong ifIndex)
+QStringList DapDNSController::getCurrentDNSServersWindowsRegistry(ulong ifIndex) const
 {
     QStringList dnsServers;
     
@@ -1209,7 +1212,7 @@ QStringList DapDNSController::getCurrentDNSServersWindowsRegistry(ulong ifIndex)
     return dnsServers;
 }
 
-QString DapDNSController::getInterfaceRegistryPath(ulong ifIndex)
+QString DapDNSController::getInterfaceRegistryPath(ulong ifIndex) const
 {
     QString interfaceName = getInterfaceNameByIndex(ifIndex);
     if (interfaceName.isEmpty()) {
@@ -1224,7 +1227,7 @@ QString DapDNSController::getInterfaceRegistryPath(ulong ifIndex)
     return registryPath;
 }
 
-QString DapDNSController::getInterfaceNameByIndex(ulong ifIndex)
+QString DapDNSController::getInterfaceNameByIndex(ulong ifIndex) const
 {
     // Check cache first - use thread-safe access
     {
@@ -1375,7 +1378,7 @@ bool DapDNSController::restoreDefaultDNSLinux()
     return true;
 }
 
-QStringList DapDNSController::getCurrentDNSServersLinux()
+QStringList DapDNSController::getCurrentDNSServersLinux() const
 {
     QStringList dnsServers;
     QFile resolvConf("/etc/resolv.conf");
@@ -1396,7 +1399,7 @@ QStringList DapDNSController::getCurrentDNSServersLinux()
 
     if (dnsServers.isEmpty()) {
         qWarning() << "No DNS servers found in /etc/resolv.conf";
-        emit errorOccurred("No DNS servers found in /etc/resolv.conf");
+        // Note: Cannot emit errorOccurred from const method, so we just log the warning
     }
 
     return dnsServers;
@@ -1731,3 +1734,136 @@ QStringList DapDNSController::getCurrentDNSServersForInterface(ulong ifIndex)
 }
 
 #endif
+
+// Emergency DNS restoration methods
+bool DapDNSController::hasVPNDNSMarkers() const
+{
+    QMutexLocker locker(&m_mutex);
+    
+    // Check if we have stored original DNS settings (indicates we modified DNS)
+    if (!m_originalDNSServers.isEmpty()) {
+        return true;
+    }
+    
+    // Check for VPN DNS markers in system
+#ifdef Q_OS_WINDOWS
+    // Check Windows registry for our DNS markers
+    QStringList currentDNS = getCurrentDNSServersWindows();
+    if (!currentDNS.isEmpty()) {
+        // Look for VPN server IPs in current DNS settings
+        for (const QString &dns : currentDNS) {
+            if (dns.contains("10.") || dns.contains("172.") || dns.contains("192.168.")) {
+                // Likely VPN DNS server
+                return true;
+            }
+        }
+    }
+#endif
+
+#ifdef Q_OS_LINUX
+    // Check Linux resolv.conf for VPN DNS markers
+    QStringList currentDNS = getCurrentDNSServersLinux();
+    if (!currentDNS.isEmpty()) {
+        for (const QString &dns : currentDNS) {
+            if (dns.contains("10.") || dns.contains("172.") || dns.contains("192.168.")) {
+                return true;
+            }
+        }
+    }
+#endif
+
+#ifdef Q_OS_MACOS
+    // Check macOS SystemConfiguration for VPN DNS markers
+    QStringList currentDNS = getCurrentDNSServersMacOS();
+    if (!currentDNS.isEmpty()) {
+        for (const QString &dns : currentDNS) {
+            if (dns.contains("10.") || dns.contains("172.") || dns.contains("192.168.")) {
+                return true;
+            }
+        }
+    }
+#endif
+
+    return false;
+}
+
+bool DapDNSController::emergencyDNSRestoration()
+{
+    qCritical() << "[DapDNSController] Emergency DNS restoration initiated";
+    
+    bool success = false;
+    
+    // Try multiple restoration methods
+#ifdef Q_OS_WINDOWS
+    // Method 1: Try registry restoration
+    if (restoreDefaultDNSWindows()) {
+        success = true;
+    } else {
+        // Method 2: Try netsh commands
+        QProcess process;
+        process.start("netsh", QStringList() << "interface" << "ip" << "set" << "dns" << "name=\"*\"", "dhcp");
+        if (process.waitForFinished(5000) && process.exitCode() == 0) {
+            success = true;
+        } else {
+            // Method 3: Try TunTap fallback
+            if (TunTap::getInstance().resetDNS()) {
+                success = true;
+            }
+        }
+    }
+#endif
+
+#ifdef Q_OS_LINUX
+    // Method 1: Try NetworkManager
+    if (restoreDefaultDNSLinux()) {
+        success = true;
+    } else {
+        // Method 2: Try direct resolv.conf restoration
+        QProcess process;
+        process.start("systemctl", QStringList() << "restart" << "systemd-resolved");
+        if (process.waitForFinished(5000) && process.exitCode() == 0) {
+            success = true;
+        }
+    }
+#endif
+
+#ifdef Q_OS_MACOS
+    // Method 1: Try SystemConfiguration
+    if (restoreDefaultDNSMacOS()) {
+        success = true;
+    } else {
+        // Method 2: Try networksetup commands
+        QProcess process;
+        process.start("networksetup", QStringList() << "-setdnsservers" << "Wi-Fi" << "empty");
+        if (process.waitForFinished(5000) && process.exitCode() == 0) {
+            success = true;
+        }
+    }
+#endif
+
+    if (success) {
+        qInfo() << "[DapDNSController] Emergency DNS restoration completed successfully";
+        emit dnsRestored();
+    } else {
+        qCritical() << "[DapDNSController] Emergency DNS restoration failed!";
+        emit errorOccurred("Emergency DNS restoration failed");
+    }
+    
+    return success;
+}
+
+bool DapDNSController::detectOrphanedVPNDNS() const
+{
+    // Check if current DNS settings look like they were set by VPN
+    QStringList currentDNS = getCurrentDNSServers();
+    
+    for (const QString &dns : currentDNS) {
+        // Check for private IP ranges commonly used by VPNs
+        if (dns.startsWith("10.") || dns.startsWith("172.") || dns.startsWith("192.168.")) {
+            qWarning() << "[DapDNSController] Detected potential orphaned VPN DNS:" << dns;
+            return true;
+        }
+    }
+    
+    return false;
+}

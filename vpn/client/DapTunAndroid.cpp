@@ -19,8 +19,10 @@
 #include <errno.h>
 
 #include "DapSession.h"
+#include "DapDNSController.h"
 
 DapTunAndroid::DapTunAndroid()
+    : m_dnsController(new DapDNSController(this))
 {
     qDebug() << "[DapTunAndroid::DapTunAndroid]";
     tunWorker = new DapTunWorkerUnix(this);
@@ -28,6 +30,19 @@ DapTunAndroid::DapTunAndroid()
     breaker0 = tunWorkerAndroid->breaker(0);
     breaker1 = tunWorkerAndroid->breaker(1);
     initWorker();
+    
+    // Connect DNS controller signals for logging
+    connect(m_dnsController, &DapDNSController::errorOccurred, this, [this](const QString &error) {
+        qWarning() << "[TUN] DNS Controller error:" << error;
+    });
+    
+    connect(m_dnsController, &DapDNSController::dnsServersChanged, this, [this](const QStringList &servers) {
+        qInfo() << "[TUN] DNS servers updated to:" << servers;
+    });
+    
+    connect(m_dnsController, &DapDNSController::dnsRestored, this, []() {
+        qInfo() << "[TUN] DNS settings restored to original configuration";
+    });
 }
 
 
@@ -40,6 +55,15 @@ void DapTunAndroid::tunDeviceDestroy()
 {
     QtAndroid::androidService().callMethod<void>("stop" DAP_BRAND "ServiceNative", "()V");
     qInfo() << "Close tun device (and usualy destroy that after)";
+    
+    // Restore original DNS settings
+    if (m_dnsController && m_dnsController->isDNSSet()) {
+        qInfo() << "[TUN] Restoring original DNS settings";
+        if (!m_dnsController->restoreDefaultDNS()) {
+            qWarning() << "[TUN] Failed to restore original DNS settings";
+        }
+    }
+    
     if(m_tunSocket>0){
         ::close(m_tunSocket);
     }
@@ -49,6 +73,15 @@ void DapTunAndroid::tunDeviceDestroy()
 
 void DapTunAndroid::onWorkerStarted() {
     DapTunAbstract::onWorkerStarted();
+    
+    // Set DNS to VPN server if gateway is available
+    if (!gw().isEmpty()) {
+        qInfo() << "[TUN] Setting VPN DNS server:" << gw();
+        if (!m_dnsController->setDNSServers(QStringList{gw()})) {
+            qWarning() << "[TUN] Failed to set DNS servers for VPN connection";
+        }
+    }
+    
     m_isCreated = true;
     emit created();
 }
