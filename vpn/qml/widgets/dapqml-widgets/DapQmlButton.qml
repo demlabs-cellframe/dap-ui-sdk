@@ -561,35 +561,6 @@ Rectangle {
                             if (mouse.source === Qt.MouseEventNotSynthesized)
                                 contextMenu.open()
                     }
-                    DapQmlMenu {
-                        id: contextMenu
-                        shortcuts: [
-                            "Ctrl+X",
-                            "Ctrl+C",
-                            "Ctrl+V",
-                            ""
-                        ]
-                        Action {
-                            text: "Cut"
-                            shortcut: "Ctrl+X"
-                            onTriggered: ctxMenu.execCut();
-                        }
-                        Action {
-                            text: "Copy"
-                            shortcut: "Ctrl+C"
-                            onTriggered: ctxMenu.execCopy();
-                        }
-                        Action {
-                            text: "Paste"
-                            shortcut: "Ctrl+V"
-                            onTriggered: ctxMenu.execPaste();
-                        }
-                        Action {
-                            text: "Delete"
-                            //shortcut: "Delete"
-                            onTriggered: ctxMenu.execDelete();
-                        }
-                    }
                 }
 
                 Component.onCompleted: {
@@ -895,29 +866,6 @@ Rectangle {
                         if (Scaling.isDesktop())
                             if (mouse.source === Qt.MouseEventNotSynthesized)
                                 contextMenu.open()
-                    }
-                    Menu {
-                        id: lineEditContextMenu
-                        MenuItem {
-                            text: "Cut"
-                            shortcut: "Ctrl+X"
-                            onTriggered: lineEditMenu.execCut();
-                        }
-                        MenuItem {
-                            text: "Copy"
-                            shortcut: "Ctrl+C"
-                            onTriggered: lineEditMenu.execCopy();
-                        }
-                        MenuItem {
-                            text: "Paste"
-                            shortcut: "Ctrl+V"
-                            onTriggered: lineEditMenu.execPaste();
-                        }
-                        MenuItem {
-                            text: "Delete"
-                            //shortcut: "Delete"
-                            onTriggered: lineEditMenu.execDelete();
-                        }
                     }
                 }
 
