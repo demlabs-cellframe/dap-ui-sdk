@@ -63,19 +63,19 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, Type
     clearOldLogs();
 
     auto then = QDateTime::currentDateTime();
-    auto setTime = QTime::fromString("00:00", "hh:mm");
+    auto setTime = QTime::fromString("00:00:01", "hh:mm:ss");
     if(then.time() > setTime){
         then = then.addDays(1);
     }
     then.setTime(setTime);
 
-    auto diff = QDateTime::currentDateTime().msecsTo(then);
+    quint64 diff = QDateTime::currentDateTime().msecsTo(then);
 
     QTimer::singleShot(diff, [this]{
+        DapLogger::instance()->updateLogFiles();;
         auto t = new QTimer(QCoreApplication::instance());
         connect(t, &QTimer::timeout, this, []{
-            DapLogger::instance()->updateCurrentLogName();
-            DapLogger::instance()->updateLogFiles();
+            DapLogger::instance()->updateLogFiles();;
         });
         t->start(24 * 3600 * 1000);
     });
@@ -149,13 +149,16 @@ void DapLogger::setLogFile(const QString& fileName)
 
 void DapLogger::updateLogFiles()
 {
-    QString currentDay = QDateTime::currentDateTime().toString("dd");
-    if (currentDay == m_day)
-        return;
-    m_day = currentDay;
-    this->updateCurrentLogName();
-    this->setLogFile(m_currentLogName);
-    this->clearOldLogs();
+  QString currentDay = QDateTime::currentDateTime().toString("dd");
+  if (currentDay == m_day){
+    qDebug() << "[DapLogger::updateLogFiles] Same name of log file";
+    return;
+  }
+  m_day = currentDay;
+  this->updateCurrentLogName();
+  this->setLogFile(m_currentLogName);
+  this->clearOldLogs();
+  qDebug() << "App: " DAP_BRAND " " DAP_VERSION " " + m_appType;
 }
 
 QString DapLogger::defaultLogPath(const QString a_brand)
