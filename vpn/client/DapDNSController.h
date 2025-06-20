@@ -10,6 +10,9 @@
 #include <QSet>
 #include <QMutex>
 #include <QMap>
+#include <QTimer>
+#include <QThread>
+#include <QRegularExpression>
 
 #ifdef Q_OS_ANDROID
 #include <QAndroidJniObject>
@@ -73,6 +76,7 @@ extern "C" {
  * 
  * This class provides a unified interface for managing DNS settings across different platforms.
  * It handles setting DNS servers, restoring default DNS settings, and managing DNS cache.
+ * Includes DNS monitoring system to automatically restore VPN DNS settings if manually changed.
  */
 class DapDNSController : public QObject
 {
@@ -114,17 +118,45 @@ public:
     QStringList getCurrentDNSIndexes(const QString &iface);
     bool resetInterfaceDNS(const QString &iface, bool useDHCP = false);
 
+    // DNS Monitoring System
+    void startDNSMonitoring(int intervalMs = 5000);
+    void stopDNSMonitoring();
+    bool isDNSMonitoringActive() const;
+    void setVPNConnectionState(bool connected);
+    bool isVPNConnected() const;
+    void setExpectedDNSServers(const QStringList &servers);
+    QStringList getExpectedDNSServers() const;
+
+    // Linux-specific DNS management methods
+    bool setDNSServersLinux(const QStringList &dnsServers);
+    bool restoreDefaultDNSLinux();
+    QStringList getCurrentDNSServersLinux() const;
+    bool trySetDNSWithNetworkManager(const QStringList &dnsServers);
+    bool trySetDNSWithNmcli(const QStringList &dnsServers);
+    QString getActiveNetworkInterface() const;
+
 signals:
     // Signals for change notifications
     void dnsServersChanged(const QStringList &servers);
     void dnsRestored();
     void errorOccurred(const QString &error);
+    
+    // DNS Monitoring signals
+    void dnsManuallyChanged(const QStringList &detected, const QStringList &expected);
+    void dnsAutoRestored(const QStringList &restored);
+    void dnsMonitoringStarted();
+    void dnsMonitoringStopped();
 
 protected:
     // Helper methods
     bool isValidIPAddress(const QString &ipAddress) const;
     int exec_silent(const QString &cmd);
     bool runNetshCommand(const QString &program, const QStringList &args, QString *output = nullptr, int timeout = 3000);
+
+private slots:
+    // DNS Monitoring slots
+    void checkDNSIntegrity();
+    void onMonitoringTimerTimeout();
 
 private:
     // Mutex for thread safety
@@ -139,6 +171,22 @@ private:
     QMap<ulong, QStringList> m_originalInterfaceDNS;  // Store original DNS per interface
     QMap<ulong, QString> m_interfaceNames;            // Cache interface names by index
     ulong m_targetIfIndex;                            // Target interface index
+
+    // DNS Monitoring System
+    QTimer* m_dnsMonitorTimer;
+    bool m_vpnConnected;
+    QStringList m_expectedDNSServers;
+    bool m_dnsMonitoringActive;
+    int m_monitoringInterval;
+    int m_consecutiveFailures;
+    static const int MAX_CONSECUTIVE_FAILURES = 3;
+
+    // DNS Monitoring helper methods
+    bool detectDNSChanges();
+    bool shouldRestoreDNS() const;
+    void logDNSChange(const QStringList &detected, const QStringList &expected);
+    void resetFailureCounter();
+    void incrementFailureCounter();
 
 #ifdef Q_OS_WINDOWS
     PIP_ADAPTER_DNS_SERVER_ADDRESS_XP m_originalDNSConfig;
@@ -164,9 +212,7 @@ private:
 #endif
 
 #ifdef Q_OS_LINUX
-    bool setDNSServersLinux(const QStringList &dnsServers);
-    bool restoreDefaultDNSLinux();
-    QStringList getCurrentDNSServersLinux() const;
+    // Linux-specific methods are already declared in public section
 #endif
 
 #ifdef Q_OS_MACOS
