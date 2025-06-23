@@ -12,6 +12,7 @@ Item
     property string fullText: "-"
     property bool showToolTip: true
     property bool alwaysHoverShow: false
+    property alias tooltip: tooltip
     
     // Hover state property and signal
     property bool isHover: false

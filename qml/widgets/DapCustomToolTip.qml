@@ -13,12 +13,14 @@ ToolTip {
     property string contentText
     property alias backgroundToolTip: backgroundToolTip
     property double scaleFactor: 1.0
+    property int elideMode: Text.ElideRight
 
     contentItem: Text {
+        width: parent.width
         color: textColor
         text: contentText
         font: textFont
-        elide: Text.ElideRight
+        elide: elideMode
     }
 
     background: Item {
