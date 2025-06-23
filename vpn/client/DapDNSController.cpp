@@ -1796,7 +1796,11 @@ QStringList DapDNSController::getCurrentDNSServersLinux() const
         QString output = QString::fromLocal8Bit(process.readAll());
         QStringList lines = output.split('\n', Qt::SkipEmptyParts);
         
-        qDebug() << "[DapDNSController] resolvectl status output for reading:" << output;
+        // Only log full output in debug builds or when specifically needed
+        static bool s_enableVerboseLogging = qEnvironmentVariableIsSet("DAPVPN_DNS_VERBOSE");
+        if (s_enableVerboseLogging) {
+            qDebug() << "[DapDNSController] resolvectl status output for reading:" << output;
+        }
         
         // Parse the output to find interfaces with DNS scope
         QString currentInterface;
@@ -1810,7 +1814,9 @@ QStringList DapDNSController::getCurrentDNSServersLinux() const
                 if (!currentInterface.isEmpty() && hasDNSScope && inInterfaceSection) {
                     // Check if this is a VPN interface
                     if (currentInterface.startsWith("tun") || currentInterface.startsWith("tap")) {
-                        qDebug() << "[DapDNSController] Found VPN interface:" << currentInterface;
+                        if (s_enableVerboseLogging) {
+                            qDebug() << "[DapDNSController] Found VPN interface:" << currentInterface;
+                        }
                         // DNS servers should already be collected
                         break;
                     }
@@ -1824,13 +1830,17 @@ QStringList DapDNSController::getCurrentDNSServersLinux() const
                     hasDNSScope = false;
                     inInterfaceSection = true;
                     dnsServers.clear(); // Clear for new interface
-                    qDebug() << "[DapDNSController] Found interface:" << currentInterface;
+                    if (s_enableVerboseLogging) {
+                        qDebug() << "[DapDNSController] Found interface:" << currentInterface;
+                    }
                 }
             }
             // Check if current interface has DNS scope
             else if (!currentInterface.isEmpty() && line.contains("Current Scopes: DNS")) {
                 hasDNSScope = true;
-                qDebug() << "[DapDNSController] Interface" << currentInterface << "has DNS scope";
+                if (s_enableVerboseLogging) {
+                    qDebug() << "[DapDNSController] Interface" << currentInterface << "has DNS scope";
+                }
             }
             // Look for DNS servers in current interface section
             else if (!currentInterface.isEmpty() && inInterfaceSection && line.contains("DNS Servers:")) {
@@ -1838,9 +1848,11 @@ QStringList DapDNSController::getCurrentDNSServersLinux() const
                 QString dnsPart = line.split("DNS Servers:").last().trimmed();
                 QStringList dnsList = dnsPart.split(' ', Qt::SkipEmptyParts);
                 
-                qDebug() << "[DapDNSController] Found DNS servers line:" << line;
-                qDebug() << "[DapDNSController] Parsed DNS part:" << dnsPart;
-                qDebug() << "[DapDNSController] DNS list:" << dnsList;
+                if (s_enableVerboseLogging) {
+                    qDebug() << "[DapDNSController] Found DNS servers line:" << line;
+                    qDebug() << "[DapDNSController] Parsed DNS part:" << dnsPart;
+                    qDebug() << "[DapDNSController] DNS list:" << dnsList;
+                }
                 
                 for (const QString &dns : dnsList) {
                     QString cleanDns = dns.trimmed();
@@ -1854,7 +1866,9 @@ QStringList DapDNSController::getCurrentDNSServersLinux() const
         // Process the last interface if it had DNS scope
         if (!currentInterface.isEmpty() && hasDNSScope) {
             if (currentInterface.startsWith("tun") || currentInterface.startsWith("tap")) {
-                qDebug() << "[DapDNSController] Found VPN interface (last):" << currentInterface;
+                if (s_enableVerboseLogging) {
+                    qDebug() << "[DapDNSController] Found VPN interface (last):" << currentInterface;
+                }
                 // DNS servers should already be collected
             }
         }
@@ -1868,7 +1882,9 @@ QStringList DapDNSController::getCurrentDNSServersLinux() const
             for (const QString &line : lines) {
                 if (line.startsWith("Link")) {
                     if (!currentInterface.isEmpty() && hasDNSScope && inInterfaceSection) {
-                        qDebug() << "[DapDNSController] Found active interface:" << currentInterface;
+                        if (s_enableVerboseLogging) {
+                            qDebug() << "[DapDNSController] Found active interface:" << currentInterface;
+                        }
                         // DNS servers should already be collected
                         break;
                     }
@@ -1900,7 +1916,9 @@ QStringList DapDNSController::getCurrentDNSServersLinux() const
             
             // Process the last interface
             if (!currentInterface.isEmpty() && hasDNSScope) {
-                qDebug() << "[DapDNSController] Found active interface (last):" << currentInterface;
+                if (s_enableVerboseLogging) {
+                    qDebug() << "[DapDNSController] Found active interface (last):" << currentInterface;
+                }
                 // DNS servers should already be collected
             }
         }
@@ -1977,7 +1995,13 @@ QStringList DapDNSController::getCurrentDNSServersLinux() const
     if (dnsServers.isEmpty()) {
         qWarning() << "[DapDNSController] No DNS servers found";
     } else {
-        qDebug() << "[DapDNSController] Current DNS servers:" << dnsServers;
+        // Only log current DNS servers when verbose logging is enabled or when DNS actually changes
+        static bool s_enableVerboseLogging = qEnvironmentVariableIsSet("DAPVPN_DNS_VERBOSE");
+        static QStringList s_lastDNSServers;
+        if (s_enableVerboseLogging || s_lastDNSServers != dnsServers) {
+            qDebug() << "[DapDNSController] Current DNS servers:" << dnsServers;
+            s_lastDNSServers = dnsServers;
+        }
     }
 
     return dnsServers;
@@ -2492,16 +2516,25 @@ bool DapDNSController::isDNSMonitoringActive() const
 
 void DapDNSController::setVPNConnectionState(bool connected)
 {
-    QMutexLocker locker(&m_mutex);
+    bool shouldStopMonitoring = false;
     
-    if (m_vpnConnected != connected) {
-        m_vpnConnected = connected;
-        qDebug() << "[DapDNSController] VPN connection state changed to:" << (connected ? "connected" : "disconnected");
+    {
+        QMutexLocker locker(&m_mutex);
         
-        // If VPN disconnected, stop monitoring
-        if (!connected) {
-            stopDNSMonitoring();
+        if (m_vpnConnected != connected) {
+            m_vpnConnected = connected;
+            qDebug() << "[DapDNSController] VPN connection state changed to:" << (connected ? "connected" : "disconnected");
+            
+            // If VPN disconnected, stop monitoring
+            if (!connected) {
+                shouldStopMonitoring = true;
+            }
         }
+    } // mutex unlocked here
+    
+    // Call stopDNSMonitoring outside of mutex to avoid deadlock
+    if (shouldStopMonitoring) {
+        stopDNSMonitoring();
     }
 }
 
