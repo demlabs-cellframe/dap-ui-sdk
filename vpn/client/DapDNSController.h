@@ -169,7 +169,7 @@ private:
     
     // New member variables for interface-specific DNS management
     QMap<ulong, QStringList> m_originalInterfaceDNS;  // Store original DNS per interface
-    QMap<ulong, QString> m_interfaceNames;            // Cache interface names by index
+    mutable QMap<ulong, QString> m_interfaceNames;    // Cache interface names by index
     ulong m_targetIfIndex;                            // Target interface index
 
     // DNS Monitoring System

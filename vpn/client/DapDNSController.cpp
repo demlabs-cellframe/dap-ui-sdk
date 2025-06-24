@@ -2050,7 +2050,7 @@ bool DapDNSController::restoreDefaultDNSMacOS()
     return setDNSServersMacOS(m_originalDNSServers);
 }
 
-QStringList DapDNSController::getCurrentDNSServersMacOS()
+QStringList DapDNSController::getCurrentDNSServersMacOS() const
 {
     QStringList dnsServers;
     
@@ -2117,7 +2117,7 @@ bool DapDNSController::restoreDefaultDNSAndroid()
     return setDNSServersAndroid(m_originalDNSServers);
 }
 
-QStringList DapDNSController::getCurrentDNSServersAndroid()
+QStringList DapDNSController::getCurrentDNSServersAndroid() const
 {
     QStringList dnsServers;
     
@@ -2173,7 +2173,7 @@ bool DapDNSController::restoreDefaultDNSIOS()
     return setDNSServersIOS(m_originalDNSServers);
 }
 
-QStringList DapDNSController::getCurrentDNSServersIOS()
+QStringList DapDNSController::getCurrentDNSServersIOS() const
 {
     QStringList dnsServers;
     
@@ -2403,14 +2403,14 @@ bool DapDNSController::emergencyDNSRestoration()
     } else {
         // Method 2: Try netsh commands
         QProcess process;
-        process.start("netsh", QStringList() << "interface" << "ip" << "set" << "dns" << "name=\"*\"", "dhcp");
+        QStringList args;
+        args << "interface" << "ip" << "set" << "dns" << "name=\"*\"" << "dhcp";
+        process.start("netsh", args);
         if (process.waitForFinished(5000) && process.exitCode() == 0) {
             success = true;
         } else {
-            // Method 3: Try TunTap fallback
-            if (TunTap::getInstance().resetDNS()) {
-                success = true;
-            }
+            // Method 3: Try direct registry restoration
+            qWarning() << "[DapDNSController] Emergency DNS restoration: netsh failed, trying direct registry";
         }
     }
 #endif
