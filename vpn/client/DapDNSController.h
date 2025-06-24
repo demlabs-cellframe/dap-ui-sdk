@@ -216,14 +216,14 @@ private:
 #endif
 
 #ifdef Q_OS_MACOS
-    SCDynamicStoreRef m_store;
+    mutable SCDynamicStoreRef m_store;
     bool setDNSServersMacOS(const QStringList &dnsServers);
     bool restoreDefaultDNSMacOS();
     QStringList getCurrentDNSServersMacOS() const;
 #endif
 
 #ifdef Q_OS_ANDROID
-    QAndroidJniObject m_activity;
+    mutable QAndroidJniObject m_activity;
     bool setDNSServersAndroid(const QStringList &dnsServers);
     bool restoreDefaultDNSAndroid();
     QStringList getCurrentDNSServersAndroid() const;
