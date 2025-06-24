@@ -65,9 +65,9 @@ Button
 
     property color defaultColor: shadowColor
 
-    property color shadowColor : currTheme.mainButtonShadow
+    property color shadowColor : currTheme.shadowColor
 //    property string shadowColor : currTheme.buttonShadow
-    property color innerShadowColor : currTheme.buttonsShadowInner
+    property color innerShadowColor : currTheme.reflection
     property color innerShadowPressColor : "#1F242F"
 
     property double opacityDropShadow: 0.44
