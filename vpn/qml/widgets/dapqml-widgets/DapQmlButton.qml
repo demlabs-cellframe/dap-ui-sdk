@@ -554,12 +554,12 @@ Rectangle {
                     onClicked: {
                         if (Scaling.isDesktop())
                             if (mouse.button === Qt.RightButton)
-                                contextMenu.open()
+                                lineEditContextMenu.open()
                     }
                     onPressAndHold: {
                         if (Scaling.isDesktop())
                             if (mouse.source === Qt.MouseEventNotSynthesized)
-                                contextMenu.open()
+                                lineEditContextMenu.open()
                     }
                 }
 
@@ -860,12 +860,31 @@ Rectangle {
                     onClicked: {
                         if (Scaling.isDesktop())
                             if (mouse.button === Qt.RightButton)
-                                contextMenu.open()
+                                lineEditContextMenu.open()
                     }
                     onPressAndHold: {
                         if (Scaling.isDesktop())
                             if (mouse.source === Qt.MouseEventNotSynthesized)
-                                contextMenu.open()
+                                lineEditContextMenu.open()
+                    }
+                    Menu {
+                        id: lineEditContextMenu
+                        MenuItem {
+                            text: "Cut"
+                            onTriggered: lineEditMenu.execCut();
+                        }
+                        MenuItem {
+                            text: "Copy"
+                            onTriggered: lineEditMenu.execCopy();
+                        }
+                        MenuItem {
+                            text: "Paste"
+                            onTriggered: lineEditMenu.execPaste();
+                        }
+                        MenuItem {
+                            text: "Delete"
+                            onTriggered: lineEditMenu.execDelete();
+                        }
                     }
                 }
 
