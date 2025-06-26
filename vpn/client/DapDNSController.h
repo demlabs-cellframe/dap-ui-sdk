@@ -217,9 +217,24 @@ private:
 
 #ifdef Q_OS_MACOS
     mutable SCDynamicStoreRef m_store;
+    CFRunLoopSourceRef m_runLoopSource;
+    CFStringRef m_primaryServiceID;
+    bool m_scMonitoringActive;
+    
     bool setDNSServersMacOS(const QStringList &dnsServers);
     bool restoreDefaultDNSMacOS();
     QStringList getCurrentDNSServersMacOS() const;
+    QStringList getCurrentDNSServersViaNetworksetup() const;
+    
+    // New methods for proper macOS DNS monitoring
+    bool setupSCDynamicStoreMonitoring();
+    void teardownSCDynamicStoreMonitoring();
+    QString getPrimaryNetworkServiceID() const;
+    bool setDNSForService(const QString &serviceID, const QStringList &dnsServers);
+    QStringList getDNSForService(const QString &serviceID) const;
+    
+    // Static callback for SCDynamicStore
+    static void dnsChangeCallback(SCDynamicStoreRef store, CFArrayRef changedKeys, void *info);
 #endif
 
 #ifdef Q_OS_ANDROID

@@ -4,7 +4,6 @@
 #include <QHostAddress>
 #include <QFile>
 #include <QTextStream>
-#include <QTextCodec>
 #include <QRegularExpression>
 #include <QMutexLocker>
 #include <QCoreApplication>
@@ -24,6 +23,11 @@
 #pragma comment(lib, "ws2_32.lib")
 #endif
 
+#ifdef Q_OS_MACOS
+#include <SystemConfiguration/SystemConfiguration.h>
+#include <CoreFoundation/CoreFoundation.h>
+#endif
+
 DapDNSController::DapDNSController(QObject *parent)
     : QObject(parent)
     , m_isDNSSet(false)
@@ -38,6 +42,9 @@ DapDNSController::DapDNSController(QObject *parent)
 #endif
 #ifdef Q_OS_MACOS
     , m_store(nullptr)
+    , m_runLoopSource(nullptr)
+    , m_primaryServiceID(nullptr)
+    , m_scMonitoringActive(false)
 #endif
 {
     // Save current DNS settings
@@ -89,6 +96,14 @@ DapDNSController::~DapDNSController()
 #endif
 
 #ifdef Q_OS_MACOS
+    if (m_runLoopSource) {
+        CFRelease(m_runLoopSource);
+        m_runLoopSource = nullptr;
+    }
+    if (m_primaryServiceID) {
+        CFRelease(m_primaryServiceID);
+        m_primaryServiceID = nullptr;
+    }
     if (m_store) {
         CFRelease(m_store);
         m_store = nullptr;
@@ -2011,79 +2026,364 @@ QStringList DapDNSController::getCurrentDNSServersLinux() const
 #ifdef Q_OS_MACOS
 bool DapDNSController::setDNSServersMacOS(const QStringList &dnsServers)
 {
+    qInfo() << "[DapDNSController] Setting DNS servers on macOS:" << dnsServers;
+    
     if (!m_store) {
         m_store = SCDynamicStoreCreate(nullptr, CFSTR("DapDNSController"), nullptr, nullptr);
+        if (!m_store) {
+            qWarning() << "[DapDNSController] Failed to create SCDynamicStore";
+            return false;
+        }
     }
 
-    if (!m_store) {
+    // Get primary network service ID
+    QString primaryServiceID = getPrimaryNetworkServiceID();
+    if (primaryServiceID.isEmpty()) {
+        qWarning() << "[DapDNSController] Failed to get primary network service ID";
         return false;
     }
-
-    // Create DNS servers array
-    CFMutableArrayRef dnsArray = CFArrayCreateMutable(nullptr, 0, &kCFTypeArrayCallBacks);
-    for (const QString &dnsServer : dnsServers) {
-        CFStringRef dnsString = CFStringCreateWithCString(nullptr, dnsServer.toStdString().c_str(), kCFStringEncodingUTF8);
-        CFArrayAppendValue(dnsArray, dnsString);
-        CFRelease(dnsString);
+    
+    qInfo() << "[DapDNSController] Using primary service ID:" << primaryServiceID;
+    
+    // Set DNS for the primary service
+    bool result = setDNSForService(primaryServiceID, dnsServers);
+    
+    if (result) {
+        qInfo() << "[DapDNSController] Successfully set DNS servers for macOS";
+        
+        // Setup monitoring if not already active
+        if (!m_scMonitoringActive) {
+            setupSCDynamicStoreMonitoring();
+        }
+    } else {
+        qWarning() << "[DapDNSController] Failed to set DNS servers for macOS";
     }
-
-    // Set DNS servers
-    CFStringRef keys[] = { CFSTR("State:/Network/Service/.*/DNS") };
-    CFArrayRef keyArray = CFArrayCreate(nullptr, (const void**)keys, 1, &kCFTypeArrayCallBacks);
-    
-    CFMutableDictionaryRef dnsDict = CFDictionaryCreateMutable(nullptr, 0,
-        &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-    
-    CFDictionarySetValue(dnsDict, CFSTR("ServerAddresses"), dnsArray);
-    
-    bool result = SCDynamicStoreSetValue(m_store, keys[0], dnsDict);
-    
-    CFRelease(dnsArray);
-    CFRelease(keyArray);
-    CFRelease(dnsDict);
     
     return result;
 }
 
 bool DapDNSController::restoreDefaultDNSMacOS()
 {
+    qInfo() << "[DapDNSController] Restoring default DNS on macOS";
+    
+    if (m_originalDNSServers.isEmpty()) {
+        qWarning() << "[DapDNSController] No original DNS servers to restore";
+        return false;
+    }
+    
     return setDNSServersMacOS(m_originalDNSServers);
 }
 
 QStringList DapDNSController::getCurrentDNSServersMacOS() const
 {
+    // First try to get DNS using networksetup command (more reliable for detecting manual changes)
+    QStringList networksetupDNS = getCurrentDNSServersViaNetworksetup();
+    if (!networksetupDNS.isEmpty()) {
+        return networksetupDNS;
+    }
+    
+    // Fallback to SCDynamicStore method
+    QString primaryServiceID = getPrimaryNetworkServiceID();
+    if (primaryServiceID.isEmpty()) {
+        return {};
+    }
+    
+    // Get DNS for primary service using existing method
+    QStringList dnsServers = getDNSForService(primaryServiceID);
+    
+    return dnsServers;
+}
+
+QStringList DapDNSController::getCurrentDNSServersViaNetworksetup() const
+{
+    QProcess process;
+    process.setProcessChannelMode(QProcess::MergedChannels);
+    
+    // Try Wi-Fi first
+    process.start("networksetup", QStringList() << "-getdnsservers" << "Wi-Fi");
+    if (process.waitForFinished(3000)) {
+        QString output = QString::fromLocal8Bit(process.readAll()).trimmed();
+        
+        if (!output.isEmpty() && !output.contains("There aren't any DNS Servers")) {
+            QStringList dnsServers = output.split('\n', Qt::SkipEmptyParts);
+            // Remove any empty entries and trim whitespace
+            QStringList cleanedServers;
+            for (const QString &server : dnsServers) {
+                QString trimmed = server.trimmed();
+                if (!trimmed.isEmpty() && isValidIPAddress(trimmed)) {
+                    cleanedServers.append(trimmed);
+                }
+            }
+            if (!cleanedServers.isEmpty()) {
+                return cleanedServers;
+            }
+        }
+    }
+    
+    // Try Ethernet as fallback
+    process.start("networksetup", QStringList() << "-getdnsservers" << "Ethernet");
+    if (process.waitForFinished(3000)) {
+        QString output = QString::fromLocal8Bit(process.readAll()).trimmed();
+        
+        if (!output.isEmpty() && !output.contains("There aren't any DNS Servers")) {
+            QStringList dnsServers = output.split('\n', Qt::SkipEmptyParts);
+            QStringList cleanedServers;
+            for (const QString &server : dnsServers) {
+                QString trimmed = server.trimmed();
+                if (!trimmed.isEmpty() && isValidIPAddress(trimmed)) {
+                    cleanedServers.append(trimmed);
+                }
+            }
+            if (!cleanedServers.isEmpty()) {
+                return cleanedServers;
+            }
+        }
+    }
+    
+    return {};
+}
+
+QString DapDNSController::getPrimaryNetworkServiceID() const
+{
+    if (!m_store) {
+        return QString();
+    }
+    
+    // Get the primary service ID from the global IPv4 configuration
+    CFStringRef globalIPv4Key = SCDynamicStoreKeyCreateNetworkGlobalEntity(nullptr, 
+                                                                          kSCDynamicStoreDomainState, 
+                                                                          kSCEntNetIPv4);
+    if (!globalIPv4Key) {
+        return QString();
+    }
+    
+    CFDictionaryRef globalDict = (CFDictionaryRef)SCDynamicStoreCopyValue(m_store, globalIPv4Key);
+    CFRelease(globalIPv4Key);
+    
+    if (!globalDict) {
+        return QString();
+    }
+    
+    CFStringRef primaryServiceRef = (CFStringRef)CFDictionaryGetValue(globalDict, CFSTR("PrimaryService"));
+    QString primaryServiceID;
+    
+    if (primaryServiceRef) {
+        char buffer[256];
+        if (CFStringGetCString(primaryServiceRef, buffer, sizeof(buffer), kCFStringEncodingUTF8)) {
+            primaryServiceID = QString(buffer);
+        }
+    }
+    
+    CFRelease(globalDict);
+    return primaryServiceID;
+}
+
+bool DapDNSController::setDNSForService(const QString &serviceID, const QStringList &dnsServers)
+{
+    qDebug() << "[DapDNSController] Setting DNS for service" << serviceID << ":" << dnsServers;
+    
+    // Use networksetup command instead of SCDynamicStore for more reliable DNS setting
+    QProcess process;
+    process.setProcessChannelMode(QProcess::MergedChannels);
+    
+    // Try Wi-Fi first (most common)
+    QStringList args;
+    args << "-setdnsservers" << "Wi-Fi";
+    args.append(dnsServers);
+    
+    qDebug() << "[DapDNSController] Executing: sudo networksetup" << args;
+    
+    process.start("sudo", QStringList() << "networksetup" << args);
+    if (process.waitForFinished(10000)) {
+        QString output = QString::fromLocal8Bit(process.readAll()).trimmed();
+        int exitCode = process.exitCode();
+        
+        qDebug() << "[DapDNSController] networksetup Wi-Fi exit code:" << exitCode;
+        if (!output.isEmpty()) {
+            qDebug() << "[DapDNSController] networksetup Wi-Fi output:" << output;
+        }
+        
+        if (exitCode == 0) {
+            qInfo() << "[DapDNSController] Successfully set DNS for service" << serviceID << ":" << dnsServers;
+            return true;
+        }
+    }
+    
+    // Try Ethernet as fallback
+    args.clear();
+    args << "-setdnsservers" << "Ethernet";
+    args.append(dnsServers);
+    
+    qDebug() << "[DapDNSController] Trying Ethernet: sudo networksetup" << args;
+    
+    process.start("sudo", QStringList() << "networksetup" << args);
+    if (process.waitForFinished(10000)) {
+        QString output = QString::fromLocal8Bit(process.readAll()).trimmed();
+        int exitCode = process.exitCode();
+        
+        qDebug() << "[DapDNSController] networksetup Ethernet exit code:" << exitCode;
+        if (!output.isEmpty()) {
+            qDebug() << "[DapDNSController] networksetup Ethernet output:" << output;
+        }
+        
+        if (exitCode == 0) {
+            qInfo() << "[DapDNSController] Successfully set DNS for service" << serviceID << ":" << dnsServers;
+            return true;
+        }
+    }
+    
+    qWarning() << "[DapDNSController] Failed to set DNS for service" << serviceID;
+    return false;
+}
+
+QStringList DapDNSController::getDNSForService(const QString &serviceID) const
+{
     QStringList dnsServers;
     
-    if (!m_store) {
-        m_store = SCDynamicStoreCreate(nullptr, CFSTR("DapDNSController"), nullptr, nullptr);
-    }
-
-    if (!m_store) {
+    if (!m_store || serviceID.isEmpty()) {
         return dnsServers;
     }
-
-    CFStringRef keys[] = { CFSTR("State:/Network/Service/.*/DNS") };
-    CFArrayRef keyArray = CFArrayCreate(nullptr, (const void**)keys, 1, &kCFTypeArrayCallBacks);
     
-    CFDictionaryRef dnsDict = (CFDictionaryRef)SCDynamicStoreCopyValue(m_store, keys[0]);
+    // Create the DNS configuration key for this service
+    CFStringRef serviceIDRef = CFStringCreateWithCString(nullptr, serviceID.toStdString().c_str(), kCFStringEncodingUTF8);
+    CFStringRef dnsKey = SCDynamicStoreKeyCreateNetworkServiceEntity(nullptr, 
+                                                                    kSCDynamicStoreDomainState, 
+                                                                    serviceIDRef, 
+                                                                    kSCEntNetDNS);
+    CFRelease(serviceIDRef);
+    
+    if (!dnsKey) {
+        return dnsServers;
+    }
+    
+    CFDictionaryRef dnsDict = (CFDictionaryRef)SCDynamicStoreCopyValue(m_store, dnsKey);
+    CFRelease(dnsKey);
     
     if (dnsDict) {
-        CFArrayRef serverArray = (CFArrayRef)CFDictionaryGetValue(dnsDict, CFSTR("ServerAddresses"));
+        CFArrayRef serverArray = (CFArrayRef)CFDictionaryGetValue(dnsDict, kSCPropNetDNSServerAddresses);
         if (serverArray) {
             CFIndex count = CFArrayGetCount(serverArray);
             for (CFIndex i = 0; i < count; i++) {
                 CFStringRef dnsString = (CFStringRef)CFArrayGetValueAtIndex(serverArray, i);
                 char buffer[256];
-                CFStringGetCString(dnsString, buffer, sizeof(buffer), kCFStringEncodingUTF8);
-                dnsServers.append(QString(buffer));
+                if (CFStringGetCString(dnsString, buffer, sizeof(buffer), kCFStringEncodingUTF8)) {
+                    dnsServers.append(QString(buffer));
+                }
             }
         }
         CFRelease(dnsDict);
     }
     
-    CFRelease(keyArray);
-    
     return dnsServers;
+}
+
+bool DapDNSController::setupSCDynamicStoreMonitoring()
+{
+    if (m_scMonitoringActive) {
+        return false;
+    }
+    
+    // Create SCDynamicStore context
+    SCDynamicStoreContext context = {0, this, nullptr, nullptr, nullptr};
+    
+    // Create SCDynamicStore
+    m_store = SCDynamicStoreCreate(nullptr, CFSTR("DapDNSController"), dnsChangeCallback, &context);
+    if (!m_store) {
+        qWarning() << "[DapDNSController] Failed to create SCDynamicStore";
+        return false;
+    }
+    
+    // Set up monitoring keys
+    // CFStringRef key = SCDynamicStoreKeyCreateNetworkGlobalEntity(nullptr, kSCDynamicStoreDomainState, kSCEntNetDNS);
+    // Create keys to monitor DNS changes
+    CFMutableArrayRef keys = CFArrayCreateMutable(nullptr, 0, &kCFTypeArrayCallBacks);
+    CFMutableArrayRef patterns = CFArrayCreateMutable(nullptr, 0, &kCFTypeArrayCallBacks);
+    
+    // Monitor all DNS configuration changes
+    CFStringRef dnsPattern = SCDynamicStoreKeyCreateNetworkServiceEntity(nullptr, 
+                                                                        kSCDynamicStoreDomainState, 
+                                                                        kSCCompAnyRegex, 
+                                                                        kSCEntNetDNS);
+    if (dnsPattern) {
+        CFArrayAppendValue(patterns, dnsPattern);
+        CFRelease(dnsPattern);
+    }
+    
+    // Monitor global IPv4 changes (primary service changes)
+    CFStringRef globalKey = SCDynamicStoreKeyCreateNetworkGlobalEntity(nullptr, 
+                                                                      kSCDynamicStoreDomainState, 
+                                                                      kSCEntNetIPv4);
+    if (globalKey) {
+        CFArrayAppendValue(keys, globalKey);
+        CFRelease(globalKey);
+    }
+    
+    // Set notification keys
+    bool success = SCDynamicStoreSetNotificationKeys(m_store, keys, patterns);
+    
+    CFRelease(keys);
+    CFRelease(patterns);
+    
+    if (!success) {
+        qWarning() << "[DapDNSController] Failed to set notification keys";
+        return false;
+    }
+    
+    // Create run loop source
+    m_runLoopSource = SCDynamicStoreCreateRunLoopSource(nullptr, m_store, 0);
+    if (!m_runLoopSource) {
+        qWarning() << "[DapDNSController] Failed to create run loop source";
+        return false;
+    }
+    
+    // Add to current run loop
+    CFRunLoopAddSource(CFRunLoopGetCurrent(), m_runLoopSource, kCFRunLoopDefaultMode);
+    
+    m_scMonitoringActive = true;
+    qInfo() << "[DapDNSController] SCDynamicStore DNS monitoring started";
+    
+    return true;
+}
+
+void DapDNSController::teardownSCDynamicStoreMonitoring()
+{
+    if (!m_scMonitoringActive) {
+        return;
+    }
+    
+    qInfo() << "[DapDNSController] Tearing down SCDynamicStore DNS monitoring";
+    
+    if (m_runLoopSource) {
+        CFRunLoopRemoveSource(CFRunLoopGetCurrent(), m_runLoopSource, kCFRunLoopDefaultMode);
+        CFRelease(m_runLoopSource);
+        m_runLoopSource = nullptr;
+    }
+    
+    m_scMonitoringActive = false;
+}
+
+void DapDNSController::dnsChangeCallback(SCDynamicStoreRef store, CFArrayRef changedKeys, void *info)
+{
+    (void)store; // Suppress unused parameter warning
+    DapDNSController *controller = static_cast<DapDNSController*>(info);
+    if (!controller) {
+        return;
+    }
+    
+    qInfo() << "[DapDNSController] DNS change detected via SCDynamicStore callback";
+    
+    // Log changed keys for debugging
+    CFIndex count = CFArrayGetCount(changedKeys);
+    for (CFIndex i = 0; i < count; i++) {
+        CFStringRef key = (CFStringRef)CFArrayGetValueAtIndex(changedKeys, i);
+        char buffer[512];
+        if (CFStringGetCString(key, buffer, sizeof(buffer), kCFStringEncodingUTF8)) {
+            qDebug() << "[DapDNSController] Changed key:" << buffer;
+        }
+    }
+    
+    // Trigger DNS integrity check
+    QMetaObject::invokeMethod(controller, "checkDNSIntegrity", Qt::QueuedConnection);
 }
 #endif
 
@@ -2195,7 +2495,7 @@ QStringList DapDNSController::getCurrentDNSServersIOS() const
  * English:
  *   Configuration for interface "Ethernet"
  *   DNS servers configured through DHCP:  8.8.8.8 (1)
- *                                        8.8.4.4 (2)
+ *                                        8.8.4.4 (2) 
  *   Statically Configured DNS Servers:    1.1.1.1 (1)
  *                                        1.0.0.1 (2)
  * 
@@ -2487,7 +2787,21 @@ void DapDNSController::startDNSMonitoring(int intervalMs)
     
     qInfo() << "[DapDNSController] Starting DNS monitoring with interval:" << intervalMs << "ms";
     
+#ifdef Q_OS_MACOS
+    // On macOS, use SCDynamicStore for immediate notifications
+    // and QTimer as backup
+    if (!m_scMonitoringActive) {
+        setupSCDynamicStoreMonitoring();
+    }
+    
+    // Start timer with the same interval (not doubled) for more frequent checks
+    m_dnsMonitorTimer->start(intervalMs); // Use original interval, not doubled
+    qInfo() << "[DapDNSController] Timer started with interval:" << intervalMs << "ms";
+#else
+    // On other platforms, use QTimer polling
     m_dnsMonitorTimer->start(intervalMs);
+#endif
+    
     emit dnsMonitoringStarted();
 }
 
@@ -2496,14 +2810,23 @@ void DapDNSController::stopDNSMonitoring()
     QMutexLocker locker(&m_mutex);
     
     if (!m_dnsMonitoringActive) {
+        qDebug() << "[DapDNSController] DNS monitoring is not active";
         return;
     }
+    
+    m_dnsMonitoringActive = false;
+    m_consecutiveFailures = 0;
     
     qInfo() << "[DapDNSController] Stopping DNS monitoring";
     
     m_dnsMonitorTimer->stop();
-    m_dnsMonitoringActive = false;
-    m_consecutiveFailures = 0;
+    
+#ifdef Q_OS_MACOS
+    // Stop SCDynamicStore monitoring
+    if (m_scMonitoringActive) {
+        teardownSCDynamicStoreMonitoring();
+    }
+#endif
     
     emit dnsMonitoringStopped();
 }
@@ -2572,56 +2895,24 @@ void DapDNSController::onMonitoringTimerTimeout()
 
 void DapDNSController::checkDNSIntegrity()
 {
-    // This method should be called from the main thread
-    if (QThread::currentThread() != this->thread()) {
-        // If called from different thread, use QMetaObject::invokeMethod
-        QMetaObject::invokeMethod(this, "checkDNSIntegrity", Qt::QueuedConnection);
+    if (!m_dnsMonitoringActive || m_expectedDNSServers.isEmpty()) {
         return;
     }
     
-    if (!m_vpnConnected || m_expectedDNSServers.isEmpty()) {
-        return;
-    }
+    QStringList currentDNS = getCurrentDNSServers();
     
-    // Get current DNS servers
-    QStringList currentDNSServers = getCurrentDNSServers();
-    
-    // Check if DNS has been manually changed
     if (detectDNSChanges()) {
-        qWarning() << "[DapDNSController] DNS manually changed detected!";
-        qWarning() << "[DapDNSController] Expected:" << m_expectedDNSServers;
-        qWarning() << "[DapDNSController] Current:" << currentDNSServers;
+        qWarning() << "[DapDNSController] DNS integrity violation detected!";
+        qWarning() << "[DapDNSController] Expected DNS:" << m_expectedDNSServers;
+        qWarning() << "[DapDNSController] Current DNS:" << currentDNS;
         
-        // Log the change
-        logDNSChange(currentDNSServers, m_expectedDNSServers);
-        
-        // Emit signal about manual change
-        emit dnsManuallyChanged(currentDNSServers, m_expectedDNSServers);
-        
-        // Check if we should restore DNS
-        if (shouldRestoreDNS()) {
-            qInfo() << "[DapDNSController] Auto-restoring DNS settings...";
-            
-            // Attempt to restore DNS
-            if (setDNSServers(m_expectedDNSServers)) {
-                qInfo() << "[DapDNSController] DNS auto-restored successfully";
-                emit dnsAutoRestored(m_expectedDNSServers);
-                resetFailureCounter();
-            } else {
-                qCritical() << "[DapDNSController] Failed to auto-restore DNS";
-                incrementFailureCounter();
-                
-                // If too many consecutive failures, stop monitoring
-                if (m_consecutiveFailures >= MAX_CONSECUTIVE_FAILURES) {
-                    qCritical() << "[DapDNSController] Too many consecutive failures, stopping DNS monitoring";
-                    stopDNSMonitoring();
-                    emit errorOccurred("DNS monitoring stopped due to repeated failures");
-                }
-            }
+        // Attempt to restore expected DNS
+        if (!setDNSServers(m_expectedDNSServers)) {
+            qCritical() << "[DapDNSController] Failed to restore DNS servers!";
+            emit errorOccurred("Failed to restore DNS servers");
+        } else {
+            qInfo() << "[DapDNSController] DNS servers restored successfully";
         }
-    } else {
-        // DNS is correct, reset failure counter
-        resetFailureCounter();
     }
 }
 
@@ -2719,8 +3010,104 @@ QString DapDNSController::getActiveNetworkInterface() const
 #endif
 
 #ifdef Q_OS_MACOS
-    // macOS implementation would go here
-    return "macOS Interface";
+    // macOS implementation - get active network interface
+    QProcess process;
+    process.setProcessChannelMode(QProcess::MergedChannels);
+    
+    // First try to get the interface from the route table
+    process.start("route", QStringList() << "get" << "default");
+    if (process.waitForFinished(3000)) {
+        QString output = QString::fromLocal8Bit(process.readAll());
+        QRegularExpression interfaceRegex(R"(interface:\s*(\w+))");
+        QRegularExpressionMatch match = interfaceRegex.match(output);
+        if (match.hasMatch()) {
+            QString interface = match.captured(1);
+            qDebug() << "[DapDNSController] Active interface from route:" << interface;
+            return interface;
+        }
+    }
+    
+    // Fallback: try to get active network services
+    process.start("networksetup", QStringList() << "-listallnetworkservices");
+    if (process.waitForFinished(3000)) {
+        QString output = QString::fromLocal8Bit(process.readAll());
+        QStringList services = output.split('\n', Qt::SkipEmptyParts);
+        
+        // Skip the header line
+        if (!services.isEmpty()) {
+            services.removeFirst();
+        }
+        
+        // Check each service to find the active one
+        for (const QString &service : services) {
+            if (service.startsWith("*")) {
+                continue; // Skip disabled services
+            }
+            
+            // Check if this service is active
+            QProcess serviceProcess;
+            serviceProcess.start("networksetup", QStringList() << "-getinfo" << service);
+            if (serviceProcess.waitForFinished(3000)) {
+                QString serviceOutput = QString::fromLocal8Bit(serviceProcess.readAll());
+                if (serviceOutput.contains("IP address:") && !serviceOutput.contains("IP address: (null)")) {
+                    qDebug() << "[DapDNSController] Active service found:" << service;
+                    
+                    // Try to get hardware port for this service
+                    QProcess hwProcess;
+                    hwProcess.start("networksetup", QStringList() << "-listallhardwareports");
+                    if (hwProcess.waitForFinished(3000)) {
+                        QString hwOutput = QString::fromLocal8Bit(hwProcess.readAll());
+                        QStringList hwLines = hwOutput.split('\n');
+                        
+                        for (int i = 0; i < hwLines.size() - 1; i++) {
+                            if (hwLines[i].contains(service)) {
+                                QString deviceLine = hwLines[i + 1];
+                                QRegularExpression deviceRegex(R"(Device:\s*(\w+))");
+                                QRegularExpressionMatch deviceMatch = deviceRegex.match(deviceLine);
+                                if (deviceMatch.hasMatch()) {
+                                    QString device = deviceMatch.captured(1);
+                                    qDebug() << "[DapDNSController] Active device:" << device;
+                                    return device;
+                                }
+                            }
+                        }
+                    }
+                    
+                    // If we can't get the device name, return the service name
+                    return service;
+                }
+            }
+        }
+    }
+    
+    // Last resort: try ifconfig to find active interface
+    process.start("ifconfig", QStringList());
+    if (process.waitForFinished(3000)) {
+        QString output = QString::fromLocal8Bit(process.readAll());
+        QStringList lines = output.split('\n');
+        
+        QString currentInterface;
+        for (const QString &line : lines) {
+            if (line.startsWith('\t') || line.startsWith(' ')) {
+                // This is a continuation of the current interface
+                if (!currentInterface.isEmpty() && line.contains("inet ") && 
+                    !line.contains("127.0.0.1") && !line.contains("inet 169.254")) {
+                    qDebug() << "[DapDNSController] Active interface from ifconfig:" << currentInterface;
+                    return currentInterface;
+                }
+            } else {
+                // New interface
+                QRegularExpression ifRegex(R"(^(\w+):)");
+                QRegularExpressionMatch ifMatch = ifRegex.match(line);
+                if (ifMatch.hasMatch()) {
+                    currentInterface = ifMatch.captured(1);
+                }
+            }
+        }
+    }
+    
+    qWarning() << "[DapDNSController] Could not determine active network interface, using default";
+    return "Wi-Fi";
 #endif
 
     return "Unknown Interface";

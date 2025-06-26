@@ -44,6 +44,8 @@ This file is part of DAP UI SDK the open source project
 #include "SigUnixHandler.h"
 #include "DapTunUnixAbstract.h"
 
+class DapDNSController;
+
 class DapUtun : public DapTunUnixAbstract
 {
 public:
@@ -83,5 +85,8 @@ private:
     QString getInternetInterface();
 
     QMap<QString, QString> m_dnsMap;
+    
+    // DNS Controller for monitoring and managing DNS settings
+    DapDNSController *m_dnsController;
 
 };

@@ -1,8 +1,10 @@
-#include <QtDebug>
+#include <QDebug>
 #include <QProcess>
 #include <QFile>
 #include <QSettings>
 #include <QHostAddress>
+#include <QThread>
+#include <QTimer>
 
 #include <stdio.h>
 #include <unistd.h>
@@ -28,7 +30,8 @@
  * @brief DapTunMac::DapTunMac
  */
 DapTunMac::DapTunMac()
-    : m_dnsController(new DapDNSController(this))
+    : DapTunAbstract()
+    , m_dnsController(new DapDNSController(this))
 {
     qDebug() << "DapTunMac()";
     tunThread = new QThread();
@@ -79,6 +82,12 @@ void DapTunMac::tunDeviceCreate()
     // Setting up DNS via DapDNSController
     if (!m_dnsController->setDNSServers(QStringList{m_gw})) {
         qWarning() << "Failed to set DNS servers";
+    } else {
+        // Start DNS monitoring to protect against manual changes
+        qInfo() << "[DapTunMac] Starting DNS monitoring for VPN connection";
+        m_dnsController->setExpectedDNSServers(QStringList{m_gw});
+        m_dnsController->setVPNConnectionState(true);
+        m_dnsController->startDNSMonitoring(5000); // Check every 5 seconds
     }
 
     qInfo() << "Created "<<m_tunDeviceName<<" network interface";
@@ -142,8 +151,16 @@ void DapTunMac::onWorkerStarted()
    qDebug() << "cmd run [" << run << ']';
      ::system(run.toLatin1().constData() );
 
-   // DNS is already managed by DapDNSController in tunDeviceCreate()
-   // backupAndApplyDNS(); // Removed - DNS managed by DapDNSController
+   // Setting up DNS via DapDNSController instead of old methods
+   if (!m_dnsController->setDNSServers(QStringList{m_gw})) {
+       qWarning() << "Failed to set DNS servers via DapDNSController";
+   } else {
+       // Start DNS monitoring to protect against manual changes
+       qInfo() << "[DapTunMac] Starting DNS monitoring for VPN connection in onWorkerStarted";
+       m_dnsController->setExpectedDNSServers(QStringList{m_gw});
+       m_dnsController->setVPNConnectionState(true);
+       m_dnsController->startDNSMonitoring(5000); // Check every 5 seconds
+   }
 
     qInfo() << "Created "<<m_tunDeviceName<<" network interface";
 /* this is the special file descriptor that the caller will use to talk
@@ -171,16 +188,17 @@ void DapTunMac::tunDeviceDestroy()
     ::close(m_tunSocket);
     qDebug() << "tunDeviceDestroy() Closed tun socket";
 
-    // Restore original DNS settings
+    // Stop DNS monitoring and restore original DNS settings via DapDNSController
+    qInfo() << "[DapTunMac] Stopping DNS monitoring and restoring original DNS settings";
+    m_dnsController->setVPNConnectionState(false);
+    m_dnsController->stopDNSMonitoring();
+    
     if (!m_dnsController->restoreDefaultDNS()) {
-        qWarning() << "Failed to restore original DNS settings";
+        qWarning() << "Failed to restore original DNS settings via DapDNSController";
     }
 
     qInfo() << "Close tun device (and usualy destroy that after)";
     m_tunSocket = -1;
-
-    // DNS is already restored by DapDNSController above
-    // getBackDNS(); // Removed - DNS restored by DapDNSController
 
     emit destroyed();
 }
@@ -214,117 +232,6 @@ void DapTunMac::signalWriteQueueProc()
 void DapTunMac::workerPrepare()
 {
     qInfo() <<"Prepare worker before the work";
-}
-
-void DapTunMac::backupAndApplyDNS()
-{
-    qDebug() << "backupAndApplyDNS()";
-    QSettings dnsSettigs;
-    dnsSettigs.setValue("ActiveNetIfs", "");
-
-    QFile file(":/macos/GetActiveNetIFs.sh");
-    if (!file.open(QFile::ReadOnly | QFile::Text)){
-        qWarning() << "Can't get resource script \":/macos/GetActiveNetIFs.sh\". Your DNS settings could be wrong";
-        return;
-    }
-    QTextStream in(&file);
-    QString script = in.readAll();
-
-    QProcess process;
-    process.setProgram("/bin/bash");
-    process.start();
-    process.write(script.toLatin1().constData());
-    process.closeWriteChannel();
-    process.waitForFinished();
-
-    QString l_strActiveNetIfs = process.readAllStandardOutput();
-    dnsSettigs.setValue("ActiveNetIfs", l_strActiveNetIfs);
-
-    QStringList l_lActiveNetIfs = l_strActiveNetIfs.split('\n');
-
-    bool isAnyNetIfs = false;
-    for (QString netIf : l_lActiveNetIfs){
-        if (netIf.isEmpty())
-            continue;
-        isAnyNetIfs = true;
-
-        process.setProgram("/bin/bash");
-        process.start();
-        process.write(QString("networksetup -getdnsservers %1 \n").arg(netIf).toLatin1().constData());
-        process.closeWriteChannel();
-        process.waitForFinished();
-        QString l_rawDNS = process.readAllStandardOutput();
-
-        QStringList l_listOfDNS = l_rawDNS.split('\n');
-        QString l_finalDNSString;
-        for (auto l_dns : l_listOfDNS){ // to prevent error from script
-            QHostAddress address(l_dns);
-            if (QAbstractSocket::IPv4Protocol == address.protocol()){
-                //qDebug() << "Valid IPv4 address: " << l_dns;
-                l_finalDNSString += l_dns + " ";
-            }
-            else if (QAbstractSocket::IPv6Protocol == address.protocol()){
-                //qDebug() << "Valid IPv6 address: " << l_dns;
-            }
-            else{
-                //qDebug() << "Unknown or invalid address: " << l_dns;
-            }
-        }
-        if (!l_finalDNSString.isEmpty())
-            dnsSettigs.setValue(netIf, l_finalDNSString);
-        else
-            dnsSettigs.setValue(netIf, "empty");//m_defaultGwOld);
-
-        //Logs for dns for particular netif
-        //QStringList l_lDNS = a_strDNS.split('\n');
-        //qDebug() << "----- DNS of " << netIf << ": ";
-        //for (QString l_dns : l_lDNS)
-        //    if (!l_dns.isEmpty())
-        //        qDebug() << "------------------ " << l_dns;
-
-        QString run = QString("networksetup -setdnsservers %1 %2").
-                             arg(netIf).arg(gw());
-        qDebug() << "cmd run [" << run << ']';
-        ::system(run.toLatin1().constData() );
-    }
-
-    if (!isAnyNetIfs){
-        qWarning() << "Can't get any active NetIf. Your DNS configuration could be wrong.";
-        return;
-    }
-
-    //Flush dns cache
-    QString run = QString("sudo killall -HUP mDNSResponder");
-    qDebug() << "cmd run [" << run << ']';
-    ::system(run.toLatin1().constData() );
-
-    dnsSettigs.sync();
-}
-
-void DapTunMac::getBackDNS()
-{
-    qDebug() << "getBackDNS()";
-    QSettings dnsSettigs;
-    QString l_strActiveNetIfs = dnsSettigs.value("ActiveNetIfs").toString();
-
-    QStringList l_lActiveNetIfs = l_strActiveNetIfs.split('\n');
-
-    for (QString netIf : l_lActiveNetIfs){
-        if (netIf.isEmpty())
-            continue;
-
-        QString l_oldDNS = dnsSettigs.value(netIf).toString();
-        l_oldDNS.replace("\n", " ");
-        QString run = QString("networksetup -setdnsservers %1 %2").
-                             arg(netIf).arg(l_oldDNS);
-        qDebug() << "cmd run [" << run << ']';
-        ::system(run.toLatin1().constData() );
-    }
-
-    //Flush dns cache again, after restoring dns settings
-    QString run = QString("sudo killall -HUP mDNSResponder");
-    qDebug() << "cmd run [" << run << ']';
-    ::system(run.toLatin1().constData() );
 }
 
 void DapTunMac::addNewUpstreamRoute(const QString &a_dest) {

@@ -23,9 +23,11 @@ This file is part of DAP UI SDK the open source project
 
 #include "DapUtils.h"
 #include "darwin/DapUtun.h"
+#include "DapDNSController.h"
 
 DapUtun::DapUtun()
     : DapTunUnixAbstract()
+    , m_dnsController(new DapDNSController(this))
 {
     // List of Apple addresses needed to be routed directly through the tunnel
     appleAdditionalRoutes = QStringList({
@@ -326,12 +328,18 @@ void DapUtun::onWorkerStarted()
     // qDebug() << "Network service creation command:" << cmdConnAdd;
     // DapUtils::shellCmd(cmdConnAdd);
 
-    QString cmdSetDNS = QString("networksetup -setdnsservers %1 %2")
+    QString cmdSetDNS = QString("sudo networksetup -setdnsservers %1 %2")
                             .arg(m_currentInterface)
                             .arg(gw());
 
     qDebug() << "Setting DNS for" << m_currentInterface << "to:" << gw();
     DapUtils::shellCmd(cmdSetDNS);
+    
+    // Start DNS monitoring to prevent manual changes
+    qInfo() << "[DapUtun] Starting DNS monitoring after setting VPN DNS";
+    m_dnsController->setExpectedDNSServers(QStringList{gw()});
+    m_dnsController->setVPNConnectionState(true);
+    m_dnsController->startDNSMonitoring(3000); // Check every 3 seconds
 
     QString ifconfigCmd = QString("ifconfig %1 %2 %3")
                               .arg(tunDeviceName())
@@ -418,6 +426,15 @@ QString DapUtun::getCurrentNetworkInterface()
 
 void DapUtun::tunDeviceDestroy()
 {
+    // Stop DNS monitoring and restore original DNS settings
+    qInfo() << "[DapUtun] Stopping DNS monitoring and restoring original DNS";
+    m_dnsController->setVPNConnectionState(false);
+    m_dnsController->stopDNSMonitoring();
+    
+    if (!m_dnsController->restoreDefaultDNS()) {
+        qWarning() << "[DapUtun] Failed to restore original DNS settings via DapDNSController";
+    }
+
     DapTunUnixAbstract::tunDeviceDestroy();
 
     if (!isLocalAddress(upstreamAddress())){
@@ -440,9 +457,5 @@ void DapUtun::tunDeviceDestroy()
     executeCommand(cmdRestoreDefault);
     qInfo() << "Restored default route:" << m_defaultGwOld;
 
-    QString cmdRestoreDNS = QString("networksetup -setdnsservers \"%1\" %2")
-                                .arg(m_currentInterface)
-                                .arg(m_defaultGwOld);
-    executeCommand(cmdRestoreDNS);
-    qInfo() << "Restored DNS settings for" << m_currentInterface << "to" << m_defaultGwOld;
+    qInfo() << "DNS restoration completed via DapDNSController";
 }
