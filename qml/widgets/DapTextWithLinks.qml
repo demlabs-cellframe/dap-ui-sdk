@@ -1,7 +1,7 @@
 import QtQuick 2.4
-import QtQml 2.12
+import QtQml
 import QtQuick.Controls 2.4
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 import "qrc:/widgets"
 
 Text

@@ -1,29 +1,30 @@
-import QtQuick 2.4
-import QtQml 2.12
-import QtQuick.Controls 2.4
-import QtGraphicalEffects 1.0
+import QtQuick
+import QtQml
+import QtQuick.Controls
+import Qt5Compat.GraphicalEffects
 
 ToolTip {
     id: root
-    signal updatePos()
+    signal updatePos
 
     property alias bottomRect: bottomRect
     property font textFont: mainFont.dapFont.medium12
     property string textColor: currTheme.white
     property string contentText
     property alias backgroundToolTip: backgroundToolTip
+    property double scaleFactor: 1.0
+    property int elideMode: Text.ElideRight
 
-    contentItem:
-    Text
-    {
+    contentItem: Text {
+        width: parent.width
         color: textColor
         text: contentText
         font: textFont
+        elide: elideMode
     }
 
-    background:Item{
-        Rectangle
-        {
+    background: Item {
+        Rectangle {
             id: backgroundToolTip
             anchors.fill: parent
             radius: 4
@@ -52,36 +53,32 @@ ToolTip {
             opacity: 1
         }
 
-        Rectangle{
+        Rectangle {
             id: bottomRect
             anchors.horizontalCenter: backgroundToolTip.horizontalCenter
             color: backgroundToolTip.color
 
-            width: 12
-            height: 12
+            width: 12 * scaleFactor
+            height: 12 * scaleFactor
             rotation: 45
-
-            Connections{
+            Connections {
                 target: root
 
-                function onUpdatePos (){
-                    if(root.y < 0)
-                    {
-                        bottomRect.anchors.top = backgroundToolTip.bottom
-                        bottomRect.anchors.topMargin = -(bottomRect.width/2)
+                function onUpdatePos() {
+                    if (root.y < 0) {
+                        bottomRect.anchors.top = backgroundToolTip.bottom;
+                        bottomRect.anchors.topMargin = -(bottomRect.width / 2);
 
-                        bottomLineHide.anchors.bottom = backgroundToolTip.bottom
-                        shadow1.visible = true
-                        shadow2.visible = false
-                    }
-                    else
-                    {
-                        bottomRect.anchors.bottom = backgroundToolTip.top
-                        bottomRect.anchors.bottomMargin = -(bottomRect.width/2)
+                        bottomLineHide.anchors.bottom = backgroundToolTip.bottom;
+                        shadow1.visible = true;
+                        shadow2.visible = false;
+                    } else {
+                        bottomRect.anchors.bottom = backgroundToolTip.top;
+                        bottomRect.anchors.bottomMargin = -(bottomRect.width / 2);
 
-                        bottomLineHide.anchors.top = backgroundToolTip.top
-                        shadow1.visible = false
-                        shadow2.visible = true
+                        bottomLineHide.anchors.top = backgroundToolTip.top;
+                        shadow1.visible = false;
+                        shadow2.visible = true;
                     }
                 }
             }
@@ -116,11 +113,11 @@ ToolTip {
             visible: bottomRect.visible
         }
 
-        Rectangle{
+        Rectangle {
             id: bottomLineHide
             anchors.left: backgroundToolTip.left
             anchors.right: backgroundToolTip.right
-            height: bottomRect.height/2
+            height: bottomRect.height / 2
             color: backgroundToolTip.color
             visible: bottomRect.visible
         }

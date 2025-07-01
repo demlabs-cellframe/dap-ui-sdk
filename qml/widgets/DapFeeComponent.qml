@@ -1,24 +1,35 @@
-import QtQuick 2.4
-import QtQuick.Controls 2.5
-import QtQuick.Layouts 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 import "qrc:/widgets"
+import DapCoinCalculator
 
 Item
 {
-    property real currentValue: 0.01
-    property real spinBoxStep: 0.01
-    property real minimalValue: 0.0
+    property string currentValue: "0.01"
+    property string spinBoxStep: "0.01"
+    property string minimalValue: "0.0"
+    property string maximumValue: "100.0"
 
     property string valueName: "-"
     property int powerRound: 2
 
+    property bool editable: true
+
     property color currentColor: "#CAFC33"
     property string currentState: "Recommended"
+
+    signal valueChange()
 
     id: root
     //width: 278
     height: 82
+    
+    // Create DapCoinCalculator instance for precise calculations
+    DapCoinCalculator
+    {
+        id: coinCalculator
+    }
 
     ListModel
     {
@@ -29,11 +40,11 @@ Item
 
     property var rangeValues:
     {
-        "veryLow": 0.03,
-        "low": 0.04,
-        "middle": 0.05,
-        "high": 0.06,
-        "veryHigh": 0.07,
+        "veryLow": "0.03",
+        "low": "0.04",
+        "middle": "0.05",
+        "high": "0.06",
+        "veryHigh": "0.07",
     }
 
     // Custom SpinBox
@@ -74,7 +85,10 @@ Item
                 hoverEnabled: true
                 onClicked:
                 {
-                    stepValue(-1 * spinBoxStep)
+                    let step = calculateStep(false);
+                    let newValue = coinCalculator.subtract(currentValue, step);
+                    let clampedValue = coinCalculator.max(newValue, minimalValue);
+                    stepValue(clampedValue, 4)
                 }
             }
         }
@@ -114,13 +128,18 @@ Item
                     anchors.right: valueNameText.left
                     text: currentValue
                     font: mainFont.dapFont.regular16
-                    validator: RegExpValidator { regExp: /[0-9]*\.?[0-9]{0,18}/ }
-                    placeholderText: "0.0"
+                    regExpValidator: /[0-9]*\.?[0-9]{0,18}/
+                    inputMethodHints: CURRENT_OS === "ios" ? Qt.ImhNone : Qt.ImhFormattedNumbersOnly
+                    defaultPlaceholderText: "0.0"
                     horizontalAlignment: Text.AlignRight
                     borderWidth: 0
                     borderRadius: 0
                     placeholderColor: currTheme.gray
-                    selectByMouse: true
+                    selectByMouse: editable
+                    enabled: editable
+                    
+                    Keys.onReturnPressed: focus = false
+                    Keys.onEnterPressed: focus = false
 
                     onTextChanged:
                     {
@@ -198,7 +217,10 @@ Item
                 hoverEnabled: true
                 onClicked:
                 {
-                    stepValue(spinBoxStep)
+                    let step = calculateStep(true);
+                    let newValue = coinCalculator.add(currentValue, step);
+                    let clampedValue = coinCalculator.min(newValue, maximumValue);
+                    stepValue(clampedValue, 4)
                 }
             }
         }
@@ -233,12 +255,13 @@ Item
                     PropertyAnimation{duration: 150}
                 }
 
-                MouseArea
-                {
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onClicked: setValue(model.minValue)
-                }
+                //TODO: uncorrect value calculating
+//                MouseArea
+//                {
+//                    anchors.fill: parent
+//                    hoverEnabled: true
+//                    onClicked: setValue(model.minValue)
+//                }
             }
         }
     }
@@ -257,27 +280,80 @@ Item
         }
     }
 
-    function stepValue(step)
+    function calculateStep(forIncrease)
     {
-        var summ = mathWorker.summDouble(currentValue, step)
-        if(summ !== "") setValue(summ)
-   }
+        let stepValue = spinBoxStep
+        let value = currentValue
+
+        const thresholds = [
+            { limit: "0.00001", step: "0.000001" },  // For value <= 0.00001 step 0.000001
+            { limit: "0.0001", step: "0.00001" },    // For value <= 0.0001 step 0.00001
+            { limit: "0.001", step: "0.0001" },      // For value <= 0.001 step 0.0001
+            { limit: "0.01", step: "0.001" },        // For value <= 0.01 step 0.001
+            { limit: "0.1", step: "0.01" },          // For value <= 0.1 step 0.01
+            { limit: "999999999", step: "0.1" }      // For value > 0.1 step 0.1
+        ];
+
+        if (forIncrease)
+        {
+            //+
+            for (let i = 0; i < thresholds.length; i++)
+            {
+                if (coinCalculator.isLess(value, thresholds[i].limit))
+                {
+                    stepValue = thresholds[i].step;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            //-
+            for (let i = 0; i < thresholds.length; i++)
+            {
+                if (coinCalculator.isLessOrEqual(value, thresholds[i].limit))
+                {
+                    stepValue = thresholds[i].step;
+                    break;
+                }
+            }
+        }
+
+        // Ensure step is within valid range
+        stepValue = coinCalculator.max(coinCalculator.min(stepValue, maximumValue), minimalValue);
+
+        return stepValue;
+    }
+
+    function stepValue(numStr, precision)
+    {
+        // Round to precision using string operations to avoid floating point errors
+        let result = coinCalculator.roundToPrecision(numStr, precision);
+        
+        if(result && !coinCalculator.isEqual(result, currentValue)) 
+        {
+            setValue(result);
+        }
+    }
 
     function setValue(value)
     {
-        var number = parseFloat(value)
-        if(!isNaN(number))
+        if(coinCalculator.isValid(value))
         {
-            if( number >= minimalValue)
+            if(coinCalculator.isGreaterOrEqual(value, minimalValue) && coinCalculator.isLessOrEqual(value, maximumValue))
             {
-                currentValue = number
+                currentValue = value
                 updateState()
+                valueChange()
             }
         }
     }
 
     function updateState()
     {
+        if(statesData.count == 0)
+            return
+
         var checkSearch = false
         var idxSearch = -1
 
@@ -285,7 +361,7 @@ Item
         {
             statesData.get(i).enabled = checkSearch
 
-            if(statesData.get(i).minValue >= currentValue || checkSearch)
+            if(coinCalculator.isGreater(statesData.get(i).minValue, currentValue) || checkSearch)
                 continue;
 
             idxSearch = i
@@ -325,8 +401,7 @@ Item
         statesData.append(
                     {
                         name: "Very low",
-                        minValue: minimalValue,
-                        maxValue: rangeValues.veryLow,
+                        minValue: rangeValues.veryLow,
                         enabled: false
                     })
 
@@ -334,8 +409,7 @@ Item
         statesData.append(
                     {
                         name: "Low",
-                        minValue: rangeValues.veryLow,
-                        maxValue: rangeValues.low,
+                        minValue: rangeValues.low,
                         enabled: false
                     })
 
@@ -343,8 +417,7 @@ Item
         statesData.append(
                     {
                         name: "Recommended",
-                        minValue: rangeValues.low,
-                        maxValue: rangeValues.middle,
+                        minValue: rangeValues.middle,
                         enabled: false
                     })
 
@@ -352,8 +425,7 @@ Item
         statesData.append(
                     {
                         name: "High",
-                        minValue: rangeValues.middle,
-                        maxValue: rangeValues.high,
+                        minValue: rangeValues.high,
                         enabled: false
                     })
 
@@ -361,8 +433,7 @@ Item
         statesData.append(
                     {
                         name: "Very high",
-                        minValue: rangeValues.high,
-                        maxValue: rangeValues.veryHigh,
+                        minValue: rangeValues.veryHigh,
                         enabled: false
                     })
     }

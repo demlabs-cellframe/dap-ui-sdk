@@ -1,7 +1,8 @@
-import QtQuick 2.9
+import QtQuick
 
 Image {
-    sourceSize: Qt.size( img.sourceSize.width, img.sourceSize.height )
+    property double scaleFactor: 1.0
+    sourceSize: Qt.size( img.sourceSize.width * scaleFactor, img.sourceSize.height* scaleFactor )
 //    mipmap: true
 //    smooth: false
 

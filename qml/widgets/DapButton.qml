@@ -1,6 +1,6 @@
-import QtGraphicalEffects 1.0
-import QtQuick 2.9
-import QtQuick.Controls 2.0
+import QtQuick
+import QtQuick.Controls
+import Qt5Compat.GraphicalEffects
 
 Button
 {
@@ -65,9 +65,9 @@ Button
 
     property color defaultColor: shadowColor
 
-    property color shadowColor : currTheme.mainButtonShadow
+    property color shadowColor : currTheme.shadowColor
 //    property string shadowColor : currTheme.buttonShadow
-    property color innerShadowColor : currTheme.buttonsShadowInner
+    property color innerShadowColor : currTheme.reflection
     property color innerShadowPressColor : "#1F242F"
 
     property double opacityDropShadow: 0.44
@@ -342,3 +342,4 @@ Button
         }
     }
 }
+

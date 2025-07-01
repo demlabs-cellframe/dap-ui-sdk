@@ -4,8 +4,8 @@ import QtQuick.Controls 2.0
 CheckBox {
     id: customCheckBox
 
-    property string checkboxOn: "qrc:/Resources/" + pathTheme + "/icons/other/ic_checkbox_on.png"
-    property string checkboxOff: "qrc:/Resources/" + pathTheme + "/icons/other/ic_checkbox_off.png"
+    property string checkboxOn:  pathResources + pathTheme + "/icons/other/ic_checkbox_on.png"
+    property string checkboxOff: pathResources + pathTheme + "/icons/other/ic_checkbox_off.png"
     ///@detalis textButton Text RadioButton.
     property alias nameCheckbox: nameButton.text
     ///@detalis fontText Font setting.

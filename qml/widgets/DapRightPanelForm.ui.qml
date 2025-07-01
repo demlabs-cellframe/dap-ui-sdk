@@ -4,7 +4,7 @@
 
 import QtQuick 2.4
 import QtQuick.Controls 2.0
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 
 Page
 {
@@ -42,8 +42,8 @@ Page
         heightImageButton: 10 
         widthImageButton: 10 
         activeFrame: false
-        normalImageButton: "qrc:/resources/icons/"+pathTheme+"/close_icon.png"
-        hoverImageButton:  "qrc:/resources/icons/"+pathTheme+"/close_icon_hover.png"
+        normalImageButton: pathResources + pathTheme + "/close_icon.png"
+        hoverImageButton:  pathResources + pathTheme + "/close_icon_hover.png"
     }
 
     //Header height

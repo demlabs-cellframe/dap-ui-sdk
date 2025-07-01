@@ -1,21 +1,20 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
-import QtGraphicalEffects 1.0
+import QtQuick.Layouts
+import Qt5Compat.GraphicalEffects
 
 Item
 {
     id: mainItem
 
-    implicitHeight: 45
+    property double scaleFactor: 1.0
+    property int rightMarginIndicator: 16 * scaleFactor
+    property int leftMarginDisplayText: 16 * scaleFactor
+    property int leftMarginPopupContain: 16 * scaleFactor
+    property int rightMarginPopupContain: 16 * scaleFactor
+    property int popupBorderWidth: 1 * scaleFactor
 
-    property int rightMarginIndicator: 16
-    property int leftMarginDisplayText: 16
-    property int leftMarginPopupContain: 16
-    property int rightMarginPopupContain: 16
-    property int popupBorderWidth: 1
-
-    property int delegateHeight: 40
+    property int delegateHeight: 40 * scaleFactor
     property bool isHighPopup: false
 
     property int popupWidth: 0
@@ -29,9 +28,9 @@ Item
     property string displayTextNormalColor: currTheme.white
     property string displayTextPopupColor: currTheme.gray
 
-    property int maximumPopupHeight: 200
-    property int padding: 15
-    property int spacing: 15
+    property int maximumPopupHeight: 200 * scaleFactor
+    property int padding: 15 * scaleFactor
+    property int spacing: 15 * scaleFactor
 
     property alias model: popupListView.model
 
@@ -59,7 +58,9 @@ Item
     property string disabledIcon:""
 
     signal itemSelected(var index)
-    signal currantDisplayTextChanged(var text)
+    signal currentDisplayTextChanged(var text)
+
+    implicitHeight: 45 * scaleFactor
 
     onModelChanged:
     {
@@ -67,12 +68,14 @@ Item
               "popupListView.currentIndex", popupListView.currentIndex)
 
         if (popupListView.currentIndex < 0)
-//            displayText = getModelData(0, mainTextRole)
-            displayText = defaultText
+           displayText = getModelData(0, mainTextRole)
         else
             displayText = getModelData(popupListView.currentIndex, mainTextRole)
 
-        currantDisplayTextChanged(displayText)
+        if(displayText === "")
+            displayText = defaultText
+
+        currentDisplayTextChanged(displayText)
     }
 
     onCountChanged:
@@ -85,7 +88,10 @@ Item
         else
             displayText = getModelData(popupListView.currentIndex, mainTextRole)
 
-        currantDisplayTextChanged(displayText)
+        if(displayText === "")
+            displayText = defaultText
+
+        currentDisplayTextChanged(displayText)
     }
 
     Rectangle
@@ -122,7 +128,7 @@ Item
                 id: mainTextItem
                 Layout.fillWidth: true
 
-                text: mainItem.displayText
+                text: mainItem.displayText === "" ? defaultText : mainItem.displayText
                 font: mainItem.font
                 color: popupVisible && !isHighlightDisplayTextPopup ?
                            displayTextPopupColor : displayTextNormalColor
@@ -133,7 +139,7 @@ Item
             Image
             {
                 id: indicator
-                source: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrowDown.svg"
+                source: pathResources + pathTheme + "/icons/other/icon_arrowDown.svg"
                 rotation: popupVisible ? 180 : 0
                 mipmap: true
 
@@ -200,16 +206,9 @@ Item
     Popup
     {
         id: popup
-
-//        visible: popupVisible
-
-        scale: mainWindow.scale
-
-//        x: 0
-//        y: mainItem.height
-
+        // scale: scaleFactor
         x: -width*(1/scale-1)*0.5
-        y: isHighPopup ? -delegateHeight * (mainItem.count - 1) : mainItem.height - height*(1/scale-1)*0.5
+        y: isHighPopup ? -delegateHeight * (mainItem.count - 1) : mainItem.height - height*(1/scaleFactor-1)*0.5
 
         width: popupBackground.width
         height: popupBackground.height
@@ -347,7 +346,7 @@ Item
                 onCurrentIndexChanged:
                 {
                     displayText = getModelData(currentIndex, mainTextRole)
-                    currantDisplayTextChanged(displayText)
+                    currentDisplayTextChanged(displayText)
                     mainItem.currentIndex = currentIndex
                     if(displayText)
                     {
@@ -382,7 +381,7 @@ Item
                         id: fakeMainTextItem
                         Layout.fillWidth: true
 
-                        text: mainItem.displayText
+                        text: mainItem.displayText === "" ? defaultText : mainItem.displayText
                         font: mainItem.font
                         color: popupVisible ?
                                 displayTextPopupColor : displayTextNormalColor
@@ -393,7 +392,7 @@ Item
                     Image
                     {
                         id: fakeIndicator
-                        source: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrowDown.svg"
+                        source: pathResources + pathTheme + "/icons/other/icon_arrowDown.svg"
                         rotation: popupVisible ? 180 : 0
                         mipmap: true
 

@@ -76,7 +76,7 @@ namespace Utils
 
     int toIntValue(const QString &a_text)
     {
-        QRegExp regString("(\\d+)");
+        QRegularExpression regString("(\\d+)");
         regString.indexIn(a_text);
         return regString.cap(0).toInt();
     }

@@ -1,9 +1,11 @@
-import QtQuick 2.4
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick
+import QtQuick.Controls
+import Qt5Compat.GraphicalEffects
+
 
 TextField {
     id: root
+
     property bool bottomLineVisible: false
     property int bottomLineSpacing: 8
     property color bottomLineColor: borderColor
@@ -20,6 +22,8 @@ TextField {
     property color placeholderColor: currTheme.gray
     property color textColor: currTheme.white
     property string passwordChar: ""
+    property string defaultPlaceholderText: ""
+
 
     property int indicatorTopMargin: 0
     property bool indicatorVisible: false
@@ -29,8 +33,61 @@ TextField {
     property url indicatorSourceDisabledHover: ""
     property alias indicator: indicator
 
-    Keys.onReturnPressed: focus = false
+    property bool isActiveCopy: true
+    property bool contextMenuEnabled: false
+    property color contextMenuTextColorNormal: currTheme.white
+    property color contextMenuTextColorHover: currTheme.mainBackground
+    property color contextMenuBackgroundColorNormal: currTheme.secondaryBackground
+    property color contextMenuBackgroundColorHover: currTheme.lime
 
+
+    property var regExpValidator: /.*/
+
+    signal updateFeild()
+
+    validator: RegularExpressionValidator { regularExpression: regExpValidator}
+
+    Keys.onReturnPressed: focus = false
+    Keys.onEnterPressed: focus = false
+
+<<<<<<< HEAD
+    onPressAndHold: {
+        if(contextMenuEnabled)
+            openMenu()
+    }
+
+    onReleased: function(event){
+        if(event.button === Qt.RightButton && contextMenuEnabled)
+            openMenu()
+    }
+
+
+
+    // onEditingFinished: focus = false
+
+
+    placeholderText: root.defaultPlaceholderText
+    placeholderTextColor: root.placeholderColor
+    color: root.textColor
+    selectionColor: root.selectColor
+    selectedTextColor: root.selectTextColor
+    rightPadding: indicatorVisible ? indicator.width + 8 : 4
+
+    background: Rectangle {
+        radius: root.borderRadius
+        border.width: root.borderWidth
+        border.color: root.borderColor
+        color: root.backgroundColor
+    }
+
+    onActiveFocusChanged: {
+        // If the TextField is focused, hide the placeholder text
+        if (root.activeFocus) {
+            root.placeholderText = "";
+        } else {
+            if(root.text === "")
+                root.placeholderText = root.defaultPlaceholderText;  // Or whatever default text you want
+=======
     style: TextFieldStyle {
         textColor: root.textColor
         placeholderTextColor: root.placeholderColor
@@ -43,9 +100,16 @@ TextField {
             border.width: root.borderWidth
             border.color: root.borderColor
             color: root.backgroundColor
+>>>>>>> a4a46253ddf19e1aaaee8ef153f763048b135e89
         }
     }
 
+<<<<<<< HEAD
+        updateFeild()
+    }
+
+=======
+>>>>>>> a4a46253ddf19e1aaaee8ef153f763048b135e89
     DapImageRender {
         id: indicator
         z: 10
@@ -58,6 +122,11 @@ TextField {
         visible: root.indicatorVisible
         source: root.indicatorSourceDisabled
 
+<<<<<<< HEAD
+        sourceSize: Qt.size(24 * guiApp.scaleFactor,24 * guiApp.scaleFactor)
+
+=======
+>>>>>>> a4a46253ddf19e1aaaee8ef153f763048b135e89
         MouseArea {
             id: area
             anchors.fill: parent
@@ -91,7 +160,11 @@ TextField {
         anchors.rightMargin: root.bottomLineLeftRightMargins
         anchors.topMargin: root.bottomLineSpacing
 
+<<<<<<< HEAD
+        height: 1  * guiApp.scaleFactor
+=======
         height: 1
+>>>>>>> a4a46253ddf19e1aaaee8ef153f763048b135e89
         color: root.bottomLineColor
 
         Behavior on width {
@@ -100,5 +173,128 @@ TextField {
                 easing.type: Easing.InOutQuad
             }
         }
+    }
+
+    Connections{
+        target: Qt.inputMethod
+        function onVisibleChanged(){
+            if(!Qt.inputMethod.visible)
+            {
+                // keyboard.visible = false
+                root.focus = false
+            }
+        }
+    }
+
+    Menu {
+        id: contextMenu
+        enabled: contextMenuEnabled
+        x: cursorPosition
+        topPadding: 0
+        bottomPadding: 0
+
+        font: mainFont.dapFont.medium12
+
+        MenuItem {
+            id: cut
+            enabled: isActiveCopy
+            text: qsTr("Cut")
+            onTriggered: {
+                root.cut()
+            }
+            topPadding: 8 * guiApp.scaleFactor
+            bottomPadding: 8 * guiApp.scaleFactor
+            leftPadding: 12 * guiApp.scaleFactor
+            rightPadding: 12 * guiApp.scaleFactor
+
+            contentItem: textComponent.createObject(cut)
+            background: backgroundComponent.createObject(cut)
+
+        }
+        MenuItem {
+            id: copy
+            text: qsTr("Copy")
+            enabled: isActiveCopy
+            onTriggered: {
+                root.copy()
+            }
+            topPadding: 8 * guiApp.scaleFactor
+            bottomPadding: 8 * guiApp.scaleFactor
+            leftPadding: 12 * guiApp.scaleFactor
+            rightPadding: 12 * guiApp.scaleFactor
+
+            contentItem: textComponent.createObject(copy)
+            background: backgroundComponent.createObject(copy)
+        }
+        MenuItem {
+            id: paste
+            text: qsTr("Paste")
+            onTriggered: {
+                root.paste()
+            }
+            topPadding: 8 * guiApp.scaleFactor
+            bottomPadding: 8 * guiApp.scaleFactor
+            leftPadding: 12 * guiApp.scaleFactor
+            rightPadding: 12 * guiApp.scaleFactor
+
+            contentItem: textComponent.createObject(paste)
+            background: backgroundComponent.createObject(paste)
+        }
+
+        background:
+            Item{
+            implicitWidth: 90 * guiApp.scaleFactor
+
+            Rectangle
+            {
+                id: background
+                anchors.fill: parent
+                radius: 4
+                color: backgroundColor
+            }
+            DropShadow {
+                id: shadow
+                anchors.fill: background
+                horizontalOffset: 2
+                verticalOffset: 2
+                radius: 4
+                samples: 10
+                cached: true
+                color: "#000000"
+                opacity: 0.56
+                source: background
+                }
+        }
+
+        Component{
+            id: textComponent
+            Text {
+                text: parent.text
+                font: contextMenu.font
+                opacity: enabled ? 1.0 : 0.3
+                color: parent.hovered ? contextMenuTextColorHover : contextMenuTextColorNormal/*
+                           menuItem.down ? contentTextColorDown : */
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignVCenter
+            }
+        }
+
+        Component{
+            id: backgroundComponent
+                Rectangle {
+                    anchors.fill: parent
+                    anchors.margins: 4 * guiApp.scaleFactor
+                    radius: 4
+                    opacity: enabled ? 1 : 0.3
+                    color: parent.hovered ? contextMenuBackgroundColorHover : contextMenuBackgroundColorNormal
+                }
+
+        }
+    }
+
+    function openMenu()
+    {
+        contextMenu.open()
+        // forceActiveFocus()
     }
 }
