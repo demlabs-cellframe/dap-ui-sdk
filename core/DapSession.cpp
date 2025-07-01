@@ -654,6 +654,10 @@ void DapSession::onAuthorize()
                     QString licenseTermTill = m_xmlStreamReader.readElementText();
                     qDebug() << "Parsed ts_active_till: " << licenseTermTill;
 
+                    if (licenseTermTill == "0"){
+                      licenseTermTill = "-1";
+                    }
+
                     DapServiceDataLocal::instance()->serialKeyData()->setLicenseTermTill(licenseTermTill);
 
                     qDebug() << "ts_active_till (set): "

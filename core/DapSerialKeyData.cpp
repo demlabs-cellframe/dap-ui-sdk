@@ -75,6 +75,7 @@ void DapSerialKeyData::reset()
 {
     this->setActivated(false);
     this->setSerialKey("");
+    this->m_licenseTermTill = QDateTime::fromTime_t(0);
 }
 
 const QDateTime &DapSerialKeyData::licenseTermTill() const
@@ -84,9 +85,6 @@ const QDateTime &DapSerialKeyData::licenseTermTill() const
 
 int DapSerialKeyData::daysLeft()
 {
-    if (this->licenseTermTill().toTime_t() == 0)
-        return -1;
-
     return QDateTime::currentDateTime().daysTo(this->licenseTermTill());
 }
 
@@ -94,23 +92,26 @@ QString DapSerialKeyData::daysLeftString()
 {
     qDebug() << "[daysLeftString] Method called";
 
-    QString text;
-
-    qDebug() << "[daysLeftString] License is activated";
+    if (m_licenseTermTill.toSecsSinceEpoch() == 0){
+      qDebug() << "[daysLeftString] Expired license";
+      return QObject::tr("");
+    }else if (m_licenseTermTill.toSecsSinceEpoch() == -1){
+      qDebug() << "[daysLeftString] Unlimited license";
+      return QObject::tr("Unlimited");
+    }
 
     int days = this->daysLeft();
     qDebug() << "[daysLeftString] Days left:" << days;
 
-    switch (days) {
-    case -1:
-        qDebug() << "[daysLeftString] Unlimited license";
-        return QObject::tr("Unlimited");
-    case 1:
-        qDebug() << "[daysLeftString] 1 day left";
-        return QObject::tr("%1 day left").arg(days);
-    default:
-        qDebug() << "[daysLeftString] Multiple days left:" << days;
-        return QObject::tr("%1 days left").arg(days);
+    if (days < 0){
+      qDebug() << "[daysLeftString] Expired license";
+      return QObject::tr("");
+    } else if (days == 1){
+      qDebug() << "[daysLeftString] 1 day left";
+      return QObject::tr("%1 day left").arg(days);
+    } else {
+      qDebug() << "[daysLeftString] Multiple days left:" << days;
+      return QObject::tr("%1 days left").arg(days);
     }
 }
 
@@ -118,8 +119,17 @@ void DapSerialKeyData::setLicenseTermTill(const QString &a_date)
 {
     qDebug() << "[setLicenseTermTill] Received a_date:" << a_date;
 
-    QDateTime tempDate = QDateTime::fromTime_t(a_date.toUInt());
+    QDateTime tempDate;
+    int intDate = a_date.toInt();
+
+    tempDate.setSecsSinceEpoch(intDate);
+
     qDebug() << "[setLicenseTermTill] Converted a_date to QDateTime:" << tempDate;
+
+    if (tempDate == this->m_licenseTermTill){
+        qDebug() << "[setLicenseTermTill] Converted a_date the same";
+        return;
+    }
 
     this->m_licenseTermTill = tempDate;
     qDebug() << "[setLicenseTermTill] Updated m_licenseTermTill to:" << this->m_licenseTermTill;

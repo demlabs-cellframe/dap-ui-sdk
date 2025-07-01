@@ -1,6 +1,9 @@
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
 #include "qjsondocument.h"
+#include <QDate>
+#include <QDateTime>
+#include <QDebug>
 
 DapDataLocal::DapDataLocal()
     :DapBaseDataLocal()
@@ -47,7 +50,103 @@ void DapDataLocal::saveValueSetting(const QString &setting, const QVariant &valu
     if(m_settingsMap.value(setting) != value) {
         m_settingsMap[setting] = value;
         if(setting != SETTING_THEME) {
-            QJsonObject result{{setting, QJsonValue::fromVariant(value)}};
+            QJsonObject result;
+            
+            // Special handling for NOTIFICATION_HISTORY to apply filtering before sending to service
+            if (setting == NOTIFICATION_HISTORY) {
+                // Apply filtering similar to settingsToJson() method
+                QByteArray source = value.toByteArray();
+                if (!source.isEmpty()) {
+                    // Parse current notification history
+                    QJsonArray originalNotifications = QJsonDocument::fromJson(source).array();
+                    QJsonArray filteredNotifications;
+                    
+                    // Filter notifications: remove older than 3 days and limit to 50 entries
+                    QDate threeDaysAgo = QDate::currentDate().addDays(-3);
+                    int notificationCount = 0;
+                    const int MAX_NOTIFICATIONS = 50;
+                    
+                    // Iterate through notifications and apply filters
+                    for (const auto &item : qAsConst(originalNotifications))
+                    {
+                        QJsonObject notification = item.toObject();
+                        
+                        // Check if this is a title entry
+                        bool isTitle = notification.value("isTitle").toBool();
+                        
+                        if (isTitle)
+                        {
+                            // For title entries, check the date field
+                            QString dateString = notification.value("date").toString();
+                            if (!dateString.isEmpty())
+                            {
+                                QDate titleDate = QDate::fromString(dateString, "dd.MM.yyyy");
+                                if (titleDate.isValid() && titleDate >= threeDaysAgo)
+                                {
+                                    filteredNotifications.append(notification);
+                                    notificationCount++;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // For notification entries, check the created field
+                            QString createdString = notification.value("created").toString();
+                            if (!createdString.isEmpty())
+                            {
+                                QDateTime createdDateTime = QDateTime::fromString(createdString, "hh:mm:ss dd.MM.yyyy");
+                                if (createdDateTime.isValid() && createdDateTime.date() >= threeDaysAgo)
+                                {
+                                    filteredNotifications.append(notification);
+                                    notificationCount++;
+                                }
+                            }
+                        }
+                        
+                        // Stop if we've reached the maximum number of notifications
+                        if (notificationCount >= MAX_NOTIFICATIONS)
+                        {
+                            qDebug() << "[DapDataLocal][saveValueSetting] NOTIFICATION_HISTORY truncated to" << MAX_NOTIFICATIONS << "entries";
+                            break;
+                        }
+                    }
+                    
+                    // Convert filtered notifications back to compact JSON
+                    QByteArray filteredResult = QJsonDocument(filteredNotifications).toJson(QJsonDocument::JsonFormat::Compact);
+                    
+                    // Check if the result is too large and truncate further if needed
+                    const int MAX_NOTIFICATION_JSON_SIZE = 8000; // Leave some room for other settings
+                    if (filteredResult.size() > MAX_NOTIFICATION_JSON_SIZE)
+                    {
+                        qWarning() << "[DapDataLocal][saveValueSetting] NOTIFICATION_HISTORY JSON too large (" 
+                                   << filteredResult.size() << " bytes), truncating further";
+                        
+                        // Remove entries from the end until size is acceptable
+                        while (filteredNotifications.size() > 0 && filteredResult.size() > MAX_NOTIFICATION_JSON_SIZE)
+                        {
+                            filteredNotifications.removeLast();
+                            filteredResult = QJsonDocument(filteredNotifications).toJson(QJsonDocument::JsonFormat::Compact);
+                        }
+                        
+                        qDebug() << "[DapDataLocal][saveValueSetting] NOTIFICATION_HISTORY truncated to" 
+                                 << filteredNotifications.size() << "entries, size:" << filteredResult.size() << "bytes";
+                    }
+                    
+                    // Update stored value with filtered data
+                    m_settingsMap[setting] = filteredResult;
+                    
+                    result.insert(setting, QJsonValue::fromVariant(QVariant(filteredResult)));
+                }
+                else
+                {
+                    result.insert(setting, QJsonValue::fromVariant(value));
+                }
+            }
+            else
+            {
+                result.insert(setting, QJsonValue::fromVariant(value));
+            }
+            
             emit valueDataLocalUpdated(QJsonObject{{JSON_SETTINGS_KEY, result}});
         } else {
             DapBaseDataLocal::saveValueSetting(setting,value);
@@ -141,9 +240,95 @@ void DapDataLocal::setSettings(const QJsonObject &json)
             }
             else if(key == NOTIFICATION_HISTORY || key == NODE_ORDER_HISTORY)
             {
-                auto jsonArray = QJsonDocument::fromJson(json[key].toString().toUtf8());
-                QByteArray result = QJsonDocument (jsonArray).toJson (QJsonDocument::JsonFormat::Compact);
-                m_settingsMap[key] = DapUtils::toByteArray(result);
+                if (key == NOTIFICATION_HISTORY) {
+                    // Apply filtering for NOTIFICATION_HISTORY
+                    QString notificationString = json[key].toString();
+                    auto jsonArray = QJsonDocument::fromJson(notificationString.toUtf8());
+                    QJsonArray originalNotifications = jsonArray.array();
+                    QJsonArray filteredNotifications;
+                    
+                    // Filter notifications: remove older than 3 days and limit to 50 entries
+                    QDate threeDaysAgo = QDate::currentDate().addDays(-3);
+                    int notificationCount = 0;
+                    const int MAX_NOTIFICATIONS = 50;
+                    
+                    // Iterate through notifications and apply filters
+                    for (const auto &item : qAsConst(originalNotifications))
+                    {
+                        QJsonObject notification = item.toObject();
+                        
+                        // Check if this is a title entry
+                        bool isTitle = notification.value("isTitle").toBool();
+                        
+                        if (isTitle)
+                        {
+                            // For title entries, check the date field
+                            QString dateString = notification.value("date").toString();
+                            if (!dateString.isEmpty())
+                            {
+                                QDate titleDate = QDate::fromString(dateString, "dd.MM.yyyy");
+                                if (titleDate.isValid() && titleDate >= threeDaysAgo)
+                                {
+                                    filteredNotifications.append(notification);
+                                    notificationCount++;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // For notification entries, check the created field
+                            QString createdString = notification.value("created").toString();
+                            if (!createdString.isEmpty())
+                            {
+                                QDateTime createdDateTime = QDateTime::fromString(createdString, "hh:mm:ss dd.MM.yyyy");
+                                if (createdDateTime.isValid() && createdDateTime.date() >= threeDaysAgo)
+                                {
+                                    filteredNotifications.append(notification);
+                                    notificationCount++;
+                                }
+                            }
+                        }
+                        
+                        // Stop if we've reached the maximum number of notifications
+                        if (notificationCount >= MAX_NOTIFICATIONS)
+                        {
+                            qDebug() << "[DapDataLocal][setSettings] NOTIFICATION_HISTORY truncated to" << MAX_NOTIFICATIONS << "entries";
+                            break;
+                        }
+                    }
+                    
+                    // Convert filtered notifications back to compact JSON
+                    QByteArray filteredResult = QJsonDocument(filteredNotifications).toJson(QJsonDocument::JsonFormat::Compact);
+                    
+                    // Check if the result is too large and truncate further if needed
+                    const int MAX_NOTIFICATION_JSON_SIZE = 8000; // Leave some room for other settings
+                    if (filteredResult.size() > MAX_NOTIFICATION_JSON_SIZE)
+                    {
+                        qWarning() << "[DapDataLocal][setSettings] NOTIFICATION_HISTORY JSON too large (" 
+                                   << filteredResult.size() << " bytes), truncating further";
+                        
+                        // Remove entries from the end until size is acceptable
+                        while (filteredNotifications.size() > 0 && filteredResult.size() > MAX_NOTIFICATION_JSON_SIZE)
+                        {
+                            filteredNotifications.removeLast();
+                            filteredResult = QJsonDocument(filteredNotifications).toJson(QJsonDocument::JsonFormat::Compact);
+                        }
+                        
+                        qDebug() << "[DapDataLocal][setSettings] NOTIFICATION_HISTORY truncated to" 
+                                 << filteredNotifications.size() << "entries, size:" << filteredResult.size() << "bytes";
+                    }
+                    
+                    m_settingsMap[key] = DapUtils::toByteArray(filteredResult);
+                    
+                    qDebug() << "[DapDataLocal][setSettings] NOTIFICATION_HISTORY filtered:" 
+                             << originalNotifications.size() << "->" << filteredNotifications.size() << "entries";
+                }
+                else {
+                    // Handle NODE_ORDER_HISTORY as before
+                    auto jsonArray = QJsonDocument::fromJson(json[key].toString().toUtf8());
+                    QByteArray result = QJsonDocument (jsonArray).toJson (QJsonDocument::JsonFormat::Compact);
+                    m_settingsMap[key] = DapUtils::toByteArray(result);
+                }
             }
             else
             {

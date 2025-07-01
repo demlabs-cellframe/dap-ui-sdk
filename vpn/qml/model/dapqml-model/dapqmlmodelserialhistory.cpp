@@ -1,7 +1,5 @@
 /* INCLUDES */
 #include "dapqmlmodelserialhistory.h"
-#include "DapDataLocal.h"
-#include "DapSerialKeyHistory.h"
 
 /* VARS */
 static DapQmlModelSerialHistory *__inst = nullptr;
@@ -72,12 +70,11 @@ QVariant DapQmlModelSerialHistory::data(const QModelIndex &index, int role) cons
     return QVariant();
 
   /* check boundaries */
-  auto &list   = *DapDataLocal::instance()->serialKeyHistory();
-  if (index.row() >= list.size())
+  if (index.row() >= s_history->size())
     return QVariant();
 
   /* return value */
-  auto item   = list[index.row()];
+  auto item   = (*s_history)[index.row()];
   return item;
 }
 
@@ -94,10 +91,8 @@ QHash<int, QByteArray> DapQmlModelSerialHistory::roleNames() const
  * SLOTS
  *******************************************/
 
-void DapQmlModelSerialHistory::slotSetup()
+void DapQmlModelSerialHistory::slotSetup(DapCmdDataLocal * pCmdDataLocal)
 {
-  beginResetModel();
-
 //  *s_history  = QStringList{
 //      "keytest1",
 //      "keytest2",
@@ -122,9 +117,29 @@ void DapQmlModelSerialHistory::slotSetup()
 //      "keytest21",
 //  };
 
-  auto history  = DapDataLocal::instance()->serialKeyHistory();
-  *s_history  = history->list();
-  endResetModel();
+  m_pCmdDataLocal = pCmdDataLocal;
+
+  QObject::connect(pCmdDataLocal, &DapCmdDataLocal::sigGotValue, [this](QString name, QVariant value, const int a_msgId) {
+      Q_UNUSED(a_msgId);
+      if (name == "serial_history_key")
+      {
+          beginResetModel();
+
+          auto source = value.toList();
+
+          QStringList result;
+          for (const auto &key : source)
+              result << key.toString();
+
+          *s_history = result;
+          endResetModel();
+      }
+  });
+}
+
+void DapQmlModelSerialHistory::update()
+{
+    m_pCmdDataLocal->requestValue("serial_history_key");
 }
 
 /*-----------------------------------------*/

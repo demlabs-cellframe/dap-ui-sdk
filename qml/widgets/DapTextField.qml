@@ -50,6 +50,7 @@ TextField {
     Keys.onReturnPressed: focus = false
     Keys.onEnterPressed: focus = false
 
+<<<<<<< HEAD
     onPressAndHold: {
         if(contextMenuEnabled)
             openMenu()
@@ -86,11 +87,29 @@ TextField {
         } else {
             if(root.text === "")
                 root.placeholderText = root.defaultPlaceholderText;  // Or whatever default text you want
-        }
+=======
+    style: TextFieldStyle {
+        textColor: root.textColor
+        placeholderTextColor: root.placeholderColor
+        selectionColor: root.selectColor
+        selectedTextColor: root.selectTextColor
+        padding.right: indicatorVisible ? indicator.width + 8 : 4
 
+        background: Rectangle {
+            radius: root.borderRadius
+            border.width: root.borderWidth
+            border.color: root.borderColor
+            color: root.backgroundColor
+>>>>>>> a4a46253ddf19e1aaaee8ef153f763048b135e89
+        }
+    }
+
+<<<<<<< HEAD
         updateFeild()
     }
 
+=======
+>>>>>>> a4a46253ddf19e1aaaee8ef153f763048b135e89
     DapImageRender {
         id: indicator
         z: 10
@@ -103,8 +122,11 @@ TextField {
         visible: root.indicatorVisible
         source: root.indicatorSourceDisabled
 
+<<<<<<< HEAD
         sourceSize: Qt.size(24 * guiApp.scaleFactor,24 * guiApp.scaleFactor)
 
+=======
+>>>>>>> a4a46253ddf19e1aaaee8ef153f763048b135e89
         MouseArea {
             id: area
             anchors.fill: parent
@@ -138,7 +160,11 @@ TextField {
         anchors.rightMargin: root.bottomLineLeftRightMargins
         anchors.topMargin: root.bottomLineSpacing
 
+<<<<<<< HEAD
         height: 1  * guiApp.scaleFactor
+=======
+        height: 1
+>>>>>>> a4a46253ddf19e1aaaee8ef153f763048b135e89
         color: root.bottomLineColor
 
         Behavior on width {

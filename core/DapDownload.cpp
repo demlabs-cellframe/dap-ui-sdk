@@ -31,6 +31,11 @@ void DapDownload::startDownload(const QString& a_url, const QString& a_pack)
     sendRequest();
 }
 
+void DapDownload::removeDownload(const QString& downloadFileName)
+{
+    QFile::remove(downloadFileName);
+}
+
 void DapDownload::sendRequest()
 {
     QNetworkRequest request;

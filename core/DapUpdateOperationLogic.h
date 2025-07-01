@@ -27,6 +27,9 @@ public:
 protected:
     bool m_downloadError;
     QString updateApp();
+
+signals:
+    void updateComplete();
 };
 
 #endif // DAPUPDATEOPERATIONLOGIC_H
