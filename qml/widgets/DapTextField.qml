@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Controls
 import Qt5Compat.GraphicalEffects
 
-
 TextField {
     id: root
 
@@ -24,7 +23,6 @@ TextField {
     property string passwordChar: ""
     property string defaultPlaceholderText: ""
 
-
     property int indicatorTopMargin: 0
     property bool indicatorVisible: false
     property url indicatorSourceEnabled: ""
@@ -40,31 +38,28 @@ TextField {
     property color contextMenuBackgroundColorNormal: currTheme.secondaryBackground
     property color contextMenuBackgroundColorHover: currTheme.lime
 
-
     property var regExpValidator: /.*/
 
-    signal updateFeild()
+    signal updateFeild
 
-    validator: RegularExpressionValidator { regularExpression: regExpValidator}
+    validator: RegularExpressionValidator {
+        regularExpression: regExpValidator
+    }
 
     Keys.onReturnPressed: focus = false
     Keys.onEnterPressed: focus = false
 
-<<<<<<< HEAD
     onPressAndHold: {
-        if(contextMenuEnabled)
-            openMenu()
+        if (contextMenuEnabled)
+            openMenu();
     }
 
-    onReleased: function(event){
-        if(event.button === Qt.RightButton && contextMenuEnabled)
-            openMenu()
+    onReleased: function (event) {
+        if (event.button === Qt.RightButton && contextMenuEnabled)
+            openMenu();
     }
-
-
 
     // onEditingFinished: focus = false
-
 
     placeholderText: root.defaultPlaceholderText
     placeholderTextColor: root.placeholderColor
@@ -85,31 +80,13 @@ TextField {
         if (root.activeFocus) {
             root.placeholderText = "";
         } else {
-            if(root.text === "")
+            if (root.text === "")
                 root.placeholderText = root.defaultPlaceholderText;  // Or whatever default text you want
-=======
-    style: TextFieldStyle {
-        textColor: root.textColor
-        placeholderTextColor: root.placeholderColor
-        selectionColor: root.selectColor
-        selectedTextColor: root.selectTextColor
-        padding.right: indicatorVisible ? indicator.width + 8 : 4
-
-        background: Rectangle {
-            radius: root.borderRadius
-            border.width: root.borderWidth
-            border.color: root.borderColor
-            color: root.backgroundColor
->>>>>>> a4a46253ddf19e1aaaee8ef153f763048b135e89
         }
+
+        updateFeild();
     }
 
-<<<<<<< HEAD
-        updateFeild()
-    }
-
-=======
->>>>>>> a4a46253ddf19e1aaaee8ef153f763048b135e89
     DapImageRender {
         id: indicator
         z: 10
@@ -122,11 +99,8 @@ TextField {
         visible: root.indicatorVisible
         source: root.indicatorSourceDisabled
 
-<<<<<<< HEAD
-        sourceSize: Qt.size(24 * guiApp.scaleFactor,24 * guiApp.scaleFactor)
+        sourceSize: Qt.size(24 * guiApp.scaleFactor, 24 * guiApp.scaleFactor)
 
-=======
->>>>>>> a4a46253ddf19e1aaaee8ef153f763048b135e89
         MouseArea {
             id: area
             anchors.fill: parent
@@ -135,8 +109,8 @@ TextField {
             onEntered: updateIndicator(true)
             onExited: updateIndicator(false)
             onClicked: {
-                indicator.isActive = !indicator.isActive
-                updateIndicator(area.containsMouse)
+                indicator.isActive = !indicator.isActive;
+                updateIndicator(area.containsMouse);
             }
         }
     }
@@ -160,11 +134,7 @@ TextField {
         anchors.rightMargin: root.bottomLineLeftRightMargins
         anchors.topMargin: root.bottomLineSpacing
 
-<<<<<<< HEAD
-        height: 1  * guiApp.scaleFactor
-=======
-        height: 1
->>>>>>> a4a46253ddf19e1aaaee8ef153f763048b135e89
+        height: 1 * guiApp.scaleFactor
         color: root.bottomLineColor
 
         Behavior on width {
@@ -175,13 +145,12 @@ TextField {
         }
     }
 
-    Connections{
+    Connections {
         target: Qt.inputMethod
-        function onVisibleChanged(){
-            if(!Qt.inputMethod.visible)
-            {
+        function onVisibleChanged() {
+            if (!Qt.inputMethod.visible) {
                 // keyboard.visible = false
-                root.focus = false
+                root.focus = false;
             }
         }
     }
@@ -200,7 +169,7 @@ TextField {
             enabled: isActiveCopy
             text: qsTr("Cut")
             onTriggered: {
-                root.cut()
+                root.cut();
             }
             topPadding: 8 * guiApp.scaleFactor
             bottomPadding: 8 * guiApp.scaleFactor
@@ -209,14 +178,13 @@ TextField {
 
             contentItem: textComponent.createObject(cut)
             background: backgroundComponent.createObject(cut)
-
         }
         MenuItem {
             id: copy
             text: qsTr("Copy")
             enabled: isActiveCopy
             onTriggered: {
-                root.copy()
+                root.copy();
             }
             topPadding: 8 * guiApp.scaleFactor
             bottomPadding: 8 * guiApp.scaleFactor
@@ -230,7 +198,7 @@ TextField {
             id: paste
             text: qsTr("Paste")
             onTriggered: {
-                root.paste()
+                root.paste();
             }
             topPadding: 8 * guiApp.scaleFactor
             bottomPadding: 8 * guiApp.scaleFactor
@@ -241,12 +209,10 @@ TextField {
             background: backgroundComponent.createObject(paste)
         }
 
-        background:
-            Item{
+        background: Item {
             implicitWidth: 90 * guiApp.scaleFactor
 
-            Rectangle
-            {
+            Rectangle {
                 id: background
                 anchors.fill: parent
                 radius: 4
@@ -263,10 +229,10 @@ TextField {
                 color: "#000000"
                 opacity: 0.56
                 source: background
-                }
+            }
         }
 
-        Component{
+        Component {
             id: textComponent
             Text {
                 text: parent.text
@@ -279,22 +245,20 @@ TextField {
             }
         }
 
-        Component{
+        Component {
             id: backgroundComponent
-                Rectangle {
-                    anchors.fill: parent
-                    anchors.margins: 4 * guiApp.scaleFactor
-                    radius: 4
-                    opacity: enabled ? 1 : 0.3
-                    color: parent.hovered ? contextMenuBackgroundColorHover : contextMenuBackgroundColorNormal
-                }
-
+            Rectangle {
+                anchors.fill: parent
+                anchors.margins: 4 * guiApp.scaleFactor
+                radius: 4
+                opacity: enabled ? 1 : 0.3
+                color: parent.hovered ? contextMenuBackgroundColorHover : contextMenuBackgroundColorNormal
+            }
         }
     }
 
-    function openMenu()
-    {
-        contextMenu.open()
-        // forceActiveFocus()
+    function openMenu() {
+        contextMenu.open();
+    // forceActiveFocus()
     }
 }
