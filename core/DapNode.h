@@ -21,6 +21,7 @@
 
 #include <QStateMachine>
 #include <QState>
+#include <QTimer>
 
 void orderListFiltr(const QJsonArray& in, QJsonArray& out, QStringList keys);
 
@@ -161,7 +162,6 @@ private:
     QString m_minPrice;
     QString m_maxPrice;
     QString m_srvUid;
-    QString m_fee;
     QString m_netId;
     NodeInfo m_nodeInfo;
     QStringList m_listKeys;
@@ -197,6 +197,14 @@ private:
 
     bool nodeDetected = false;
     // transaction certificate name
+    
+    // Timeouts for detaching from hanging on order list retrieval
+    QTimer* m_orderListTimeout = nullptr;
+    QTimer* m_listKeysTimeout = nullptr;
+    
+    // Timeouts for detaching from hanging on fee retrieval
+    QTimer* m_feeTimeout = nullptr;
+    QTimer* m_feeIsolatedTimeout = nullptr;
 
 
 public slots:

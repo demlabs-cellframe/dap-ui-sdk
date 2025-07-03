@@ -115,6 +115,7 @@ QJsonObject DapCmdNode::transformKeys(const QJsonObject& inputObj) {
 
 void DapCmdNode::sendOrderList(const QJsonArray& orderList) {
     DEBUGINFO << __PRETTY_FUNCTION__;
+    qDebug() << "🔍 [FILTER DEBUG] DapCmdNode::sendOrderList: Input orders count =" << orderList.size();
 
     QJsonArray transformedOrderList;
     for (const auto& order : orderList) {
@@ -123,6 +124,8 @@ void DapCmdNode::sendOrderList(const QJsonArray& orderList) {
         transformedOrderList.append(transformedOrder);
     }
 
+    qDebug() << "🔍 [FILTER DEBUG] DapCmdNode::sendOrderList: Transformed orders count =" << transformedOrderList.size();
+    
     QJsonObject response;
     response["order_list"] = transformedOrderList;
     sendCmd(&response);
@@ -267,7 +270,6 @@ void DapCmdNode::handle(const QJsonObject* params)
         QString nodeAddress  = oi.value("nodeAddress").toString();
         QString network      = params->value ("network").toString();
         qDebug() << "start_connect_by_order" << oi;
-        m_nocdbMode = true;
         qDebug() << "Emitting connectByOrder";
         emit connectByOrder(srvUid, nodeAddress, orderHash, network);
     }

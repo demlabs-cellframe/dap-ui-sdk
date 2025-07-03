@@ -14,7 +14,7 @@
 ///Adjustments were made, std::list was replaced with List ,and the reverse graph was made to close the line.
 /// You need to redo and refactor the code.
 ///
-// Класс для хранения и отрисовки меток скорости на графике.
+// Class for storing and drawing speed marks on the graph.
 class Schedule
 {
     QList<SheduleElement> m_elems;

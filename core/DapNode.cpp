@@ -25,6 +25,41 @@ DapNode:: DapNode(QObject * obj, int requestTimeout) :
     m_stm(new NodeConnectStateMachine)
 {
     web3 = new DapNodeWeb3();
+    
+    // Initialize timeouts for detaching from hanging on order list retrieval
+    m_orderListTimeout = new QTimer(this);
+    m_orderListTimeout->setSingleShot(true);
+    m_orderListTimeout->setInterval(15000); // 15 seconds
+    connect(m_orderListTimeout, &QTimer::timeout, this, [this]() {
+        qDebug() << "[Order List Detach] Order list request timeout, returning to initial state";
+        emit errorDetected();
+    });
+    
+    m_listKeysTimeout = new QTimer(this);
+    m_listKeysTimeout->setSingleShot(true);
+    m_listKeysTimeout->setInterval(10000); // 10 seconds
+    connect(m_listKeysTimeout, &QTimer::timeout, this, [this]() {
+        qDebug() << "[Order List Detach] List keys request timeout, proceeding to order list";
+        emit sigListKeysReceived();
+    });
+    
+    // Initialize timeouts for detaching from hanging on fee retrieval
+    m_feeTimeout = new QTimer(this);
+    m_feeTimeout->setSingleShot(true);
+    m_feeTimeout->setInterval(12000); // 12 seconds
+    connect(m_feeTimeout, &QTimer::timeout, this, [this]() {
+        qDebug() << "[Fee Debug] Fee request timeout, proceeding to next state";
+        emit sigFeeReceived();
+    });
+    
+    m_feeIsolatedTimeout = new QTimer(this);
+    m_feeIsolatedTimeout->setSingleShot(true);
+    m_feeIsolatedTimeout->setInterval(12000); // 12 seconds
+    connect(m_feeIsolatedTimeout, &QTimer::timeout, this, [this]() {
+        qDebug() << "[Fee Debug] Fee isolated request timeout, returning to initial state";
+        emit sigFeeReceived();
+    });
+    
     initWeb3Connections();
     initStmTransitions();
     initStmStates();
@@ -211,7 +246,7 @@ void DapNode::initStmTransitions()
     m_stm->getWallets.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
 
-    // get wallets -> node сonnection
+    // get wallets -> node connection
     m_stm->getWallets.addTransition(web3, &DapNodeWeb3::sigIncorrectId,
     &m_stm->nodeConnection);
 
@@ -305,6 +340,7 @@ void DapNode::initStmStates()
     // initial state
     connect(&m_stm->initialState, &QState::entered, this, [=](){
         DEBUGINFO << "&initialState, &QState::entered";
+        qDebug() << "[Order List Debug] Entered initialState - ready for new requests";
         emit waitingCommand();
         // autostart node detection
         // startCheckingNodeRequest();
@@ -356,11 +392,26 @@ void DapNode::initStmStates()
     });
     // get fee
     connect (&m_stm->getFee, &QState::entered, this, [=](){
+        qDebug() << "[Fee Debug] Entering getFee state, starting timeout for network:" << m_networkName;
+        m_feeTimeout->start();
         web3->getFeeRequest(m_networkName);
     });
+    
+    connect (&m_stm->getFee, &QState::exited, this, [=](){
+        qDebug() << "[Fee Debug] Exiting getFee state, stopping timeout";
+        m_feeTimeout->stop();
+    });
+    
     // get fee isolated
     connect (&m_stm->getFeeIsolated, &QState::entered, this, [=](){
+        qDebug() << "[Fee Debug] Entering getFeeIsolated state, starting timeout for network:" << m_networkName;
+        m_feeIsolatedTimeout->start();
         web3->getFeeRequest (m_networkName);
+    });
+    
+    connect (&m_stm->getFeeIsolated, &QState::exited, this, [=](){
+        qDebug() << "[Fee Debug] Exiting getFeeIsolated state, stopping timeout";
+        m_feeIsolatedTimeout->stop();
     });
 
     connect (&m_stm->getNetId, &QState::entered, this, [=](){
@@ -383,8 +434,7 @@ void DapNode::initStmStates()
                         m_keyPath,
                         m_tokenName,
                         m_value,
-                        m_unit,
-                        m_fee);
+                        m_unit);
     });
     // mempool check
     connect(&m_stm->mempoolTxHashRequest, &QState::entered, this, [=](){
@@ -413,17 +463,32 @@ void DapNode::initStmStates()
 
     // get keys
     connect(&m_stm->getListKeys, &QState::entered, this, [=](){
+        qDebug() << "[Order List Debug] SUCCESS: Transition initialState → getListKeys worked!";
+        qDebug() << "[Order List Detach] Entering getListKeys state, starting timeout";
+        m_listKeysTimeout->start();
         web3->getListKeysRequest(m_networkName);
+    });
+    
+    connect(&m_stm->getListKeys, &QState::exited, this, [=](){
+        qDebug() << "[Order List Detach] Exiting getListKeys state, stopping timeout";
+        m_listKeysTimeout->stop();
     });
 
     // get orders list
     connect(&m_stm->getOrderList, &QState::entered, this, [=](){
+        qDebug() << "[Order List Detach] Entering getOrderList state, starting timeout";
+        m_orderListTimeout->start();
         web3->DapNodeWeb3::getOrdersListRequest(
                     m_networkName,
                     m_tokenName,
                     m_minPrice,
                     m_maxPrice,
                     m_unit);
+    });
+    
+    connect(&m_stm->getOrderList, &QState::exited, this, [=](){
+        qDebug() << "[Order List Detach] Exiting getOrderList state, stopping timeout";
+        m_orderListTimeout->stop();
     });
 
     connect(&m_stm->getNodeConnectionData, &QState::entered, this, [=](){
@@ -489,13 +554,21 @@ void DapNode::initWeb3Connections()
     });
     // list keys ready
     connect(web3, &DapNodeWeb3::sigListKeys, this, [=](QStringList listKeys) {
+        qDebug() << "🔍 [FILTER DEBUG] DapNode: Received listKeys count =" << listKeys.size();
+        qDebug() << "🔍 [FILTER DEBUG] DapNode: Keys list =" << listKeys;
+        qDebug() << "[Order List Detach] List keys received successfully, stopping timeout";
+        m_listKeysTimeout->stop();
         m_listKeys = listKeys;
         emit sigListKeysReceived();
     });
     // order list ready
     connect(web3, &DapNodeWeb3::sigOrderList, this, [=](QJsonArray ordersList) {
+        qDebug() << "🔍 [FILTER DEBUG] DapNode: Received ordersList count =" << ordersList.size();
+        qDebug() << "[Order List Detach] Order list received successfully, stopping timeout";
+        m_orderListTimeout->stop();
         QJsonArray orders;
         orderListFiltr(ordersList, orders, m_listKeys);
+        qDebug() << "🔍 [FILTER DEBUG] DapNode: After filtering orders count =" << orders.size();
         emit sigOrderListReceived();
         emit sigOrderListReady(orders); //emit sigOrderListReady(orders);
     });
@@ -505,16 +578,27 @@ void DapNode::initWeb3Connections()
     });
 
     //connect(web3, &DapNodeWeb3::sigOrderList, this, &DapNode::sigOrderListReady);
-    // recieved fee
-    connect(web3, &DapNodeWeb3::sigFee, this, [=](QString fee){
-        m_fee = fee;
-        emit sigFeeReceived();
-    });
     connect (web3, &DapNodeWeb3::sigFeeData,
              this, [=] (const QJsonObject &a_data)
     {
-      if (m_stm->getFeeIsolated.active())
+      qDebug() << "[Fee Debug] sigFeeData received, getFeeIsolated active:" << m_stm->getFeeIsolated.active() 
+               << "getFee active:" << m_stm->getFee.active();
+      
+      if (m_stm->getFeeIsolated.active()) {
+        qDebug() << "[Fee Debug] Fee data received successfully for getFeeIsolated, stopping timeout";
+        m_feeIsolatedTimeout->stop();
+        qDebug() << "[Fee Debug] Emitting sigFeeReceivedData for getFeeIsolated";
         emit sigFeeReceivedData (a_data);
+        qDebug() << "[Fee Debug] Also emitting sigFeeReceived to trigger state transition";
+        emit sigFeeReceived();
+      }
+      
+      if (m_stm->getFee.active()) {
+        qDebug() << "[Fee Debug] Fee data received successfully for getFee, stopping timeout";
+        m_feeTimeout->stop();
+        qDebug() << "[Fee Debug] Emitting sigFeeReceived for getFee";
+        emit sigFeeReceived();
+      }
     });
     // connect to stream
     connect(web3, &DapNodeWeb3::sigNodeList, this, [=](QList<QMap<QString, QString>> nodeList) {
@@ -551,11 +635,19 @@ void DapNode::slotCondTxCreateRequest(QString walletName, QString networkName, Q
 
 void DapNode::slotGetOrdersList(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit)
 {
+    qDebug() << "[Order List Debug] slotGetOrdersList called for network:" << networkName << "token:" << tokenName;
+    qDebug() << "[Order List Debug] Current state - initialState active:" << m_stm->initialState.active();
+    qDebug() << "[Order List Debug] Current state - getFeeIsolated active:" << m_stm->getFeeIsolated.active();
+    qDebug() << "[Order List Debug] Current state - getListKeys active:" << m_stm->getListKeys.active();
+    qDebug() << "[Order List Debug] Current state - getOrderList active:" << m_stm->getOrderList.active();
+    
     m_networkName = networkName;
     m_tokenName = tokenName;
     m_minPrice = minPrice;
     m_maxPrice = maxPrice;
     m_unit = unit;
+    
+    qDebug() << "[Order List Debug] Emitting sigGetOrderListRequest";
     emit sigGetOrderListRequest();
 }
 
@@ -600,6 +692,8 @@ void DapNode::start()
 
 void DapNode::slotNodeIpReqest(const QString & srvUid, const QString & nodeAddress, const QString & orderHash, const QString & network)
 {
+    Q_UNUSED(orderHash)
+    
     m_srvUid = srvUid;
     m_nodeInfo.setNodeAddress(nodeAddress);
     if (!network.isEmpty())
@@ -632,17 +726,34 @@ bool NodeInfo::serverDataFromList(const QList<QMap<QString, QString>>& nodeList)
 
 void orderListFiltr(const QJsonArray& inOrders, QJsonArray& outOrders, QStringList keys)
 {
+    qDebug() << "🔍 [FILTER DEBUG] orderListFiltr: Input orders count =" << inOrders.size();
+    qDebug() << "🔍 [FILTER DEBUG] orderListFiltr: Available keys count =" << keys.size();
+    qDebug() << "🔍 [FILTER DEBUG] orderListFiltr: Keys list =" << keys;
+    
     foreach(const QJsonValue& order, inOrders)
     {
+        QString orderPkey = order.toObject()["pkey"].toString();
+        bool found = false;
         foreach (const QString& key, keys)
         {
-            if (key == order.toObject()["pkey"].toString())
+            // Normalize keys for comparison - remove leading dot if present
+            QString normalizedKey = key.startsWith(".") ? key.mid(1) : key;
+            QString normalizedOrderPkey = orderPkey.startsWith(".") ? orderPkey.mid(1) : orderPkey;
+            
+            if (normalizedKey == normalizedOrderPkey)
             {
                 outOrders.append(order);
+                found = true;
+                qDebug() << "🔍 [FILTER DEBUG] orderListFiltr: Order with pkey" << orderPkey << "FOUND! Matched with key" << key;
                 break;
             }
         }
+        if (!found) {
+            qDebug() << "🔍 [FILTER DEBUG] orderListFiltr: Order with pkey" << orderPkey << "NOT FOUND in keys";
+        }
     }
+    
+    qDebug() << "🔍 [FILTER DEBUG] orderListFiltr: Output orders count =" << outOrders.size();
 }
 
 void DapNode::slotGetNetIdReqest(QString networkName)

@@ -61,8 +61,7 @@ struct DapCmdNode::DapCmdNodeData
         QString unitValue;
         QString priceValue; // per portion
         QString portions;
-        QString fee;
-        QString totalFee;
+
         QString totalValue;
     } overview;
 };
@@ -80,6 +79,17 @@ static QHash<QString, const char *> s_unitConvertMap =
         { "MINUTE",   "MIN" },
         { "HOUR",     "HOUR" },
         { "DAY",      "DAY" },
+        
+        // Support for lowercase variants from orders
+        { "sec",      "SEC" },
+        { "min",      "MIN" },
+        { "hour",     "HOUR" },
+        { "day",      "DAY" },
+        { "tb",       "TB" },
+        { "gb",       "GB" },
+        { "mb",       "MB" },
+        { "kb",       "KB" },
+        { "b",        "B" },
         };
 
 /* LINKS */
@@ -153,6 +163,7 @@ void DapCmdNode::handleResult (const QJsonObject &params)
 
         /* get list */
         auto list = params.value ("order_list").toArray();
+        qDebug() << "🔍 [FILTER DEBUG] DapCmdNode::handleResult: Received order_list count =" << list.size();
 
         /* emit */
         emit sigOrderList (list);
@@ -355,8 +366,7 @@ void DapCmdNode::slotCondTxCreate()
     s_historyOrder.unitValue    = _data->overview.unitValue; // order.price();
     s_historyOrder.priceValue   = _data->overview.priceValue;
     s_historyOrder.portions     = _data->overview.portions;
-    s_historyOrder.fee          = _data->overview.fee;
-    s_historyOrder.totalFee     = _data->overview.totalFee;
+
     s_historyOrder.totalValue   = _data->overview.totalValue;
     s_historyOrder.created      = QDateTime::currentDateTime();
     s_historyOrder.isSigned     = false;
@@ -534,8 +544,7 @@ void DapCmdNode::slotSetTransactionInfo (const QVariant &a_valueMap)
         unitValue,
         priceValue,
         portions,
-        fee,
-        totalFee,
+
         totalValue,
     };
 
@@ -554,8 +563,7 @@ void DapCmdNode::slotSetTransactionInfo (const QVariant &a_valueMap)
             TFIELDITEM (unitValue),
             TFIELDITEM (priceValue),
             TFIELDITEM (portions),
-            TFIELDITEM (fee),
-            TFIELDITEM (totalFee),
+
             TFIELDITEM (totalValue),
         };
     const QVariantMap map = a_valueMap.toMap();
@@ -585,8 +593,7 @@ void DapCmdNode::slotSetTransactionInfo (const QVariant &a_valueMap)
         case FieldId::unitValue:  _data->overview.unitValue   = std::move (value); break;
         case FieldId::priceValue: _data->overview.priceValue  = std::move (value); break;
         case FieldId::portions:   _data->overview.portions    = std::move (value); break;
-        case FieldId::fee:        _data->overview.fee         = std::move (value); break;
-        case FieldId::totalFee:   _data->overview.totalFee    = std::move (value); break;
+
         case FieldId::totalValue: _data->overview.totalValue  = std::move (value); break;
         default:
             DEBUGINFO << __PRETTY_FUNCTION__ << "unknown fid:" << uint (fid) << i.key();

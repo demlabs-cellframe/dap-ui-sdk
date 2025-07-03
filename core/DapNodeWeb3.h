@@ -90,6 +90,9 @@ private:
   QString m_networkRequest;
   //
   bool m_parseJsonError = false;
+  // reconnection attempts counter to prevent infinite loops
+  int m_reconnectionAttempts = 0;
+  static const int MAX_RECONNECTION_ATTEMPTS = 3;
 
 public:
   static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
@@ -116,6 +119,9 @@ public:
 
 private:
   void request_GET (const QString &host,  quint16 port,
+                    const QString &urlPath, DapNetworkReply &a_netReply,
+                    const QString &headers = "", bool ssl = false);
+  void request_GET_long_timeout (const QString &host,  quint16 port,
                     const QString &urlPath, DapNetworkReply &a_netReply,
                     const QString &headers = "", bool ssl = false);
   bool jsonError() { return m_parseJsonError; }
@@ -147,7 +153,7 @@ public slots:
   void walletDataRequest (const QString &walletName);
   void getCertificates();
   void createCertificate (const QString &certType, const QString &certName);
-  void condTxCreateRequest (QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit, QString fee);
+      void condTxCreateRequest (QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit);
   void getMempoolTxHashRequest (QString transactionHash, QString networkName);
   void getLedgerTxHashRequest (QString transactionHash, QString networkName);
   void getOrdersListRequest (QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
@@ -184,6 +190,13 @@ private slots:
   void parseNetId (const QString &replyData, int baseErrorCode);
 
   void replyConnectError (int code);
+
+  // Validation helpers
+  bool isValidIPAddress(const QString& ip) const;
+
+  // Dashboard diagnostics
+  void requestNodeListForDiagnostics(const QString &networkName);
+  void diagnoseDashboardNodeAvailability(const QString &networkName, const QJsonArray &failedNodes);
   /// @}
 
   /****************************************//**

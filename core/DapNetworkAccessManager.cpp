@@ -27,6 +27,17 @@ void DapNetworkAccessManager::requestHttp_GET(const QString &address, const uint
                                    headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
 }
 
+void DapNetworkAccessManager::requestHttp_GET_long_timeout(const QString &address, const uint16_t port, const QString &urlPath, const QString &headers, DapNetworkReply &netReply)
+{
+    qDebug() << "Dap Client HTTP Requested - GET (long timeout): " << urlPath ;
+    bRunning = true;
+    dap_client_http_set_connect_timeout_ms(20000);
+    dap_client_http_set_read_timeout_ms(60000); // 60 seconds for long operations
+    dap_client_http_request(nullptr, qPrintable(address), port, "GET", "text/plain", qPrintable(urlPath), nullptr, 0, nullptr,
+                            &DapNetworkAccessManager::responseCallback, &DapNetworkAccessManager::responseCallbackError, &netReply,
+                                   headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
+}
+
 void DapNetworkAccessManager::requestHttp_GET_for_ping(const QString &address, const uint16_t port, const QString &urlPath, const QString &headers, DapNetworkReply &netReply)
 {
     qDebug() << "[DapNetworkAccessManager] Dap Client HTTP Requested - GET: " << urlPath ;
@@ -41,6 +52,10 @@ void DapNetworkAccessManager::responseCallback(void * a_response, size_t a_respo
     DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
     reply->setReply(QByteArray(reinterpret_cast<const char*>(a_response), static_cast<int>(a_response_size)));
     qDebug() << "[DapNetworkAccessManager]Dap Client HTTP Request: response received, size=" << a_response_size;
+    
+    // Reset read timeout to default value (5 seconds) after any request
+    dap_client_http_set_read_timeout_ms(5000);
+    
     reply->setError( 0 );
     emit reply->finished();
     reply->deleteLater();
@@ -55,6 +70,10 @@ void DapNetworkAccessManager::responseCallbackError(int a_err_code, void * a_obj
     qWarning() << "[DapNetworkAccessManager]Dap Client HTTP Request: error code " << a_err_code
                << ": " << buf;
     reply->setErrorStr(buf);
+    
+    // Reset read timeout to default value (5 seconds) after any request (including errors)
+    dap_client_http_set_read_timeout_ms(5000);
+    
 /*#else
                ;
     {

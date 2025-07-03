@@ -917,7 +917,14 @@ Item {
                     return `${model.price}`;
             }
             property string second:      `${model.server} - ${addressValue}`
-            property string addressValue: model.ipAddress !== "" ? model.ipAddress : "unknown ip"
+            property string addressValue: {
+                if (model.ipAddress && model.ipAddress !== "") {
+                    return model.ipAddress;
+                } else {
+                    // More informative message instead of generic "unknown ip"
+                    return "IP resolving...";
+                }
+            }
             property string labelTopQss:    "nodeorlist-label-size-14"
             property string labelBottomQss: "nodeorlist-label-size-14"
             property QtObject tooltip: QtObject {
