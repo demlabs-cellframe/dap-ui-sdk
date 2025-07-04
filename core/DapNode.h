@@ -187,6 +187,10 @@ public:
         m_isCDBLogined = a_logined;
     }
 
+    // Web3 connection ID management
+    void handleDashboardRestart();
+    QString getWeb3ConnectionId();
+    void clearWeb3ConnectionId();
 
 private:
     void initStmTransitions();
@@ -234,6 +238,7 @@ signals:
     void sigMempoolContainHash();
     void sigLedgerContainHash();
     void sigCondTxCreateSuccess(QString hash);
+    void sigTransactionInQueue(QString idQueue);
     void sigConnectByOrder(const QString &networkName, const QString &txCondHash, const QString &token, const QString &srvUid, const QString &address, const uint16_t &port);
     void sigRepeatNodeConnecting();
 

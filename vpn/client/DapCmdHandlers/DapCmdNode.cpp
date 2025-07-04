@@ -161,6 +161,16 @@ void DapCmdNode::sendTransactionInLedger()
     DEBUGINFO << "sendTransactionInLedger";
 }
 
+void DapCmdNode::sendTransactionInQueue(const QString& idQueue)
+{
+    DEBUGINFO << __PRETTY_FUNCTION__;
+    QJsonObject response;
+    response["transaction_in_queue"] = true;
+    response["queue_id"] = idQueue;
+    sendCmd(&response);
+    DEBUGINFO << "sendTransactionInQueue with ID:" << idQueue;
+}
+
 void DapCmdNode::sendSigningInfo(qint32 utype, qint64 uid, qint64 units, QString price)
 {
     DEBUGINFO << __PRETTY_FUNCTION__;

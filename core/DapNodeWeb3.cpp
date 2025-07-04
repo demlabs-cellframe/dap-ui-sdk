@@ -87,11 +87,19 @@ static const ReplyMethod s_dummyReply
 DapNodeWeb3::DapNodeWeb3 (QObject *obj, int requestTimeout) :
   QObject (obj),
   m_requestTimeout (requestTimeout),
-  m_connectId (QString()),
   m_networkReply (nullptr),
-  m_networkRequest (QString())
+  m_parseJsonError (false),
+  m_reconnectionAttempts (0)
 {
+  // Initialize HTTP client
   m_httpClient = new DapNetworkAccessManager();
+  
+  // Load stored connection ID on startup
+  QString storedId = loadStoredConnectionId();
+  if (!storedId.isEmpty()) {
+    m_connectId = storedId;
+    qDebug() << "🔗 [WEB3 ID] Loaded stored connection ID:" << m_connectId;
+  }
 }
 
 
@@ -332,9 +340,21 @@ void DapNodeWeb3::nodeDetectedRequest()
 void DapNodeWeb3::nodeConnectionRequest()
 {
   // do not send connect if already present
-  if (!m_connectId.isEmpty())
+  if (!m_connectId.isEmpty()) {
+    qDebug() << "🔗 [WEB3 ID] Using existing connection ID:" << m_connectId;
     return emit connectionIdReceived (m_connectId);
+  }
 
+  // Try to load stored connection ID
+  QString storedId = loadStoredConnectionId();
+  if (!storedId.isEmpty()) {
+    m_connectId = storedId;
+    qDebug() << "🔗 [WEB3 ID] Using stored connection ID:" << m_connectId;
+    return emit connectionIdReceived (m_connectId);
+  }
+
+  // No stored ID found, request new connection
+  qDebug() << "🔗 [WEB3 ID] No stored connection ID, requesting new connection";
   // example connect request
   // http://127.0.0.1:8045/?method=Connect
   DEBUGINFO << "http://127.0.0.1:8045/?method=Connect";
@@ -630,7 +650,17 @@ void DapNodeWeb3::parseReplyConnect (const QString &replyData, int baseErrorCode
       // connection id
       if (data["id"].isString())
         {
-          m_connectId = data["id"].toString();
+          QString newConnectionId = data["id"].toString();
+          
+          // Only update if the ID has changed
+          if (m_connectId != newConnectionId) {
+            m_connectId = newConnectionId;
+            saveConnectionId(m_connectId);
+            qDebug() << "🔗 [WEB3 ID] New connection ID received and saved:" << m_connectId;
+          } else {
+            qDebug() << "🔗 [WEB3 ID] Received same connection ID, no update needed:" << m_connectId;
+          }
+          
           m_reconnectionAttempts = 0; // Reset counter on successful connection
           qDebug() << "🔄 [RECONNECTION DEBUG] Successfully connected to Dashboard, reconnection counter reset";
           emit connectionIdReceived (m_connectId);
@@ -854,6 +884,17 @@ void DapNodeWeb3::parseCondTxCreateReply (const QString &replyData, int baseErro
   //        "errorMsg": "",
   //        "status": "ok"
   //    }
+  //
+  //    OR when transaction is queued:
+  //    {
+  //        "data": {
+  //            "idQueue": "0x688F93C77B18801981480A70D0ACDDB72689EC3A078DB2C2AB59AF7FFF1BFFBC",
+  //            "success": true,
+  //            "toQueue": true
+  //        },
+  //        "errorMsg": "",
+  //        "status": "ok"
+  //    }
 
   DEBUGINFO << __func__ << replyData;
 
@@ -866,9 +907,17 @@ void DapNodeWeb3::parseCondTxCreateReply (const QString &replyData, int baseErro
   if (doc["data"].isObject())
     {
       QJsonObject dataObj = doc["data"].toObject();
-      QString transactionHash;
       
-      // Check both possible hash field names
+      // Check if transaction is queued
+      if (dataObj["toQueue"].toBool() && dataObj.contains("idQueue")) {
+        QString queueId = dataObj["idQueue"].toString();
+        DEBUGINFO << "Transaction queued in Dashboard with ID:" << queueId;
+        emit sigTransactionInQueue(queueId);
+        return;
+      }
+      
+      // Check for transaction hash (immediate transaction)
+      QString transactionHash;
       if (dataObj["tx_hash"].isString()) {
         transactionHash = dataObj["tx_hash"].toString();
         DEBUGINFO << "Found transaction hash in 'tx_hash' field:" << transactionHash;
@@ -1465,6 +1514,8 @@ void DapNodeWeb3::parseJson (const QString &replyData, int baseErrorCode, const 
       /* notify on incorrect id */
       if (errorMsgString == "Incorrect id")
       {
+        qDebug() << "🔗 [WEB3 ID] Received 'Incorrect id' error, clearing stored connection ID";
+        clearStoredConnectionId();
         m_connectId.clear();
         emit sigIncorrectId();
       }
@@ -1501,6 +1552,9 @@ void DapNodeWeb3::replyError (int errorCode, const QString &errorString, const Q
     
     if (m_reconnectionAttempts <= MAX_RECONNECTION_ATTEMPTS) {
       qInfo() << "🔄 [RECONNECTION DEBUG] Attempting to reconnect to Dashboard...";
+      // Clear stored ID when it becomes invalid
+      clearStoredConnectionId();
+      m_connectId.clear();
       nodeConnectionRequest();
       //TODO: Need reset no cdb GUI status
     } else {
@@ -1512,4 +1566,51 @@ void DapNodeWeb3::replyError (int errorCode, const QString &errorString, const Q
   else
     emit sigError (errorCode, errorGuiMessage);
 }
+
+/****************************************//**
+ * @name WEB3 CONNECTION ID PERSISTENCE
+ *******************************************/
+/// @{
+
+void DapNodeWeb3::saveConnectionId(const QString& connectionId)
+{
+  if (connectionId.isEmpty()) {
+    qWarning() << "🔗 [WEB3 ID] Attempted to save empty connection ID";
+    return;
+  }
+  
+  DapServiceDataLocal::saveSetting("web3_connection_id", connectionId);
+  qDebug() << "🔗 [WEB3 ID] Saved connection ID to storage:" << connectionId;
+}
+
+QString DapNodeWeb3::loadStoredConnectionId()
+{
+  QString storedId = DapServiceDataLocal::getSetting("web3_connection_id").toString();
+  if (!storedId.isEmpty()) {
+    qDebug() << "🔗 [WEB3 ID] Retrieved stored connection ID:" << storedId;
+  }
+  return storedId;
+}
+
+void DapNodeWeb3::clearStoredConnectionId()
+{
+  DapServiceDataLocal::removeSetting("web3_connection_id");
+  qDebug() << "🔗 [WEB3 ID] Cleared stored connection ID";
+}
+
+bool DapNodeWeb3::hasStoredConnectionId()
+{
+  return !DapServiceDataLocal::getSetting("web3_connection_id").toString().isEmpty();
+}
+
+void DapNodeWeb3::forceReconnect()
+{
+  qDebug() << "🔗 [WEB3 ID] Force reconnect requested - clearing stored ID and reconnecting";
+  clearStoredConnectionId();
+  m_connectId.clear();
+  m_reconnectionAttempts = 0;
+  nodeConnectionRequest();
+}
+
+/// @}
 

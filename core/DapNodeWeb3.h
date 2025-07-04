@@ -116,6 +116,13 @@ public:
 public:
   QString connectedId() { return m_connectId; }
   QString networkName() { return m_networkName; }
+  
+  // Web3 connection ID persistence methods
+  void saveConnectionId(const QString& connectionId);
+  QString loadStoredConnectionId();
+  void clearStoredConnectionId();
+  bool hasStoredConnectionId();
+  void forceReconnect(); // Force clear stored ID and reconnect
 
 private:
   void request_GET (const QString &host,  quint16 port,
@@ -212,6 +219,7 @@ signals:
   void sigReceivedCertificatestList (QStringList);
   void sigCreatedCertificate (QString);
   void sigCondTxCreateSuccess (QString hash);
+  void sigTransactionInQueue (QString idQueue);
   void sigMempoolContainHash();
   void sigLedgerContainHash();
   void sigOrderList (QJsonArray);

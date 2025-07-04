@@ -552,6 +552,11 @@ void DapNode::initWeb3Connections()
        m_transactionHash = hash;
        emit sigCondTxCreateSuccess(m_transactionHash);
     });
+    // transaction queued in Dashboard
+    connect(web3, &DapNodeWeb3::sigTransactionInQueue, this, [=](QString idQueue){
+       DEBUGINFO  << "&sigTransactionInQueue" << idQueue;
+       emit sigTransactionInQueue(idQueue);
+    });
     // list keys ready
     connect(web3, &DapNodeWeb3::sigListKeys, this, [=](QStringList listKeys) {
         qDebug() << "🔍 [FILTER DEBUG] DapNode: Received listKeys count =" << listKeys.size();
@@ -771,6 +776,37 @@ void DapNode::slotFeeRequest (QString a_networkName)
   m_networkName = a_networkName;
   emit sigFeeRequest();
 }
+
+/****************************************//**
+ * @name WEB3 CONNECTION ID MANAGEMENT
+ *******************************************/
+/// @{
+
+void DapNode::handleDashboardRestart()
+{
+  qDebug() << "🔗 [WEB3 ID] Dashboard restart detected - forcing reconnection";
+  if (web3) {
+    web3->forceReconnect();
+  }
+}
+
+QString DapNode::getWeb3ConnectionId()
+{
+  if (web3) {
+    return web3->connectedId();
+  }
+  return QString();
+}
+
+void DapNode::clearWeb3ConnectionId()
+{
+  qDebug() << "🔗 [WEB3 ID] Clearing Web3 connection ID";
+  if (web3) {
+    web3->clearStoredConnectionId();
+  }
+}
+
+/// @}
 
 /*-----------------------------------------*/
 
