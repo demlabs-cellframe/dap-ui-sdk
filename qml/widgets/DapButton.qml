@@ -83,6 +83,7 @@ Button
     //Blocked interactive in list view if pressed and unlock if released
     property bool listInteractivFlagDisabled: false
     property Item parentList
+    property alias containsMouse: control.containsMouse
 
     hoverEnabled: true
 
