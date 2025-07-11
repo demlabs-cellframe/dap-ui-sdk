@@ -3,7 +3,12 @@ SOURCES += \
     #$$PWD/DapChSockForw.cpp \
     $$PWD/DapTunAbstract.cpp\
     $$PWD/DapTunWorkerAbstract.cpp \
-    $$PWD/DapTunNative.cpp
+    $$PWD/DapTunNative.cpp \
+    $$PWD/DapIntelligentReconnector.cpp \
+    $$PWD/DapServerSelector.cpp \
+    $$PWD/DapAdaptiveKeepAlive.cpp \
+    $$PWD/DapNetworkQualityMonitor.cpp \
+    $$PWD/DapCmdConnectionProblem.cpp
 
 HEADERS += \
     #$$PWD/DapChSockForw.h \
@@ -11,7 +16,12 @@ HEADERS += \
     $$PWD/DapTunWorkerAbstract.h \
     $$PWD/DapTunNative.h \
     $$PWD/DapSockForwPacket.h \
-    $$PWD/DapStreamChChainVpnPacket.h
+    $$PWD/DapStreamChChainVpnPacket.h \
+    $$PWD/DapIntelligentReconnector.h \
+    $$PWD/DapServerSelector.h \
+    $$PWD/DapAdaptiveKeepAlive.h \
+    $$PWD/DapNetworkQualityMonitor.h \
+    $$PWD/DapCmdConnectionProblem.h
 
 INCLUDEPATH += $$PWD
 

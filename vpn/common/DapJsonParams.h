@@ -32,6 +32,7 @@ enum class DapJsonCmdType
     UPDATE_OPERATION,
     GEO_IP,
     DATA_LOCAL,
+    CONNECTION_PROBLEM,
     UNKNOWN
 };
 
