@@ -29,6 +29,7 @@ public slots:
     void setNodeDetected();
     void sendTransactionInMempool();
     void sendTransactionInLedger();
+    void sendTransactionInQueue(const QString& idQueue);
     QJsonObject transformKeys(const QJsonObject& inputObj);
     void sendOrderList(const QJsonArray& orderList);
     void sendNodeIp(const QJsonObject &nodeIpList);

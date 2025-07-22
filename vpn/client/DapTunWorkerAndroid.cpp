@@ -3,7 +3,7 @@
 DapTunWorkerAndroid::DapTunWorkerAndroid(DapTunAbstract *a_tun)
     :DapTunWorkerAbstract(a_tun)
 {
-    // Здесь всё для всех ОС в куче, чтоб не потерялось. При портировании под конкретную ОС - разбрать
+    // Here everything for all OS is in a heap, so that it doesn't get lost. When porting to a specific OS - sort it out
    /* const size_t DAP_IP_MTU = 0xffff;
     int socket = listenSocket;
     int argVal = 0;

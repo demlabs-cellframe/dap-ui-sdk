@@ -136,6 +136,16 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObje
  */
 DapNetworkReply* DapSession::requestServerPublicKey()
 {
+    qDebug() << "🔍 [CONNECTION DEBUG] requestServerPublicKey called";
+    qDebug() << "🔍 [CONNECTION DEBUG] Current upstream: " << m_upstreamAddress << ":" << m_upstreamPort;
+    
+    if (m_upstreamAddress.isEmpty()) {
+        qCritical() << "🚨 [CONNECTION DEBUG] CRITICAL: Attempting to connect with empty upstream address!";
+    }
+    if (m_upstreamPort == 0) {
+        qCritical() << "🚨 [CONNECTION DEBUG] CRITICAL: Attempting to connect with zero upstream port!";
+    }
+    
     QByteArray aliceMessage= m_dapCrypt->generateAliceMessage();
     QByteArray reqData = aliceMessage.toBase64();
     m_enc_type          = DAP_ENC_KEY_TYPE_SALSA2012;
@@ -468,7 +478,37 @@ DapNetworkReply* DapSession::encRequestRaw(const QByteArray& bData, const QStrin
  */
 void DapSession::setDapUri(const QString& addr, const uint16_t port)
 {
-    qDebug() << "Set upstream: " << addr << ":" << port;
+    qDebug() << "🔍 [CONNECTION DEBUG] Set upstream: " << addr << ":" << port;
+    
+    // Validate address
+    if (addr.isEmpty()) {
+        qCritical() << "🚨 [CONNECTION DEBUG] CRITICAL: Empty address provided to setDapUri!";
+        emit errorNetwork(111, "Invalid connection parameters: empty address");
+        return;
+    }
+    
+    // Validate port
+    if (port == 0) {
+        qCritical() << "🚨 [CONNECTION DEBUG] CRITICAL: Zero port provided to setDapUri!";
+        emit errorNetwork(112, "Invalid connection parameters: zero port");
+        return;
+    }
+    
+    // Additional validation for address format
+    if (addr.contains(" ") || addr.length() < 7) { // minimum IP: "1.1.1.1" = 7 chars
+        qCritical() << "🚨 [CONNECTION DEBUG] CRITICAL: Invalid address format:" << addr;
+        emit errorNetwork(113, QString("Invalid connection parameters: malformed address '%1'").arg(addr));
+        return;
+    }
+    
+    // Port range validation
+    if (port < 1 || port > 65535) {
+        qCritical() << "🚨 [CONNECTION DEBUG] CRITICAL: Invalid port range:" << port;
+        emit errorNetwork(114, QString("Invalid connection parameters: port %1 out of range").arg(port));
+        return;
+    }
+    
+    qDebug() << "🔍 [CONNECTION DEBUG] Address and port validation passed";
     m_upstreamAddress = addr;
     m_upstreamPort = port;
 }

@@ -25,6 +25,7 @@ signals:
     void sigDisconnect();
     void sigRestartService(bool if_runnning);
     void sigSetRunScript(const QString& runScriptPath, bool runAfterConnect);
+    void sigSetNoCdbMode(bool enabled);
 
 private:
     const QString ACTION_KEY = "action";

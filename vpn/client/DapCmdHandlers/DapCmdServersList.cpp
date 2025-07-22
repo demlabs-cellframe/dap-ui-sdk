@@ -23,9 +23,21 @@ DapCmdServersList::DapCmdServersList(QObject *parent)
 void DapCmdServersList::handle(const QJsonObject* params)
 {
     DapCmdServiceAbstract::handle(params);
+    
+    // Skip CDB requests in noCDB mode
+    if (m_noCdbMode) {
+        qDebug() << "[noCDB] Skipping CDB server list request in noCDB mode";
+        if (loadServerList()) {
+            qDebug() << "[noCDB] Loaded cached server list";
+        } else {
+            qWarning() << "[noCDB] No cached server list available";
+            sendSimpleError(-32009, "No server list available in noCDB mode");
+        }
+        return;
+    }
+    
     sendRequestToCDB();
     guiCall = true;
-
 }
 
 void DapCmdServersList::sendRequestToCDB() {
@@ -50,7 +62,12 @@ void DapCmdServersList::handleReplyFinished(DapNetworkReply* reply) {
 
     if (jsonDoc.isNull() || !jsonDoc.isArray()) {
         qCritical() << "Can't parse server response to JSON:" << jsonErr.errorString() << "on position" << jsonErr.offset;
-        processNextCDB(-32001, "Bad response from server. Parse error");
+                    if (m_noCdbMode) {
+                qDebug() << "[noCDB] Parse error in noCDB mode, skipping CDB fallback";
+                sendSimpleError(-32001, "Bad response from server. Parse error");
+            } else {
+                processNextCDB(-32001, "Bad response from server. Parse error");
+            }
         return;
     }
 
@@ -58,7 +75,12 @@ void DapCmdServersList::handleReplyFinished(DapNetworkReply* reply) {
     QJsonArray filteredArray = filterUnavailableServers(arr);
 
     if (filteredArray.isEmpty()) {
-        processNextCDB(-32003, "Empty nodelist after filtering, try another CDB...");
+                    if (m_noCdbMode) {
+                qDebug() << "[noCDB] Empty nodelist in noCDB mode, skipping CDB fallback";
+                sendSimpleError(-32003, "Empty nodelist after filtering");
+            } else {
+                processNextCDB(-32003, "Empty nodelist after filtering, try another CDB...");
+            }
     } else {
         qDebug() << "Filtered server list array:" << filteredArray;
         updateServerList(filteredArray);
@@ -102,14 +124,26 @@ void DapCmdServersList::handleReplyError(DapNetworkReply* reply) {
         qWarning() << "[DapCmdServersList] emitTimer is null!";
     }
 
-    qInfo() << "[DapCmdServersList] Emitting nextCdb() signal.";
-    emit nextCdb();
+    // Skip CDB operations in noCDB mode
+    if (!m_noCdbMode) {
+        qInfo() << "[DapCmdServersList] Emitting nextCdb() signal.";
+        emit nextCdb();
+    } else {
+        qDebug() << "[noCDB] Skipping nextCdb signal in noCDB mode";
+    }
 
     sendSimpleError(reply->error(), reply->errorString());
 }
 
 
 void DapCmdServersList::processNextCDB(int errorCode, const QString& errorMessage) {
+    // Skip CDB operations in noCDB mode
+    if (m_noCdbMode) {
+        qDebug() << "[noCDB] Skipping processNextCDB in noCDB mode";
+        sendSimpleError(errorCode, errorMessage);
+        return;
+    }
+    
     auto& manager = DapCdbManager::instance();
 
     if (!manager.hasServers()) {
@@ -134,6 +168,12 @@ void DapCmdServersList::processNextCDB(int errorCode, const QString& errorMessag
 
 
 void DapCmdServersList::sendRequestToCurrentCDB(DapNetworkReply* reply) {
+    // Skip CDB operations in noCDB mode
+    if (m_noCdbMode) {
+        qDebug() << "[noCDB] Skipping sendRequestToCurrentCDB in noCDB mode";
+        return;
+    }
+    
     DapCdbServer* server = DapCdbManager::instance().currentServer();
     if (!server) {
         qWarning() << "[DapCmdServersList] No CDB server available to send request.";

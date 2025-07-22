@@ -655,7 +655,7 @@ void DapStreamer::_detectPacketLoose(quint64 currentSeqId)
 
 void DapStreamer::_removeOldEntries()
 {
-    QDateTime tenMinutesAgo = QDateTime::currentDateTime().addSecs(-600); // 10 минут назад
+    QDateTime tenMinutesAgo = QDateTime::currentDateTime().addSecs(-600); // 10 minutes ago
     while (!m_packetLossQueue.isEmpty() && m_packetLossQueue.head().first < tenMinutesAgo)
     {
         m_packetLossQueue.dequeue();

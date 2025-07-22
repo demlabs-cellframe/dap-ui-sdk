@@ -21,6 +21,7 @@
 
 #include <QStateMachine>
 #include <QState>
+#include <QTimer>
 
 void orderListFiltr(const QJsonArray& in, QJsonArray& out, QStringList keys);
 
@@ -161,7 +162,6 @@ private:
     QString m_minPrice;
     QString m_maxPrice;
     QString m_srvUid;
-    QString m_fee;
     QString m_netId;
     NodeInfo m_nodeInfo;
     QStringList m_listKeys;
@@ -187,6 +187,10 @@ public:
         m_isCDBLogined = a_logined;
     }
 
+    // Web3 connection ID management
+    void handleDashboardRestart();
+    QString getWeb3ConnectionId();
+    void clearWeb3ConnectionId();
 
 private:
     void initStmTransitions();
@@ -197,6 +201,14 @@ private:
 
     bool nodeDetected = false;
     // transaction certificate name
+    
+    // Timeouts for detaching from hanging on order list retrieval
+    QTimer* m_orderListTimeout = nullptr;
+    QTimer* m_listKeysTimeout = nullptr;
+    
+    // Timeouts for detaching from hanging on fee retrieval
+    QTimer* m_feeTimeout = nullptr;
+    QTimer* m_feeIsolatedTimeout = nullptr;
 
 
 public slots:
@@ -226,6 +238,7 @@ signals:
     void sigMempoolContainHash();
     void sigLedgerContainHash();
     void sigCondTxCreateSuccess(QString hash);
+    void sigTransactionInQueue(QString idQueue);
     void sigConnectByOrder(const QString &networkName, const QString &txCondHash, const QString &token, const QString &srvUid, const QString &address, const uint16_t &port);
     void sigRepeatNodeConnecting();
 

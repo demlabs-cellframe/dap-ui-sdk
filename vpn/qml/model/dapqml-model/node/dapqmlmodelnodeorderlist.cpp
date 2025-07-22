@@ -173,6 +173,8 @@ const DapQmlModelNode::OrderItem *DapQmlModelNodeOrderList::currentOrder() const
 
 void DapQmlModelNodeOrderList::setOrderListData (const QJsonArray &a_list, bool notify)
 {
+  qDebug() << "🔍 [FILTER DEBUG] DapQmlModelNodeOrderList::setOrderListData: Input orders count =" << a_list.size();
+  
   //  if (a_list.isEmpty())
   //    return;
 
@@ -210,7 +212,10 @@ void DapQmlModelNodeOrderList::setOrderListData (const QJsonArray &a_list, bool 
       if (srv_uid != "0x0000000000000001"
           || unit_value == "0"
           || punit.isEmpty())
+      {
+        qDebug() << "🔍 [FILTER DEBUG] DapQmlModelNodeOrderList: Order filtered out - srv_uid:" << srv_uid << "unit_value:" << unit_value << "punit:" << punit << "hash:" << hash;
         continue;
+      }
 
       /* update new current */
       if (!p->currentOrderHashCopy.isEmpty()
@@ -236,6 +241,8 @@ void DapQmlModelNodeOrderList::setOrderListData (const QJsonArray &a_list, bool 
       index++;
     }
 
+  qDebug() << "🔍 [FILTER DEBUG] DapQmlModelNodeOrderList::setOrderListData: After filtering, final items count =" << items.size();
+  
   /* store result */
   setOrders (std::move (items));
   setCurrentIndex (newCurrentIndex);
@@ -258,8 +265,28 @@ void DapQmlModelNodeOrderList::setOrderListData (const QJsonArray &a_list, bool 
 
 void DapQmlModelNodeOrderList::installAddressMap (const QHash<QString, QString> &a_map)
 {
+  qDebug() << "🔍 [IP DEBUG] installAddressMap called with" << a_map.size() << "IP mappings";
+  
+  int updatedCount = 0;
+  int notFoundCount = 0;
+  
   for (auto i = p->items.begin(), e = p->items.end(); i != e; i++)
-    i->ipAddress  = a_map.value (i->node_addr, QString());
+  {
+    QString previousIP = i->ipAddress;
+    i->ipAddress = a_map.value(i->node_addr, QString());
+    
+    if (!i->ipAddress.isEmpty()) {
+      updatedCount++;
+      if (previousIP != i->ipAddress) {
+        qDebug() << "🔍 [IP DEBUG] Updated IP for node:" << i->node_addr << "from '" << previousIP << "' to '" << i->ipAddress << "'";
+      }
+    } else {
+      notFoundCount++;
+      qDebug() << "🚨 [IP DEBUG] No IP found for node:" << i->node_addr;
+    }
+  }
+  
+  qDebug() << "🔍 [IP DEBUG] installAddressMap completed:" << updatedCount << "IPs assigned," << notFoundCount << "nodes without IP";
 }
 
 void DapQmlModelNodeOrderList::_modelReset()
@@ -274,11 +301,13 @@ void DapQmlModelNodeOrderList::_modelReset()
 
 int DapQmlModelNodeOrderList::rowCount (const QModelIndex &parent) const
 {
+  Q_UNUSED(parent)
   return p->items.size();
 }
 
 int DapQmlModelNodeOrderList::columnCount (const QModelIndex &parent) const
 {
+  Q_UNUSED(parent)
   return DapQmlModelNode::nodeFieldsMap.size();
 }
 
@@ -403,7 +432,9 @@ void DapQmlModelOrderListProxyModel::setRowFilter (const QString &a_unit, qint64
   m_min   = minPrice;
   m_max   = maxPrice;
 
+  qDebug() << "🔍 [FILTER DEBUG] ProxyModel::setRowFilter: Before filter - unit:" << m_unit << "min:" << m_min << "max:" << m_max;
   invalidateFilter();
+  qDebug() << "🔍 [FILTER DEBUG] ProxyModel::setRowFilter: After filter - visible rows count:" << rowCount();
 }
 
 int DapQmlModelOrderListProxyModel::currentIndex() const
@@ -436,8 +467,15 @@ bool DapQmlModelOrderListProxyModel::filterAcceptsRow (
       bool byMin      = m_min < 0         ? true : (value >= m_min);
       bool byMax      = m_max < 0         ? true : (value <= m_max);
 
+      bool result = byUnit && byMin && byMax;
+      if (!result) {
+        qDebug() << "🔍 [FILTER DEBUG] ProxyModel: Order filtered out - hash:" << order.hash 
+                 << "unit:" << order.units << "value:" << value 
+                 << "byUnit:" << byUnit << "byMin:" << byMin << "byMax:" << byMax;
+      }
+
       //qDebug("%s unit %d min %d max %d", __func__, byUnit, byMin, byMax);
-      return byUnit && byMin && byMax;
+      return result;
     }
   catch (const std::exception &e)
     {
