@@ -15,6 +15,7 @@ HEADERS  += \
     $$PWD/SheduleElement.h
 
 include(auxiliary/auxiliary.pri)
+include(auxiliary/dap-developer-mode.pri)
 include(controls/controls.pri)
 include(screens/screens.pri)
 

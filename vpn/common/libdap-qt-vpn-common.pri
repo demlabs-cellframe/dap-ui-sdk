@@ -24,3 +24,6 @@ HEADERS += \
 
 INCLUDEPATH += $$PWD  \
     $$PWD/../../../brand/$$BRAND/DapChainVpnService
+
+# Include developer mode manager
+include(../../ui/auxiliary/dap-developer-mode.pri)

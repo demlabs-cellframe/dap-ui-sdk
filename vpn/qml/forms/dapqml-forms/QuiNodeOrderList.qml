@@ -14,6 +14,7 @@ import DapQmlModelNodeProxyBase 1.0
 import StyleDebugTree 1.0
 import com.DapQmlWidgets 1.0
 import "qrc:/dapqml-widgets"
+import DapDeveloperModeManager 1.0
 
 /****************************************//**
  * @brief Choose Order Form
@@ -75,6 +76,9 @@ Item {
     property string formName: "NodeOrderList"
 
     property var interfaceObject
+
+    // Developer mode manager for controlling network selection visibility
+    property var developerModeManager: DapDeveloperModeManager
 
     property QtObject internal: QtObject {
         /* VARIABLES */
@@ -1195,6 +1199,7 @@ Item {
                     Loader {
                         sourceComponent: compButton
                         visible: !root.internal.isSearch
+                        enabled: developerModeManager.shouldEnableNetworkSelection()
                         property string first:      root.internal.network
                         property string second:     qsTr("Network*")
                         property string labelTopQss
