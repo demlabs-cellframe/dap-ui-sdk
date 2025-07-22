@@ -646,14 +646,51 @@ void DapNodeWalletData::_cleanInvalidTokens()
     if (token.isEmpty())
       continue;
 
-    /* erase not invalid token from list and repeat */
+    /* remove wallet with wrong token */
     if (wt->token != token)
     {
       wt  = _data.walletTokenList.erase (wt);
       wt--;
-      //wt  = _data.walletTokenList.erase (wt);
-      //if (wt != _data.walletTokenList.end())
-      //  goto _repeatCleaning;
+    }
+  }
+
+  /* Step 2: Add wallets with zero balance only if they have no native tokens */
+  
+  // Create a map to track which wallet-network combinations have native tokens
+  QMap<QString, bool> walletHasNativeToken;
+  
+  // First, mark all existing wallet-network combinations as having tokens
+  for (const auto &wt : _data.walletTokenList) {
+    QString key = nwKeyString (wt.network, wt.wallet);
+    walletHasNativeToken[key] = true;
+  }
+  
+  // Check each wallet-network combination from the original wallets
+  for (auto wallet = _wallets.begin(); wallet != _wallets.end(); wallet++) {
+    for (auto network = wallet->networks.begin(); network != wallet->networks.end(); network++) {
+      if (!network->feeTicker.isEmpty()) {
+        QString key = nwKeyString (network->name, wallet->name);
+        QString nativeToken = network->feeTicker;
+        
+        // Check if this wallet-network combination already has any tokens
+        if (!walletHasNativeToken.contains (key)) {
+          // Add wallet with native token and zero balance
+          _data.walletTokenList << DapNodeWalletDataStruct::WalletToken {
+            network->name,    // network
+            wallet->name,     // wallet
+            nativeToken,      // token (native)
+            "0"               // balance (zero)
+          };
+          
+          // Also add to token balance list
+          _data.tokenBalanceList << DapNodeWalletDataStruct::TokenBalance {
+            network->name,    // network
+            wallet->name,     // wallet
+            nativeToken,      // token (native)
+            "0"               // balance (zero)
+          };
+        }
+      }
     }
   }
 }
