@@ -41,7 +41,7 @@ Button
     ///@detalis colorTextButton This property overrides the color of the text.
     property alias colorTextButton: buttonText.color
     ///@detalis borderColorButton Sets the color of the border.
-    property string borderColorButton
+    property color borderColorButton
     ///@detalis borderWidthButton Sets the width of the border.
     property int borderWidthButton
     ///@detalis dapHorizontalAlignment Horizontal text alignment.
@@ -191,8 +191,7 @@ Button
                 anchors.left: parent.left
                 anchors.leftMargin: indentImageLeftButton
                 source: dapButton.hovered ? hoverImageButton : normalImageButton
-                width: widthImageButton
-                height: heightImageButton
+                sourceSize: Qt.size(widthImageButton, heightImageButton)
             }
 
             ParallelAnimation {
