@@ -238,7 +238,7 @@ signals:
     void sigMempoolContainHash();
     void sigLedgerContainHash();
     void sigCondTxCreateSuccess(QString hash);
-    void sigTransactionInQueue(QString idQueue);
+    void sigTransactionInQueue(QString idQueue, QString appType);
     void sigConnectByOrder(const QString &networkName, const QString &txCondHash, const QString &token, const QString &srvUid, const QString &address, const uint16_t &port);
     void sigRepeatNodeConnecting();
 

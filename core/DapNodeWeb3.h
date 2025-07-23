@@ -94,6 +94,9 @@ private:
   int m_reconnectionAttempts = 0;
   static const int MAX_RECONNECTION_ATTEMPTS = 3;
 
+  // Store connected application type (dashboard or wallet)
+  QString m_connectedAppType = "Dashboard"; // Default fallback
+
 public:
   static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
   static const QString WEB3_URL;
@@ -116,6 +119,9 @@ public:
 public:
   QString connectedId() { return m_connectId; }
   QString networkName() { return m_networkName; }
+  
+  // Get connected application type (Dashboard or Cellframe-Wallet)
+  QString connectedAppType() { return m_connectedAppType; }
   
   // Web3 connection ID persistence methods
   void saveConnectionId(const QString& connectionId);
@@ -219,7 +225,7 @@ signals:
   void sigReceivedCertificatestList (QStringList);
   void sigCreatedCertificate (QString);
   void sigCondTxCreateSuccess (QString hash);
-  void sigTransactionInQueue (QString idQueue);
+  void sigTransactionInQueue (QString idQueue, QString appType);
   void sigMempoolContainHash();
   void sigLedgerContainHash();
   void sigOrderList (QJsonArray);

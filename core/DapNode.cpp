@@ -553,9 +553,9 @@ void DapNode::initWeb3Connections()
        emit sigCondTxCreateSuccess(m_transactionHash);
     });
     // transaction queued in Dashboard
-    connect(web3, &DapNodeWeb3::sigTransactionInQueue, this, [=](QString idQueue){
-       DEBUGINFO  << "&sigTransactionInQueue" << idQueue;
-       emit sigTransactionInQueue(idQueue);
+    connect(web3, &DapNodeWeb3::sigTransactionInQueue, this, [=](QString idQueue, QString appType){
+       DEBUGINFO  << "&sigTransactionInQueue" << idQueue << "App type:" << appType;
+       emit sigTransactionInQueue(idQueue, appType);
     });
     // list keys ready
     connect(web3, &DapNodeWeb3::sigListKeys, this, [=](QStringList listKeys) {

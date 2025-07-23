@@ -114,7 +114,7 @@ signals:
   void sigNodeError (int code, QString errorMessage);
   void sigTransactionHashInMempool();
   void sigTransactionHashInledger();
-  void sigTransactionInQueue(const QString& idQueue);
+  void sigTransactionInQueue(const QString& idQueue, const QString& appType);
   void sigContinueEnable (bool);
   void sigSigningReceived (qint32 utype, qint64 uid, QString units, QString value);
   void sigOrderList (const QJsonArray &a_list);

@@ -41,6 +41,7 @@ private:
     bool guiCall;
     bool m_noCdbMode = false;
     QTimer * emitTimer;
+    bool m_requestInProgress = false;  // Instance flag for request protection
 
     QJsonArray filterUnavailableServers(const QJsonArray& arr);
     void handleCdbIteratorError();

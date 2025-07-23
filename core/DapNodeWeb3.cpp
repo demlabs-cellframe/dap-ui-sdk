@@ -223,9 +223,11 @@ void DapNodeWeb3::responseProcessing (
                 if (dataObject.contains("cellframe-dashboard") && !dataObject["cellframe-dashboard"].toString().isEmpty()) {
                     cellframeDashboard = dataObject["cellframe-dashboard"].toString();
                     dashboardType = "dashboard";
+                    m_connectedAppType = "Dashboard"; // For UI display
                 } else if (dataObject.contains("cellframe-wallet") && !dataObject["cellframe-wallet"].toString().isEmpty()) {
                     cellframeDashboard = dataObject["cellframe-wallet"].toString();
                     dashboardType = "wallet";
+                    m_connectedAppType = "Cellframe-Wallet"; // For UI display
                 }
                 
                 QString cellframeNode = dataObject["cellframe-node"].toString();
@@ -912,7 +914,7 @@ void DapNodeWeb3::parseCondTxCreateReply (const QString &replyData, int baseErro
       if (dataObj["toQueue"].toBool() && dataObj.contains("idQueue")) {
         QString queueId = dataObj["idQueue"].toString();
         DEBUGINFO << "Transaction queued in Dashboard with ID:" << queueId;
-        emit sigTransactionInQueue(queueId);
+        emit sigTransactionInQueue(queueId, m_connectedAppType);
         return;
       }
       

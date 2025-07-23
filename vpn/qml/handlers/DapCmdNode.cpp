@@ -161,8 +161,9 @@ void DapCmdNode::handleResult (const QJsonObject &params)
     if (params.value ("transaction_in_queue").isBool() && params.value ("transaction_in_queue").toBool())
     {
         QString queueId = params.value ("queue_id").toString();
-        DEBUGINFO << "transaction in queue with ID:" << queueId;
-        emit sigTransactionInQueue(queueId);
+        QString appType = params.value ("app_type").toString();
+        DEBUGINFO << "transaction in queue with ID:" << queueId << "App type:" << appType;
+        emit sigTransactionInQueue(queueId, appType);
         return;
     }
 
