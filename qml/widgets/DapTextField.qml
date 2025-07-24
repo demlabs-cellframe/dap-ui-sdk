@@ -50,13 +50,20 @@ TextField {
     Keys.onEnterPressed: focus = false
 
     onPressAndHold: {
-        if (contextMenuEnabled)
-            openMenu();
+        if (contextMenuEnabled) {
+            var mousePos = mapFromItem(null, 0, 0); // Get current mouse position
+            contextMenu.x = mousePos.x;
+            contextMenu.y = mousePos.y;
+            contextMenu.open();
+        }
     }
 
     onReleased: function (event) {
-        if (event.button === Qt.RightButton && contextMenuEnabled)
-            openMenu();
+        if (event.button === Qt.RightButton && contextMenuEnabled) {
+            contextMenu.x = event.x;
+            contextMenu.y = event.y;
+            contextMenu.open();
+        }
     }
 
     // onEditingFinished: focus = false
@@ -158,7 +165,6 @@ TextField {
     Menu {
         id: contextMenu
         enabled: contextMenuEnabled
-        x: cursorPosition
         topPadding: 0
         bottomPadding: 0
 
@@ -257,8 +263,5 @@ TextField {
         }
     }
 
-    function openMenu() {
-        contextMenu.open();
-    // forceActiveFocus()
-    }
+
 }
