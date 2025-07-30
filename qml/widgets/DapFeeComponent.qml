@@ -14,12 +14,20 @@ Item {
 
     property bool editable: true
 
-    property color currentColor: "#CAFC33"
+    property color currentColor: "#10B981"
     property string currentState: "Recommended"
 
+    property color backgroundProgressColor: "#2E3441"
+    property color vertLowColor: "#EF4444"      //red
+    property color lowColor: "#F59E0B"          //orange
+    property color recommendedColor: "#10B981"  //green
+    property color highColor: "#22D3EE"         //neon
+    property color vertHighColor: "#9580FF"     //purple
+
     signal valueChange
+    signal cannotSetValue(bool isBigValue)
     //width: 278
-    height: 82 * guiApp.scaleFactor
+    height: 90 * guiApp.scaleFactor
 
     // Create DapCoinCalculator instance for precise calculations
     DapCoinCalculator {
@@ -30,7 +38,14 @@ Item {
         id: statesData
     }
 
-    Component.onCompleted: init(rangeValues)
+    Component.onCompleted: {
+        init(rangeValues);
+        // Force initialization if statesData is empty
+        if (statesData.count === 0) {
+            initStates();
+            updateState();
+        }
+    }
 
     property var rangeValues: {
         "veryLow": "0.03",
@@ -57,6 +72,11 @@ Item {
             border.width: 1 * guiApp.scaleFactor
             border.color: currTheme.input
             radius: 4
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: valueText.forceActiveFocus()
+            }
 
             Item {
                 id: inputValueItem
@@ -97,6 +117,8 @@ Item {
                     onEditingFinished: {
                         // Add .0 to whole numbers, then validate range
                         let processedValue = text;
+                        if (processedValue === "" || processedValue === "." || processedValue === "0." || processedValue === ".0")
+                            processedValue = "0.0";
 
                         // Add .0 if it's a whole number without decimal point
                         if (processedValue !== "" && processedValue.indexOf('.') === -1) {
@@ -146,45 +168,341 @@ Item {
             }
         }
 
-        RowLayout {
-            id: colorRect
-            Layout.preferredWidth: 278 * guiApp.scaleFactor
-            Layout.preferredHeight: 4 * guiApp.scaleFactor
-            Layout.alignment: Qt.AlignHCenter
-            Layout.topMargin: 12 * guiApp.scaleFactor
+        // Brand new fee selector component
+        Item {
+            id: feeSelector
+            Layout.fillWidth: true
+            Layout.preferredHeight: 16 * guiApp.scaleFactor
+            Layout.topMargin: 10 * guiApp.scaleFactor
+            Layout.bottomMargin: 6 * guiApp.scaleFactor
 
-            spacing: 5 * guiApp.scaleFactor
+            property int activeLevel: getActiveLevel()
 
-            Repeater {
-                model: statesData
+            // Background track
+            Rectangle {
+                id: track
+                anchors.fill: parent
+                anchors.topMargin: 6 * guiApp.scaleFactor
+                anchors.bottomMargin: 6 * guiApp.scaleFactor
+                height: 4 * guiApp.scaleFactor
+                radius: 2 * guiApp.scaleFactor
+                color: backgroundProgressColor
+            }
 
-                delegate: Rectangle {
-                    width: 52 * guiApp.scaleFactor
-                    height: 4 * guiApp.scaleFactor
-                    radius: 12
-                    color: model.enabled ? currentColor : "#666E7D"
+            // Active portion overlay
+            Rectangle {
+                id: activePortion
+                anchors.top: track.top
+                anchors.bottom: track.bottom
+                x: feeSelector.getActiveX()
+                width: feeSelector.getActiveWidth()
+                radius: track.radius
+                color: currentColor
 
-                    Behavior on color {
-                        PropertyAnimation {
-                            duration: 150
-                        }
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        onClicked: setValue(model.minValue)
+                Behavior on color {
+                    PropertyAnimation {
+                        duration: 200
                     }
                 }
+            }
+
+            // Control points
+            Rectangle {
+                id: point1
+                x: track.width * 0.0 - width / 2
+                anchors.verticalCenter: track.verticalCenter
+                width: feeSelector.getPointSize(0)
+                height: width
+                radius: width / 2
+                color: feeSelector.getPointColor(0)
+
+                Rectangle {
+                    visible: feeSelector.activeLevel === 0
+                    anchors.centerIn: parent
+                    width: 4 * guiApp.scaleFactor
+                    height: 4 * guiApp.scaleFactor
+                    radius: width / 2
+                    color: backgroundProgressColor
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    anchors.margins: -4 * guiApp.scaleFactor
+                    onClicked: {
+                        if (statesData.count > 0) {
+                            let targetValue = statesData.get(0).minValue;
+                            let medianValue = statesData.count > 2 ? statesData.get(2).minValue : targetValue;
+
+                            // Если медиана равна минимальной комиссии, Very Low недоступно
+                            if (coinCalculator.isEqual(medianValue, minimalValue)) {
+                                cannotSetValue(false);
+                            } else if (coinCalculator.isLess(targetValue, minimalValue)) {
+                                cannotSetValue(false);
+                            } else if (coinCalculator.isGreater(targetValue, maximumValue)) {
+                                cannotSetValue(true);
+                            } else {
+                                setValue(targetValue);
+                            }
+                        }
+                    }
+                }
+
+                Behavior on color {
+                    PropertyAnimation {
+                        duration: 200
+                    }
+                }
+            }
+
+            Rectangle {
+                id: point2
+                x: track.width * 0.25 - width / 2
+                anchors.verticalCenter: track.verticalCenter
+                width: feeSelector.getPointSize(1)
+                height: width
+                radius: width / 2
+                color: feeSelector.getPointColor(1)
+
+                Rectangle {
+                    visible: feeSelector.activeLevel === 1
+                    anchors.centerIn: parent
+                    width: 4 * guiApp.scaleFactor
+                    height: 4 * guiApp.scaleFactor
+                    radius: width / 2
+                    color: backgroundProgressColor
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    anchors.margins: -4 * guiApp.scaleFactor
+                    onClicked: {
+                        if (statesData.count > 1) {
+                            let targetValue = statesData.get(1).minValue;
+                            if (coinCalculator.isLess(targetValue, minimalValue)) {
+                                cannotSetValue(false);
+                            } else {
+                                setValue(targetValue);
+                            }
+                        }
+                    }
+                }
+
+                Behavior on color {
+                    PropertyAnimation {
+                        duration: 200
+                    }
+                }
+            }
+
+            Rectangle {
+                id: point3
+                x: track.width * 0.5 - width / 2
+                anchors.verticalCenter: track.verticalCenter
+                width: feeSelector.getPointSize(2)
+                height: width
+                radius: width / 2
+                color: feeSelector.getPointColor(2)
+
+                Rectangle {
+                    visible: feeSelector.activeLevel === 2
+                    anchors.centerIn: parent
+                    width: 4 * guiApp.scaleFactor
+                    height: 4 * guiApp.scaleFactor
+                    radius: width / 2
+                    color: backgroundProgressColor
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    anchors.margins: -4 * guiApp.scaleFactor
+                    onClicked: if (statesData.count > 2)
+                        setValue(statesData.get(2).minValue)
+                }
+
+                Behavior on color {
+                    PropertyAnimation {
+                        duration: 200
+                    }
+                }
+            }
+
+            Rectangle {
+                id: point4
+                x: track.width * 0.75 - width / 2
+                anchors.verticalCenter: track.verticalCenter
+                width: feeSelector.getPointSize(3)
+                height: width
+                radius: width / 2
+                color: feeSelector.getPointColor(3)
+
+                Rectangle {
+                    visible: feeSelector.activeLevel === 3
+                    anchors.centerIn: parent
+                    width: 4 * guiApp.scaleFactor
+                    height: 4 * guiApp.scaleFactor
+                    radius: width / 2
+                    color: backgroundProgressColor
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    anchors.margins: -4 * guiApp.scaleFactor
+                    onClicked: {
+                        if (statesData.count > 3) {
+                            let targetValue = statesData.get(3).minValue;
+                            if (coinCalculator.isGreater(targetValue, maximumValue)) {
+                                cannotSetValue(true);
+                            } else {
+                                setValue(targetValue);
+                            }
+                        }
+                    }
+                }
+
+                Behavior on color {
+                    PropertyAnimation {
+                        duration: 200
+                    }
+                }
+            }
+
+            Rectangle {
+                id: point5
+                x: track.width * 1.0 - width / 2
+                anchors.verticalCenter: track.verticalCenter
+                width: feeSelector.getPointSize(4)
+                height: width
+                radius: width / 2
+                color: feeSelector.getPointColor(4)
+
+                Rectangle {
+                    visible: feeSelector.activeLevel === 4
+                    anchors.centerIn: parent
+                    width: 4 * guiApp.scaleFactor
+                    height: 4 * guiApp.scaleFactor
+                    radius: width / 2
+                    color: backgroundProgressColor
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    anchors.margins: -4 * guiApp.scaleFactor
+                    onClicked: {
+                        if (statesData.count > 4) {
+                            let targetValue = statesData.get(4).minValue;
+                            let medianValue = statesData.count > 2 ? statesData.get(2).minValue : targetValue;
+
+                            // Если медиана равна максимальной комиссии, Very High недоступно
+                            if (coinCalculator.isEqual(medianValue, maximumValue)) {
+                                cannotSetValue(true);
+                            } else if (coinCalculator.isLess(targetValue, minimalValue)) {
+                                cannotSetValue(false);
+                            } else if (coinCalculator.isGreater(targetValue, maximumValue)) {
+                                cannotSetValue(true);
+                            } else {
+                                setValue(targetValue);
+                            }
+                        }
+                    }
+                }
+
+                Behavior on color {
+                    PropertyAnimation {
+                        duration: 200
+                    }
+                }
+            }
+
+            function getActiveLevel() {
+                for (let i = 0; i < statesData.count; i++) {
+                    if (statesData.get(i).name === currentState) {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+
+            function getActiveWidth() {
+                if (activeLevel === -1)
+                    return 0;
+
+                let centerPos = 2;  // "Recommended" position
+
+                if (activeLevel === centerPos) {
+                    // No fill for "Recommended" - only point is colored
+                    return 0;
+                } else if (activeLevel < centerPos) {
+                    // From activeLevel to center
+                    return track.width * ((centerPos - activeLevel) * 0.25);
+                } else {
+                    // From center to activeLevel
+                    return track.width * ((activeLevel - centerPos) * 0.25);
+                }
+            }
+
+            function getActiveX() {
+                if (activeLevel === -1)
+                    return 0;
+
+                let centerPos = 2;  // "Recommended" position
+
+                if (activeLevel === centerPos) {
+                    // No fill for "Recommended"
+                    return 0;
+                } else if (activeLevel < centerPos) {
+                    // From activeLevel position
+                    return track.width * (activeLevel * 0.25);
+                } else {
+                    // From center position
+                    return track.width * (centerPos * 0.25);
+                }
+            }
+
+            function getPointSize(pointIndex) {
+                if (activeLevel === pointIndex) {
+                    return 12 * guiApp.scaleFactor;
+                } else {
+                    return 8 * guiApp.scaleFactor;
+                }
+            }
+
+            function getPointColor(pointIndex) {
+                if (activeLevel === -1)
+                    return backgroundProgressColor;
+
+                let centerPos = 2;  // "Recommended" position
+
+                // Points between center and current selection get current color
+                if (activeLevel === centerPos) {
+                    // Only center point active for "Recommended"
+                    if (pointIndex === centerPos) {
+                        return currentColor;
+                    } else {
+                        return backgroundProgressColor;
+                    }
+                } else if (activeLevel < centerPos) {
+                    // Points from activeLevel to center
+                    if (pointIndex >= activeLevel && pointIndex <= centerPos) {
+                        return currentColor;
+                    }
+                } else {
+                    // Points from center to activeLevel
+                    if (pointIndex >= centerPos && pointIndex <= activeLevel) {
+                        return currentColor;
+                    }
+                }
+
+                return backgroundProgressColor;
             }
         }
 
         Text {
             id: textState
             Layout.alignment: Qt.AlignHCenter
-            Layout.topMargin: 8 * guiApp.scaleFactor
+            Layout.topMargin: -8 * guiApp.scaleFactor
             text: currentState
             color: currentColor
+            font: mainFont.dapFont.regular14
 
             Behavior on color {
                 PropertyAnimation {
@@ -194,8 +512,7 @@ Item {
         }
     }
 
-    function updateMedian(new_median)
-    {
+    function updateMedian(new_median) {
         if (new_median !== root.medianStr) {
             if (root.medianStr !== "") {
                 notifyAboutChange(new_median);
@@ -319,9 +636,39 @@ Item {
             }
         }
 
-        // Progressive scale: enable all states up to current one
-        for (var i = 0; i <= currentStateIndex && i < statesData.count; i++) {
-            statesData.get(i).enabled = true;
+        // Color spread from center (Recommended=2) to selected point
+        if (currentStateIndex >= 0) {
+            const centerIndex = 2; // Recommended
+
+            if (currentStateIndex === centerIndex) {
+                // Special case: Recommended selected - entire bar is green
+                for (var i = 0; i < statesData.count; i++) {
+                    statesData.get(i).enabled = true;
+                }
+            } else {
+                // Always enable center (Recommended)
+                if (centerIndex < statesData.count) {
+                    statesData.get(centerIndex).enabled = true;
+                }
+
+                // Enable current selected state
+                if (currentStateIndex < statesData.count) {
+                    statesData.get(currentStateIndex).enabled = true;
+                }
+
+                // Fill path between center and current state
+                if (currentStateIndex > centerIndex) {
+                    // Right side: Recommended → High/Very High
+                    for (var i = centerIndex + 1; i < currentStateIndex && i < statesData.count; i++) {
+                        statesData.get(i).enabled = true;
+                    }
+                } else if (currentStateIndex < centerIndex) {
+                    // Left side: Very Low/Low ← Recommended
+                    for (var i = currentStateIndex + 1; i < centerIndex && i < statesData.count; i++) {
+                        statesData.get(i).enabled = true;
+                    }
+                }
+            }
         }
 
         // Fallback if no state found
@@ -332,15 +679,15 @@ Item {
 
         // Set colors
         if (currentState === "Very low")
-            currentColor = "#FF5F5F";
+            currentColor = vertLowColor;
         else if (currentState === "Low")
-            currentColor = "#FFCD44";
+            currentColor = lowColor;
         else if (currentState === "Recommended")
-            currentColor = "#CAFC33";
+            currentColor = recommendedColor;
         else if (currentState === "High")
-            currentColor = "#79FFFA";
+            currentColor = highColor;
         else if (currentState === "Very high")
-            currentColor = "#9580FF";
+            currentColor = vertHighColor;
     }
 
     function init(ranges) {
