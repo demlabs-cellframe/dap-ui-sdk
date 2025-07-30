@@ -233,7 +233,6 @@ Item {
                             let targetValue = statesData.get(0).minValue;
                             let medianValue = statesData.count > 2 ? statesData.get(2).minValue : targetValue;
 
-                            // Если медиана равна минимальной комиссии, Very Low недоступно
                             if (coinCalculator.isEqual(medianValue, minimalValue)) {
                                 cannotSetValue(false);
                             } else if (coinCalculator.isLess(targetValue, minimalValue)) {
@@ -392,7 +391,6 @@ Item {
                             let targetValue = statesData.get(4).minValue;
                             let medianValue = statesData.count > 2 ? statesData.get(2).minValue : targetValue;
 
-                            // Если медиана равна максимальной комиссии, Very High недоступно
                             if (coinCalculator.isEqual(medianValue, maximumValue)) {
                                 cannotSetValue(true);
                             } else if (coinCalculator.isLess(targetValue, minimalValue)) {
