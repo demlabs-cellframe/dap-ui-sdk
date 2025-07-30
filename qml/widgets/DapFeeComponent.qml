@@ -4,131 +4,80 @@ import QtQuick.Layouts
 import "qrc:/widgets"
 import DapCoinCalculator
 
-Item
-{
+Item {
+    id: root
     property string currentValue: "0.01"
-    property string spinBoxStep: "0.01"
     property string minimalValue: "0.0"
     property string maximumValue: "100.0"
 
     property string valueName: "-"
-    property int powerRound: 2
 
     property bool editable: true
 
     property color currentColor: "#CAFC33"
     property string currentState: "Recommended"
 
-    signal valueChange()
-
-    id: root
+    signal valueChange
     //width: 278
-    height: 82
-    
+    height: 82 * guiApp.scaleFactor
+
     // Create DapCoinCalculator instance for precise calculations
-    DapCoinCalculator
-    {
+    DapCoinCalculator {
         id: coinCalculator
     }
 
-    ListModel
-    {
+    ListModel {
         id: statesData
     }
 
     Component.onCompleted: init(rangeValues)
 
-    property var rangeValues:
-    {
+    property var rangeValues: {
         "veryLow": "0.03",
         "low": "0.04",
         "middle": "0.05",
         "high": "0.06",
         "veryHigh": "0.07",
+        "veryHighStop": "0.14"
     }
 
-    // Custom SpinBox
-    Item
-    {
-        id: feeSpinbox
-        width: parent.width
-        height: 40
-        anchors.top: parent.top
-        anchors.horizontalCenter: parent.horizontalCenter
+    ColumnLayout {
+        anchors.fill: parent
+        anchors.leftMargin: 16 * guiApp.scaleFactor
+        anchors.rightMargin: 16 * guiApp.scaleFactor
 
-        // Minus
-        Rectangle
-        {
-            width: 40
-
-            anchors.right: valueField.left
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.rightMargin: 14
-
-            radius: 4
-            color: minusArea.containsMouse ? currTheme.inputActive : currTheme.input
-
-            Rectangle
-            {
-                height: 2
-                width: 14
-                border.width: 2
-                border.color: currTheme.white
-                anchors.centerIn: parent
-            }
-
-            MouseArea
-            {
-                id: minusArea
-                anchors.fill: parent
-                hoverEnabled: true
-                onClicked:
-                {
-                    let step = calculateStep(false);
-                    let newValue = coinCalculator.subtract(currentValue, step);
-                    let clampedValue = coinCalculator.max(newValue, minimalValue);
-                    stepValue(clampedValue, 4)
-                }
-            }
-        }
-
-        // Spin value
-        Rectangle
-        {
+        // Input field
+        Rectangle {
             id: valueField
-            width: 170
-
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
+            Layout.fillWidth: true
+            Layout.preferredHeight: 40 * guiApp.scaleFactor
+            Layout.alignment: Qt.AlignHCenter
 
             color: currTheme.secondaryBackground
-            border.width: 1
+            border.width: 1 * guiApp.scaleFactor
             border.color: currTheme.input
             radius: 4
 
-            Item
-            {
+            Item {
                 id: inputValueItem
-                implicitWidth: textMetrics.width + 16 + valueNameText.width > valueField.width - 16 ? valueField.width - 16 : textMetrics.width + 16 + valueNameText.width
+                property int spacing: 16 * guiApp.scaleFactor
+                implicitWidth: textMetrics.width + spacing + valueNameText.width > valueField.width - spacing ? valueField.width - spacing : textMetrics.width + spacing + valueNameText.width
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.topMargin: 1
-                anchors.bottomMargin: 1
-                anchors.leftMargin: 8
-                anchors.rightMargin: 8
+                anchors.topMargin: 1 * guiApp.scaleFactor
+                anchors.bottomMargin: 1 * guiApp.scaleFactor
+                anchors.leftMargin: 8 * guiApp.scaleFactor
+                anchors.rightMargin: 8 * guiApp.scaleFactor
 
-                DapTextField
-                {
+                DapTextField {
                     id: valueText
                     height: parent.height
                     anchors.left: parent.left
                     anchors.right: valueNameText.left
                     text: currentValue
                     font: mainFont.dapFont.regular16
-                    regExpValidator: /[0-9]*\.?[0-9]{0,18}/
+                    regExpValidator: /^[0-9]*\.?[0-9]{0,18}$/
                     inputMethodHints: CURRENT_OS === "ios" ? Qt.ImhNone : Qt.ImhFormattedNumbersOnly
                     defaultPlaceholderText: "0.0"
                     horizontalAlignment: Text.AlignRight
@@ -137,36 +86,54 @@ Item
                     placeholderColor: currTheme.gray
                     selectByMouse: editable
                     enabled: editable
-                    
-                    Keys.onReturnPressed: focus = false
-                    Keys.onEnterPressed: focus = false
 
-                    onTextChanged:
-                    {
-                        setValue(text)
-                        textMetrics.text = text
+                    // Keys.onReturnPressed: focus = false
+                    // Keys.onEnterPressed: focus = false
+
+                    onTextChanged: {
+                        textMetrics.text = text;
                     }
 
-                    onEditingFinished:
-                    {
-                        if(!focus) cursorPosition = 0
+                    onEditingFinished: {
+                        // Add .0 to whole numbers, then validate range
+                        let processedValue = text;
+
+                        // Add .0 if it's a whole number without decimal point
+                        if (processedValue !== "" && processedValue.indexOf('.') === -1) {
+                            processedValue += ".0";
+                        }
+
+                        if (coinCalculator.isValid(processedValue)) {
+                            let clampedValue = processedValue;
+                            if (coinCalculator.isLess(processedValue, minimalValue)) {
+                                clampedValue = minimalValue;
+                            } else if (coinCalculator.isGreater(processedValue, maximumValue)) {
+                                clampedValue = maximumValue;
+                            }
+
+                            if (clampedValue !== text) {
+                                text = clampedValue;
+                            }
+
+                            setValue(clampedValue);
+                        }
+
+                        if (!focus)
+                            cursorPosition = 0;
                     }
 
-                    onFocusChanged:
-                    {
-                        cursorPosition = 0
+                    onFocusChanged: {
+                        cursorPosition = 0;
                     }
 
-                    TextMetrics
-                    {
+                    TextMetrics {
                         id: textMetrics
                         font: valueText.font
                         text: valueText.text
                     }
                 }
 
-                Text
-                {
+                Text {
                     id: valueNameText
                     width: contentWidth
                     anchors.verticalCenter: parent.verticalCenter
@@ -179,262 +146,250 @@ Item
             }
         }
 
-        // Plus
-        Rectangle
-        {
-            width: 40
+        RowLayout {
+            id: colorRect
+            Layout.preferredWidth: 278 * guiApp.scaleFactor
+            Layout.preferredHeight: 4 * guiApp.scaleFactor
+            Layout.alignment: Qt.AlignHCenter
+            Layout.topMargin: 12 * guiApp.scaleFactor
 
-            anchors.left: valueField.right
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.leftMargin: 14
+            spacing: 5 * guiApp.scaleFactor
 
-            radius: 4
-            color: plusArea.containsMouse ? currTheme.inputActive : currTheme.input
+            Repeater {
+                model: statesData
 
-            Rectangle
-            {
-                width: 14
-                height: 2
-                border.width: 2
-                border.color: currTheme.white
-                anchors.centerIn: parent
+                delegate: Rectangle {
+                    width: 52 * guiApp.scaleFactor
+                    height: 4 * guiApp.scaleFactor
+                    radius: 12
+                    color: model.enabled ? currentColor : "#666E7D"
+
+                    Behavior on color {
+                        PropertyAnimation {
+                            duration: 150
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onClicked: setValue(model.minValue)
+                    }
+                }
             }
+        }
 
-            Rectangle
-            {
-                width: 2
-                height: 14
-                border.width: 2
-                border.color: currTheme.white
-                anchors.centerIn: parent
-            }
+        Text {
+            id: textState
+            Layout.alignment: Qt.AlignHCenter
+            Layout.topMargin: 8 * guiApp.scaleFactor
+            text: currentState
+            color: currentColor
 
-            MouseArea
-            {
-                id: plusArea
-                anchors.fill: parent
-                hoverEnabled: true
-                onClicked:
-                {
-                    let step = calculateStep(true);
-                    let newValue = coinCalculator.add(currentValue, step);
-                    let clampedValue = coinCalculator.min(newValue, maximumValue);
-                    stepValue(clampedValue, 4)
+            Behavior on color {
+                PropertyAnimation {
+                    duration: 150
                 }
             }
         }
     }
 
-    RowLayout
+    function updateMedian(new_median)
     {
-        id: colorRect
-        width: 278
-        height: 4
-
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: feeSpinbox.bottom
-        anchors.topMargin: 12
-
-        spacing: 5
-
-        Repeater
-        {
-            model: statesData
-
-            delegate:
-                Rectangle
-            {
-                width: 52
-                Layout.fillHeight: true
-                radius: 12
-                color: model.enabled ? currentColor : "#666E7D"
-
-                Behavior on color
-                {
-                    PropertyAnimation{duration: 150}
-                }
-
-                //TODO: uncorrect value calculating
-//                MouseArea
-//                {
-//                    anchors.fill: parent
-//                    hoverEnabled: true
-//                    onClicked: setValue(model.minValue)
-//                }
+        if (new_median !== root.medianStr) {
+            if (root.medianStr !== "") {
+                notifyAboutChange(new_median);
+            } else {
+                init(generateRanges(new_median));
             }
+            root.medianStr = new_median;
         }
     }
 
-    Text
-    {
-        id: textState
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: colorRect.bottom
-        anchors.topMargin: 8
-        text: currentState
-        color: currentColor
-
-        Behavior on color{
-            PropertyAnimation{duration: 150}
-        }
+    function resetFeeData() {
+        valueName = "";
+        minimalValue = "0.000000000000000001";
+        maximumValue = "100.0";
+        medianStr = "0.001";
     }
 
-    function calculateStep(forIncrease)
-    {
-        let stepValue = spinBoxStep
-        let value = currentValue
+    function notifyAboutChange(new_median) {
+        var new_ranges = generateRanges(new_median);
+        root.rangeValues = new_ranges;
+        root.initStates();
+        root.setValue(new_median);
+    }
 
-        const thresholds = [
-            { limit: "0.00001", step: "0.000001" },  // For value <= 0.00001 step 0.000001
-            { limit: "0.0001", step: "0.00001" },    // For value <= 0.0001 step 0.00001
-            { limit: "0.001", step: "0.0001" },      // For value <= 0.001 step 0.0001
-            { limit: "0.01", step: "0.001" },        // For value <= 0.01 step 0.001
-            { limit: "0.1", step: "0.01" },          // For value <= 0.1 step 0.01
-            { limit: "999999999", step: "0.1" }      // For value > 0.1 step 0.1
-        ];
+    function generateRanges(median_str) {
+        let rawLow = coinCalculator.divide(coinCalculator.add(median_str, minimalValue), "2.0");
+        let rawHigh = coinCalculator.divide(coinCalculator.add(maximumValue, median_str), "2.0");
 
-        if (forIncrease)
-        {
-            //+
-            for (let i = 0; i < thresholds.length; i++)
-            {
-                if (coinCalculator.isLess(value, thresholds[i].limit))
-                {
-                    stepValue = thresholds[i].step;
+        return {
+            "veryLow": minimalValue,
+            "low": roundValue(rawLow),
+            "middle": median_str,
+            "high": roundValue(rawHigh),
+            "veryHigh": maximumValue,
+            "veryHighStop": coinCalculator.multiply(maximumValue, "2.0")
+        };
+    }
+
+    function roundValue(value_str) {
+        // If has integer part - drop decimal, if only decimal - round to significant
+        if (!coinCalculator.isValid(value_str) || coinCalculator.isEqual(value_str, "0")) {
+            return value_str;
+        }
+
+        let valueStr = value_str.toString();
+        let decimalIndex = valueStr.indexOf('.');
+
+        if (decimalIndex === -1) {
+            // No decimal point - return as is
+            return valueStr;
+        }
+
+        let integerPart = valueStr.substring(0, decimalIndex);
+
+        if (integerPart !== "0" && integerPart !== "") {
+            // Has integer part - drop decimal but add .0
+            return integerPart + ".0";
+        } else {
+            // Only decimal part - find first significant digit
+            let firstSignificantPos = -1;
+            for (let i = decimalIndex + 1; i < valueStr.length; i++) {
+                if (valueStr[i] !== '0') {
+                    firstSignificantPos = i - decimalIndex;
                     break;
                 }
             }
-        }
-        else
-        {
-            //-
-            for (let i = 0; i < thresholds.length; i++)
-            {
-                if (coinCalculator.isLessOrEqual(value, thresholds[i].limit))
-                {
-                    stepValue = thresholds[i].step;
-                    break;
-                }
+
+            if (firstSignificantPos === -1) {
+                return "0";
             }
-        }
 
-        // Ensure step is within valid range
-        stepValue = coinCalculator.max(coinCalculator.min(stepValue, maximumValue), minimalValue);
-
-        return stepValue;
-    }
-
-    function stepValue(numStr, precision)
-    {
-        // Round to precision using string operations to avoid floating point errors
-        let result = coinCalculator.roundToPrecision(numStr, precision);
-        
-        if(result && !coinCalculator.isEqual(result, currentValue)) 
-        {
-            setValue(result);
+            // Round to first significant digit (0.001, 0.01, 0.1)
+            let roundedValue = "0." + "0".repeat(firstSignificantPos - 1) + "1";
+            return roundedValue;
         }
     }
 
-    function setValue(value)
-    {
-        if(coinCalculator.isValid(value))
-        {
-            if(coinCalculator.isGreaterOrEqual(value, minimalValue) && coinCalculator.isLessOrEqual(value, maximumValue))
-            {
-                currentValue = value
-                updateState()
-                valueChange()
+    function setValue(value) {
+        if (coinCalculator.isValid(value)) {
+            if (coinCalculator.isGreaterOrEqual(value, minimalValue) && coinCalculator.isLessOrEqual(value, maximumValue)) {
+                currentValue = value;
+                valueText.text = value; // Sync with input field
+                updateState();
+                valueChange();
             }
         }
     }
 
-    function updateState()
-    {
-        if(statesData.count == 0)
-            return
+    function updateState() {
+        if (statesData.count == 0)
+            return;
 
-        var checkSearch = false
-        var idxSearch = -1
-
-        for(var i = statesData.count -1; i >= 0; i--)
-        {
-            statesData.get(i).enabled = checkSearch
-
-            if(coinCalculator.isGreater(statesData.get(i).minValue, currentValue) || checkSearch)
-                continue;
-
-            idxSearch = i
-            checkSearch = true
-            currentState = statesData.get(i).name
-            statesData.get(i).enabled = true
+        // Reset all states
+        for (var i = 0; i < statesData.count; i++) {
+            statesData.get(i).enabled = false;
         }
 
-        if(idxSearch < 0)
-        {
-            currentState = statesData.get(0).name
+        var currentStateIndex = -1;
+
+        // Logic: split by median first, then check sub-ranges
+        if (coinCalculator.isEqual(currentValue, rangeValues.middle)) {
+            currentState = "Recommended";
+            currentStateIndex = 2;
+        } else if (coinCalculator.isGreater(currentValue, rangeValues.middle)) {
+            // Above median - check High vs Very High
+            if (coinCalculator.isGreaterOrEqual(currentValue, rangeValues.veryHigh)) {
+                currentState = "Very high";
+                currentStateIndex = 4;
+            } else {
+                currentState = "High";
+                currentStateIndex = 3;
+            }
+        } else {
+            // Below median - check Low vs Very Low
+            if (coinCalculator.isLess(currentValue, rangeValues.low)) {
+                currentState = "Very low";
+                currentStateIndex = 0;
+            } else {
+                currentState = "Low";
+                currentStateIndex = 1;
+            }
         }
 
-        if(currentState === "Very low")
-            currentColor = "#FF5F5F"
-        else if(currentState === "Low")
-            currentColor = "#FFCD44"
-        else if(currentState === "Recommended")
-            currentColor = "#CAFC33"
-        else if(currentState === "High")
-            currentColor = "#79FFFA"
-        else if(currentState === "Very high")
-            currentColor = "#9580FF"
+        // Progressive scale: enable all states up to current one
+        for (var i = 0; i <= currentStateIndex && i < statesData.count; i++) {
+            statesData.get(i).enabled = true;
+        }
+
+        // Fallback if no state found
+        if (currentStateIndex < 0) {
+            currentState = statesData.get(0).name;
+            statesData.get(0).enabled = true;
+        }
+
+        // Set colors
+        if (currentState === "Very low")
+            currentColor = "#FF5F5F";
+        else if (currentState === "Low")
+            currentColor = "#FFCD44";
+        else if (currentState === "Recommended")
+            currentColor = "#CAFC33";
+        else if (currentState === "High")
+            currentColor = "#79FFFA";
+        else if (currentState === "Very high")
+            currentColor = "#9580FF";
     }
 
-    function init(ranges)
-    {
-        rangeValues = ranges
-        initStates()
-        setValue(rangeValues.middle)
+    function init(ranges) {
+        rangeValues = ranges;
+        initStates();
+        setValue(rangeValues.middle);
     }
 
-    function initStates()
-    {
-        statesData.clear()
+    function initStates() {
+        statesData.clear();
+
         //very low range
-        statesData.append(
-                    {
-                        name: "Very low",
-                        minValue: rangeValues.veryLow,
-                        enabled: false
-                    })
+        statesData.append({
+            name: "Very low",
+            minValue: rangeValues.veryLow,
+            maxValue: rangeValues.low,
+            enabled: false
+        });
 
         //low range
-        statesData.append(
-                    {
-                        name: "Low",
-                        minValue: rangeValues.low,
-                        enabled: false
-                    })
+        statesData.append({
+            name: "Low",
+            minValue: rangeValues.low,
+            maxValue: rangeValues.middle,
+            enabled: false
+        });
 
-        //recomemnded range
-        statesData.append(
-                    {
-                        name: "Recommended",
-                        minValue: rangeValues.middle,
-                        enabled: false
-                    })
+        //recommended range - median point
+        statesData.append({
+            name: "Recommended",
+            minValue: rangeValues.middle,
+            maxValue: rangeValues.middle,
+            enabled: false
+        });
 
         //high range
-        statesData.append(
-                    {
-                        name: "High",
-                        minValue: rangeValues.high,
-                        enabled: false
-                    })
+        statesData.append({
+            name: "High",
+            minValue: rangeValues.high,
+            maxValue: rangeValues.veryHigh,
+            enabled: false
+        });
 
         //very high range
-        statesData.append(
-                    {
-                        name: "Very high",
-                        minValue: rangeValues.veryHigh,
-                        enabled: false
-                    })
+        statesData.append({
+            name: "Very high",
+            minValue: rangeValues.veryHigh,
+            maxValue: rangeValues.veryHighStop,
+            enabled: false
+        });
     }
 }
