@@ -172,9 +172,9 @@ Item {
         Item {
             id: feeSelector
             Layout.fillWidth: true
-            Layout.preferredHeight: 16 * guiApp.scaleFactor
-            Layout.topMargin: 10 * guiApp.scaleFactor
-            Layout.bottomMargin: 6 * guiApp.scaleFactor
+            Layout.preferredHeight: 24 * guiApp.scaleFactor
+            // Layout.topMargin: 20 * guiApp.scaleFactor
+            Layout.bottomMargin: 9 * guiApp.scaleFactor
 
             property int activeLevel: getActiveLevel()
 
@@ -182,10 +182,10 @@ Item {
             Rectangle {
                 id: track
                 anchors.fill: parent
-                anchors.topMargin: 6 * guiApp.scaleFactor
-                anchors.bottomMargin: 6 * guiApp.scaleFactor
-                height: 4 * guiApp.scaleFactor
-                radius: 2 * guiApp.scaleFactor
+                anchors.topMargin: 9 * guiApp.scaleFactor
+                anchors.bottomMargin: 9 * guiApp.scaleFactor
+                height: 6 * guiApp.scaleFactor
+                radius: 3 * guiApp.scaleFactor
                 color: backgroundProgressColor
             }
 
@@ -219,8 +219,8 @@ Item {
                 Rectangle {
                     visible: feeSelector.activeLevel === 0
                     anchors.centerIn: parent
-                    width: 4 * guiApp.scaleFactor
-                    height: 4 * guiApp.scaleFactor
+                    width: 6 * guiApp.scaleFactor
+                    height: 6 * guiApp.scaleFactor
                     radius: width / 2
                     color: backgroundProgressColor
                 }
@@ -265,8 +265,8 @@ Item {
                 Rectangle {
                     visible: feeSelector.activeLevel === 1
                     anchors.centerIn: parent
-                    width: 4 * guiApp.scaleFactor
-                    height: 4 * guiApp.scaleFactor
+                    width: 6 * guiApp.scaleFactor
+                    height: 6 * guiApp.scaleFactor
                     radius: width / 2
                     color: backgroundProgressColor
                 }
@@ -305,8 +305,8 @@ Item {
                 Rectangle {
                     visible: feeSelector.activeLevel === 2
                     anchors.centerIn: parent
-                    width: 4 * guiApp.scaleFactor
-                    height: 4 * guiApp.scaleFactor
+                    width: 6 * guiApp.scaleFactor
+                    height: 6 * guiApp.scaleFactor
                     radius: width / 2
                     color: backgroundProgressColor
                 }
@@ -337,8 +337,8 @@ Item {
                 Rectangle {
                     visible: feeSelector.activeLevel === 3
                     anchors.centerIn: parent
-                    width: 4 * guiApp.scaleFactor
-                    height: 4 * guiApp.scaleFactor
+                    width: 6 * guiApp.scaleFactor
+                    height: 6 * guiApp.scaleFactor
                     radius: width / 2
                     color: backgroundProgressColor
                 }
@@ -377,8 +377,8 @@ Item {
                 Rectangle {
                     visible: feeSelector.activeLevel === 4
                     anchors.centerIn: parent
-                    width: 4 * guiApp.scaleFactor
-                    height: 4 * guiApp.scaleFactor
+                    width: 6 * guiApp.scaleFactor
+                    height: 6 * guiApp.scaleFactor
                     radius: width / 2
                     color: backgroundProgressColor
                 }
@@ -458,9 +458,9 @@ Item {
 
             function getPointSize(pointIndex) {
                 if (activeLevel === pointIndex) {
-                    return 12 * guiApp.scaleFactor;
+                    return 18 * guiApp.scaleFactor;
                 } else {
-                    return 8 * guiApp.scaleFactor;
+                    return 12 * guiApp.scaleFactor;
                 }
             }
 
