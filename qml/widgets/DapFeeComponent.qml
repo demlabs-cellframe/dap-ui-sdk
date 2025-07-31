@@ -277,7 +277,10 @@ Item {
                     onClicked: {
                         if (statesData.count > 1) {
                             let targetValue = statesData.get(1).minValue;
-                            if (coinCalculator.isLess(targetValue, minimalValue)) {
+                            let medianValue = statesData.count > 2 ? statesData.get(2).minValue : targetValue;
+                            if (coinCalculator.isEqual(medianValue, minimalValue)) {
+                                cannotSetValue(false);
+                            } else if (coinCalculator.isLess(targetValue, minimalValue)) {
                                 cannotSetValue(false);
                             } else {
                                 setValue(targetValue);
@@ -349,7 +352,10 @@ Item {
                     onClicked: {
                         if (statesData.count > 3) {
                             let targetValue = statesData.get(3).minValue;
-                            if (coinCalculator.isGreater(targetValue, maximumValue)) {
+                            let medianValue = statesData.count > 2 ? statesData.get(2).minValue : targetValue;
+                            if (coinCalculator.isEqual(medianValue, maximumValue)) {
+                                cannotSetValue(true);
+                            } else if (coinCalculator.isGreater(targetValue, maximumValue)) {
                                 cannotSetValue(true);
                             } else {
                                 setValue(targetValue);
@@ -736,5 +742,37 @@ Item {
             maxValue: rangeValues.veryHighStop,
             enabled: false
         });
+    }
+
+    // Public function to commit current input value
+    function commitInput() {
+        if (!editable || !valueText.text) {
+            return;
+        }
+
+        // Same logic as onEditingFinished
+        let processedValue = valueText.text;
+        if (processedValue === "" || processedValue === "." || processedValue === "0." || processedValue === ".0")
+            processedValue = "0.0";
+
+        // Add .0 if it's a whole number without decimal point
+        if (processedValue !== "" && processedValue.indexOf('.') === -1) {
+            processedValue += ".0";
+        }
+
+        if (coinCalculator.isValid(processedValue)) {
+            let clampedValue = processedValue;
+            if (coinCalculator.isLess(processedValue, minimalValue)) {
+                clampedValue = minimalValue;
+            } else if (coinCalculator.isGreater(processedValue, maximumValue)) {
+                clampedValue = maximumValue;
+            }
+
+            if (clampedValue !== valueText.text) {
+                valueText.text = clampedValue;
+            }
+
+            setValue(clampedValue);
+        }
     }
 }
