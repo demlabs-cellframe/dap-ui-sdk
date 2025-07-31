@@ -206,6 +206,7 @@ protected:
   void _printWalletsData();
   void _emitNetworksList();
   void _cleanInvalidTokens();
+  void _addEmptyNativeWallets(const QString &a_networkName);
   /// @}
 
   /****************************************//**

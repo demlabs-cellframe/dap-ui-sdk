@@ -83,6 +83,9 @@ bool DapQmlModelNodeTokensList::isIndexed() const
 
 bool DapQmlModelNodeTokensList::filterAcceptsRow (int a_row, const QString &a_filter) const
 {
+  if (a_filter == "-"){
+    return true;
+  }
   return data (createIndex (a_row, 0), int (FieldId::misc)).toString() == a_filter;
 }
 
