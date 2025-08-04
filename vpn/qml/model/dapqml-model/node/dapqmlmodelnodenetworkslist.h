@@ -59,38 +59,32 @@ public:
   static DapQmlModelNodeNetworksList *instance();
   Q_INVOKABLE static QObject *singletonProvider (QQmlEngine *engine, QJSEngine *scriptEngine);
   void refresh();
+  QString selectDefaultNetwork();
 
   /* fields */
 
-  int size() const;
-  int currentIndex() const;
-  bool setCurrentIndex (int a_index);
-  bool isIndexed() const;
-  bool filterAcceptsRow (int a_row, const QString &a_filter) const;
-  const QString &network() const;
+  Q_INVOKABLE int size() const override;
+  Q_INVOKABLE int currentIndex() const override;
+  Q_INVOKABLE bool setCurrentIndex (int a_index) override;
+  Q_INVOKABLE bool isIndexed() const override;
+  Q_INVOKABLE bool filterAcceptsRow (int a_row, const QString &a_filter) const override;
 
-  /* new methods */
+  Q_INVOKABLE const QString &network() const;
 
-  /**
-   * @brief Automatically select default network based on developer mode
-   * @return true if network was selected, false otherwise
-   */
-  Q_INVOKABLE bool selectDefaultNetwork();
-
+protected:
+  void _modelReset();
   /// @}
 
   /****************************************//**
    * @name OVERRIDE
    *******************************************/
   /// @{
-protected:
+public:
   int rowCount (const QModelIndex &parent = QModelIndex()) const override;
   int columnCount (const QModelIndex &parent = QModelIndex()) const override;
+
   QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
   QHash<int, QByteArray> roleNames() const override;
-
-private:
-  void _modelReset();
   /// @}
 
   /****************************************//**
@@ -100,7 +94,6 @@ private:
 signals:
   void sigCurrentIndexChanged();
   /// @}
-
 };
 
 /*-----------------------------------------*/

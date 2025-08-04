@@ -709,11 +709,6 @@ Item {
             height: resizer.height
             opacity: 0.5 + enabled * 0.5
 
-//            Component.onCompleted: StyleDebugTree.describe (
-//               "listviewDelegate" + model.index,
-//                ["x", "y", "width", "height"],
-//               this);
-
             property bool loadTooltip: itemRoot.parent.hasOwnProperty("tooltip")
                                        ? itemRoot.parent.tooltip.hasOwnProperty("text")
                                        : false
@@ -738,22 +733,12 @@ Item {
                 anchors.leftMargin: listviewItemSizer.x
                 anchors.rightMargin: listviewItemSizer.x
 
-//                Component.onCompleted: StyleDebugTree.describe (
-//                   "listviewDelegate rowlay" + model.index,
-//                    ["x", "y", "width", "height"],
-//                   this);
-
                 ColumnLayout {
                     id: itemLabels
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
                     property bool swap: false
-
-//                    Component.onCompleted: StyleDebugTree.describe (
-//                       "listviewDelegate collay" + model.index,
-//                        ["x", "y", "width", "height"],
-//                       this);
 
                     Component.onCompleted: {
                         if (itemRoot.parent.hasOwnProperty("swap"))
@@ -882,10 +867,6 @@ Item {
                     Layout.preferredHeight: linkImageSizer.height
                     scaledPixmap: linkImageSizer.scaledPixmap
 
-//                    Component.onCompleted: StyleDebugTree.describe (
-//                       "listviewDelegate link" + model.index,
-//                        ["x", "y", "width", "height"],
-//                       this);
                 }
             }
         }
@@ -955,10 +936,6 @@ Item {
                 root.sigOrderSelect (model.index, model.hash);
             }
 
-//            Component.onCompleted: StyleDebugTree.describe (
-//               "listviewDelegateOrder" + model.index,
-//                ["x", "y", "width", "height", "first", "second"],
-//               this);
         }
     }
 

@@ -95,11 +95,11 @@ const QString &DapQmlModelNodeNetworksList::network() const
   return list.at (p->currentIndex);
 }
 
-bool DapQmlModelNodeNetworksList::selectDefaultNetwork()
+QString DapQmlModelNodeNetworksList::selectDefaultNetwork()
 {
   const auto &list = DapNodeWalletData::instance()->networkList();
   if (list.isEmpty()) {
-    return false;
+    return QString();
   }
 
   // Check if we're in developer mode
@@ -107,26 +107,27 @@ bool DapQmlModelNodeNetworksList::selectDefaultNetwork()
   
   if (isDeveloperMode) {
     // In developer mode, don't auto-select - let user choose
-    return false;
+    return QString();
   }
 
-  // In user mode, automatically select "KelVPN" network
-  QString defaultNetwork = DapDeveloperModeManager::instance()->getDefaultNetwork();
+  // In user mode, automatically select network based on brand
+  QString defaultNetwork = DapDeveloperModeManager::instance()->getNetworkForCurrentBrand();
   
   for (int i = 0; i < list.size(); ++i) {
     if (list.at(i) == defaultNetwork) {
       setCurrentIndex(i);
-      return true;
+      return defaultNetwork;
     }
   }
 
-  // If "KelVPN" not found, select first available network
+  // If brand network not found, select first available network
   if (!list.isEmpty()) {
+    QString firstNetwork = list.at(0);
     setCurrentIndex(0);
-    return true;
+    return firstNetwork;
   }
 
-  return false;
+  return QString();
 }
 
 void DapQmlModelNodeNetworksList::_modelReset()

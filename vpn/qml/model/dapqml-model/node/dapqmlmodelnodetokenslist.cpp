@@ -83,6 +83,11 @@ bool DapQmlModelNodeTokensList::isIndexed() const
 
 bool DapQmlModelNodeTokensList::filterAcceptsRow (int a_row, const QString &a_filter) const
 {
+  // Если фильтр равен "-" или пустой, показывать все записи
+  if (a_filter == "-" || a_filter.isEmpty())
+    return true;
+  
+  // Иначе фильтровать по сети:кошелек
   return data (createIndex (a_row, 0), int (FieldId::misc)).toString() == a_filter;
 }
 

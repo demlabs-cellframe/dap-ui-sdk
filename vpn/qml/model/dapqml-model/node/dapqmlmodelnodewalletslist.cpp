@@ -83,7 +83,15 @@ bool DapQmlModelNodeWalletsList::isIndexed() const
 
 bool DapQmlModelNodeWalletsList::filterAcceptsRow (int a_row, const QString &a_filter) const
 {
-  return data (createIndex (a_row, 0), int (FieldId::misc)).toString() == a_filter;
+  // Если фильтр равен "-" или пустой, показывать все записи
+  if (a_filter == "-" || a_filter.isEmpty())
+    return true;
+  
+  // Иначе фильтровать по сети
+  QString network = data (createIndex (a_row, 0), int (FieldId::misc)).toString();
+  bool match = network == a_filter;
+  
+  return match;
 }
 
 const QString &DapQmlModelNodeWalletsList::wallet() const
