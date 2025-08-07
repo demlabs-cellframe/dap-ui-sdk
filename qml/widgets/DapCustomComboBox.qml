@@ -53,6 +53,7 @@ Item
     property color backgroundColorNormal: currTheme.mainBackground
     property color backgroundColorShow: currTheme.mainBackground
     property alias background: background
+    property alias popup: popup
 
     property string enabledIcon:""
     property string disabledIcon:""
