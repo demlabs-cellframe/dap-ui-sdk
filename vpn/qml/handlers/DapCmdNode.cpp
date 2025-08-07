@@ -683,3 +683,28 @@ QJsonObject OrderListData::orderInfo (const QString &hash)
     //                  tx_cond_hash:     0x0000000000000000000000000000000000000000000000000000000000000000
     //                  ext:              0x52025275737369615F325F3100
 }
+
+QString DapCmdNode::getConnectedAppType() const
+{
+    return m_connectedAppType;
+}
+
+void DapCmdNode::setConnectedAppType(const QString& appType)
+{
+    if (m_connectedAppType != appType) {
+        m_connectedAppType = appType;
+        qDebug() << "[DapCmdNode] Connected app type updated to:" << appType;
+    }
+}
+
+void DapCmdNode::slotWalletsDataRequest()
+{
+    DEBUGINFO << __PRETTY_FUNCTION__;
+    walletsRequest();
+}
+
+void DapCmdNode::slotNodeDetection()
+{
+    DEBUGINFO << __PRETTY_FUNCTION__;
+    startNodeDetection();
+}

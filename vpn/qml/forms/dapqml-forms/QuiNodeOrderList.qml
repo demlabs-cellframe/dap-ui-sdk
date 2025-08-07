@@ -1148,7 +1148,7 @@ Item {
             text: {
                 switch(swipe.currentIndex)
                 {
-                case QuiNodeOrderList.Tab.Search:   return qsTr("Search order");
+                case QuiNodeOrderList.Tab.Search:   return qsTr("Wallet Parameters");
                 case QuiNodeOrderList.Tab.List:     return root.internal.listTitle; //qsTr("Orders");
                 case QuiNodeOrderList.Tab.Overview: return qsTr("Transaction overview");
                 }
@@ -1397,7 +1397,7 @@ Item {
                     DapQmlStyle { item: btnConfirmSearch; qss: "nodeorlist-overview-confirm-btn" }
                     sourceComponent: pushButton
                     enabled: root.internal.isSearch ? true : root.internal.isFilterSetup
-                    property string text: root.internal.isSearch ? qsTr("SEARCH ORDER") : qsTr("CONFIRM")
+                    property string text: root.internal.isSearch ? qsTr("APPLY PARAMETERS") : qsTr("CONFIRM")
                     property color color
                     property color fill
                     property var cbClicked: function() {

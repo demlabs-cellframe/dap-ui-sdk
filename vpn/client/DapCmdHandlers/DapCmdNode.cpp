@@ -312,3 +312,16 @@ void DapCmdNode::handle(const QJsonObject* params)
         emit getFeeData(params->value("get_fee_data").toString());
     }
 }
+
+QString DapCmdNode::getConnectedAppType() const
+{
+    return m_connectedAppType;
+}
+
+void DapCmdNode::setConnectedAppType(const QString& appType)
+{
+    if (m_connectedAppType != appType) {
+        m_connectedAppType = appType;
+        qDebug() << "[DapCmdNode] Connected app type updated to:" << appType;
+    }
+}

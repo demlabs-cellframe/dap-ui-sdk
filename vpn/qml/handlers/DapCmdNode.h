@@ -34,6 +34,9 @@ protected:
   /// @{
 protected:
   DapCmdNodeData *_data;
+  
+  // Store connected app type (Dashboard or Cellframe-Wallet)
+  QString m_connectedAppType = "Dashboard";
   /// @}
 
   /****************************************//**
@@ -61,6 +64,12 @@ public:
   /// convert units from kilo (mega etc) to byte. same for seconds
   static void convertUnits (QString &a_unit, qint64 &a_min, qint64 &a_max, qint64 *a_multiplier = nullptr);
 
+  /// Get connected app type (Dashboard or Cellframe-Wallet)
+  QString getConnectedAppType() const;
+  
+  /// Set connected app type when detected by DapNode
+  void setConnectedAppType(const QString& appType);
+
 protected:
   bool _checkContinue();
   void _updateHistoryItem();
@@ -82,6 +91,8 @@ public:
    *******************************************/
   /// @{
 public slots:
+  void slotWalletsDataRequest();
+  void slotNodeDetection();
   void slotChooseNetwork (const QString &network);
   void slotChooseWallet (const QString &wallet);
   void slotChooseToken (const QString &token);

@@ -13,6 +13,10 @@ private:
     static const QString actionParam;
     bool   m_nodeDetected;
     bool   m_nocdbMode;
+    
+    // Store connected app type (Dashboard or Cellframe-Wallet)
+    QString m_connectedAppType = "Dashboard";
+    
     void   sendNoCdbMode();
 public:
     explicit DapCmdNode(QObject *parent = nullptr);
@@ -20,6 +24,13 @@ public:
 
     void handle(const QJsonObject* params) override;
     bool nocdbMode() { return m_nocdbMode; }
+    
+    // Get connected app type (Dashboard or Cellframe-Wallet)
+    QString getConnectedAppType() const;
+    
+    // Set connected app type when detected by DapNode
+    void setConnectedAppType(const QString& appType);
+    
 public slots:
     void sendWalletsList(const QStringList& walletsList);
     void sendNetworksList(const QStringList& walletsList);

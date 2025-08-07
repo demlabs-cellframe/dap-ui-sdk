@@ -192,6 +192,9 @@ public:
     QString getWeb3ConnectionId();
     void clearWeb3ConnectionId();
 
+    // Get connected app type (Dashboard or Cellframe-Wallet)
+    QString getConnectedAppType() const;
+
 private:
     void initStmTransitions();
     void initStmStates();
@@ -274,6 +277,8 @@ signals:
     void sigFeeReceivedData(QJsonObject);
     void sigWalletsRequest();
 
+    // Signal when connected app type is detected (Dashboard or Cellframe-Wallet)
+    void sigConnectedAppTypeDetected(const QString& appType);
 };
 
 /*-----------------------------------------*/
