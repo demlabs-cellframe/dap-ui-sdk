@@ -31,6 +31,8 @@ import Scaling 1.0
  * | IconMainSub | icon, main, sub |
  * | EditTopMainBottomSub | top:edit, bottom:sub |
  * | IconMainSubIcon | icon, main, sub, icon |
+ * | EditLine,             ///< icon, main, icon
+ * | LeftTopSubBottomMain  ///< left:left, top:sub, bottom:main
  *
  * @date 06.06.22
  * @author Mikhail Shilenko
@@ -525,6 +527,10 @@ Rectangle {
                 inputMask: root.inputMask
                 // android virtual keyboard
                 inputMethodHints: Qt.ImhSensitiveData
+                persistentSelection: true
+                selectByMouse: true
+                mouseSelectionMode: TextInput.SelectCharacters
+
 
                 DapQmlLabel {
                     anchors.fill: etmbsMain
@@ -541,21 +547,29 @@ Rectangle {
 
                 TextEditContextMenu {
                     id: ctxMenu
-                    Component.onCompleted: setTextEditWidget(etmbsMain)
+                    Component.onCompleted: {
+                        setSerialInpoutMode(false)
+                        setTextEditWidget(etmbsMain)
+                    }
                 }
 
                 MouseArea {
                     anchors.fill: parent
+                    // Accept only right button to avoid intercepting left-click selection/shift-click
                     acceptedButtons: Qt.RightButton
+                    propagateComposedEvents: true
+                    hoverEnabled: true
+                    preventStealing: true
+                    onPressed: {
+                        if (mouse.button !== Qt.RightButton) mouse.accepted = false
+                    }
                     onClicked: {
-                        if (Scaling.isDesktop())
-                            if (mouse.button === Qt.RightButton)
-                                contextMenu.open()
+                        if (Scaling.isDesktop() && mouse.button === Qt.RightButton)
+                            contextMenu.open()
                     }
                     onPressAndHold: {
-                        if (Scaling.isDesktop())
-                            if (mouse.source === Qt.MouseEventNotSynthesized)
-                                contextMenu.open()
+                        if (Scaling.isDesktop() && mouse.source === Qt.MouseEventNotSynthesized)
+                            contextMenu.open()
                     }
                     DapQmlMenu {
                         id: contextMenu
