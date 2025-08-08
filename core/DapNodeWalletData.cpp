@@ -5,6 +5,8 @@
 #include <QStringList>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QDebug>
+#include <algorithm>
 
 /* DEFS */
 #define PRINT_WALLET_DATA
@@ -126,9 +128,6 @@ DapNodeWalletData::DapNodeWalletData()
   _data.currentNetwork  = -1;
   _data.currentWallet   = -1;
   _data.currentToken    = -1;
-
-  connect (this, &DapNodeWalletData::sigDataUpdated,
-           this, [this] { _cleanInvalidTokens(); });
 }
 
 DapNodeWalletData::~DapNodeWalletData()
@@ -263,6 +262,15 @@ void DapNodeWalletData::setNetworkFee (const QString &a_networkName, const QStri
 
   /*-----------------------------------------*/
 #endif // SIMULATE_DATA
+
+  /* Clean invalid tokens*/
+  _cleanInvalidTokens();
+
+  /* Add empty native wallets for this network */
+  _addEmptyNativeWallets(a_networkName);
+
+  /* Update UI after cleaning */
+  emit sigDataUpdated();
 }
 
 //const QStringList &DapNodeWalletData::wallets() const
@@ -584,31 +592,7 @@ void DapNodeWalletData::_emitNetworksList()
 
 void DapNodeWalletData::_cleanInvalidTokens()
 {
-  /* map contains network:wallet to token relations */
-  QHash<QString, QString> networkWalletTokens;
-
-  /* lambda's */
-  auto nwKeyString = [] (const QString &a_network, const QString &a_wallet) -> QString
-  {
-    return QString ("%1:%2").arg (a_network, a_wallet);
-  };
-
-  auto nwKeyStruct = [] (const Network &a_network, const Wallet &a_wallet) -> QString
-  {
-    return QString ("%1:%2").arg (a_network.name, a_wallet.name);
-  };
-
-#ifndef SIMULATE_DATA
-  /*-----------------------------------------*/
-
-  /* fill map */
-  for (auto wallet = _wallets.begin(); wallet != _wallets.end(); wallet++)
-    for (auto network = wallet->networks.begin(); network != wallet->networks.end(); network++)
-      if (!network->feeTicker.isEmpty())
-        networkWalletTokens.insert (nwKeyStruct (*network, *wallet), network->feeTicker);
-
-  /*-----------------------------------------*/
-#else // SIMULATE_DATA
+#ifdef SIMULATE_DATA // SIMULATE_DATA
   /*-----------------------------------------*/
 
   typedef QPair<QString,QString> SimPair;
@@ -623,39 +607,109 @@ void DapNodeWalletData::_cleanInvalidTokens()
     simData << SimPair { simSplit.at(0), simSplit.at(1) };
   }
 
-  for (auto wt = _data.walletTokenList.begin(); wt != _data.walletTokenList.end(); wt++)
-    for (const SimPair &pair : qAsConst (simData))
-      if (wt->network == pair.first)
-        networkWalletTokens.insert (nwKeyString (wt->network, wt->wallet), pair.second);
-
   /*-----------------------------------------*/
 #endif // SIMULATE_DATA
-
-  /* check */
-  if (networkWalletTokens.isEmpty())
-    return;
 
   /* clean wallet-tokens */
   for (auto wt = _data.walletTokenList.begin(); wt != _data.walletTokenList.end(); wt++)
   {
-//_repeatCleaning:
     /* get proper token */
-    QString token = networkWalletTokens.value (nwKeyString (wt->network, wt->wallet));
+    QString token = _data.networkFeeMap.value (wt->network).feeTicker;
 
-    /* skip if empty */
-    if (token.isEmpty())
+    if (token.isEmpty()){
       continue;
+    }
 
-    /* erase not invalid token from list and repeat */
+    /* remove wallet with wrong token */
     if (wt->token != token)
     {
-      wt  = _data.walletTokenList.erase (wt);
+      /* Save data for tokenBalanceList removal */
+      QString networkToRemove = wt->network;
+      QString walletToRemove = wt->wallet;
+      QString tokenToRemove = wt->token;
+      
+      qDebug() << "Removing invalid token from walletTokenList:" << networkToRemove << walletToRemove << tokenToRemove;
+      
+      /* Remove from walletTokenList */
+      wt = _data.walletTokenList.erase (wt);
       wt--;
-      //wt  = _data.walletTokenList.erase (wt);
-      //if (wt != _data.walletTokenList.end())
-      //  goto _repeatCleaning;
+      
+      /* Also remove corresponding entry from tokenBalanceList */
+      for (auto tb = _data.tokenBalanceList.begin(); tb != _data.tokenBalanceList.end(); tb++)
+      {
+        if (tb->network == networkToRemove && tb->wallet == walletToRemove && tb->token == tokenToRemove)
+        {
+          qDebug() << "Removing corresponding entry from tokenBalanceList:" << tb->network << tb->wallet << tb->token;
+          tb = _data.tokenBalanceList.erase(tb);
+          tb--;
+          break;
+        }
+      }
+    }
+  }
+}
+
+void DapNodeWalletData::_addEmptyNativeWallets(const QString &a_networkName)
+{
+  /* Find native token for the specified network */
+  auto it = _data.networkFeeMap.find(a_networkName);
+  if (it == _data.networkFeeMap.end() || it->feeTicker.isEmpty()) {
+    qDebug() << "Network" << a_networkName << "not found or has no native token info";
+    return; /* Network not found or has no native token info */
+  }
+  
+  QString nativeToken = it->feeTicker;
+  qDebug() << "Processing network:" << a_networkName << "with native token:" << nativeToken;
+  
+  /* Check all wallets for this network */
+  for (const auto &wallet : _wallets) {
+    /* Check if wallet has this network */
+    bool walletHasNetwork = false;
+    for (const auto &network : wallet.networks) {
+      if (network.name == a_networkName) {
+        walletHasNetwork = true;
+        break;
+      }
+    }
+    
+    if (!walletHasNetwork) {
+      continue; /* Skip wallets that don't have this network */
+    }
+    
+    /* Check if wallet:network:nativeToken combination already exists in walletTokenList */
+    QString key = QString("%1:%2:%3").arg(wallet.name, a_networkName, nativeToken);
+    
+    auto exists = std::find_if(_data.walletTokenList.begin(), _data.walletTokenList.end(),
+      [&key](const DapNodeWalletDataStruct::WalletToken &wt) {
+        QString existingKey = QString("%1:%2:%3").arg(wt.wallet, wt.network, wt.token);
+        return existingKey == key;
+      });
+    
+    /* If combination doesn't exist, add it */
+    if (exists == _data.walletTokenList.end()) {
+      /* Add wallet token entry */
+      _data.walletTokenList.append(DapNodeWalletDataStruct::WalletToken{
+        a_networkName,
+        wallet.name,
+        nativeToken,
+        "0"
+      });
+
+      /* Add balance entry with zero balance */
+      _data.tokenBalanceList.append(DapNodeWalletDataStruct::TokenBalance{
+        a_networkName,
+        wallet.name,
+        nativeToken,
+        "0"
+      });
+
+      qDebug() << "Added missing wallet:network:nativeToken:" << key << "with zero balance";
+    } else {
+      qDebug() << "Wallet:network:nativeToken combination already exists:" << key;
     }
   }
 }
 
 /*-----------------------------------------*/
+
+

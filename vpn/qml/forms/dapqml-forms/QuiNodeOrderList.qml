@@ -176,7 +176,6 @@ Item {
                 }
                 valueEditInput.text = (editValue === "") ? "0" : editValue;
             }
-
             _updateFilterSetupValue();
         }
     }
@@ -304,6 +303,7 @@ Item {
 
     function setInternalMode(a_mode) {
         root.internal.mode  = a_mode;
+        console.log("Internal mode set to:", root.internal.mode);
     }
 
     function tabPressed(a_tabIndex) {
@@ -312,8 +312,6 @@ Item {
 
     function filterItemSelected (a_index, a_name) {
         let mode    = internal.mode;
-
-        console.log(`filterItemSelected at ${a_index}, value "${a_name}", mode ${mode}`)
 
         switch(mode)
         {
@@ -324,8 +322,11 @@ Item {
             break;
 
         case QuiNodeOrderList.Wallets:
-            root.internal.wallet                    = a_name;
-            csListViewWallets.model.currentIndex    = a_index;
+            if (csListViewWallets.model) {
+                /* Show all wallets in the model */
+            }
+            root.internal.wallet = a_name;
+            csListViewWallets.model.currentIndex = a_index;
             break;
 
         case QuiNodeOrderList.Tokens:
@@ -359,15 +360,21 @@ Item {
             break;
 
         case QuiNodeOrderList.Wallets:
-            root.internal.token     = " ";
-            //csListView.model.onWalletChange();
-            //csListViewTokens.model.currentIndex     = -1;
-            interfaceObject.setData(
-            {
-                wallet      : root.internal.wallet,
-                //token       : root.internal.token,
-            });
-            getDataFromInterface();
+            // Check if network is empty - if so, don't clear fields to allow auto-selection
+            if (root.internal.network === "" || root.internal.network === " ") {
+                // Network is empty, let C++ auto-select it
+                interfaceObject.setData({
+                    wallet: root.internal.wallet,
+                });
+                getDataFromInterface();
+            } else {
+                // Network is already selected, clear child fields
+                root.internal.token = " ";
+                interfaceObject.setData({
+                    wallet: root.internal.wallet,
+                });
+                getDataFromInterface();
+            }
             break;
 
         }
