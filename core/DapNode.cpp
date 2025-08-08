@@ -333,7 +333,18 @@ void DapNode::initStmTransitions()
     m_stm->getNodeConnectionData.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
 
-}
+        // Allow order list request from transaction-related states only
+    auto toGetListKeys = &m_stm->getListKeys;
+    // From getNetId: allow user to leave tx flow before creation completes
+    m_stm->getNetId.addTransition(this, &DapNode::sigGetOrderListRequest, toGetListKeys);
+    // From checkTransactionCertificate: quick recovery on cert missing/denied
+    m_stm->checkTransactionCertificate.addTransition(this, &DapNode::sigGetOrderListRequest, toGetListKeys);
+    // From createTransactionCertificate: allow abort path back to order search
+    m_stm->createTransactionCertificate.addTransition(this, &DapNode::sigGetOrderListRequest, toGetListKeys);
+    // From condTxCreate: after failure/cancel, return to order list fast
+    m_stm->condTxCreate.addTransition(this, &DapNode::sigGetOrderListRequest, toGetListKeys);
+  
+ }
 
 void DapNode::initStmStates()
 {
