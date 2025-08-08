@@ -281,13 +281,7 @@ Item {
                     root.sigSerialNotFinished();
             }
 
-            Keys.onLeftPressed: {
-                event.accepted = true
-            }
 
-            Keys.onRightPressed: {
-                event.accepted = true
-            }
         }
 
         /****************************************//**
