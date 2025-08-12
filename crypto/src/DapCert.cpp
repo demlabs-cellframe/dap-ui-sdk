@@ -152,7 +152,8 @@ Cert::~Cert()
  */
 void Cert::sign(const QByteArray & a_data, QByteArray & a_output)
 {
-    dap_sign_t * sign = dap_cert_sign( m_cert, a_data.constData(), static_cast<size_t>(a_data.size()), 0 );
+    // Create certificate signature using default hash type (DAP_SIGN_HASH_TYPE_DEFAULT)
+    dap_sign_t * sign = dap_cert_sign( m_cert, a_data.constData(), static_cast<size_t>(a_data.size()) );
     qInfo() << "Cert::sign call with pkey_size " << sign->header.sign_pkey_size << " sign_size " << sign->header.sign_size << "and total: " << dap_sign_get_size(sign);
     a_output.append(  QByteArray( reinterpret_cast<char*>(sign), static_cast<int>(dap_sign_get_size( sign )) ));
     DAP_DEL_Z(sign)
@@ -174,10 +175,31 @@ bool Cert::compareWithSign(const QByteArray & a_data)
  */
 QString Cert::exportPKeyBase64()
 {
+    // Add comprehensive validation before calling dap_enc_key_serialize_pub_key
+    if (!m_cert) {
+        qWarning() << "Certificate is null - cannot export public key";
+        return QString();
+    }
+    
+    if (!m_cert->enc_key) {
+        qWarning() << "Certificate encryption key is null - cannot export public key";
+        return QString();
+    }
+    
+    if (!m_cert->enc_key->pub_key_data) {
+        qWarning() << "Certificate public key data is null - cannot export public key";
+        return QString();
+    }
+    
+    if (m_cert->enc_key->pub_key_data_size == 0) {
+        qWarning() << "Certificate public key data size is zero - cannot export public key";
+        return QString();
+    }
+    
     size_t buflen = 0;
     uint8_t * buf = dap_enc_key_serialize_pub_key(m_cert->enc_key, &buflen);
     if (!buf) {
-        qWarning() << "Empty hash!";
+        qWarning() << "Failed to serialize public key - key structure may be corrupted";
         return QString();
     }
     char * buf64 = DAP_NEW_Z_SIZE(char, buflen * 2 + 6);
@@ -187,6 +209,12 @@ QString Cert::exportPKeyBase64()
 }
 
 int Cert::exportPKeyToFile(const QString &a_path) {
+    // Add validation before calling dap_enc_key_serialize_pub_key
+    if (!m_cert || !m_cert->enc_key || !m_cert->enc_key->pub_key_data || m_cert->enc_key->pub_key_data_size == 0) {
+        qWarning() << "Certificate or encryption key is invalid - cannot export to file";
+        return 3;
+    }
+    
     int res = -1;
     FILE *l_file = fopen(qPrintable(a_path), "wb");
     if (!l_file) {
@@ -195,6 +223,7 @@ int Cert::exportPKeyToFile(const QString &a_path) {
     size_t buflen = 0;
     uint8_t *buf = dap_enc_key_serialize_pub_key(m_cert->enc_key, &buflen);
     if (!buf) {
+        fclose(l_file);
         return 2;
     }
     if (size_t l_ret = fwrite(buf, 1, buflen, l_file) == buflen) {
@@ -207,6 +236,12 @@ int Cert::exportPKeyToFile(const QString &a_path) {
 }
 
 QString Cert::pkeyHash() {
+    // Add validation before accessing encryption key data
+    if (!m_cert || !m_cert->enc_key || !m_cert->enc_key->pub_key_data || m_cert->enc_key->pub_key_data_size == 0) {
+        qWarning() << "Certificate or encryption key is invalid - cannot generate key hash";
+        return QString();
+    }
+    
     dap_chain_hash_fast_t l_hash_cert_pkey;
     dap_hash_fast(m_cert->enc_key->pub_key_data, m_cert->enc_key->pub_key_data_size, &l_hash_cert_pkey);
     char *l_cert_pkey_hash_str = dap_chain_hash_fast_to_str_new(&l_hash_cert_pkey);

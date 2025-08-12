@@ -2,6 +2,7 @@
 #include "dapqmlmodelchoosecountry.h"
 #include "DapServerList.h"
 #include "DapDataLocal.h"
+#include <algorithm>
 
 /* DEFS */
 #define DEBUGINFO qDebug() << (QString ("DapQmlModelChooseCountry::") + __func__)
@@ -61,7 +62,8 @@ DapQmlModelChooseCountry::DapQmlModelChooseCountry (QObject *parent)
   , m_current (-1)
 {
   _list = DapAbstractServerList::countryMap().keys();
-  qSort (_list);
+  // Use modern std::sort instead of deprecated qSort for better performance and standards compliance
+  std::sort (_list.begin(), _list.end());
   _applyFiltering();
 }
 

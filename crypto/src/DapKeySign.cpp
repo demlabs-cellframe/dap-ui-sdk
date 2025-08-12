@@ -98,6 +98,7 @@ KeySignType KeySign::type()
  */
 void KeySign::sign(const QByteArray & a_data, QByteArray & a_output)
 {
-    dap_sign_t * ret = dap_sign_create( m_key, a_data.constData(), static_cast<size_t>(a_data.size()), 0 );
+    // Create signature using default hash type (DAP_SIGN_HASH_TYPE_DEFAULT)
+    dap_sign_t * ret = dap_sign_create( m_key, a_data.constData(), static_cast<size_t>(a_data.size()) );
     a_output.append(  QByteArray( reinterpret_cast<char*>(ret), static_cast<int>(dap_sign_get_size( ret )) ));
 }

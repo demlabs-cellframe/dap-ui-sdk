@@ -35,19 +35,19 @@ DapConnectClient::DapConnectClient(QObject *parent) :
 }
 
 void DapConnectClient::request_GET(const QString& host,  quint16 port, const QString & urlPath,
-                           DapNetworkReply &a_netReply, const QString& headers, bool ssl)
+                           DapNetworkReply &a_netReply, const QString& headers, bool /*ssl*/)
 {
     m_httpClient->requestHttp_GET(host, port, urlPath, headers, a_netReply);
 }
 
 void DapConnectClient::request_GET_for_ping(const QString& host,  quint16 port, const QString & urlPath,
-                                   DapNetworkReply &a_netReply, const QString& headers, bool ssl)
+                                   DapNetworkReply &a_netReply, const QString& headers, bool /*ssl*/)
 {
     m_httpClient->requestHttp_GET_for_ping(host, port, urlPath, headers, a_netReply);
 }
 
 void DapConnectClient::request_POST(const QString& host,  quint16 port,
-                            const QString & urlPath, const QByteArray& data, DapNetworkReply &a_netReply, const QString& headers, bool ssl)
+                            const QString & urlPath, const QByteArray& data, DapNetworkReply &a_netReply, const QString& headers, bool /*ssl*/)
 {
     m_httpClient->requestHttp_POST(host, port, urlPath, data, headers, a_netReply);
 }

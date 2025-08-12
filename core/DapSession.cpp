@@ -511,15 +511,47 @@ void DapSession::onPurchaseVerified()
 void DapSession::onAuthorize()
 {
     qDebug() << "Auth reply";
-    if(m_netAuthorizeReply->getReplyData().size() <= 0)
+    
+    // Add detailed diagnostics for empty server response
+    if (!m_netAuthorizeReply) {
+        qCritical() << "[onAuthorize] Network reply object is null";
+        emit errorAuthorization (tr ("Network reply object is null"));
+        return;
+    }
+    
+    QByteArray replyData = m_netAuthorizeReply->getReplyData();
+    if(replyData.size() <= 0)
     {
-        qDebug() << "[onAuthorize] Wrong answer from server";
+        qWarning() << "[onAuthorize] Empty response from server - diagnostics:";
+        qWarning() << "  - Reply data size:" << replyData.size();
+        qWarning() << "  - Network error code:" << m_netAuthorizeReply->error();
+        qWarning() << "  - Network error string:" << m_netAuthorizeReply->errorString();
+        qWarning() << "  - Content length:" << m_netAuthorizeReply->contentLength();
+        qWarning() << "  - Response size:" << m_netAuthorizeReply->responseSize();
+        qWarning() << "  - Upstream address:" << m_upstreamAddress << ":" << m_upstreamPort;
+        
         emit errorAuthorization (tr ("Wrong answer from server"));
         return;
     }
 
     QByteArray dByteArr;
-    m_dapCrypt->decode(m_netAuthorizeReply->getReplyData(), dByteArr, KeyRoleSession);
+    
+    // Add validation for decrypt operation
+    if (!m_dapCrypt) {
+        qCritical() << "[onAuthorize] DapCrypt object is null - cannot decrypt response";
+        emit errorAuthorization (tr ("Encryption system is not initialized"));
+        return;
+    }
+    
+    m_dapCrypt->decode(replyData, dByteArr, KeyRoleSession);
+    
+    if (dByteArr.isEmpty()) {
+        qWarning() << "[onAuthorize] Failed to decrypt server response - possible key mismatch";
+        qWarning() << "  - Encrypted data size:" << replyData.size();
+        qWarning() << "  - Decrypted data size:" << dByteArr.size();
+        emit errorAuthorization (tr ("Failed to decrypt server response"));
+        return;
+    }
 
     QString op_code = QString::fromUtf8(dByteArr).left(4);
 

@@ -58,6 +58,8 @@ DapKeyAbstract* DapCrypt::roleToKey(KeyRole kRole) const
     case KeyRoleSession:    return keySession;
     case KeyRoleStream:     return keyStream;
     }
+    // Return nullptr for unknown key roles
+    return nullptr;
 }
 
 
