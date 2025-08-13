@@ -58,7 +58,8 @@ void DapHttpPing::onConnectivityCheckFailed(const QString& host, quint16 port, c
 
 void DapHttpPing::startTraditionalHttpPing(const QString& host, quint16 port)
 {
-    DapNetworkReply *networkReply = new DapNetworkReply;
+    // Explicitly use constructor with parent parameter to resolve ambiguity
+    DapNetworkReply *networkReply = new DapNetworkReply(nullptr);
 
     QElapsedTimer *timer = new QElapsedTimer;
     timer->start();
