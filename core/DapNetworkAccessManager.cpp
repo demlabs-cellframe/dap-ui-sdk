@@ -56,8 +56,7 @@ void DapNetworkAccessManager::requestHttp_GET_long_timeout(const QString &addres
     qDebug() << "Dap Client HTTP Requested - GET (long timeout): " << urlPath ;
     bRunning = true;
     // Keep the same base timeout settings but extend read timeout specifically for long operations
-    dap_client_http_set_params(20000, 15000, 1024*1024);
-    dap_client_http_set_read_timeout_ms(60000); // 60 seconds for long operations
+    dap_client_http_set_params(20000, 60000, 1024*1024); // 60 seconds read timeout for long operations
     dap_client_http_request(nullptr, qPrintable(address), port, "GET", "text/plain", qPrintable(urlPath), nullptr, 0, nullptr,
                             &DapNetworkAccessManager::responseCallback, &DapNetworkAccessManager::responseCallbackError, &netReply,
                                    headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
@@ -78,8 +77,8 @@ void DapNetworkAccessManager::responseCallback(void * a_response, size_t a_respo
     reply->setReply(QByteArray(reinterpret_cast<const char*>(a_response), static_cast<int>(a_response_size)));
     qDebug() << "[DapNetworkAccessManager]Dap Client HTTP Request: response received, size=" << a_response_size;
     
-    // Reset read timeout to new default value (15 seconds) after any request
-    dap_client_http_set_read_timeout_ms(15000);
+    // Reset timeouts to default values (15 seconds read timeout) after any request
+    dap_client_http_set_params(20000, 15000, 1024*1024);
     
     reply->setError( 0 );
     emit reply->finished();
@@ -96,8 +95,8 @@ void DapNetworkAccessManager::responseCallbackError(int a_err_code, void * a_obj
                << ": " << buf;
     reply->setErrorStr(buf);
     
-    // Reset read timeout to new default value (15 seconds) after any request (including errors)
-    dap_client_http_set_read_timeout_ms(15000);
+    // Reset timeouts to default values (15 seconds read timeout) after any request (including errors)
+    dap_client_http_set_params(20000, 15000, 1024*1024);
     
 /*#else
                ;
