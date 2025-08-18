@@ -65,7 +65,7 @@ DapNode:: DapNode(QObject * obj, int requestTimeout) :
     m_nodeDetectRetryTimer->setSingleShot(false);
     m_nodeDetectRetryTimer->setInterval(NODE_DETECT_REQUEST_REPEAT_PERIOD);
     connect(m_nodeDetectRetryTimer, &QTimer::timeout, this, [this]() {
-        if (m_stm->nodeNotDetected.active() && !m_isCDBLogined) {
+        if (m_stm->nodeNotDetected.active()) {
             emit repeatNodeDetection();
         } else {
             m_nodeDetectRetryTimer->stop();
