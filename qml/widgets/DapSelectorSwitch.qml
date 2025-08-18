@@ -17,6 +17,8 @@ Rectangle
     property string secondName: "second"
     property string secondColor: currTheme.mainButtonColorNormal1
     property bool secondSelected: !firstSelected
+    property bool secondEnabled: true
+    property string secondDisabledColor: currTheme.input
 
     signal toggled()
 
@@ -65,6 +67,7 @@ Rectangle
         radius: height * 0.5
         width: secondText.width + itemHorisontalBorder * 2
         height: selectorSwitchItem.height - viewerBorder * 2
+        opacity: secondEnabled ? 1.0 : 0.5
 
         Text
         {
@@ -75,7 +78,7 @@ Rectangle
             bottomPadding: CURRENT_OS === "win" ? 2 : 0
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            color: currTheme.white
+            color: secondEnabled ? currTheme.white : currTheme.gray
             font: mainFont.dapFont.medium14
             text: secondName
         }
@@ -97,13 +100,16 @@ Rectangle
 
     MouseArea {
         anchors.fill: parent
+        enabled: secondEnabled || firstSelected
 
         onClicked: {
             if (firstSelected)
             {
-                firstSelected = false
-                firstAnim.stop()
-                secondAnim.start()
+                if (secondEnabled) {
+                    firstSelected = false
+                    firstAnim.stop()
+                    secondAnim.start()
+                }
             }
             else
             {
@@ -143,7 +149,7 @@ Rectangle
         PropertyAnimation {
             target: selectedRect
             properties: "color"
-            to: secondColor
+            to: secondEnabled ? secondColor : secondDisabledColor
             duration: animDuration
         }
         PropertyAnimation {
@@ -171,10 +177,12 @@ Rectangle
         }
         else
         {
-            firstSelected = false
-            selectedRect.color = secondColor
-            selectedRect.x = secondItem.x
-            selectedRect.width = secondItem.width
+            if (secondEnabled) {
+                firstSelected = false
+                selectedRect.color = secondColor
+                selectedRect.x = secondItem.x
+                selectedRect.width = secondItem.width
+            }
         }
     }
 
