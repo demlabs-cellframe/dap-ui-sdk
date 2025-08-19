@@ -510,6 +510,11 @@ void DapNode::initWeb3Connections()
     // node detected signal
     connect(web3, &DapNodeWeb3::nodeDetected, this, &DapNode::sigNodeDetected);
     connect(web3, &DapNodeWeb3::checkNodeStatus, this, &DapNode::sigNodeDetected);
+    // Consider node as detected once Dashboard approves connection (Connect → connectionIdReceived)
+    connect(web3, &DapNodeWeb3::connectionIdReceived, this, [=](const QString &){
+        DEBUGINFO << "[Node Detect] connectionIdReceived -> emitting sigNodeDetected()";
+        emit sigNodeDetected();
+    });
     connect(web3, &DapNodeWeb3::statusOk, this, [=](){
         if (m_stm->transactionProcessing.active()) emit transactionProcessing();
         if (m_stm->gettingWalletsData.active()) emit gettingWalletsData();
