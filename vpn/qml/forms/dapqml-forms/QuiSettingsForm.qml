@@ -210,7 +210,7 @@ Item {
                     anchors.fill: parent
                     anchors.rightMargin: 0-1
                     z: 10
-                    visible: !Brand.legacyStyle() && model.index > 0
+                    visible: !Brand.isOldStyle() && model.index > 0
                     color: delegate.hovered ? lvHoverColor.color : lvNormalColor.color
                     Behavior on color { PropertyAnimation { duration: root.internal.disableAnim ? 0 : 150 } }
                 }

@@ -518,13 +518,13 @@ Item {
 
             Loader {
                 anchors.fill: parent
-                sourceComponent: Brand.legacyStyle() ? inputLegacy : inputModern
+                sourceComponent: Brand.isOldStyle() ? inputLegacy : inputModern
             }
 
             /* corner images */
 
             Loader {
-                sourceComponent: Brand.legacyStyle() ? reportBackgroundLegacy : reportBackgroundModern
+                sourceComponent: Brand.isOldStyle() ? reportBackgroundLegacy : reportBackgroundModern
             }
 
             /* text input */
