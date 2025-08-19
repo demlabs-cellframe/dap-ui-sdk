@@ -19,6 +19,7 @@ Rectangle
     property bool secondSelected: !firstSelected
     property bool secondEnabled: true
     property string secondDisabledColor: currTheme.input
+    property bool isHovered: mouseArea.containsMouse
 
     signal toggled()
 
@@ -99,8 +100,10 @@ Rectangle
     }
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
         enabled: secondEnabled || firstSelected
+        hoverEnabled: true
 
         onClicked: {
             if (firstSelected)
