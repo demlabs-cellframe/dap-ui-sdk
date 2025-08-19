@@ -42,7 +42,7 @@ Item {
 
     DapQmlDialogTitle {
         id: title
-        text: Brand.legacyStyle() ? legacyTitleText : titleText
+        text: Brand.isOldStyle() ? legacyTitleText : titleText
         qss: "dialog-title"
 
         property string legacyTitleText: qsTr("History") + lang.notifier
@@ -129,7 +129,7 @@ Item {
                 subText: " "
                 mainQss: "ph-btn-label-main"
                 subQss: "ph-btn-label-main"
-                icon: Brand.legacyStyle() ? "ic_key-item" : "null-size null-pos"
+                icon: Brand.isOldStyle() ? "ic_key-item" : "null-size null-pos"
                 iconRight: "ic_copy"
                 iconSize: icnResizer.height
                 iconRightSize: icnCpyResizer.height
