@@ -1171,7 +1171,8 @@ void DapDNSController::updateOriginalDNSServers()
     }
 }
 
-// New interface-specific methods using registry approach
+#ifdef Q_OS_WINDOWS
+// Windows-specific interface methods using registry approach
 bool DapDNSController::setDNSServersForInterface(ulong ifIndex, const QStringList &dnsServers)
 {
     QMutexLocker locker(&m_mutex);
@@ -1253,10 +1254,9 @@ bool DapDNSController::restoreDNSForInterface(ulong ifIndex)
 
 QStringList DapDNSController::getCurrentDNSServersForInterface(ulong ifIndex)
 {
-    Q_UNUSED(ifIndex);
-    qWarning() << "getCurrentDNSServersForInterface: Not implemented on this platform";
-    return QStringList();
+    return getCurrentDNSServersWindowsRegistry(ifIndex);
 }
+#endif
 
 // Universal interface index management functions (cross-platform)
 void DapDNSController::setTargetInterfaceIndex(ulong ifIndex)
@@ -1271,6 +1271,8 @@ ulong DapDNSController::getTargetInterfaceIndex() const
     QMutexLocker locker(&m_mutex);
     return m_targetIfIndex;
 }
+
+#ifdef Q_OS_WINDOWS
 
 // Registry-based implementation methods
 bool DapDNSController::setDNSServersWindowsRegistry(ulong ifIndex, const QStringList &dnsServers)
