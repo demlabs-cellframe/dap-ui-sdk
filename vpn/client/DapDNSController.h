@@ -171,6 +171,9 @@ private:
     QMap<ulong, QStringList> m_originalInterfaceDNS;  // Store original DNS per interface
     mutable QMap<ulong, QString> m_interfaceNames;    // Cache interface names by index
     ulong m_targetIfIndex;                            // Target interface index
+    
+    // Thread-safe registry access
+    mutable QMutex m_registryMutex;
 
     // DNS Monitoring System
     QTimer* m_dnsMonitorTimer;
@@ -249,6 +252,12 @@ private:
     bool restoreDefaultDNSIOS();
     QStringList getCurrentDNSServersIOS() const;
 #endif
+
+    // === DNS validation ===
+    bool validateDNSServers(const QStringList &dnsServers) const;
+    
+    // === Common helper methods (cross-platform) ===
+    QString escapeInterfaceName(const QString &interfaceName) const;
 };
 
 #endif // DAPDNSCONTROLLER_H 

@@ -9,6 +9,12 @@
 #include <QCoreApplication>
 #include <QTimer>
 #include <QDateTime>
+#include <QThread>
+
+#ifdef Q_OS_LINUX
+#include <unistd.h>
+#include <sys/types.h>
+#endif
 
 #ifdef Q_OS_WINDOWS
 #include <windows.h>
@@ -68,14 +74,8 @@ DapDNSController::DapDNSController(QObject *parent)
 #endif
 
 #ifdef Q_OS_MACOS
-    // Initialize store reference
-    m_store = SCDynamicStoreCreate(nullptr, 
-                                  CFSTR("DapDNSController"),
-                                  nullptr, 
-                                  nullptr);
-    if (!m_store) {
-        qWarning() << "Failed to create SCDynamicStore";
-    }
+    // Initialize store reference - will be created on demand
+    m_store = nullptr;
 #endif
 }
 
@@ -263,8 +263,20 @@ int DapDNSController::exec_silent(const QString &cmd)
 
 bool DapDNSController::runNetshCommand(const QString &program, const QStringList &args, QString *output, int timeout)
 {
-    Q_UNUSED(timeout)  // Suppress unused parameter warning
-    qInfo() << "[DNS] Executing netsh:" << program << args;
+    constexpr int MAX_RETRIES = 3;
+    constexpr int RETRY_DELAY_MS = 1000;
+    
+    for (int retry = 0; retry < MAX_RETRIES; ++retry) {
+        if (retry > 0) {
+            qInfo() << "[DNS] Retrying netsh command (attempt" << (retry + 1) << "/" << MAX_RETRIES << "):" << program << args;
+#ifdef Q_OS_WINDOWS
+            Sleep(RETRY_DELAY_MS);
+#else
+            QThread::msleep(RETRY_DELAY_MS);
+#endif
+        } else {
+            qInfo() << "[DNS] Executing netsh:" << program << args;
+        }
 #ifdef Q_OS_WINDOWS
     QProcess process;
     process.setProcessChannelMode(QProcess::MergedChannels);
@@ -300,21 +312,42 @@ bool DapDNSController::runNetshCommand(const QString &program, const QStringList
     qInfo() << "[DNS] Command exit code:" << exitCode;
     
     if (exitCode != 0) {
-        // Check for specific error conditions
+        // Enhanced error handling with specific error conditions
+        QString errorType = "Unknown";
+        QString errorMessage;
+        
         if (exitCode == ERROR_ELEVATION_REQUIRED || 
             outputStr.contains("The requested operation requires elevation") ||
-            outputStr.contains("requires elevated privileges")) {
-            qWarning() << "[DNS] Command requires elevation:" << program << args;
-            emit errorOccurred("The operation requires administrator privileges");
-            return false;
+            outputStr.contains("requires elevated privileges") ||
+            outputStr.contains("Access is denied", Qt::CaseInsensitive)) {
+            errorType = "Access Denied";
+            errorMessage = "Administrator privileges required";
+        } else if (outputStr.contains("The interface name is invalid", Qt::CaseInsensitive) ||
+                   outputStr.contains("The specified network name is no longer available", Qt::CaseInsensitive)) {
+            errorType = "Invalid Interface";
+            errorMessage = "Interface name is invalid or not found";
+        } else if (outputStr.contains("The parameter is incorrect", Qt::CaseInsensitive)) {
+            errorType = "Invalid Parameter";
+            errorMessage = "One or more parameters are incorrect";
+        } else if (outputStr.contains("The system cannot find the file specified", Qt::CaseInsensitive)) {
+            errorType = "File Not Found";
+            errorMessage = "Required system file not found";
+        } else if (outputStr.contains("The network path was not found", Qt::CaseInsensitive)) {
+            errorType = "Network Path Not Found";
+            errorMessage = "Network path or interface not accessible";
+        } else if (outputStr.contains("The operation completed successfully", Qt::CaseInsensitive)) {
+            // Sometimes netsh returns success message but non-zero exit code
+            qInfo() << "[DNS] Command completed with success message despite exit code:" << exitCode;
+            return true;
+        } else {
+            errorType = "Command Failed";
+            errorMessage = QString("Command failed with exit code: %1").arg(exitCode);
         }
-
-        qWarning() << "[DNS] Command failed with exit code" << exitCode << ":" << program << args
-                  << "Output:" << outputStr;
+        
+        qWarning() << "[DNS]" << errorType << "-" << errorMessage;
+        qWarning() << "[DNS] Full command output:" << outputStr.trimmed();
         qWarning() << "[DNS] Error output:" << process.readAllStandardError();
-        emit errorOccurred(QString("Command failed with exit code %1: %2")
-                         .arg(exitCode)
-                         .arg(outputStr.trimmed()));
+        emit errorOccurred(QString("%1: %2").arg(errorType).arg(errorMessage));
         return false;
     }
 
@@ -338,6 +371,12 @@ bool DapDNSController::runNetshCommand(const QString &program, const QStringList
     }
     return exitCode == 0;
 #endif
+    }
+    
+    // If all retries failed
+    qWarning() << "[DNS] All" << MAX_RETRIES << "attempts to execute netsh command failed:" << program << args;
+    emit errorOccurred(QString("Failed to execute command after %1 attempts").arg(MAX_RETRIES));
+    return false;
 }
 
 bool DapDNSController::flushDNSCache()
@@ -393,35 +432,124 @@ bool DapDNSController::registerDNS()
 
 #ifdef Q_OS_WINDOWS
 namespace {
-    // Helper function to get adapter addresses with proper error handling
-    std::pair<PIP_ADAPTER_ADDRESSES, DWORD> getAdapterAddresses(ULONG flags) {
-        ULONG outBufLen = 0;
-        PIP_ADAPTER_ADDRESSES pAddresses = nullptr;
+    // RAII wrapper for adapter addresses memory management
+    class AdapterAddressesRAII {
+    private:
+        PIP_ADAPTER_ADDRESSES m_addresses;
+    public:
+        AdapterAddressesRAII() : m_addresses(nullptr) {}
         
-        // Get required buffer size
-        DWORD dwRetVal = GetAdaptersAddresses(AF_UNSPEC, flags, nullptr, nullptr, &outBufLen);
-        if (dwRetVal != ERROR_BUFFER_OVERFLOW) {
-            qWarning() << "Failed to get adapter addresses buffer size, error:" << dwRetVal;
-            return {nullptr, dwRetVal};
+        ~AdapterAddressesRAII() {
+            cleanup();
         }
-
-        // Allocate memory
-        pAddresses = (PIP_ADAPTER_ADDRESSES)malloc(outBufLen);
-        if (!pAddresses) {
-            qWarning() << "Failed to allocate" << outBufLen << "bytes for adapter addresses";
-            return {nullptr, ERROR_NOT_ENOUGH_MEMORY};
+        
+        // No copy constructor/assignment to prevent double-free
+        AdapterAddressesRAII(const AdapterAddressesRAII&) = delete;
+        AdapterAddressesRAII& operator=(const AdapterAddressesRAII&) = delete;
+        
+        // Move constructor/assignment for safe transfer
+        AdapterAddressesRAII(AdapterAddressesRAII&& other) noexcept 
+            : m_addresses(other.m_addresses) {
+            other.m_addresses = nullptr;
         }
-
-        // Get actual data
-        dwRetVal = GetAdaptersAddresses(AF_UNSPEC, flags, nullptr, pAddresses, &outBufLen);
-        if (dwRetVal != NO_ERROR) {
-            free(pAddresses);
-            pAddresses = nullptr;
-            qWarning() << "GetAdaptersAddresses failed with error:" << dwRetVal;
-            return {nullptr, dwRetVal};
+        
+        AdapterAddressesRAII& operator=(AdapterAddressesRAII&& other) noexcept {
+            if (this != &other) {
+                cleanup();
+                m_addresses = other.m_addresses;
+                other.m_addresses = nullptr;
+            }
+            return *this;
         }
+        
+        void cleanup() {
+            if (m_addresses) {
+                free(m_addresses);
+                m_addresses = nullptr;
+            }
+        }
+        
+        bool allocate(ULONG size) {
+            cleanup(); // Clean up any existing allocation
+            m_addresses = static_cast<PIP_ADAPTER_ADDRESSES>(malloc(size));
+            return m_addresses != nullptr;
+        }
+        
+        PIP_ADAPTER_ADDRESSES get() const { return m_addresses; }
+        PIP_ADAPTER_ADDRESSES* getPtr() { return &m_addresses; }
+        
+        bool isValid() const { return m_addresses != nullptr; }
+        
+        // Release ownership (for cases where caller takes ownership)
+        PIP_ADAPTER_ADDRESSES release() {
+            PIP_ADAPTER_ADDRESSES addr = m_addresses;
+            m_addresses = nullptr;
+            return addr;
+        }
+    };
 
-        return {pAddresses, NO_ERROR};
+    // Helper function to get adapter addresses with proper error handling and retry logic
+    std::pair<PIP_ADAPTER_ADDRESSES, DWORD> getAdapterAddresses(ULONG flags) {
+        constexpr int MAX_RETRIES = 3;
+        constexpr ULONG MAX_BUFFER_SIZE = 1024 * 1024; // 1MB max buffer size
+        
+        for (int retry = 0; retry < MAX_RETRIES; ++retry) {
+            ULONG outBufLen = 0;
+            
+            // Get required buffer size
+            DWORD dwRetVal = GetAdaptersAddresses(AF_UNSPEC, flags, nullptr, nullptr, &outBufLen);
+            if (dwRetVal != ERROR_BUFFER_OVERFLOW) {
+                qWarning() << "Failed to get adapter addresses buffer size, error:" << dwRetVal << "on retry" << retry;
+                if (retry == MAX_RETRIES - 1) {
+                    return {nullptr, dwRetVal};
+                }
+                continue;
+            }
+
+            // Validate buffer size
+            if (outBufLen == 0 || outBufLen > MAX_BUFFER_SIZE) {
+                qWarning() << "Invalid buffer size:" << outBufLen << "bytes on retry" << retry;
+                if (retry == MAX_RETRIES - 1) {
+                    return {nullptr, ERROR_INVALID_PARAMETER};
+                }
+                continue;
+            }
+
+            // Use RAII wrapper for safe memory management
+            AdapterAddressesRAII addressWrapper;
+            if (!addressWrapper.allocate(outBufLen)) {
+                qWarning() << "Failed to allocate" << outBufLen << "bytes for adapter addresses on retry" << retry;
+                if (retry == MAX_RETRIES - 1) {
+                    return {nullptr, ERROR_NOT_ENOUGH_MEMORY};
+                }
+                continue;
+            }
+
+            // Get actual data
+            dwRetVal = GetAdaptersAddresses(AF_UNSPEC, flags, nullptr, addressWrapper.get(), &outBufLen);
+            if (dwRetVal == NO_ERROR) {
+                qInfo() << "Successfully retrieved adapter addresses on retry" << retry;
+                // Transfer ownership to caller - RAII wrapper releases ownership
+                return {addressWrapper.release(), NO_ERROR};
+            } else {
+                // RAII wrapper automatically cleans up on scope exit
+                qWarning() << "GetAdaptersAddresses failed with error:" << dwRetVal << "on retry" << retry;
+                
+                // Don't retry on certain errors
+                if (dwRetVal == ERROR_NO_DATA || dwRetVal == ERROR_NOT_SUPPORTED) {
+                    return {nullptr, dwRetVal};
+                }
+                
+                if (retry == MAX_RETRIES - 1) {
+                    return {nullptr, dwRetVal};
+                }
+                
+                // Small delay before retry
+                Sleep(100);
+            }
+        }
+        
+        return {nullptr, ERROR_MAX_THRDS_REACHED};
     }
 }
 
@@ -617,6 +745,41 @@ bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
             emit errorOccurred(QString("Invalid DNS server address: %1").arg(dns));
             return false;
         }
+        
+        // Check for reserved addresses
+        if (addr.protocol() == QAbstractSocket::IPv4Protocol) {
+            quint32 ipv4 = addr.toIPv4Address();
+            
+            // Check for localhost, loopback, multicast, broadcast
+            if (ipv4 == 0x7F000001 || // 127.0.0.1
+                (ipv4 >= 0x7F000000 && ipv4 <= 0x7FFFFFFF) || // 127.0.0.0/8
+                (ipv4 >= 0xE0000000 && ipv4 <= 0xEFFFFFFF) || // 224.0.0.0/4 (multicast)
+                ipv4 == 0xFFFFFFFF) { // 255.255.255.255 (broadcast)
+                qWarning() << "[DNS] Reserved address not allowed as DNS server:" << dns;
+                emit errorOccurred(QString("Reserved address not allowed as DNS server: %1").arg(dns));
+                return false;
+            }
+        } else if (addr.protocol() == QAbstractSocket::IPv6Protocol) {
+            Q_IPV6ADDR ipv6 = addr.toIPv6Address();
+            
+            // Check for IPv6 localhost, loopback, multicast
+            if (ipv6[0] == 0x00 && ipv6[1] == 0x00 && ipv6[2] == 0x00 && ipv6[3] == 0x00 &&
+                ipv6[4] == 0x00 && ipv6[5] == 0x00 && ipv6[6] == 0x00 && ipv6[7] == 0x00 &&
+                ipv6[8] == 0x00 && ipv6[9] == 0x00 && ipv6[10] == 0x00 && ipv6[11] == 0x00 &&
+                ipv6[12] == 0x00 && ipv6[13] == 0x00 && ipv6[14] == 0x00 && ipv6[15] == 0x01) { // ::1
+                qWarning() << "[DNS] IPv6 localhost not allowed as DNS server:" << dns;
+                emit errorOccurred(QString("IPv6 localhost not allowed as DNS server: %1").arg(dns));
+                return false;
+            }
+            
+            // Check for IPv6 multicast (starts with FF)
+            if (ipv6[0] == 0xFF) {
+                qWarning() << "[DNS] IPv6 multicast address not allowed as DNS server:" << dns;
+                emit errorOccurred(QString("IPv6 multicast address not allowed as DNS server: %1").arg(dns));
+                return false;
+            }
+        }
+        
         qInfo() << "[DNS] Validated DNS server:" << dns;
     }
 
@@ -648,8 +811,8 @@ bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
     }
     qInfo() << "[DNS] Interface status verified successfully";
 
-    // Ensure interface name is properly quoted if it contains spaces
-    QString safeIface = m_ifaceName.contains(' ') ? QString("\"%1\"").arg(m_ifaceName) : m_ifaceName;
+    // Ensure interface name is properly escaped for netsh commands
+    QString safeIface = escapeInterfaceName(m_ifaceName);
 
     // Reset current DNS settings
     QStringList resetArgs;
@@ -746,8 +909,8 @@ bool DapDNSController::restoreDefaultDNSWindows()
     }
     qInfo() << "[DNS] Using network interface for restoration:" << m_ifaceName;
 
-    // Ensure interface name is properly quoted if it contains spaces
-    QString safeIface = m_ifaceName.contains(' ') ? QString("\"%1\"").arg(m_ifaceName) : m_ifaceName;
+    // Ensure interface name is properly escaped for netsh commands
+    QString safeIface = escapeInterfaceName(m_ifaceName);
 
     // Reset current DNS settings
     QStringList resetArgs;
@@ -814,8 +977,8 @@ bool DapDNSController::restoreDNSFromList(const QString &iface, const QStringLis
         return false;
     }
 
-    // Ensure interface name is properly quoted if it contains spaces
-    QString safeIface = iface.contains(' ') ? QString("\"%1\"").arg(iface) : iface;
+    // Ensure interface name is properly escaped for netsh commands
+    QString safeIface = escapeInterfaceName(iface);
 
     // First reset current DNS settings
     QStringList resetArgs;
@@ -963,22 +1126,39 @@ QStringList DapDNSController::getCurrentDNSServersWindows() const
 
 bool DapDNSController::isRunAsAdmin()
 {
+    // First check UAC elevation
     HANDLE hToken = nullptr;
-    if (!OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken)) {
-        qWarning() << "Failed to open process token:" << GetLastError();
-        return false;
-    }
-
-    TOKEN_ELEVATION elevation;
-    DWORD dwSize;
-    if (!GetTokenInformation(hToken, TokenElevation, &elevation, sizeof(elevation), &dwSize)) {
-        qWarning() << "Failed to get token information:" << GetLastError();
+    if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken)) {
+        TOKEN_ELEVATION elevation;
+        DWORD dwSize;
+        if (GetTokenInformation(hToken, TokenElevation, &elevation, sizeof(elevation), &dwSize)) {
+            CloseHandle(hToken);
+            if (elevation.TokenIsElevated != 0) {
+                qInfo() << "[DNS] UAC elevation confirmed";
+                return true;
+            }
+        }
         CloseHandle(hToken);
-        return false;
     }
-
-    CloseHandle(hToken);
-    return elevation.TokenIsElevated != 0;
+    
+    // Fallback: check membership in Administrators group
+    SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
+    PSID AdministratorsGroup = nullptr;
+    if (AllocateAndInitializeSid(&NtAuthority, 2, SECURITY_BUILTIN_DOMAIN_RID,
+                                DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &AdministratorsGroup)) {
+        BOOL isMember = FALSE;
+        if (CheckTokenMembership(nullptr, AdministratorsGroup, &isMember)) {
+            FreeSid(AdministratorsGroup);
+            if (isMember != FALSE) {
+                qInfo() << "[DNS] Administrators group membership confirmed";
+                return true;
+            }
+        }
+        FreeSid(AdministratorsGroup);
+    }
+    
+    qWarning() << "[DNS] Neither UAC elevation nor Administrators group membership found";
+    return false;
 }
 
 void DapDNSController::updateOriginalDNSServers()
@@ -1095,6 +1275,9 @@ ulong DapDNSController::getTargetInterfaceIndex() const
 // Registry-based implementation methods
 bool DapDNSController::setDNSServersWindowsRegistry(ulong ifIndex, const QStringList &dnsServers)
 {
+    // Thread-safe registry access
+    QMutexLocker registryLocker(&m_registryMutex);
+    
     qInfo() << "[DNS] Using registry method for interface" << ifIndex;
     
     QString registryPath = getInterfaceRegistryPath(ifIndex);
@@ -1104,6 +1287,13 @@ bool DapDNSController::setDNSServersWindowsRegistry(ulong ifIndex, const QString
     }
     
     qInfo() << "[DNS] Registry path:" << registryPath;
+    
+    // Create backup of current DNS settings before modification
+    QStringList currentDNS = getCurrentDNSServersWindowsRegistry(ifIndex);
+    if (!currentDNS.isEmpty()) {
+        qInfo() << "[DNS] Creating backup of current DNS settings:" << currentDNS;
+        m_originalInterfaceDNS[ifIndex] = currentDNS;
+    }
     
     HKEY hKey;
     LONG result = RegOpenKeyExW(HKEY_LOCAL_MACHINE,
@@ -1122,8 +1312,11 @@ bool DapDNSController::setDNSServersWindowsRegistry(ulong ifIndex, const QString
     QString dnsString = dnsServers.join(' ');
     qInfo() << "[DNS] Setting DNS string:" << dnsString;
     
-    // Convert to wide string
+    // Convert to wide string with proper null termination
     std::wstring wDnsString = dnsString.toStdWString();
+    
+    // Calculate proper buffer size including null terminator
+    DWORD dataSize = static_cast<DWORD>((wDnsString.length() + 1) * sizeof(wchar_t));
     
     // Set the DNS servers
     result = RegSetValueExW(hKey,
@@ -1131,12 +1324,40 @@ bool DapDNSController::setDNSServersWindowsRegistry(ulong ifIndex, const QString
                            0,
                            REG_SZ,
                            reinterpret_cast<const BYTE*>(wDnsString.c_str()),
-                           static_cast<DWORD>((wDnsString.length() + 1) * sizeof(wchar_t)));
+                           dataSize);
     
     RegCloseKey(hKey);
     
     if (result != ERROR_SUCCESS) {
         qWarning() << "[DNS] Failed to set DNS in registry, error code:" << result;
+        
+        // Try to restore original DNS settings if backup exists
+        if (m_originalInterfaceDNS.contains(ifIndex)) {
+            qWarning() << "[DNS] Attempting to restore original DNS settings";
+            QStringList originalDNS = m_originalInterfaceDNS[ifIndex];
+            if (!originalDNS.isEmpty()) {
+                QString originalDnsString = originalDNS.join(' ');
+                std::wstring wOriginalDnsString = originalDnsString.toStdWString();
+                DWORD originalDataSize = static_cast<DWORD>((wOriginalDnsString.length() + 1) * sizeof(wchar_t));
+                
+                HKEY hKeyRestore;
+                if (RegOpenKeyExW(HKEY_LOCAL_MACHINE,
+                                 reinterpret_cast<const wchar_t*>(registryPath.utf16()),
+                                 0,
+                                 KEY_WRITE,
+                                 &hKeyRestore) == ERROR_SUCCESS) {
+                    RegSetValueExW(hKeyRestore,
+                                  L"NameServer",
+                                  0,
+                                  REG_SZ,
+                                  reinterpret_cast<const BYTE*>(wOriginalDnsString.c_str()),
+                                  originalDataSize);
+                    RegCloseKey(hKeyRestore);
+                    qInfo() << "[DNS] Restored original DNS settings";
+                }
+            }
+        }
+        
         return false;
     }
     
@@ -1146,6 +1367,9 @@ bool DapDNSController::setDNSServersWindowsRegistry(ulong ifIndex, const QString
 
 bool DapDNSController::restoreDNSWindowsRegistry(ulong ifIndex)
 {
+    // Thread-safe registry access
+    QMutexLocker registryLocker(&m_registryMutex);
+    
     qInfo() << "[DNS] Restoring DNS using registry method for interface" << ifIndex;
     
     if (!m_originalInterfaceDNS.contains(ifIndex)) {
@@ -1183,6 +1407,9 @@ bool DapDNSController::restoreDNSWindowsRegistry(ulong ifIndex)
 
 QStringList DapDNSController::getCurrentDNSServersWindowsRegistry(ulong ifIndex) const
 {
+    // Thread-safe registry access
+    QMutexLocker registryLocker(&m_registryMutex);
+    
     QStringList dnsServers;
     
     QString registryPath = getInterfaceRegistryPath(ifIndex);
@@ -1310,9 +1537,61 @@ bool DapDNSController::saveOriginalDNSForInterface(ulong ifIndex)
 #endif
 
 #ifdef Q_OS_LINUX
+
+namespace {
+    // Check if we have sufficient privileges for DNS operations
+    bool checkLinuxDNSPrivileges() {
+        // Check if we're running as root
+        if (geteuid() == 0) {
+            return true;
+        }
+        
+        // Check if we can write to /etc/resolv.conf
+        if (access("/etc/resolv.conf", W_OK) == 0) {
+            return true;
+        }
+        
+        // Check if we have sudo privileges (basic check)
+        QProcess process;
+        process.start("sudo", QStringList() << "-n" << "true");
+        if (process.waitForFinished(1000)) {
+            return process.exitCode() == 0;
+        }
+        
+        return false;
+    }
+    
+    // Backup resolv.conf safely
+    bool backupResolvConf() {
+        QFile original("/etc/resolv.conf");
+        QString backupPath = "/etc/resolv.conf.dapvpn.backup." + 
+                           QString::number(QDateTime::currentSecsSinceEpoch());
+        
+        if (!original.exists()) {
+            qWarning() << "[DNS] /etc/resolv.conf does not exist";
+            return false;
+        }
+        
+        if (!original.copy(backupPath)) {
+            qWarning() << "[DNS] Failed to backup resolv.conf to" << backupPath;
+            return false;
+        }
+        
+        qInfo() << "[DNS] Created backup at" << backupPath;
+        return true;
+    }
+}
+
 bool DapDNSController::setDNSServersLinux(const QStringList &dnsServers)
 {
     qInfo() << "[DapDNSController] Setting DNS servers on Linux:" << dnsServers;
+    
+    // Check privileges first
+    if (!checkLinuxDNSPrivileges()) {
+        qWarning() << "[DNS] Insufficient privileges for DNS modification. Need root or sudo access.";
+        emit errorOccurred("Insufficient privileges for DNS modification. Please run with sudo or as root.");
+        return false;
+    }
     
     // First save original resolv.conf if not already saved
     if (m_originalDNSServers.isEmpty()) {
@@ -2508,8 +2787,8 @@ QStringList DapDNSController::getCurrentDNSIndexes(const QString &iface)
     QStringList indexes;
     QString output;
     
-    // Ensure interface name is properly quoted if it contains spaces
-    QString safeIface = iface.contains(' ') ? QString("\"%1\"").arg(iface) : iface;
+    // Ensure interface name is properly escaped for netsh commands
+    QString safeIface = escapeInterfaceName(iface);
     
     QStringList args = {"interface", "ip", "show", "dns",
                        QString("name=%1").arg(safeIface)};
@@ -3125,4 +3404,75 @@ void DapDNSController::incrementFailureCounter()
 {
     m_consecutiveFailures++;
     qWarning() << "[DapDNSController] Incremented failure counter to" << m_consecutiveFailures;
+}
+
+// === Enhanced DNS validation ===
+bool DapDNSController::validateDNSServers(const QStringList &dnsServers) const
+{
+    if (dnsServers.isEmpty()) {
+        qWarning() << "[DNS] Empty DNS servers list";
+        return false;
+    }
+    
+    for (const QString &dns : dnsServers) {
+        if (!isValidIPAddress(dns)) {
+            qWarning() << "[DNS] Invalid IP address format:" << dns;
+            return false;
+        }
+        
+        // Check for reserved/problematic addresses
+        QHostAddress addr(dns);
+        if (addr.isLoopback()) {
+            qWarning() << "[DNS] Rejecting loopback address:" << dns;
+            return false;
+        }
+        
+        if (addr.isBroadcast() || addr.isMulticast()) {
+            qWarning() << "[DNS] Rejecting broadcast/multicast address:" << dns;
+            return false;
+        }
+        
+        // Check for "any" addresses (0.0.0.0 or ::)
+        if (addr == QHostAddress::AnyIPv4 || addr == QHostAddress::AnyIPv6) {
+            qWarning() << "[DNS] Rejecting 'any' address:" << dns;
+            return false;
+        }
+        
+        // Check for private/link-local addresses (typically not good for public DNS)
+        if (addr.isInSubnet(QHostAddress("169.254.0.0"), 16)) { // Link-local
+            qWarning() << "[DNS] Warning: Link-local address may not work:" << dns;
+        }
+    }
+    
+    return true;
+}
+
+// === Common helper methods (cross-platform) ===
+
+QString DapDNSController::escapeInterfaceName(const QString &ifaceName) const
+{
+    if (ifaceName.isEmpty()) {
+        return QString();
+    }
+    
+    // Check if quotes are needed
+    bool needsQuotes = ifaceName.contains(' ') || 
+                      ifaceName.contains('"') || 
+                      ifaceName.contains('\\') ||
+                      ifaceName.contains('&') ||
+                      ifaceName.contains('|') ||
+                      ifaceName.contains('^') ||
+                      ifaceName.contains('<') ||
+                      ifaceName.contains('>');
+    
+    if (!needsQuotes) {
+        return ifaceName;
+    }
+    
+    // Escape quotes and backslashes
+    QString escaped = ifaceName;
+    escaped.replace("\\", "\\\\");
+    escaped.replace("\"", "\\\"");
+    
+    return QString("\"%1\"").arg(escaped);
 }
