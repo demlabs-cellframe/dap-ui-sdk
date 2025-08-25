@@ -42,10 +42,8 @@ Item {
 
     DapQmlDialogTitle {
         id: title
-        text: Brand.isOldStyle() ? legacyTitleText : titleText
+        text: titleText
         qss: "dialog-title"
-
-        property string legacyTitleText: qsTr("History") + lang.notifier
         property string titleText: qsTr("Serial key history") + lang.notifier
     }
 
