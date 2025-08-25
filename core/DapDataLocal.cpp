@@ -356,6 +356,7 @@ void DapDataLocal::dataFromCommand(const QJsonObject& object)
 
     qDebug() << "[DapDataLocal] [dataFromCommand] action: " << action;
 
+    bool hasSerialKeyData = object.contains(JSON_SERIAL_KEY_DATA_KEY);
     if(isAll && object.contains(JSON_SERIAL_KEY_HISTORY_KEY)){
         QStringList keysList = m_serialKeyHistory->getKeysHistory();
         const auto& serialArray = object[JSON_SERIAL_KEY_HISTORY_KEY].toArray();
@@ -364,14 +365,25 @@ void DapDataLocal::dataFromCommand(const QJsonObject& object)
         }
         else {
             fromJson(object);
+            if (hasSerialKeyData) {
+                emit serialKeyDataUpdateFromService();
+            }
         }
     } else if (object.contains(JSON_SERIAL_KEY_DATA_KEY)){
         QJsonObject serialKeyData = object[JSON_SERIAL_KEY_DATA_KEY].toObject();
-        DapDataLocal::instance()->serialKeyData()->setFromJson(serialKeyData);
+        // If service sends an empty object, it indicates reset → clear UI-side serial key data
+        if (serialKeyData.isEmpty()) {
+            DapDataLocal::instance()->resetSerialKeyData();
+        } else {
+            DapDataLocal::instance()->serialKeyData()->setFromJson(serialKeyData);
+        }
         emit serialKeyDataUpdateFromService();
     }
     else {
         fromJson(object);
+        if (hasSerialKeyData) {
+            emit serialKeyDataUpdateFromService();
+        }
     }
 
     if(isAll) {
