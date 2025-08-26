@@ -53,7 +53,7 @@ extern "C" {
 }
 #endif
 
-#ifdef Q_OS_LINUX
+#ifdef DAP_OS_LINUX
 #include <resolv.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -214,7 +214,7 @@ private:
     bool saveOriginalDNSForInterface(ulong ifIndex);
 #endif
 
-#ifdef Q_OS_LINUX
+#ifdef DAP_OS_LINUX
     // Linux-specific methods are already declared in public section
 #endif
 

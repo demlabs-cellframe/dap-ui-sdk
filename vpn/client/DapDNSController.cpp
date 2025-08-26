@@ -11,7 +11,7 @@
 #include <QDateTime>
 #include <QThread>
 
-#ifdef Q_OS_LINUX
+#ifdef DAP_OS_LINUX
 #include <unistd.h>
 #include <sys/types.h>
 #endif
@@ -158,7 +158,7 @@ bool DapDNSController::setDNSServers(const QStringList &dnsServers)
     bool result = false;
 #ifdef Q_OS_WINDOWS
     result = setDNSServersWindows(dnsServers);
-#elif defined(Q_OS_LINUX)
+#elif defined(DAP_OS_LINUX)
     result = setDNSServersLinux(dnsServers);
 #elif defined(Q_OS_MACOS)
     result = setDNSServersMacOS(dnsServers);
@@ -190,7 +190,7 @@ bool DapDNSController::restoreDefaultDNS()
     bool result = false;
 #ifdef Q_OS_WINDOWS
     result = restoreDefaultDNSWindows();
-#elif defined(Q_OS_LINUX)
+#elif defined(DAP_OS_LINUX)
     result = restoreDefaultDNSLinux();
 #elif defined(Q_OS_MACOS)
     result = restoreDefaultDNSMacOS();
@@ -215,7 +215,7 @@ QStringList DapDNSController::getCurrentDNSServers() const
     QStringList servers;
 #ifdef Q_OS_WINDOWS
     servers = getCurrentDNSServersWindows();
-#elif defined(Q_OS_LINUX)
+#elif defined(DAP_OS_LINUX)
     servers = getCurrentDNSServersLinux();
 #elif defined(Q_OS_MACOS)
     servers = getCurrentDNSServersMacOS();
@@ -393,7 +393,7 @@ bool DapDNSController::flushDNSCache()
     }
 #elif defined(Q_OS_MACOS)
     result = exec_silent("sudo killall -HUP mDNSResponder") == 0;
-#elif defined(Q_OS_LINUX)
+#elif defined(DAP_OS_LINUX)
     // Try different commands depending on the distribution
     result = exec_silent("systemd-resolve --flush-caches") == 0;
     if (!result) {
@@ -418,7 +418,7 @@ bool DapDNSController::registerDNS()
     result = exec_silent("ipconfig /registerdns") == 0;
 #elif defined(Q_OS_MACOS)
     result = exec_silent("sudo killall -HUP mDNSResponder") == 0;
-#elif defined(Q_OS_LINUX)
+#elif defined(DAP_OS_LINUX)
     // Linux usually doesn't require explicit DNS registration
     result = true;
 #endif
@@ -1536,7 +1536,7 @@ bool DapDNSController::saveOriginalDNSForInterface(ulong ifIndex)
 }
 #endif
 
-#ifdef Q_OS_LINUX
+#ifdef DAP_OS_LINUX
 
 namespace {
     // Check if we have sufficient privileges for DNS operations
@@ -2941,7 +2941,7 @@ bool DapDNSController::hasVPNDNSMarkers() const
     }
 #endif
 
-#ifdef Q_OS_LINUX
+#ifdef DAP_OS_LINUX
     // Check Linux resolv.conf for VPN DNS markers
     QStringList currentDNS = getCurrentDNSServersLinux();
     if (!currentDNS.isEmpty()) {
@@ -2994,7 +2994,7 @@ bool DapDNSController::emergencyDNSRestoration()
     }
 #endif
 
-#ifdef Q_OS_LINUX
+#ifdef DAP_OS_LINUX
     // Method 1: Try NetworkManager
     if (restoreDefaultDNSLinux()) {
         success = true;
@@ -3244,7 +3244,7 @@ void DapDNSController::logDNSChange(const QStringList &detected, const QStringLi
 
 QString DapDNSController::getActiveNetworkInterface() const
 {
-#ifdef Q_OS_LINUX
+#ifdef DAP_OS_LINUX
     // Try to get active interface using NetworkManager
     QProcess process;
     process.setProcessChannelMode(QProcess::MergedChannels);
