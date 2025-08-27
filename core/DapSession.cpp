@@ -302,8 +302,16 @@ void DapSession::getNews()
 
         emit sigReceivedNewsMessage(jsonDoc);
     });
-    auto it = DapServiceDataLocal::instance()->getCdbIterator();
-    DapConnectClient::instance()->request_GET (it->address, it->port, URL_NEWS, *m_netNewsReply);
+    {
+        auto dataLocal = DapServiceDataLocal::instance();
+        const auto &list = dataLocal->cdbServersList();
+        auto it = dataLocal->getCdbIterator();
+        if (list.isEmpty() || it == list.end() || it->address.isEmpty() || it->port <= 0) {
+            qWarning() << "[DapSession::getNews] CDB unavailable or invalid iterator; skipping news fetch";
+            return;
+        }
+        DapConnectClient::instance()->request_GET(it->address, it->port, URL_NEWS, *m_netNewsReply);
+    }
 }
 
 /**

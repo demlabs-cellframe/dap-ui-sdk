@@ -101,9 +101,42 @@ void DapCmdServersList::sendRequestToCDB(){
         sendSimpleError(reply->error(), reply->errorString());
     });
 
-    auto it = DapServiceDataLocal::instance()->getCdbIterator();
-    qDebug() << "Sending request to: " << it->address << ":" << it->port;
-    DapConnectClient::instance()->request_GET (it->address, it->port, "nodelist", *reply);
+    auto dataLocal = DapServiceDataLocal::instance();
+      const auto &list = dataLocal->cdbServersList();
+    auto it = dataLocal->getCdbIterator();
+
+    if (list.isEmpty() || it == list.end()) {
+        qWarning() << "[ServersList] CDB list empty or iterator invalid; using staged list";
+        if (guiCall) {
+            if (loadServerList()) {
+                guiCall = false;
+            }
+        }
+        if (!emitTimer->isActive()) {
+            emitTimer->start();
+        }
+        sendSimpleError(-32004, "CDB list unavailable");
+        return;
+    }
+
+    const QString address = it->address;
+    const int port = it->port;
+    if (address.isEmpty() || port <= 0) {
+        qWarning() << "[ServersList] CDB address/port invalid; using staged list";
+        if (guiCall) {
+            if (loadServerList()) {
+                guiCall = false;
+            }
+        }
+        if (!emitTimer->isActive()) {
+            emitTimer->start();
+        }
+        sendSimpleError(-32005, "CDB address/port invalid");
+        return;
+    }
+
+    qDebug() << "Sending request to: " << address << ":" << port;
+    DapConnectClient::instance()->request_GET(address, port, "nodelist", *reply);
 }
 
 
