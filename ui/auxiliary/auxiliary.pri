@@ -5,7 +5,8 @@ HEADERS += \
     $$PWD/TariffItem.h \
 #    $$PWD/UiScaling.h \
     $$PWD/Utilz.h \
-    $$PWD/defines.h
+    $$PWD/defines.h \
+    $$PWD/DapDeveloperModeManager.h
 
 SOURCES += \
 #    $$PWD/AppStyleSheetHandler.cpp \
@@ -13,6 +14,7 @@ SOURCES += \
     $$PWD/ScreenInfo.cpp \
     $$PWD/TariffItem.cpp \
 #    $$PWD/UiScaling.cpp \
-    $$PWD/Utilz.cpp
+    $$PWD/Utilz.cpp \
+    $$PWD/DapDeveloperModeManager.cpp
 
 INCLUDEPATH += $$PWD

@@ -3,6 +3,8 @@
 #include "dapqmlmodelnodenetworkslist.h"
 #include "DapNodeWalletData.h"
 #include "dapqmlmodelnodedefines.h"
+#include "../../../ui/auxiliary/DapDeveloperModeManager.h"
+#include <QDebug>
 
 /* DEFINES */
 
@@ -92,6 +94,25 @@ const QString &DapQmlModelNodeNetworksList::network() const
   if (p->currentIndex < 0 || p->currentIndex >= list.size())
     return s_dummyString;
   return list.at (p->currentIndex);
+}
+
+void DapQmlModelNodeNetworksList::selectDefaultNetwork()
+{
+  if (!DapDeveloperModeManager::instance()->shouldEnableNetworkSelection()) {
+    const QString preferred = DapDeveloperModeManager::instance()->getDefaultNetwork(); // network name like "KelVPN"
+    const auto &list  = DapNodeWalletData::instance()->networkList();
+    for (int i = 0; i < list.size(); ++i) {
+      const QString netName = list.at(i);
+      if (netName.compare(preferred, Qt::CaseInsensitive) == 0
+          || netName.contains(QStringLiteral("kel"), Qt::CaseInsensitive)) {
+        setCurrentIndex(i);
+        return;
+      }
+    }
+    if (!list.isEmpty()) {
+      setCurrentIndex(0);
+    }
+  }
 }
 
 void DapQmlModelNodeNetworksList::_modelReset()

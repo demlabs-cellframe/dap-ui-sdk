@@ -9,6 +9,7 @@ import DapQmlStyle 1.0
 import Brand 1.0
 import PageCtl 1.0
 import NoCdbCtl 1.0
+import DapDeveloperModeManager 1.0
 import DapQmlModelNodeOrderList 1.0
 import DapQmlModelNodeProxyBase 1.0
 import StyleDebugTree 1.0
@@ -1207,7 +1208,14 @@ Item {
                         property string labelTopQss
                         property string labelBottomQss
                         property bool swap:         true
-                        property var cbOnClicked: function() { root.sigNetworkClicked(); }
+                        property var cbOnClicked: function() {
+                            if (DapDeveloperModeManager.shouldEnableNetworkSelection()){
+                                console.log("[QuiNodeOrderList] Network button clicked (dev mode)")
+                                root.sigNetworkClicked();
+                            } else {
+                                console.log("[QuiNodeOrderList] Network button ignored (user mode)")
+                            }
+                        }
                     }
 
                     Loader {

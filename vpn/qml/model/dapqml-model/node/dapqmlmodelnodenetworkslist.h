@@ -69,6 +69,7 @@ public:
   Q_INVOKABLE bool filterAcceptsRow (int a_row, const QString &a_filter) const override;
 
   Q_INVOKABLE const QString &network() const;
+  Q_INVOKABLE void selectDefaultNetwork();
 
 protected:
   void _modelReset();
