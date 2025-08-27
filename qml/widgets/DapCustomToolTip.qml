@@ -117,9 +117,11 @@ ToolTip {
             id: bottomLineHide
             anchors.left: backgroundToolTip.left
             anchors.right: backgroundToolTip.right
+            anchors.bottom: backgroundToolTip.bottom
             height: bottomRect.height / 2
             color: backgroundToolTip.color
             visible: bottomRect.visible
+            radius: 4
         }
     }
 }
