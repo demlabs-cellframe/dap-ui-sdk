@@ -23,7 +23,8 @@ DapCmdServersList::DapCmdServersList(QObject *parent)
 void DapCmdServersList::handle(const QJsonObject* params)
 {
     DapCmdServiceAbstract::handle(params);
-
+    qDebug() << "[SVC][ServersList] handle() GET_SERVERS_LIST received";
+    m_errorSentOnce = false; // reset once-per-session per command invocation
     sendRequestToCDB();
     guiCall = true;
 
@@ -42,7 +43,7 @@ void DapCmdServersList::sendRequestToCDB(){
 
         if (jsonDoc.isNull() || !jsonDoc.isArray()) {
 
-            qCritical() << "Can't parse server response to JSON: "<< jsonErr.errorString() << " on position "<< jsonErr.offset;
+            qCritical() << "[SVC][ServersList] Can't parse server response to JSON:" << jsonErr.errorString() << " pos=" << jsonErr.offset;
             //emit nextCdb();
             DapServiceDataLocal::instance()->nextCbdIterator();
             if (DapServiceDataLocal::instance()->getCdbIterator() != DapServiceDataLocal::instance()->cdbServersList().end())
@@ -73,7 +74,7 @@ void DapCmdServersList::sendRequestToCDB(){
                 }
                 sendSimpleError(-32003, "Empty nodelist, try another CDB...");
             } else {
-                qDebug() << "Server list array:" << arr;
+                qDebug() << "[SVC][ServersList] Server list array size=" << arr.size();
 
                 updateServerList(arr);
             }
@@ -84,25 +85,33 @@ void DapCmdServersList::sendRequestToCDB(){
 
         if (!reply) return;
 
-        qDebug() << "Network error occurred: " << reply->errorString();
+        qDebug() << "[SVC][ServersList] Network error occurred: code=" << reply->error() << ", str=" << reply->errorString() << ", guiCall=" << guiCall;
 
         if (guiCall) {
             if (loadServerList()){
                 guiCall = false;
+                qDebug() << "[SVC][ServersList] Loaded local server list, guiCall=false";
             }
         }
 
         if (!emitTimer->isActive()) {
+            qDebug() << "[SVC][ServersList] Starting emitTimer(5000ms) for next retry";
             emitTimer->start();
         }
 
         emit nextCdb();
 
-        sendSimpleError(reply->error(), reply->errorString());
+        if (!m_errorSentOnce) {
+            qDebug() << "[SVC][ServersList] sendSimpleError(" << reply->error() << ", '" << reply->errorString() << "') [first only]";
+            sendSimpleError(reply->error(), reply->errorString());
+            m_errorSentOnce = true;
+        } else {
+            qDebug() << "[SVC][ServersList] suppressing repeated error emission (already sent once)";
+        }
     });
 
     auto it = DapServiceDataLocal::instance()->getCdbIterator();
-    qDebug() << "Sending request to: " << it->address << ":" << it->port;
+    qDebug() << "[SVC][ServersList] sendRequestToCDB(guiCall=" << guiCall << ") target=" << it->address << ":" << it->port;
     DapConnectClient::instance()->request_GET (it->address, it->port, "nodelist", *reply);
 }
 
