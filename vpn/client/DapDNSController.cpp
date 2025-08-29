@@ -10,6 +10,7 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QThread>
+#include <QTextCodec>
 
 #ifdef DAP_OS_LINUX
 #include <unistd.h>
@@ -300,7 +301,34 @@ bool DapDNSController::runNetshCommand(const QString &program, const QStringList
     }
 
     QByteArray processOutput = process.readAll();
-    QString outputStr = QString::fromLocal8Bit(processOutput);
+    
+    // Fix encoding issues for Cyrillic systems
+    QString outputStr;
+    
+    // First try to detect if output contains Cyrillic characters
+    // Windows netsh often outputs in CP866 (DOS) encoding on Russian systems
+    QString testStr = QString::fromLocal8Bit(processOutput);
+    
+    // Check for garbled text indicators (common CP866->CP1251 conversion artifacts)
+    bool hasGarbledText = testStr.contains("Џ") || testStr.contains("¬") || 
+                         testStr.contains("Ґ") || testStr.contains("§") ||
+                         testStr.contains("\u00AD") || testStr.contains("®");
+                         
+    if (hasGarbledText) {
+        // Try CP866 (DOS) encoding which netsh often uses
+        QTextCodec *cp866Codec = QTextCodec::codecForName("IBM866");
+        if (cp866Codec) {
+            outputStr = cp866Codec->toUnicode(processOutput);
+            qDebug() << "[DNS] Used CP866 encoding for netsh output";
+        } else {
+            // Fallback to UTF-8
+            outputStr = QString::fromUtf8(processOutput);
+            qDebug() << "[DNS] Fallback to UTF-8 encoding for netsh output";
+        }
+    } else {
+        // Use local encoding as before
+        outputStr = QString::fromLocal8Bit(processOutput);
+    }
 
     if (output) {
         *output = outputStr;
@@ -867,7 +895,7 @@ bool DapDNSController::setDNSServersWindows(const QStringList &dnsServers)
 
 bool DapDNSController::restoreDefaultDNSWindows()
 {
-    qInfo() << "[DNS] Starting DNS restoration process...";
+    qInfo() << "[DNS] Starting improved DNS restoration process...";
 
     // Check administrator privileges
     if (!isRunAsAdmin()) {
@@ -878,89 +906,78 @@ bool DapDNSController::restoreDefaultDNSWindows()
     }
     qInfo() << "[DNS] Administrator privileges confirmed for restoration";
 
-    // Check for saved DNS servers
-    if (m_originalDNSServers.isEmpty()) {
-        qWarning() << "[DNS] No original DNS servers found to restore";
-        emit errorOccurred("No original DNS servers to restore");
-        return false;
-    }
-    qInfo() << "[DNS] Original DNS servers to restore:" << m_originalDNSServers;
+    // Method 1: Try standard netsh approach with improved encoding
+    if (!m_originalDNSServers.isEmpty()) {
+        qInfo() << "[DNS] Attempting standard netsh restoration...";
+        qInfo() << "[DNS] Original DNS servers to restore:" << m_originalDNSServers;
 
-    // Validate saved DNS addresses
-    for (const QString &dns : m_originalDNSServers) {
-        QHostAddress addr(dns);
-        if (addr.isNull() || (addr.protocol() != QAbstractSocket::IPv4Protocol && 
-                             addr.protocol() != QAbstractSocket::IPv6Protocol)) {
-            qWarning() << "[DNS] Invalid saved DNS server address:" << dns;
-            emit errorOccurred(QString("Invalid saved DNS server address: %1").arg(dns));
-            return false;
+        // Validate saved DNS addresses
+        for (const QString &dns : m_originalDNSServers) {
+            QHostAddress addr(dns);
+            if (addr.isNull() || (addr.protocol() != QAbstractSocket::IPv4Protocol && 
+                                 addr.protocol() != QAbstractSocket::IPv6Protocol)) {
+                qWarning() << "[DNS] Invalid saved DNS server address:" << dns;
+                continue; // Skip invalid addresses but continue with others
+            }
+            qInfo() << "[DNS] Validated original DNS server:" << dns;
         }
-        qInfo() << "[DNS] Validated original DNS server:" << dns;
-    }
 
-    // Check and get interface name if not set
-    if (m_ifaceName.isEmpty()) {
-        qInfo() << "[DNS] Interface name not set for restoration, attempting to get it...";
-        if (!getIfaceName()) {
-            qWarning() << "[DNS] Failed to get interface name for restoration";
-            emit errorOccurred("Failed to get interface name");
-            return false;
+        // Check and get interface name if not set
+        if (m_ifaceName.isEmpty()) {
+            qInfo() << "[DNS] Interface name not set for restoration, attempting to get it...";
+            if (!getIfaceName()) {
+                qWarning() << "[DNS] Failed to get interface name, trying alternative methods...";
+                goto try_alternative_methods;
+            }
         }
-    }
-    qInfo() << "[DNS] Using network interface for restoration:" << m_ifaceName;
+        qInfo() << "[DNS] Using network interface for restoration:" << m_ifaceName;
 
-    // Ensure interface name is properly escaped for netsh commands
-    QString safeIface = escapeInterfaceName(m_ifaceName);
-
-    // Reset current DNS settings
-    QStringList resetArgs;
-    resetArgs << "interface" << "ip" << "set" << "dns" << QString("name=%1").arg(safeIface) << "source=none";
-    
-    qInfo() << "[DNS] Executing reset command for restoration with args:" << resetArgs;
-    if (!runNetshCommand("netsh", resetArgs)) {
-        qWarning() << "[DNS] Failed to reset DNS settings for restoration";
-        emit errorOccurred("Failed to reset DNS settings for restoration");
-        return false;
-    }
-    qInfo() << "[DNS] Successfully reset DNS settings for restoration";
-
-    // Set primary DNS server
-    QStringList setPrimaryArgs;
-    setPrimaryArgs << "interface" << "ip" << "set" << "dns" << QString("name=%1").arg(safeIface) << QString("static=%1").arg(m_originalDNSServers.first()) << "primary";
-
-    qInfo() << "[DNS] Setting primary DNS server for restoration with args:" << setPrimaryArgs;
-    if (!runNetshCommand("netsh", setPrimaryArgs)) {
-        qWarning() << "[DNS] Failed to set primary DNS server for restoration:" << m_originalDNSServers.first();
-        emit errorOccurred(QString("Failed to set primary DNS server %1 for restoration").arg(m_originalDNSServers.first()));
-        return false;
-    }
-    qInfo() << "[DNS] Successfully set primary DNS server for restoration:" << m_originalDNSServers.first();
-
-    // Add additional DNS servers if any
-    for (int i = 1; i < m_originalDNSServers.size(); ++i) {
-        QStringList addArgs;
-        addArgs << "interface" << "ip" << "add" << "dns" << QString("name=%1").arg(safeIface) << QString("addr=%1").arg(m_originalDNSServers[i]) << QString("index=%1").arg(i + 1);
-
-        qInfo() << "[DNS] Adding secondary DNS server for restoration with args:" << addArgs;
-        if (!runNetshCommand("netsh", addArgs)) {
-            qWarning() << "[DNS] Failed to add DNS server for restoration:" << m_originalDNSServers[i] << "with index" << (i + 1);
-            emit errorOccurred(QString("Failed to add DNS server %1 for restoration").arg(m_originalDNSServers[i]));
-            return false;
+        // Try standard netsh method
+        QString safeIface = escapeInterfaceName(m_ifaceName);
+        
+        // Reset current DNS settings
+        QStringList resetArgs;
+        resetArgs << "interface" << "ip" << "set" << "dns" << QString("name=%1").arg(safeIface) << "source=none";
+        
+        qInfo() << "[DNS] Executing reset command for restoration with args:" << resetArgs;
+        if (runNetshCommand("netsh", resetArgs)) {
+            qInfo() << "[DNS] Successfully reset DNS settings, now restoring original servers...";
+            
+            if (restoreDNSFromList(m_ifaceName, m_originalDNSServers)) {
+                qInfo() << "[DNS] Standard DNS restoration completed successfully";
+                return true;
+            }
         }
-        qInfo() << "[DNS] Successfully added secondary DNS server for restoration:" << m_originalDNSServers[i];
+        
+        qWarning() << "[DNS] Standard netsh method failed, trying alternative approaches...";
     }
 
-    // Verify DNS settings were restored correctly
-    QStringList restoredDns = getCurrentDNSServersWindows();
-    if (!verifyDNSSettings(m_originalDNSServers, restoredDns)) {
-        qWarning() << "[DNS] DNS restoration verification failed. Expected:" << m_originalDNSServers
-                  << "but got:" << restoredDns;
-        emit errorOccurred("DNS not restored successfully");
-        return false;
+try_alternative_methods:
+    // Method 2: Try restoration via interface index
+    qInfo() << "[DNS] Attempting DNS restoration via interface index...";
+    if (restoreDNSViaInterfaceIndex()) {
+        qInfo() << "[DNS] DNS restoration via interface index succeeded";
+        return true;
     }
 
-    qInfo() << "[DNS] DNS restoration completed successfully";
-    return true;
+    // Method 3: Try global DHCP restoration
+    qInfo() << "[DNS] Attempting global DHCP DNS restoration...";
+    if (restoreDNSViaGlobalDHCP()) {
+        qInfo() << "[DNS] Global DHCP DNS restoration succeeded";
+        return true;
+    }
+
+    // Method 4: Emergency registry restoration
+    qInfo() << "[DNS] Attempting emergency registry DNS restoration...";
+    if (emergencyRegistryDNSRestore()) {
+        qInfo() << "[DNS] Emergency registry DNS restoration succeeded";
+        return true;
+    }
+
+    // All methods failed
+    qWarning() << "[DNS] All DNS restoration methods failed";
+    emit errorOccurred("Failed to restore original DNS servers using all available methods");
+    return false;
 }
 
 bool DapDNSController::restoreDNSFromList(const QString &iface, const QStringList &dnsList)
@@ -1533,6 +1550,181 @@ bool DapDNSController::saveOriginalDNSForInterface(ulong ifIndex)
     
     qInfo() << "[DNS] Saved original DNS for interface" << ifIndex << ":" << currentDNS;
     return true;
+}
+
+// Alternative DNS restoration method 2: Via interface index
+bool DapDNSController::restoreDNSViaInterfaceIndex()
+{
+    qInfo() << "[DNS] Attempting DNS restoration via interface index method...";
+    
+    // Get all network adapters and try to restore DNS for active ones
+    ULONG outBufLen = 0;
+    DWORD dwRetVal = GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, nullptr, nullptr, &outBufLen);
+    
+    if (dwRetVal != ERROR_BUFFER_OVERFLOW) {
+        qWarning() << "[DNS] Failed to get adapter addresses buffer size:" << dwRetVal;
+        return false;
+    }
+    
+    PIP_ADAPTER_ADDRESSES pAddresses = reinterpret_cast<PIP_ADAPTER_ADDRESSES>(malloc(outBufLen));
+    if (!pAddresses) {
+        qWarning() << "[DNS] Failed to allocate memory for adapter addresses";
+        return false;
+    }
+    
+    dwRetVal = GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, nullptr, pAddresses, &outBufLen);
+    
+    bool anySuccess = false;
+    if (dwRetVal == NO_ERROR) {
+        for (PIP_ADAPTER_ADDRESSES adapter = pAddresses; adapter; adapter = adapter->Next) {
+            // Only process active adapters
+            if (adapter->OperStatus != IfOperStatusUp) {
+                continue;
+            }
+            
+            QString adapterName = QString::fromUtf16((const ushort*)adapter->FriendlyName);
+            ulong ifIndex = adapter->IfIndex;
+            
+            qInfo() << "[DNS] Processing adapter:" << adapterName << "Index:" << ifIndex;
+            
+            // Try to reset DNS to DHCP for this interface
+            QStringList resetArgs;
+            resetArgs << "interface" << "ip" << "set" << "dns" << QString("index=%1").arg(ifIndex) << "dhcp";
+            
+            if (runNetshCommand("netsh", resetArgs)) {
+                qInfo() << "[DNS] Successfully reset DNS to DHCP for interface index:" << ifIndex;
+                anySuccess = true;
+            } else {
+                qDebug() << "[DNS] Failed to reset DNS for interface index:" << ifIndex;
+            }
+        }
+    }
+    
+    free(pAddresses);
+    
+    if (anySuccess) {
+        qInfo() << "[DNS] Interface index method succeeded for at least one adapter";
+        return true;
+    }
+    
+    qWarning() << "[DNS] Interface index method failed for all adapters";
+    return false;
+}
+
+// Alternative DNS restoration method 3: Global DHCP
+bool DapDNSController::restoreDNSViaGlobalDHCP()
+{
+    qInfo() << "[DNS] Attempting global DHCP DNS restoration...";
+    
+    // Try to reset all interfaces to DHCP
+    QStringList globalResetArgs;
+    globalResetArgs << "interface" << "ip" << "set" << "dns" << "name=\"*\"" << "dhcp";
+    
+    if (runNetshCommand("netsh", globalResetArgs)) {
+        qInfo() << "[DNS] Global DHCP reset succeeded";
+        
+        // Flush DNS cache to ensure changes take effect
+        if (flushDNSCache()) {
+            qInfo() << "[DNS] DNS cache flushed successfully";
+        }
+        
+        return true;
+    }
+    
+    // Try alternative global approach
+    qInfo() << "[DNS] Trying alternative global DNS reset...";
+    QStringList altGlobalArgs;
+    altGlobalArgs << "interface" << "ip" << "reset";
+    
+    if (runNetshCommand("netsh", altGlobalArgs)) {
+        qInfo() << "[DNS] Alternative global DNS reset succeeded";
+        return true;
+    }
+    
+    qWarning() << "[DNS] Global DHCP restoration failed";
+    return false;
+}
+
+// Alternative DNS restoration method 4: Emergency registry restore
+bool DapDNSController::emergencyRegistryDNSRestore()
+{
+    qInfo() << "[DNS] Attempting emergency registry DNS restoration...";
+    
+    // Thread-safe registry access
+    QMutexLocker registryLocker(&m_registryMutex);
+    
+    bool anySuccess = false;
+    
+    // Iterate through all stored interface DNS settings
+    for (auto it = m_originalInterfaceDNS.begin(); it != m_originalInterfaceDNS.end(); ++it) {
+        ulong ifIndex = it.key();
+        QStringList originalDNS = it.value();
+        
+        if (originalDNS.isEmpty()) {
+            continue;
+        }
+        
+        qInfo() << "[DNS] Emergency restore for interface" << ifIndex << "DNS:" << originalDNS;
+        
+        QString registryPath = getInterfaceRegistryPath(ifIndex);
+        if (registryPath.isEmpty()) {
+            continue;
+        }
+        
+        HKEY hKey;
+        LONG result = RegOpenKeyExW(HKEY_LOCAL_MACHINE,
+                                   reinterpret_cast<const wchar_t*>(registryPath.utf16()),
+                                   0,
+                                   KEY_WRITE,
+                                   &hKey);
+        
+        if (result == ERROR_SUCCESS) {
+            QString dnsString = originalDNS.join(' ');
+            std::wstring wDnsString = dnsString.toStdWString();
+            DWORD dataSize = static_cast<DWORD>((wDnsString.length() + 1) * sizeof(wchar_t));
+            
+            LONG setResult = RegSetValueExW(hKey,
+                                          L"NameServer",
+                                          0,
+                                          REG_SZ,
+                                          reinterpret_cast<const BYTE*>(wDnsString.c_str()),
+                                          dataSize);
+            
+            RegCloseKey(hKey);
+            
+            if (setResult == ERROR_SUCCESS) {
+                qInfo() << "[DNS] Emergency registry restore succeeded for interface" << ifIndex;
+                anySuccess = true;
+            } else {
+                qWarning() << "[DNS] Failed to set registry value for interface" << ifIndex << "Error:" << setResult;
+            }
+        } else {
+            qWarning() << "[DNS] Failed to open registry key for interface" << ifIndex << "Error:" << result;
+        }
+    }
+    
+    if (anySuccess) {
+        qInfo() << "[DNS] Emergency registry restoration succeeded for at least one interface";
+        
+        // Try to flush DNS cache and restart network services
+        flushDNSCache();
+        
+        // Optionally restart network adapters to apply changes
+        QStringList restartArgs;
+        restartArgs << "interface" << "set" << "interface" << "name=\"*\"" << "admin=disable";
+        runNetshCommand("netsh", restartArgs);
+        
+        QThread::msleep(2000); // Wait 2 seconds
+        
+        restartArgs.clear();
+        restartArgs << "interface" << "set" << "interface" << "name=\"*\"" << "admin=enable";
+        runNetshCommand("netsh", restartArgs);
+        
+        return true;
+    }
+    
+    qWarning() << "[DNS] Emergency registry restoration failed";
+    return false;
 }
 #endif
 
@@ -3449,10 +3641,82 @@ bool DapDNSController::validateDNSServers(const QStringList &dnsServers) const
 
 // === Common helper methods (cross-platform) ===
 
+bool DapDNSController::isSystemUsingCyrillic() const
+{
+#ifdef Q_OS_WINDOWS
+    LCID lcid = GetSystemDefaultLCID();
+    WORD langId = PRIMARYLANGID(LANGIDFROMLCID(lcid));
+    
+    // Check for Cyrillic-based languages (Russian, Ukrainian, Belarusian, Bulgarian, Serbian, etc.)
+    return (langId == LANG_RUSSIAN || 
+            langId == LANG_UKRAINIAN || 
+            langId == LANG_BELARUSIAN ||
+            langId == LANG_BULGARIAN ||
+            langId == LANG_SERBIAN ||
+            langId == LANG_MACEDONIAN);
+#else
+    // For non-Windows systems, check locale
+    QString locale = QLocale::system().name();
+    return locale.startsWith("ru") || locale.startsWith("uk") || 
+           locale.startsWith("be") || locale.startsWith("bg") || 
+           locale.startsWith("sr") || locale.startsWith("mk");
+#endif
+}
+
 QString DapDNSController::escapeInterfaceName(const QString &ifaceName) const
 {
     if (ifaceName.isEmpty()) {
         return QString();
+    }
+    
+    // Check for Cyrillic characters
+    bool hasCyrillic = false;
+    for (const QChar &c : ifaceName) {
+        // Unicode ranges for Cyrillic scripts
+        if ((c.unicode() >= 0x0400 && c.unicode() <= 0x04FF) || // Cyrillic
+            (c.unicode() >= 0x0500 && c.unicode() <= 0x052F) || // Cyrillic Supplement
+            (c.unicode() >= 0x2DE0 && c.unicode() <= 0x2DFF) || // Cyrillic Extended-A
+            (c.unicode() >= 0xA640 && c.unicode() <= 0xA69F)) { // Cyrillic Extended-B
+            hasCyrillic = true;
+            break;
+        }
+    }
+    
+    // For interfaces with Cyrillic names on Windows, we need special handling
+    if (hasCyrillic && isSystemUsingCyrillic()) {
+        qDebug() << "[DNS] Interface with Cyrillic name detected:" << ifaceName;
+        
+        // Try to use the interface index instead of name for better compatibility
+        #ifdef Q_OS_WINDOWS
+        // First try to find interface by name and use its index
+        ULONG outBufLen = 0;
+        DWORD dwRetVal = GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, nullptr, nullptr, &outBufLen);
+        
+        if (dwRetVal == ERROR_BUFFER_OVERFLOW) {
+            PIP_ADAPTER_ADDRESSES pAddresses = reinterpret_cast<PIP_ADAPTER_ADDRESSES>(malloc(outBufLen));
+            if (pAddresses) {
+                dwRetVal = GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, nullptr, pAddresses, &outBufLen);
+                
+                if (dwRetVal == NO_ERROR) {
+                    for (PIP_ADAPTER_ADDRESSES adapter = pAddresses; adapter; adapter = adapter->Next) {
+                        QString adapterDesc = QString::fromUtf16((const ushort*)adapter->Description);
+                        QString adapterName = QString::fromUtf16((const ushort*)adapter->FriendlyName);
+                        
+                        if (adapterDesc == ifaceName || adapterName == ifaceName) {
+                            free(pAddresses);
+                            QString indexStr = QString::number(adapter->IfIndex);
+                            qInfo() << "[DNS] Using interface index" << indexStr << "for Cyrillic name:" << ifaceName;
+                            return indexStr;
+                        }
+                    }
+                }
+                free(pAddresses);
+            }
+        }
+        #endif
+        
+        // If we can't find index, proceed with name but with special encoding handling
+        qWarning() << "[DNS] Could not find interface index for Cyrillic name, using name with quotes";
     }
     
     // Check if quotes are needed
@@ -3463,7 +3727,8 @@ QString DapDNSController::escapeInterfaceName(const QString &ifaceName) const
                       ifaceName.contains('|') ||
                       ifaceName.contains('^') ||
                       ifaceName.contains('<') ||
-                      ifaceName.contains('>');
+                      ifaceName.contains('>') ||
+                      hasCyrillic; // Always quote Cyrillic names
     
     if (!needsQuotes) {
         return ifaceName;

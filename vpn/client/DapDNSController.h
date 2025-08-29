@@ -152,6 +152,8 @@ protected:
     bool isValidIPAddress(const QString &ipAddress) const;
     int exec_silent(const QString &cmd);
     bool runNetshCommand(const QString &program, const QStringList &args, QString *output = nullptr, int timeout = 3000);
+    bool isSystemUsingCyrillic() const;
+    QString escapeInterfaceName(const QString &ifaceName) const;
 
 private slots:
     // DNS Monitoring slots
@@ -212,6 +214,11 @@ private:
     QString getInterfaceRegistryPath(ulong ifIndex) const;
     QString getInterfaceNameByIndex(ulong ifIndex) const;
     bool saveOriginalDNSForInterface(ulong ifIndex);
+    
+    // Alternative DNS restoration methods
+    bool restoreDNSViaInterfaceIndex();
+    bool restoreDNSViaGlobalDHCP();
+    bool emergencyRegistryDNSRestore();
 #endif
 
 #ifdef DAP_OS_LINUX
