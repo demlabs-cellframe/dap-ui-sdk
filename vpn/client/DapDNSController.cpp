@@ -911,37 +911,37 @@ bool DapDNSController::restoreDefaultDNSWindows()
     // Method 1: Try standard netsh approach with improved encoding
     if (!m_originalDNSServers.isEmpty()) {
         qInfo() << "[DNS] Attempting standard netsh restoration...";
-        qInfo() << "[DNS] Original DNS servers to restore:" << m_originalDNSServers;
+    qInfo() << "[DNS] Original DNS servers to restore:" << m_originalDNSServers;
 
-        // Validate saved DNS addresses
-        for (const QString &dns : m_originalDNSServers) {
-            QHostAddress addr(dns);
-            if (addr.isNull() || (addr.protocol() != QAbstractSocket::IPv4Protocol && 
-                                 addr.protocol() != QAbstractSocket::IPv6Protocol)) {
-                qWarning() << "[DNS] Invalid saved DNS server address:" << dns;
+    // Validate saved DNS addresses
+    for (const QString &dns : m_originalDNSServers) {
+        QHostAddress addr(dns);
+        if (addr.isNull() || (addr.protocol() != QAbstractSocket::IPv4Protocol && 
+                             addr.protocol() != QAbstractSocket::IPv6Protocol)) {
+            qWarning() << "[DNS] Invalid saved DNS server address:" << dns;
                 continue; // Skip invalid addresses but continue with others
-            }
-            qInfo() << "[DNS] Validated original DNS server:" << dns;
         }
+        qInfo() << "[DNS] Validated original DNS server:" << dns;
+    }
 
-        // Check and get interface name if not set
-        if (m_ifaceName.isEmpty()) {
-            qInfo() << "[DNS] Interface name not set for restoration, attempting to get it...";
-            if (!getIfaceName()) {
+    // Check and get interface name if not set
+    if (m_ifaceName.isEmpty()) {
+        qInfo() << "[DNS] Interface name not set for restoration, attempting to get it...";
+        if (!getIfaceName()) {
                 qWarning() << "[DNS] Failed to get interface name, trying alternative methods...";
                 goto try_alternative_methods;
-            }
         }
-        qInfo() << "[DNS] Using network interface for restoration:" << m_ifaceName;
+    }
+    qInfo() << "[DNS] Using network interface for restoration:" << m_ifaceName;
 
         // Try standard netsh method
-        QString safeIface = escapeInterfaceName(m_ifaceName);
-        
-        // Reset current DNS settings
-        QStringList resetArgs;
-        resetArgs << "interface" << "ip" << "set" << "dns" << QString("name=%1").arg(safeIface) << "source=none";
-        
-        qInfo() << "[DNS] Executing reset command for restoration with args:" << resetArgs;
+    QString safeIface = escapeInterfaceName(m_ifaceName);
+
+    // Reset current DNS settings
+    QStringList resetArgs;
+    resetArgs << "interface" << "ip" << "set" << "dns" << QString("name=%1").arg(safeIface) << "source=none";
+    
+    qInfo() << "[DNS] Executing reset command for restoration with args:" << resetArgs;
         if (runNetshCommand("netsh", resetArgs)) {
             qInfo() << "[DNS] Successfully reset DNS settings, now restoring original servers...";
             
@@ -973,7 +973,7 @@ try_alternative_methods:
     qInfo() << "[DNS] Attempting emergency registry DNS restoration...";
     if (emergencyRegistryDNSRestore()) {
         qInfo() << "[DNS] Emergency registry DNS restoration succeeded";
-        return true;
+    return true;
     }
 
     // All methods failed
