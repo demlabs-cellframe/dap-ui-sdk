@@ -58,7 +58,7 @@ win32{
     SOURCES+= $$PWD/../../../os/windows/tuntap/tuntap.cpp
     SOURCES+= $$PWD/../../../os/windows/service/Service.cpp
 
-    LIBS += -ladvapi32 -luuid -liphlpapi -lnetshell -luser32 -lws2_32 -lole32 -ldnsapi -ldhcpcsvc
+    LIBS += -ladvapi32 -luuid -liphlpapi -lnetshell -luser32 -lws2_32 -lole32 -ldnsapi -ldhcpcsvc -lsetupapi -lcfgmgr32 -lnewdev
 
     DEFINES += NTDDI_VERSION=0x06000000
     DEFINES += _WIN32_WINNT=0x0600
