@@ -36,19 +36,221 @@ DapTunWindows::DapTunWindows()
 
 DapTunWindows::~DapTunWindows() = default;
 
+// Check if running as administrator
+bool DapTunWindows::isRunAsAdmin() {
+#ifdef Q_OS_WINDOWS
+    BOOL isAdmin = FALSE;
+    PSID administratorsGroup = NULL;
+    SID_IDENTIFIER_AUTHORITY ntAuthority = SECURITY_NT_AUTHORITY;
+    
+    if (AllocateAndInitializeSid(&ntAuthority, 2, SECURITY_BUILTIN_DOMAIN_RID,
+                                DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
+                                &administratorsGroup)) {
+        CheckTokenMembership(NULL, administratorsGroup, &isAdmin);
+        FreeSid(administratorsGroup);
+    }
+    
+    return isAdmin == TRUE;
+#else
+    return true; // Non-Windows platforms don't need this check
+#endif
+}
+
+// Pre-creation check for TAP adapter availability
+bool DapTunWindows::preTunCreationCheck() {
+    qInfo() << "[TUN] Running pre-creation checks...";
+    
+    // Check if TAP adapter is already enabled
+    bool tapFound = false;
+    bool tapEnabled = false;
+    
+    QProcess process;
+    process.start("netsh", QStringList() << "interface" << "show" << "interface");
+    
+    if (process.waitForFinished(5000)) {
+        QString output = process.readAll();
+        QStringList lines = output.split('\n');
+        
+        for (const QString &line : lines) {
+            if (line.contains("TAP", Qt::CaseInsensitive) || 
+                line.contains("kelVPN", Qt::CaseInsensitive)) {
+                tapFound = true;
+                if (line.contains("Enabled", Qt::CaseInsensitive) || 
+                    line.contains("Connected", Qt::CaseInsensitive)) {
+                    tapEnabled = true;
+                    break;
+                }
+            }
+        }
+    }
+    
+    qInfo() << "[TUN] TAP adapter found:" << tapFound << "enabled:" << tapEnabled;
+    
+    if (!tapFound) {
+        qWarning() << "[TUN] No TAP adapter found in system";
+        return false;
+    }
+    
+    if (!tapEnabled) {
+        qWarning() << "[TUN] TAP adapter found but not enabled";
+        return false;
+    }
+    
+    return true;
+}
+
+// Attempt TAP adapter remediation
+bool DapTunWindows::attemptTapRemediation() {
+    qInfo() << "[TUN] Attempting TAP adapter remediation...";
+    
+    // Method 1: Try to enable TAP adapter using enhanced TunTap method
+    if (TunTap::getInstance().enableTapAdapter()) {
+        qInfo() << "[TUN] TAP adapter successfully enabled via TunTap method";
+        return true;
+    }
+    
+    // Method 2: Try netsh commands
+    QStringList adaptersToEnable;
+    QProcess listProcess;
+    listProcess.start("netsh", QStringList() << "interface" << "show" << "interface");
+    
+    if (listProcess.waitForFinished(5000)) {
+        QString output = listProcess.readAll();
+        QStringList lines = output.split('\n');
+        
+        for (const QString &line : lines) {
+            if ((line.contains("TAP", Qt::CaseInsensitive) || 
+                 line.contains("kelVPN", Qt::CaseInsensitive)) &&
+                line.contains("Disabled", Qt::CaseInsensitive)) {
+                
+                // Extract adapter name (usually the last part of the line)
+                QStringList parts = line.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
+                if (parts.size() >= 3) {
+                    QString adapterName = parts.last();
+                    adaptersToEnable.append(adapterName);
+                }
+            }
+        }
+    }
+    
+    // Enable found adapters
+    for (const QString &adapter : adaptersToEnable) {
+        qInfo() << "[TUN] Attempting to enable adapter:" << adapter;
+        QProcess enableProcess;
+        enableProcess.start("netsh", QStringList() << "interface" << "set" << "interface" 
+                           << QString("\"%1\"").arg(adapter) << "admin=enable");
+        
+        if (enableProcess.waitForFinished(10000) && enableProcess.exitCode() == 0) {
+            qInfo() << "[TUN] Successfully enabled adapter:" << adapter;
+            return true;
+        }
+    }
+    
+    // Method 3: Try to install TAP driver if not found
+    if (!TunTap::getInstance().tryInstallTapDriver()) {
+        qWarning() << "[TUN] TAP driver installation/remediation failed";
+        return false;
+    }
+    
+    return false;
+}
+
+// Attempt alternative TUN creation methods
+bool DapTunWindows::attemptAlternativeTunCreation() {
+    qInfo() << "[TUN] Trying alternative TUN creation methods...";
+    
+    // Method 1: Wait and retry (sometimes TAP adapter needs time)
+    qInfo() << "[TUN] Waiting 3 seconds and retrying...";
+    QThread::sleep(3);
+    
+    m_tunSocket = TunTap::getInstance().makeTunTapDevice(m_tunDeviceName);
+    if (m_tunSocket > 0) {
+        qInfo() << "[TUN] Retry method succeeded";
+        return true;
+    }
+    
+    // Method 2: Force TAP adapter refresh and retry
+    qInfo() << "[TUN] Refreshing network adapters...";
+    QProcess::execute("ipconfig", QStringList() << "/release");
+    QThread::sleep(1);
+    QProcess::execute("ipconfig", QStringList() << "/renew");
+    QThread::sleep(2);
+    
+    m_tunSocket = TunTap::getInstance().makeTunTapDevice(m_tunDeviceName);
+    if (m_tunSocket > 0) {
+        qInfo() << "[TUN] Network refresh method succeeded";
+        return true;
+    }
+    
+    // Method 3: Try with different TAP adapter if multiple exist
+    qInfo() << "[TUN] Searching for alternative TAP adapters...";
+    // This would require modifying getTapGUID() to try different adapters
+    // For now, just log the attempt
+    qWarning() << "[TUN] Alternative TAP adapter search not yet implemented";
+    
+    return false;
+}
+
 /**
  * @brief DapTunWindows::tunDeviceCreate
  */
 void DapTunWindows::tunDeviceCreate()
 {
+    qInfo() << "[TUN] Starting TUN device creation process...";
+    
+    // Check administrator privileges first
+    if (!isRunAsAdmin()) {
+        qCritical() << "[TUN] Administrator privileges required for TUN device creation";
+        qCritical() << "[TUN] Please restart the application as administrator";
+        emit error("Administrator privileges required for VPN connection");
+        return;
+    }
+    
+    // Run TAP diagnostics if creation fails
     if (m_tunSocket <= 0) {
-        m_tunSocket=TunTap::getInstance().makeTunTapDevice(m_tunDeviceName);
+        qInfo() << "[TUN] Creating new TUN device...";
+        
+        // Pre-check: Ensure TAP adapter is available and enabled
+        if (!preTunCreationCheck()) {
+            qWarning() << "[TUN] Pre-creation check failed, attempting remediation...";
+            if (!attemptTapRemediation()) {
+                qCritical() << "[TUN] TAP adapter remediation failed";
+                emit error("TAP adapter is not available. Please check TAP driver installation.");
+                return;
+            }
+        }
+        
+        m_tunSocket = TunTap::getInstance().makeTunTapDevice(m_tunDeviceName);
+        
+        // Enhanced error handling for TUN creation failure
+        if (m_tunSocket <= 0) {
+            qCritical() << "[TUN] Failed to create TUN device, socket:" << m_tunSocket;
+            qCritical() << "[TUN] Running enhanced diagnostics...";
+            
+            // Try alternative creation methods
+            if (attemptAlternativeTunCreation()) {
+                qInfo() << "[TUN] Alternative TUN creation succeeded";
+            } else {
+                qCritical() << "[TUN] All TUN creation methods failed";
+                emit error("Failed to create VPN tunnel device. Please check TAP adapter status.");
+                return;
+            }
+        } else {
+            qInfo() << "[TUN] TUN device created successfully, socket:" << m_tunSocket;
+        }
+        
         m_isCreated = true;
     } else {
-        qDebug() << "Wake up";
+        qDebug() << "[TUN] Waking up existing TUN device";
         TunTap::getInstance().wakeupTun();
     }
-    TunTap::getInstance().unassignTunAdp();
+    
+    // Unassign TUN adapter to prepare for configuration
+    if (!TunTap::getInstance().unassignTunAdp()) {
+        qWarning() << "[TUN] Failed to unassign TUN adapter, may cause configuration issues";
+    }
+    
+    qInfo() << "[TUN] TUN device creation completed successfully";
 }
 
 void DapTunWindows::tunDeviceDestroy()

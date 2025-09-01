@@ -36,6 +36,12 @@ private:
     DapDNSController *m_dnsController;
     ulong metric_eth;
     ulong metric_tun;
+    
+    // TAP adapter troubleshooting helper methods
+    bool isRunAsAdmin();
+    bool preTunCreationCheck();
+    bool attemptTapRemediation();
+    bool attemptAlternativeTunCreation();
 };
 
 #endif // DAPTUNWINDOWS_H
