@@ -11,6 +11,7 @@
 #include <QDateTime>
 #include <QThread>
 #include <QTextCodec>
+#include <QLocale>
 
 #ifdef DAP_OS_LINUX
 #include <unistd.h>
@@ -25,6 +26,7 @@
 #include <winsock2.h>
 #include <comdef.h>
 #include <string>
+#include <winnls.h>   // For LANG_* constants
 #pragma comment(lib, "iphlpapi.lib")
 #pragma comment(lib, "dnsapi.lib")
 #pragma comment(lib, "ws2_32.lib")

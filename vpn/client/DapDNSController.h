@@ -262,9 +262,6 @@ private:
 
     // === DNS validation ===
     bool validateDNSServers(const QStringList &dnsServers) const;
-    
-    // === Common helper methods (cross-platform) ===
-    QString escapeInterfaceName(const QString &interfaceName) const;
 };
 
 #endif // DAPDNSCONTROLLER_H 
