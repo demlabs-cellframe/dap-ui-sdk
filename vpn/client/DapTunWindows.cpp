@@ -1,5 +1,10 @@
 #include <QtDebug>
 #include <QProcess>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonParseError>
 
 #include <QStringBuilder>
 
@@ -7,6 +12,11 @@
 #include "DapTunWindows.h"
 #include "DapNetworkMonitorWindows.h"
 #include "DapDNSController.h"
+#include "../../os/windows/tuntap/tuntap.h"
+
+// Forward declarations for functions we need
+QString regWGetUsrPath();
+void exec_silent(const QString &command);
 
 DapTunWindows::DapTunWindows()
     : m_dnsController(new DapDNSController(this))
@@ -146,11 +156,9 @@ bool DapTunWindows::attemptTapRemediation() {
         }
     }
     
-    // Method 3: Try to install TAP driver if not found
-    if (!TunTap::getInstance().tryInstallTapDriver()) {
-        qWarning() << "[TUN] TAP driver installation/remediation failed";
-        return false;
-    }
+    // Method 3: TAP driver installation removed - using simple TAP logic only
+    qWarning() << "[TUN] TAP adapter not found or not enabled";
+    qWarning() << "[TUN] Please ensure TAP-Windows driver is installed";
     
     return false;
 }
@@ -514,6 +522,87 @@ void DapTunWindows::signalWriteQueueProc() {
 void DapTunWindows::addNewUpstreamRoute(const QString &a_addr) {
     TunTap::getInstance().determineValidArgs(metric_eth, metric_tun);
     TunTap::getInstance().makeRoute(TunTap::ETH, a_addr,  m_defaultGwOld, metric_eth);
+}
+
+void DapTunWindows::onWorkerStarted() {
+    DapTunAbstract::onWorkerStarted();
+    m_defaultGwOld = TunTap::getInstance().getDefaultGateWay();
+    if (m_defaultGwOld.isEmpty()) {
+        qCritical() << "Default gateway is undefined, odd network settings!";
+        return;
+    } else {
+        qInfo() << "[TUN] Default gateway: " << m_defaultGwOld;
+    }
+    
+    m_ethDeviceName = TunTap::getInstance().getNameAndDefaultDNS(TunTap::getInstance().getDefaultAdapterIndex());
+    m_tunDeviceReg = TunTap::getInstance().getNameAndDefaultDNS(TunTap::getInstance().getTunTapAdapterIndex());
+    
+    upstreamResolved = TunTap::getInstance().lookupHost(m_sUpstreamAddress, QString::number(m_iUpstreamPort));
+    qInfo() << "[TUN] Upstream address resolved to: " << upstreamResolved;
+
+    if (!TunTap::getInstance().determineValidArgs(metric_eth, metric_tun)) {
+        qCritical() << "Couldn't determine proper metrics...";
+        metric_eth = 35;
+        metric_tun = 100;
+    }
+    qInfo() << "[TUN] Using metrics - ETH: " << metric_eth << " TUN: " << metric_tun;
+
+    TunTap::getInstance().setDNS(TunTap::getInstance().getTunTapAdapterIndex(), m_gw);
+    qInfo() << "[TUN] Setting VPN DNS server: " << m_gw;
+
+    // CRITICAL ROUTING SETUP - THE MISSING PIECE!
+    TunTap::getInstance().deleteRoutesByIfIndex(TunTap::getInstance().getTunTapAdapterIndex());
+    TunTap::getInstance().makeRoute(TunTap::ETH, upstreamResolved, m_defaultGwOld, metric_eth);
+
+    QFile f(QString("%1/%2/etc/%3").arg(regWGetUsrPath()).arg(DAP_BRAND).arg("split.json"));
+    if (!f.open(QIODevice::ReadOnly)) {
+        qInfo() << "[TUN] No custom config found, route all traffic to tunnel";
+        TunTap::getInstance().makeRoute(TunTap::TUN, "0.0.0.0", m_gw, metric_tun, "0.0.0.0");
+        
+        // Add all CDBs into routing exception
+        for (const auto &str : m_routingExceptionAddrs)
+            TunTap::getInstance().makeRoute(TunTap::ETH, str, m_defaultGwOld, metric_eth);
+
+        TunTap::getInstance().enableDefaultRoutes(static_cast<ulong>(TunTap::getInstance().getDefaultAdapterIndex()), false);
+    } else {
+        QByteArray configJsonBytes = f.readAll();
+        f.close();
+        QJsonParseError jsonErr;
+        auto configJsonDoc = QJsonDocument::fromJson(configJsonBytes, &jsonErr);
+        if (configJsonDoc.isNull()) {
+            qCritical() << "JSON parse error " << jsonErr.errorString() << " on pos " << jsonErr.offset;
+        }
+
+        auto configArray = configJsonDoc.array();
+        for (const auto obj : configArray) {
+            auto configObject = obj.toObject();
+            qInfo() << "Applying config for " << configObject.value("Name").toString();
+            auto addrsArray = configObject.value("Addresses").toArray();
+            for (const auto addr : addrsArray) {
+                auto l = addr.toString().split("/");
+                if (l.count() == 2) {
+                    if (l.last().contains(".")) {
+                        TunTap::getInstance().makeRoute(TunTap::TUN, l.first(), m_gw, metric_tun, l.last());
+                    } else {
+                        uint l_umask = (0xFFFFFFFF << (32 - l.last().toInt())) & 0xFFFFFFFF;
+                        char l_mask[16] = {'\0'};
+                        sprintf_s(l_mask, sizeof(l_mask), "%u.%u.%u.%u", l_umask >> 24, (l_umask >> 16) & 0xFF, (l_umask >> 8) & 0xFF, l_umask & 0xFF);
+                        TunTap::getInstance().makeRoute(TunTap::TUN, l.first(), m_gw, metric_tun, l_mask);
+                    }
+                } else if (l.count() == 1) {
+                    TunTap::getInstance().makeRoute(TunTap::TUN, l.first(), m_gw, metric_tun);
+                }
+            }
+        }
+    }
+
+    qInfo() << "[TUN] Flushing DNS cache...";
+    if(!TunTap::getInstance().flushDNS()) {
+        qDebug() << "Re-flushing DNS...";
+        exec_silent("ipconfig /flushdns");
+    }
+    
+    emit created();
 }
 
 void DapTunWindows::onWorkerStopped()
