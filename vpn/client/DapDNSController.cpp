@@ -3743,3 +3743,3481 @@ QString DapDNSController::escapeInterfaceName(const QString &ifaceName) const
     
     return QString("\"%1\"").arg(escaped);
 }
+
+
+    } else {
+
+        qWarning() << "[DapDNSController] No active interface found";
+
+    }
+
+    
+
+    // If resolvectl failed, try NetworkManager
+
+    if (trySetDNSWithNetworkManager(dnsServers)) {
+
+        qInfo() << "[DapDNSController] Successfully set DNS using NetworkManager";
+
+        return true;
+
+    }
+
+    
+
+    // If NetworkManager failed, try direct resolv.conf modification
+
+    qWarning() << "[DapDNSController] NetworkManager failed, trying direct resolv.conf modification";
+
+    
+
+    QFile resolvConf("/etc/resolv.conf");
+
+    if (!resolvConf.open(QIODevice::WriteOnly | QIODevice::Text)) {
+
+        qWarning() << "[DapDNSController] Failed to open /etc/resolv.conf for writing";
+
+        emit errorOccurred("Failed to open /etc/resolv.conf for writing");
+
+        return false;
+
+    }
+
+
+
+    QTextStream out(&resolvConf);
+
+    // Write DNS servers
+
+    for (const QString &dnsServer : dnsServers) {
+
+        out << "nameserver " << dnsServer << "\n";
+
+    }
+
+    resolvConf.close();
+
+
+
+    // Set correct permissions
+
+    if (chmod("/etc/resolv.conf", 0644) != 0) {
+
+        qWarning() << "[DapDNSController] Failed to set permissions on /etc/resolv.conf";
+
+        emit errorOccurred("Failed to set permissions on /etc/resolv.conf");
+
+        return false;
+
+    }
+
+
+
+    qInfo() << "[DapDNSController] Successfully set DNS servers using direct method";
+
+    return true;
+
+}
+
+
+
+bool DapDNSController::trySetDNSWithNetworkManager(const QStringList &dnsServers)
+
+{
+
+    // Try using NetworkManager via dbus
+
+    QProcess process;
+
+    process.setProcessChannelMode(QProcess::MergedChannels);
+
+    
+
+    // Get active connection
+
+    QStringList args;
+
+    args << "--system" << "call" << "--print-reply" << "--dest=org.freedesktop.NetworkManager" << "/org/freedesktop/NetworkManager" << "org.freedesktop.NetworkManager.GetActiveConnections";
+
+    
+
+    process.start("dbus-send", args);
+
+    if (!process.waitForFinished(5000)) {
+
+        qWarning() << "[DapDNSController] Failed to get active connections via NetworkManager";
+
+        return false;
+
+    }
+
+    
+
+    QString output = QString::fromLocal8Bit(process.readAll());
+
+    
+
+    // Parse the output to get active connection path
+
+    QRegularExpression pathRegex("object path \"([^\"]+)\"");
+
+    QRegularExpressionMatch match = pathRegex.match(output);
+
+    
+
+    if (!match.hasMatch()) {
+
+        qWarning() << "[DapDNSController] No active connection found";
+
+        return false;
+
+    }
+
+    
+
+    QString connectionPath = match.captured(1);
+
+    qInfo() << "[DapDNSController] Found active connection:" << connectionPath;
+
+    
+
+    // Try to set DNS using NetworkManager
+
+    // Note: This is a simplified approach. In a real implementation, you'd need to:
+
+    // 1. Get the connection settings
+
+    // 2. Modify the IPv4/IPv6 settings
+
+    // 3. Update the connection
+
+    
+
+    // For now, we'll use a simpler approach with nmcli
+
+    return trySetDNSWithNmcli(dnsServers);
+
+}
+
+
+
+bool DapDNSController::trySetDNSWithNmcli(const QStringList &dnsServers)
+
+{
+
+    // Try using nmcli to set DNS
+
+    QProcess process;
+
+    process.setProcessChannelMode(QProcess::MergedChannels);
+
+    
+
+    // Get active connection name
+
+    QStringList args;
+
+    args << "-t" << "-f" << "NAME,TYPE,DEVICE" << "connection" << "show" << "--active";
+
+    process.start("nmcli", args);
+
+    
+
+    if (!process.waitForFinished(5000)) {
+
+        qWarning() << "[DapDNSController] Failed to get active connections via nmcli";
+
+        return false;
+
+    }
+
+    
+
+    QString output = QString::fromLocal8Bit(process.readAll());
+
+    QStringList lines = output.split('\n', Qt::SkipEmptyParts);
+
+    
+
+    QString activeConnection;
+
+    for (const QString &line : lines) {
+
+        QStringList parts = line.split(':');
+
+        if (parts.size() >= 3) {
+
+            QString name = parts[0];
+
+            QString type = parts[1];
+
+            QString device = parts[2];
+
+            
+
+            // Skip VPN connections and loopback
+
+            if (type != "vpn" && device != "lo" && !device.isEmpty()) {
+
+                activeConnection = name;
+
+                break;
+
+            }
+
+        }
+
+    }
+
+    
+
+    if (activeConnection.isEmpty()) {
+
+        qWarning() << "[DapDNSController] No suitable active connection found";
+
+        return false;
+
+    }
+
+    
+
+    qInfo() << "[DapDNSController] Using connection:" << activeConnection;
+
+    
+
+    // Set DNS servers
+
+    QStringList dnsArgs;
+
+    dnsArgs << "connection" << "modify" << activeConnection << "ipv4.dns" << dnsServers.join(',');
+
+    process.start("nmcli", dnsArgs);
+
+    
+
+    if (!process.waitForFinished(5000)) {
+
+        qWarning() << "[DapDNSController] Failed to set DNS via nmcli";
+
+        return false;
+
+    }
+
+    
+
+    if (process.exitCode() != 0) {
+
+        qWarning() << "[DapDNSController] nmcli failed with exit code:" << process.exitCode();
+
+        qWarning() << "[DapDNSController] Output:" << QString::fromLocal8Bit(process.readAll());
+
+        return false;
+
+    }
+
+    
+
+    // Restart the connection to apply DNS changes
+
+    QStringList restartArgs;
+
+    restartArgs << "connection" << "up" << activeConnection;
+
+    process.start("nmcli", restartArgs);
+
+    process.waitForFinished(3000);
+
+    
+
+    restartArgs.clear();
+
+    restartArgs << "connection" << "up" << activeConnection;
+
+    process.start("nmcli", restartArgs);
+
+    process.waitForFinished(10000);
+
+    
+
+    if (process.exitCode() != 0) {
+
+        qWarning() << "[DapDNSController] Failed to restart connection";
+
+        return false;
+
+    }
+
+    
+
+    qInfo() << "[DapDNSController] Successfully set DNS via NetworkManager/nmcli";
+
+    return true;
+
+}
+
+
+
+bool DapDNSController::restoreDefaultDNSLinux()
+
+{
+
+    qInfo() << "[DapDNSController] Restoring default DNS on Linux";
+
+    
+
+    if (m_originalDNSServers.isEmpty()) {
+
+        qWarning() << "[DapDNSController] No original DNS servers to restore";
+
+        emit errorOccurred("No original DNS servers to restore");
+
+        return false;
+
+    }
+
+
+
+    // Try resolvectl first (modern systemd-resolved)
+
+    QProcess process;
+
+    process.setProcessChannelMode(QProcess::MergedChannels);
+
+    
+
+    // Get active interface
+
+    QStringList statusArgs;
+
+    statusArgs << "status";
+
+    process.start("resolvectl", statusArgs);
+
+    
+
+    QString activeInterface;
+
+    if (process.waitForFinished(3000)) {
+
+        QString output = QString::fromLocal8Bit(process.readAll());
+
+        QStringList lines = output.split('\n', Qt::SkipEmptyParts);
+
+        
+
+        qDebug() << "[DapDNSController] resolvectl status output for restoration:" << output;
+
+        
+
+        // Parse the output to find interfaces with DNS scope
+
+        QString currentInterface;
+
+        bool hasDNSScope = false;
+
+        
+
+        for (const QString &line : lines) {
+
+            // Check for interface line
+
+            if (line.startsWith("Link")) {
+
+                // Save previous interface if it had DNS scope
+
+                if (!currentInterface.isEmpty() && hasDNSScope) {
+
+                    // Check if this is a VPN interface
+
+                    if (currentInterface.startsWith("tun") || currentInterface.startsWith("tap")) {
+
+                        activeInterface = currentInterface;
+
+                        qInfo() << "[DapDNSController] Found VPN interface for restoration:" << activeInterface;
+
+                        break;
+
+                    }
+
+                }
+
+                
+
+                // Extract interface name from "Link X (interface_name)"
+
+                QRegularExpression linkRegex("Link \\d+ \\(([^)]+)\\)");
+
+                QRegularExpressionMatch match = linkRegex.match(line);
+
+                if (match.hasMatch()) {
+
+                    currentInterface = match.captured(1);
+
+                    hasDNSScope = false; // Reset for new interface
+
+                }
+
+            }
+
+            // Check if current interface has DNS scope
+
+            else if (!currentInterface.isEmpty() && line.contains("Current Scopes: DNS")) {
+
+                hasDNSScope = true;
+
+            }
+
+        }
+
+        
+
+        // Check the last interface if it had DNS scope
+
+        if (!currentInterface.isEmpty() && hasDNSScope) {
+
+            if (currentInterface.startsWith("tun") || currentInterface.startsWith("tap")) {
+
+                activeInterface = currentInterface;
+
+                qInfo() << "[DapDNSController] Found VPN interface for restoration (last):" << activeInterface;
+
+            }
+
+        }
+
+        
+
+        // If no VPN interface found, look for any interface with DNS scope
+
+        if (activeInterface.isEmpty()) {
+
+            currentInterface.clear();
+
+            hasDNSScope = false;
+
+            
+
+            for (const QString &line : lines) {
+
+                if (line.startsWith("Link")) {
+
+                    if (!currentInterface.isEmpty() && hasDNSScope) {
+
+                        activeInterface = currentInterface;
+
+                        qInfo() << "[DapDNSController] Found active interface for restoration:" << activeInterface;
+
+                        break;
+
+                    }
+
+                    
+
+                    QRegularExpression linkRegex("Link \\d+ \\(([^)]+)\\)");
+
+                    QRegularExpressionMatch match = linkRegex.match(line);
+
+                    if (match.hasMatch()) {
+
+                        currentInterface = match.captured(1);
+
+                        hasDNSScope = false;
+
+                    }
+
+                }
+
+                else if (!currentInterface.isEmpty() && line.contains("Current Scopes: DNS")) {
+
+                    hasDNSScope = true;
+
+                }
+
+            }
+
+            
+
+            // Check the last interface
+
+            if (!currentInterface.isEmpty() && hasDNSScope) {
+
+                activeInterface = currentInterface;
+
+                qInfo() << "[DapDNSController] Found active interface for restoration (last):" << activeInterface;
+
+            }
+
+        }
+
+        
+
+        // If still no interface found, look for any interface (even without DNS scope)
+
+        if (activeInterface.isEmpty()) {
+
+            for (const QString &line : lines) {
+
+                if (line.startsWith("Link")) {
+
+                    QRegularExpression linkRegex("Link \\d+ \\(([^)]+)\\)");
+
+                    QRegularExpressionMatch match = linkRegex.match(line);
+
+                    if (match.hasMatch()) {
+
+                        QString interfaceName = match.captured(1);
+
+                        // Skip loopback and virtual interfaces
+
+                        if (interfaceName != "lo" && !interfaceName.startsWith("virbr") && !interfaceName.startsWith("docker")) {
+
+                            activeInterface = interfaceName;
+
+                            qInfo() << "[DapDNSController] Found fallback interface for restoration:" << activeInterface;
+
+                            break;
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+    
+
+    if (!activeInterface.isEmpty()) {
+
+        qInfo() << "[DapDNSController] Restoring DNS for interface:" << activeInterface;
+
+        
+
+        // Restore DNS using resolvectl
+
+        QStringList setArgs;
+
+        setArgs << "dns" << activeInterface;
+
+        setArgs.append(m_originalDNSServers);
+
+        
+
+        qInfo() << "[DapDNSController] Running resolvectl restore command:" << "resolvectl" << setArgs;
+
+        process.start("resolvectl", setArgs);
+
+        if (process.waitForFinished(5000)) {
+
+            if (process.exitCode() == 0) {
+
+                qInfo() << "[DapDNSController] Successfully restored DNS using resolvectl";
+
+                // Verify the restoration
+
+                QStringList verifyArgs;
+
+                verifyArgs << "status";
+
+                process.start("resolvectl", verifyArgs);
+
+                if (process.waitForFinished(3000)) {
+
+                    QString verifyOutput = QString::fromLocal8Bit(process.readAll());
+
+                    qInfo() << "[DapDNSController] DNS restoration verification output:" << verifyOutput;
+
+                }
+
+                return true;
+
+            } else {
+
+                qWarning() << "[DapDNSController] resolvectl failed with exit code:" << process.exitCode();
+
+                qWarning() << "[DapDNSController] Output:" << QString::fromLocal8Bit(process.readAll());
+
+            }
+
+        }
+
+    } else {
+
+        qWarning() << "[DapDNSController] No active interface found for restoration";
+
+    }
+
+
+
+    // Try NetworkManager first
+
+    if (trySetDNSWithNetworkManager(m_originalDNSServers)) {
+
+        qInfo() << "[DapDNSController] Successfully restored DNS using NetworkManager";
+
+        return true;
+
+    }
+
+
+
+    // Fallback to direct resolv.conf modification
+
+    QFile resolvConf("/etc/resolv.conf");
+
+    if (!resolvConf.open(QIODevice::WriteOnly | QIODevice::Text)) {
+
+        qWarning() << "[DapDNSController] Failed to open /etc/resolv.conf for writing";
+
+        emit errorOccurred("Failed to open /etc/resolv.conf for writing");
+
+        return false;
+
+    }
+
+
+
+    QTextStream out(&resolvConf);
+
+    // Restore original DNS servers
+
+    for (const QString &dnsServer : m_originalDNSServers) {
+
+        out << "nameserver " << dnsServer << "\n";
+
+    }
+
+    resolvConf.close();
+
+
+
+    // Set correct permissions
+
+    if (chmod("/etc/resolv.conf", 0644) != 0) {
+
+        qWarning() << "[DapDNSController] Failed to set permissions on /etc/resolv.conf";
+
+        emit errorOccurred("Failed to set permissions on /etc/resolv.conf");
+
+        return false;
+
+    }
+
+
+
+    qInfo() << "[DapDNSController] Successfully restored DNS servers:" << m_originalDNSServers;
+
+    return true;
+
+}
+
+
+
+QStringList DapDNSController::getCurrentDNSServersLinux() const
+
+{
+
+    QStringList dnsServers;
+
+    
+
+    // Try resolvectl first (modern systemd-resolved)
+
+    QProcess process;
+
+    process.setProcessChannelMode(QProcess::MergedChannels);
+
+    
+
+    QStringList args;
+
+    args << "status";
+
+    process.start("resolvectl", args);
+
+    
+
+    if (process.waitForFinished(3000)) {
+
+        QString output = QString::fromLocal8Bit(process.readAll());
+
+        QStringList lines = output.split('\n', Qt::SkipEmptyParts);
+
+        
+
+        // Only log full output in debug builds or when specifically needed
+
+        static bool s_enableVerboseLogging = qEnvironmentVariableIsSet("DAPVPN_DNS_VERBOSE");
+
+        if (s_enableVerboseLogging) {
+
+            qDebug() << "[DapDNSController] resolvectl status output for reading:" << output;
+
+        }
+
+        
+
+        // Parse the output to find interfaces with DNS scope
+
+        QString currentInterface;
+
+        bool hasDNSScope = false;
+
+        bool inInterfaceSection = false;
+
+        
+
+        for (const QString &line : lines) {
+
+            // Check for interface line
+
+            if (line.startsWith("Link")) {
+
+                // Process previous interface if it had DNS scope
+
+                if (!currentInterface.isEmpty() && hasDNSScope && inInterfaceSection) {
+
+                    // Check if this is a VPN interface
+
+                    if (currentInterface.startsWith("tun") || currentInterface.startsWith("tap")) {
+
+                        if (s_enableVerboseLogging) {
+
+                            qDebug() << "[DapDNSController] Found VPN interface:" << currentInterface;
+
+                        }
+
+                        // DNS servers should already be collected
+
+                        break;
+
+                    }
+
+                }
+
+                
+
+                // Extract interface name from "Link X (interface_name)"
+
+                QRegularExpression linkRegex("Link \\d+ \\(([^)]+)\\)");
+
+                QRegularExpressionMatch match = linkRegex.match(line);
+
+                if (match.hasMatch()) {
+
+                    currentInterface = match.captured(1);
+
+                    hasDNSScope = false;
+
+                    inInterfaceSection = true;
+
+                    dnsServers.clear(); // Clear for new interface
+
+                    if (s_enableVerboseLogging) {
+
+                        qDebug() << "[DapDNSController] Found interface:" << currentInterface;
+
+                    }
+
+                }
+
+            }
+
+            // Check if current interface has DNS scope
+
+            else if (!currentInterface.isEmpty() && line.contains("Current Scopes: DNS")) {
+
+                hasDNSScope = true;
+
+                if (s_enableVerboseLogging) {
+
+                    qDebug() << "[DapDNSController] Interface" << currentInterface << "has DNS scope";
+
+                }
+
+            }
+
+            // Look for DNS servers in current interface section
+
+            else if (!currentInterface.isEmpty() && inInterfaceSection && line.contains("DNS Servers:")) {
+
+                // Extract DNS servers from the line
+
+                QString dnsPart = line.split("DNS Servers:").last().trimmed();
+
+                QStringList dnsList = dnsPart.split(' ', Qt::SkipEmptyParts);
+
+                
+
+                if (s_enableVerboseLogging) {
+
+                    qDebug() << "[DapDNSController] Found DNS servers line:" << line;
+
+                    qDebug() << "[DapDNSController] Parsed DNS part:" << dnsPart;
+
+                    qDebug() << "[DapDNSController] DNS list:" << dnsList;
+
+                }
+
+                
+
+                for (const QString &dns : dnsList) {
+
+                    QString cleanDns = dns.trimmed();
+
+                    if (isValidIPAddress(cleanDns)) {
+
+                        dnsServers.append(cleanDns);
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        
+
+        // Process the last interface if it had DNS scope
+
+        if (!currentInterface.isEmpty() && hasDNSScope) {
+
+            if (currentInterface.startsWith("tun") || currentInterface.startsWith("tap")) {
+
+                if (s_enableVerboseLogging) {
+
+                    qDebug() << "[DapDNSController] Found VPN interface (last):" << currentInterface;
+
+                }
+
+                // DNS servers should already be collected
+
+            }
+
+        }
+
+        
+
+        // If no VPN interface found, look for any interface with DNS scope
+
+        if (dnsServers.isEmpty()) {
+
+            currentInterface.clear();
+
+            hasDNSScope = false;
+
+            inInterfaceSection = false;
+
+            
+
+            for (const QString &line : lines) {
+
+                if (line.startsWith("Link")) {
+
+                    if (!currentInterface.isEmpty() && hasDNSScope && inInterfaceSection) {
+
+                        if (s_enableVerboseLogging) {
+
+                            qDebug() << "[DapDNSController] Found active interface:" << currentInterface;
+
+                        }
+
+                        // DNS servers should already be collected
+
+                        break;
+
+                    }
+
+                    
+
+                    QRegularExpression linkRegex("Link \\d+ \\(([^)]+)\\)");
+
+                    QRegularExpressionMatch match = linkRegex.match(line);
+
+                    if (match.hasMatch()) {
+
+                        currentInterface = match.captured(1);
+
+                        hasDNSScope = false;
+
+                        inInterfaceSection = true;
+
+                        dnsServers.clear();
+
+                    }
+
+                }
+
+                else if (!currentInterface.isEmpty() && line.contains("Current Scopes: DNS")) {
+
+                    hasDNSScope = true;
+
+                }
+
+                else if (!currentInterface.isEmpty() && inInterfaceSection && line.contains("DNS Servers:")) {
+
+                    QString dnsPart = line.split("DNS Servers:").last().trimmed();
+
+                    QStringList dnsList = dnsPart.split(' ', Qt::SkipEmptyParts);
+
+                    
+
+                    for (const QString &dns : dnsList) {
+
+                        QString cleanDns = dns.trimmed();
+
+                        if (isValidIPAddress(cleanDns)) {
+
+                            dnsServers.append(cleanDns);
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            
+
+            // Process the last interface
+
+            if (!currentInterface.isEmpty() && hasDNSScope) {
+
+                if (s_enableVerboseLogging) {
+
+                    qDebug() << "[DapDNSController] Found active interface (last):" << currentInterface;
+
+                }
+
+                // DNS servers should already be collected
+
+            }
+
+        }
+
+    }
+
+    
+
+    // If resolvectl failed, try NetworkManager
+
+    if (dnsServers.isEmpty()) {
+
+        process.setProcessChannelMode(QProcess::MergedChannels);
+
+        
+
+        QStringList nmArgs;
+
+        nmArgs << "-t" << "-f" << "NAME,TYPE,DEVICE" << "connection" << "show" << "--active";
+
+        process.start("nmcli", nmArgs);
+
+        
+
+        if (process.waitForFinished(3000)) {
+
+            QString output = QString::fromLocal8Bit(process.readAll());
+
+            QStringList lines = output.split('\n', Qt::SkipEmptyParts);
+
+            
+
+            for (const QString &line : lines) {
+
+                QStringList parts = line.split(':');
+
+                if (parts.size() >= 3) {
+
+                    QString name = parts[0];
+
+                    QString type = parts[1];
+
+                    QString device = parts[2];
+
+                    
+
+                    // Skip VPN connections and loopback
+
+                    if (type != "vpn" && device != "lo" && !device.isEmpty()) {
+
+                        // Get DNS for this connection
+
+                        QStringList dnsArgs;
+
+                        dnsArgs << "-t" << "-f" << "IP4.DNS" << "connection" << "show" << name;
+
+                        QProcess dnsProcess;
+
+                        dnsProcess.setProcessChannelMode(QProcess::MergedChannels);
+
+                        dnsProcess.start("nmcli", dnsArgs);
+
+                        
+
+                        if (dnsProcess.waitForFinished(3000)) {
+
+                            QString dnsOutput = QString::fromLocal8Bit(dnsProcess.readAll());
+
+                            QRegularExpression dnsRegex("IP4\\.DNS:([0-9.,]+)");
+
+                            QRegularExpressionMatch match = dnsRegex.match(dnsOutput);
+
+                            
+
+                            if (match.hasMatch()) {
+
+                                QString dnsString = match.captured(1);
+
+                                QStringList dnsList = dnsString.split(',', Qt::SkipEmptyParts);
+
+                                for (const QString &dns : dnsList) {
+
+                                    if (isValidIPAddress(dns.trimmed())) {
+
+                                        dnsServers.append(dns.trimmed());
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                        break;
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+    
+
+    // Fallback to resolv.conf (legacy)
+
+    if (dnsServers.isEmpty()) {
+
+        QFile resolvConf("/etc/resolv.conf");
+
+    if (resolvConf.open(QIODevice::ReadOnly | QIODevice::Text)) {
+
+        QTextStream in(&resolvConf);
+
+        while (!in.atEnd()) {
+
+            QString line = in.readLine();
+
+            if (line.startsWith("nameserver")) {
+
+                QString dns = line.split(" ").last();
+
+                if (isValidIPAddress(dns)) {
+
+                    dnsServers.append(dns);
+
+                }
+
+            }
+
+        }
+
+        resolvConf.close();
+
+        }
+
+    }
+
+
+
+    if (dnsServers.isEmpty()) {
+
+        qWarning() << "[DapDNSController] No DNS servers found";
+
+    } else {
+
+        // Only log current DNS servers when verbose logging is enabled or when DNS actually changes
+
+        static bool s_enableVerboseLogging = qEnvironmentVariableIsSet("DAPVPN_DNS_VERBOSE");
+
+        static QStringList s_lastDNSServers;
+
+        if (s_enableVerboseLogging || s_lastDNSServers != dnsServers) {
+
+            qDebug() << "[DapDNSController] Current DNS servers:" << dnsServers;
+
+            s_lastDNSServers = dnsServers;
+
+        }
+
+    }
+
+
+
+    return dnsServers;
+
+}
+
+#endif
+
+
+
+#ifdef Q_OS_MACOS
+
+bool DapDNSController::setDNSServersMacOS(const QStringList &dnsServers)
+
+{
+
+    qInfo() << "[DapDNSController] Setting DNS servers on macOS:" << dnsServers;
+
+    
+
+    if (!m_store) {
+
+        m_store = SCDynamicStoreCreate(nullptr, CFSTR("DapDNSController"), nullptr, nullptr);
+
+        if (!m_store) {
+
+            qWarning() << "[DapDNSController] Failed to create SCDynamicStore";
+
+            return false;
+
+        }
+
+    }
+
+
+
+    // Get primary network service ID
+
+    QString primaryServiceID = getPrimaryNetworkServiceID();
+
+    if (primaryServiceID.isEmpty()) {
+
+        qWarning() << "[DapDNSController] Failed to get primary network service ID";
+
+        return false;
+
+    }
+
+    
+
+    qInfo() << "[DapDNSController] Using primary service ID:" << primaryServiceID;
+
+    
+
+    // Set DNS for the primary service
+
+    bool result = setDNSForService(primaryServiceID, dnsServers);
+
+    
+
+    if (result) {
+
+        qInfo() << "[DapDNSController] Successfully set DNS servers for macOS";
+
+        
+
+        // Setup monitoring if not already active
+
+        if (!m_scMonitoringActive) {
+
+            setupSCDynamicStoreMonitoring();
+
+        }
+
+    } else {
+
+        qWarning() << "[DapDNSController] Failed to set DNS servers for macOS";
+
+    }
+
+    
+
+    return result;
+
+}
+
+
+
+bool DapDNSController::restoreDefaultDNSMacOS()
+
+{
+
+    qInfo() << "[DapDNSController] Restoring default DNS on macOS";
+
+    
+
+    if (m_originalDNSServers.isEmpty()) {
+
+        qWarning() << "[DapDNSController] No original DNS servers to restore";
+
+        return false;
+
+    }
+
+    
+
+    return setDNSServersMacOS(m_originalDNSServers);
+
+}
+
+
+
+QStringList DapDNSController::getCurrentDNSServersMacOS() const
+
+{
+
+    // First try to get DNS using networksetup command (more reliable for detecting manual changes)
+
+    QStringList networksetupDNS = getCurrentDNSServersViaNetworksetup();
+
+    if (!networksetupDNS.isEmpty()) {
+
+        return networksetupDNS;
+
+    }
+
+    
+
+    // Fallback to SCDynamicStore method
+
+    QString primaryServiceID = getPrimaryNetworkServiceID();
+
+    if (primaryServiceID.isEmpty()) {
+
+        return {};
+
+    }
+
+    
+
+    // Get DNS for primary service using existing method
+
+    QStringList dnsServers = getDNSForService(primaryServiceID);
+
+    
+
+    return dnsServers;
+
+}
+
+
+
+QStringList DapDNSController::getCurrentDNSServersViaNetworksetup() const
+
+{
+
+    QProcess process;
+
+    process.setProcessChannelMode(QProcess::MergedChannels);
+
+    
+
+    // Try Wi-Fi first
+
+    process.start("networksetup", QStringList() << "-getdnsservers" << "Wi-Fi");
+
+    if (process.waitForFinished(3000)) {
+
+        QString output = QString::fromLocal8Bit(process.readAll()).trimmed();
+
+        
+
+        if (!output.isEmpty() && !output.contains("There aren't any DNS Servers")) {
+
+            QStringList dnsServers = output.split('\n', Qt::SkipEmptyParts);
+
+            // Remove any empty entries and trim whitespace
+
+            QStringList cleanedServers;
+
+            for (const QString &server : dnsServers) {
+
+                QString trimmed = server.trimmed();
+
+                if (!trimmed.isEmpty() && isValidIPAddress(trimmed)) {
+
+                    cleanedServers.append(trimmed);
+
+                }
+
+            }
+
+            if (!cleanedServers.isEmpty()) {
+
+                return cleanedServers;
+
+            }
+
+        }
+
+    }
+
+    
+
+    // Try Ethernet as fallback
+
+    process.start("networksetup", QStringList() << "-getdnsservers" << "Ethernet");
+
+    if (process.waitForFinished(3000)) {
+
+        QString output = QString::fromLocal8Bit(process.readAll()).trimmed();
+
+        
+
+        if (!output.isEmpty() && !output.contains("There aren't any DNS Servers")) {
+
+            QStringList dnsServers = output.split('\n', Qt::SkipEmptyParts);
+
+            QStringList cleanedServers;
+
+            for (const QString &server : dnsServers) {
+
+                QString trimmed = server.trimmed();
+
+                if (!trimmed.isEmpty() && isValidIPAddress(trimmed)) {
+
+                    cleanedServers.append(trimmed);
+
+                }
+
+            }
+
+            if (!cleanedServers.isEmpty()) {
+
+                return cleanedServers;
+
+            }
+
+        }
+
+    }
+
+    
+
+    return {};
+
+}
+
+
+
+QString DapDNSController::getPrimaryNetworkServiceID() const
+
+{
+
+    if (!m_store) {
+
+        return QString();
+
+    }
+
+    
+
+    // Get the primary service ID from the global IPv4 configuration
+
+    CFStringRef globalIPv4Key = SCDynamicStoreKeyCreateNetworkGlobalEntity(nullptr, 
+
+                                                                          kSCDynamicStoreDomainState, 
+
+                                                                          kSCEntNetIPv4);
+
+    if (!globalIPv4Key) {
+
+        return QString();
+
+    }
+
+    
+
+    CFDictionaryRef globalDict = (CFDictionaryRef)SCDynamicStoreCopyValue(m_store, globalIPv4Key);
+
+    CFRelease(globalIPv4Key);
+
+    
+
+    if (!globalDict) {
+
+        return QString();
+
+    }
+
+    
+
+    CFStringRef primaryServiceRef = (CFStringRef)CFDictionaryGetValue(globalDict, CFSTR("PrimaryService"));
+
+    QString primaryServiceID;
+
+    
+
+    if (primaryServiceRef) {
+
+        char buffer[256];
+
+        if (CFStringGetCString(primaryServiceRef, buffer, sizeof(buffer), kCFStringEncodingUTF8)) {
+
+            primaryServiceID = QString(buffer);
+
+        }
+
+    }
+
+    
+
+    CFRelease(globalDict);
+
+    return primaryServiceID;
+
+}
+
+
+
+bool DapDNSController::setDNSForService(const QString &serviceID, const QStringList &dnsServers)
+
+{
+
+    qDebug() << "[DapDNSController] Setting DNS for service" << serviceID << ":" << dnsServers;
+
+    
+
+    // Use networksetup command instead of SCDynamicStore for more reliable DNS setting
+
+    QProcess process;
+
+    process.setProcessChannelMode(QProcess::MergedChannels);
+
+    
+
+    // Try Wi-Fi first (most common)
+
+    QStringList args;
+
+    args << "-setdnsservers" << "Wi-Fi";
+
+    args.append(dnsServers);
+
+    
+
+    qDebug() << "[DapDNSController] Executing: sudo networksetup" << args;
+
+    
+
+    process.start("sudo", QStringList() << "networksetup" << args);
+
+    if (process.waitForFinished(10000)) {
+
+        QString output = QString::fromLocal8Bit(process.readAll()).trimmed();
+
+        int exitCode = process.exitCode();
+
+        
+
+        qDebug() << "[DapDNSController] networksetup Wi-Fi exit code:" << exitCode;
+
+        if (!output.isEmpty()) {
+
+            qDebug() << "[DapDNSController] networksetup Wi-Fi output:" << output;
+
+        }
+
+        
+
+        if (exitCode == 0) {
+
+            qInfo() << "[DapDNSController] Successfully set DNS for service" << serviceID << ":" << dnsServers;
+
+            return true;
+
+        }
+
+    }
+
+    
+
+    // Try Ethernet as fallback
+
+    args.clear();
+
+    args << "-setdnsservers" << "Ethernet";
+
+    args.append(dnsServers);
+
+    
+
+    qDebug() << "[DapDNSController] Trying Ethernet: sudo networksetup" << args;
+
+    
+
+    process.start("sudo", QStringList() << "networksetup" << args);
+
+    if (process.waitForFinished(10000)) {
+
+        QString output = QString::fromLocal8Bit(process.readAll()).trimmed();
+
+        int exitCode = process.exitCode();
+
+        
+
+        qDebug() << "[DapDNSController] networksetup Ethernet exit code:" << exitCode;
+
+        if (!output.isEmpty()) {
+
+            qDebug() << "[DapDNSController] networksetup Ethernet output:" << output;
+
+        }
+
+        
+
+        if (exitCode == 0) {
+
+            qInfo() << "[DapDNSController] Successfully set DNS for service" << serviceID << ":" << dnsServers;
+
+            return true;
+
+        }
+
+    }
+
+    
+
+    qWarning() << "[DapDNSController] Failed to set DNS for service" << serviceID;
+
+    return false;
+
+}
+
+
+
+QStringList DapDNSController::getDNSForService(const QString &serviceID) const
+
+{
+
+    QStringList dnsServers;
+
+    
+
+    if (!m_store || serviceID.isEmpty()) {
+
+        return dnsServers;
+
+    }
+
+    
+
+    // Create the DNS configuration key for this service
+
+    CFStringRef serviceIDRef = CFStringCreateWithCString(nullptr, serviceID.toStdString().c_str(), kCFStringEncodingUTF8);
+
+    CFStringRef dnsKey = SCDynamicStoreKeyCreateNetworkServiceEntity(nullptr, 
+
+                                                                    kSCDynamicStoreDomainState, 
+
+                                                                    serviceIDRef, 
+
+                                                                    kSCEntNetDNS);
+
+    CFRelease(serviceIDRef);
+
+    
+
+    if (!dnsKey) {
+
+        return dnsServers;
+
+    }
+
+    
+
+    CFDictionaryRef dnsDict = (CFDictionaryRef)SCDynamicStoreCopyValue(m_store, dnsKey);
+
+    CFRelease(dnsKey);
+
+    
+
+    if (dnsDict) {
+
+        CFArrayRef serverArray = (CFArrayRef)CFDictionaryGetValue(dnsDict, kSCPropNetDNSServerAddresses);
+
+        if (serverArray) {
+
+            CFIndex count = CFArrayGetCount(serverArray);
+
+            for (CFIndex i = 0; i < count; i++) {
+
+                CFStringRef dnsString = (CFStringRef)CFArrayGetValueAtIndex(serverArray, i);
+
+                char buffer[256];
+
+                if (CFStringGetCString(dnsString, buffer, sizeof(buffer), kCFStringEncodingUTF8)) {
+
+                    dnsServers.append(QString(buffer));
+
+                }
+
+            }
+
+        }
+
+        CFRelease(dnsDict);
+
+    }
+
+    
+
+    return dnsServers;
+
+}
+
+
+
+bool DapDNSController::setupSCDynamicStoreMonitoring()
+
+{
+
+    if (m_scMonitoringActive) {
+
+        return false;
+
+    }
+
+    
+
+    // Create SCDynamicStore context
+
+    SCDynamicStoreContext context = {0, this, nullptr, nullptr, nullptr};
+
+    
+
+    // Create SCDynamicStore
+
+    m_store = SCDynamicStoreCreate(nullptr, CFSTR("DapDNSController"), dnsChangeCallback, &context);
+
+    if (!m_store) {
+
+        qWarning() << "[DapDNSController] Failed to create SCDynamicStore";
+
+        return false;
+
+    }
+
+    
+
+    // Set up monitoring keys
+
+    // CFStringRef key = SCDynamicStoreKeyCreateNetworkGlobalEntity(nullptr, kSCDynamicStoreDomainState, kSCEntNetDNS);
+
+    // Create keys to monitor DNS changes
+
+    CFMutableArrayRef keys = CFArrayCreateMutable(nullptr, 0, &kCFTypeArrayCallBacks);
+
+    CFMutableArrayRef patterns = CFArrayCreateMutable(nullptr, 0, &kCFTypeArrayCallBacks);
+
+    
+
+    // Monitor all DNS configuration changes
+
+    CFStringRef dnsPattern = SCDynamicStoreKeyCreateNetworkServiceEntity(nullptr, 
+
+                                                                        kSCDynamicStoreDomainState, 
+
+                                                                        kSCCompAnyRegex, 
+
+                                                                        kSCEntNetDNS);
+
+    if (dnsPattern) {
+
+        CFArrayAppendValue(patterns, dnsPattern);
+
+        CFRelease(dnsPattern);
+
+    }
+
+    
+
+    // Monitor global IPv4 changes (primary service changes)
+
+    CFStringRef globalKey = SCDynamicStoreKeyCreateNetworkGlobalEntity(nullptr, 
+
+                                                                      kSCDynamicStoreDomainState, 
+
+                                                                      kSCEntNetIPv4);
+
+    if (globalKey) {
+
+        CFArrayAppendValue(keys, globalKey);
+
+        CFRelease(globalKey);
+
+    }
+
+    
+
+    // Set notification keys
+
+    bool success = SCDynamicStoreSetNotificationKeys(m_store, keys, patterns);
+
+    
+
+    CFRelease(keys);
+
+    CFRelease(patterns);
+
+    
+
+    if (!success) {
+
+        qWarning() << "[DapDNSController] Failed to set notification keys";
+
+        return false;
+
+    }
+
+    
+
+    // Create run loop source
+
+    m_runLoopSource = SCDynamicStoreCreateRunLoopSource(nullptr, m_store, 0);
+
+    if (!m_runLoopSource) {
+
+        qWarning() << "[DapDNSController] Failed to create run loop source";
+
+        return false;
+
+    }
+
+    
+
+    // Add to current run loop
+
+    CFRunLoopAddSource(CFRunLoopGetCurrent(), m_runLoopSource, kCFRunLoopDefaultMode);
+
+    
+
+    m_scMonitoringActive = true;
+
+    qInfo() << "[DapDNSController] SCDynamicStore DNS monitoring started";
+
+    
+
+    return true;
+
+}
+
+
+
+void DapDNSController::teardownSCDynamicStoreMonitoring()
+
+{
+
+    if (!m_scMonitoringActive) {
+
+        return;
+
+    }
+
+    
+
+    qInfo() << "[DapDNSController] Tearing down SCDynamicStore DNS monitoring";
+
+    
+
+    if (m_runLoopSource) {
+
+        CFRunLoopRemoveSource(CFRunLoopGetCurrent(), m_runLoopSource, kCFRunLoopDefaultMode);
+
+        CFRelease(m_runLoopSource);
+
+        m_runLoopSource = nullptr;
+
+    }
+
+    
+
+    m_scMonitoringActive = false;
+
+}
+
+
+
+void DapDNSController::dnsChangeCallback(SCDynamicStoreRef store, CFArrayRef changedKeys, void *info)
+
+{
+
+    (void)store; // Suppress unused parameter warning
+
+    DapDNSController *controller = static_cast<DapDNSController*>(info);
+
+    if (!controller) {
+
+        return;
+
+    }
+
+    
+
+    qInfo() << "[DapDNSController] DNS change detected via SCDynamicStore callback";
+
+    
+
+    // Log changed keys for debugging
+
+    CFIndex count = CFArrayGetCount(changedKeys);
+
+    for (CFIndex i = 0; i < count; i++) {
+
+        CFStringRef key = (CFStringRef)CFArrayGetValueAtIndex(changedKeys, i);
+
+        char buffer[512];
+
+        if (CFStringGetCString(key, buffer, sizeof(buffer), kCFStringEncodingUTF8)) {
+
+            qDebug() << "[DapDNSController] Changed key:" << buffer;
+
+        }
+
+    }
+
+    
+
+    // Trigger DNS integrity check
+
+    QMetaObject::invokeMethod(controller, "checkDNSIntegrity", Qt::QueuedConnection);
+
+}
+
+#endif
+
+
+
+#ifdef Q_OS_ANDROID
+
+bool DapDNSController::setDNSServersAndroid(const QStringList &dnsServers)
+
+{
+
+    if (!m_activity.isValid()) {
+
+        return false;
+
+    }
+
+
+
+    // Create Java string array
+
+    QAndroidJniEnvironment env;
+
+    jobjectArray dnsArray = env->NewObjectArray(dnsServers.size(), env->FindClass("java/lang/String"), nullptr);
+
+    
+
+    for (int i = 0; i < dnsServers.size(); i++) {
+
+        jstring dnsString = env->NewStringUTF(dnsServers[i].toStdString().c_str());
+
+        env->SetObjectArrayElement(dnsArray, i, dnsString);
+
+        env->DeleteLocalRef(dnsString);
+
+    }
+
+
+
+    // Call Java method to set DNS
+
+    bool result = m_activity.callMethod<jboolean>("setDNSServers", "([Ljava/lang/String;)Z", dnsArray);
+
+    
+
+    env->DeleteLocalRef(dnsArray);
+
+    
+
+    return result;
+
+}
+
+
+
+bool DapDNSController::restoreDefaultDNSAndroid()
+
+{
+
+    return setDNSServersAndroid(m_originalDNSServers);
+
+}
+
+
+
+QStringList DapDNSController::getCurrentDNSServersAndroid() const
+
+{
+
+    QStringList dnsServers;
+
+    
+
+    if (!m_activity.isValid()) {
+
+        return dnsServers;
+
+    }
+
+
+
+    // Call Java method to get DNS servers
+
+    QAndroidJniObject dnsArray = m_activity.callObjectMethod("getDNSServers", "()[Ljava/lang/String;");
+
+    
+
+    if (dnsArray.isValid()) {
+
+        QAndroidJniEnvironment env;
+
+        jobjectArray array = dnsArray.object<jobjectArray>();
+
+        jsize size = env->GetArrayLength(array);
+
+        
+
+        for (jsize i = 0; i < size; i++) {
+
+            jstring dnsString = (jstring)env->GetObjectArrayElement(array, i);
+
+            const char* dnsChars = env->GetStringUTFChars(dnsString, nullptr);
+
+            dnsServers.append(QString(dnsChars));
+
+            env->ReleaseStringUTFChars(dnsString, dnsChars);
+
+            env->DeleteLocalRef(dnsString);
+
+        }
+
+    }
+
+    
+
+    return dnsServers;
+
+}
+
+#endif
+
+
+
+#ifdef Q_OS_IOS
+
+bool DapDNSController::setDNSServersIOS(const QStringList &dnsServers)
+
+{
+
+    // Create DNS servers array
+
+    NSMutableArray *dnsArray = [NSMutableArray arrayWithCapacity:dnsServers.size()];
+
+    for (const QString &dnsServer : dnsServers) {
+
+        [dnsArray addObject:dnsServer.toNSString()];
+
+    }
+
+
+
+    // Create DNS configuration
+
+    NEDNSSettings *dnsSettings = [[NEDNSSettings alloc] init];
+
+    dnsSettings.matchDomains = @[@""];
+
+    dnsSettings.matchDomainRules = @[];
+
+    dnsSettings.servers = dnsArray;
+
+
+
+    // Set DNS settings
+
+    NSError *error = nil;
+
+    bool result = [dnsSettings applyWithError:&error];
+
+    
+
+    return result;
+
+}
+
+
+
+bool DapDNSController::restoreDefaultDNSIOS()
+
+{
+
+    return setDNSServersIOS(m_originalDNSServers);
+
+}
+
+
+
+QStringList DapDNSController::getCurrentDNSServersIOS() const
+
+{
+
+    QStringList dnsServers;
+
+    
+
+    // Get current DNS settings
+
+    NEDNSSettings *dnsSettings = [NEDNSSettings currentSettings];
+
+    if (dnsSettings) {
+
+        for (NSString *server in dnsSettings.servers) {
+
+            dnsServers.append(QString::fromNSString(server));
+
+        }
+
+    }
+
+    
+
+    return dnsServers;
+
+}
+
+#endif 
+
+
+
+/**
+
+ * Get list of DNS server indexes for the specified network interface
+
+ * Expected netsh output format (examples):
+
+ * English:
+
+ *   Configuration for interface "Ethernet"
+
+ *   DNS servers configured through DHCP:  8.8.8.8 (1)
+
+ *                                        8.8.4.4 (2) 
+
+ *   Statically Configured DNS Servers:    1.1.1.1 (1)
+
+ *                                        1.0.0.1 (2)
+
+ * 
+
+ * @param iface Network interface name
+
+ * @return List of DNS server indexes found in the output
+
+ * @note Returns empty list if no DNS servers found or command failed
+
+ */
+
+QStringList DapDNSController::getCurrentDNSIndexes(const QString &iface)
+
+{
+
+    QStringList indexes;
+
+    QString output;
+
+    
+
+    // Ensure interface name is properly escaped for netsh commands
+
+    QString safeIface = escapeInterfaceName(iface);
+
+    
+
+    QStringList args = {"interface", "ip", "show", "dns",
+
+                       QString("name=%1").arg(safeIface)};
+
+    
+
+    qDebug() << "getCurrentDNSIndexes: Executing command: netsh" << args;
+
+    
+
+    if (!runNetshCommand("netsh", args, &output)) {
+
+        qWarning() << "getCurrentDNSIndexes: Failed to get DNS configuration for interface" << iface;
+
+        return indexes;
+
+    }
+
+
+
+    if (output.isEmpty()) {
+
+        qDebug() << "getCurrentDNSIndexes: Empty output from netsh command";
+
+        return indexes;
+
+    }
+
+
+
+    // Modern regex pattern that matches both IP and index in one go
+
+    // Matches: IP address followed by index in parentheses, with optional whitespace
+
+    // Example: "8.8.8.8 (1)" or "8.8.8.8(1)" or "   8.8.8.8 (1)"
+
+    static const QRegularExpression dnsPattern(
+
+        R"((\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s*\((\d+)\))",
+
+        QRegularExpression::MultilineOption
+
+    );
+
+
+
+    QRegularExpressionMatchIterator matchIterator = dnsPattern.globalMatch(output);
+
+    while (matchIterator.hasNext()) {
+
+        QRegularExpressionMatch match = matchIterator.next();
+
+        QString ip = match.captured(1);
+
+        QString index = match.captured(2);
+
+        
+
+        // Validate IP address format
+
+        if (QHostAddress(ip).isNull()) {
+
+            qWarning() << "getCurrentDNSIndexes: Invalid IP address found:" << ip;
+
+            continue;
+
+        }
+
+
+
+        if (!indexes.contains(index)) {
+
+            indexes.append(index);
+
+            qDebug() << "getCurrentDNSIndexes: Found DNS server" << ip << "with index" << index;
+
+        }
+
+    }
+
+
+
+    if (indexes.isEmpty()) {
+
+        qDebug() << "getCurrentDNSIndexes: No DNS servers found in output:" << output;
+
+    }
+
+
+
+    return indexes;
+
+}
+
+
+
+/**
+
+ * Reset DNS settings for the specified network interface
+
+ * 
+
+ * @param iface Network interface name
+
+ * @param useDHCP If true, sets DNS to DHCP mode; if false, removes all DNS servers
+
+ * @return true if operation succeeded, false otherwise
+
+ */
+
+bool DapDNSController::resetInterfaceDNS(const QString &iface, bool useDHCP)
+
+{
+
+    // Validate input
+
+    if (iface.isEmpty()) {
+
+        qWarning() << "resetInterfaceDNS: Empty interface name provided";
+
+        emit errorOccurred("Empty interface name provided");
+
+        return false;
+
+    }
+
+
+
+    // Prepare command
+
+    QString cmd = QString("netsh interface ip set dns name=\"%1\" source=%2")
+
+        .arg(iface)
+
+        .arg(useDHCP ? "dhcp" : "none");
+
+
+
+    qDebug() << "resetInterfaceDNS: Executing command:" << cmd;
+
+
+
+    // Execute command and capture output
+
+    QString output;
+
+    if (!runNetshCommand(cmd, QStringList(), &output)) {
+
+        qWarning() << "resetInterfaceDNS: Command failed for interface" << iface;
+
+        qWarning() << "resetInterfaceDNS: Command output:" << output;
+
+        
+
+        QString errorMsg = QString("Failed to reset DNS settings for interface %1: %2")
+
+            .arg(iface)
+
+            .arg(output.trimmed());
+
+        emit errorOccurred(errorMsg);
+
+        return false;
+
+    }
+
+
+
+    qDebug() << "resetInterfaceDNS: Successfully reset DNS settings for interface" 
+
+             << iface << "to" << (useDHCP ? "DHCP" : "none");
+
+    return true;
+
+}
+
+
+
+#ifndef Q_OS_WINDOWS
+
+// Stub implementations for non-Windows platforms
+
+bool DapDNSController::setDNSServersForInterface(ulong ifIndex, const QStringList &dnsServers)
+
+{
+
+    Q_UNUSED(ifIndex);
+
+    Q_UNUSED(dnsServers);
+
+    qWarning() << "setDNSServersForInterface: Not implemented on this platform";
+
+    emit errorOccurred("Interface-specific DNS management not implemented on this platform");
+
+    return false;
+
+}
+
+
+
+bool DapDNSController::setDNSServerForInterface(ulong ifIndex, const QString &dnsServer)
+
+{
+
+    Q_UNUSED(ifIndex);
+
+    Q_UNUSED(dnsServer);
+
+    qWarning() << "setDNSServerForInterface: Not implemented on this platform";
+
+    emit errorOccurred("Interface-specific DNS management not implemented on this platform");
+
+    return false;
+
+}
+
+
+
+bool DapDNSController::restoreDNSForInterface(ulong ifIndex)
+
+{
+
+    Q_UNUSED(ifIndex);
+
+    qWarning() << "restoreDNSForInterface: Not implemented on this platform";
+
+    emit errorOccurred("Interface-specific DNS management not implemented on this platform");
+
+    return false;
+
+}
+
+
+
+QStringList DapDNSController::getCurrentDNSServersForInterface(ulong ifIndex)
+
+{
+
+    Q_UNUSED(ifIndex);
+
+    qWarning() << "getCurrentDNSServersForInterface: Not implemented on this platform";
+
+    return QStringList();
+
+}
+
+
+
+#endif
+
+
+
+// Emergency DNS restoration methods
+
+bool DapDNSController::hasVPNDNSMarkers() const
+
+{
+
+    QMutexLocker locker(&m_mutex);
+
+    
+
+    // Check if we have stored original DNS settings (indicates we modified DNS)
+
+    if (!m_originalDNSServers.isEmpty()) {
+
+        return true;
+
+    }
+
+    
+
+    // Check for VPN DNS markers in system
+
+#ifdef Q_OS_WINDOWS
+
+    // Check Windows registry for our DNS markers
+
+    QStringList currentDNS = getCurrentDNSServersWindows();
+
+    if (!currentDNS.isEmpty()) {
+
+        // Look for VPN server IPs in current DNS settings
+
+        for (const QString &dns : currentDNS) {
+
+            if (dns.contains("10.") || dns.contains("172.") || dns.contains("192.168.")) {
+
+                // Likely VPN DNS server
+
+                return true;
+
+            }
+
+        }
+
+    }
+
+#endif
+
+
+
+#ifdef DAP_OS_LINUX
+
+    // Check Linux resolv.conf for VPN DNS markers
+
+    QStringList currentDNS = getCurrentDNSServersLinux();
+
+    if (!currentDNS.isEmpty()) {
+
+        for (const QString &dns : currentDNS) {
+
+            if (dns.contains("10.") || dns.contains("172.") || dns.contains("192.168.")) {
+
+                return true;
+
+            }
+
+        }
+
+    }
+
+#endif
+
+
+
+#ifdef Q_OS_MACOS
+
+    // Check macOS SystemConfiguration for VPN DNS markers
+
+    QStringList currentDNS = getCurrentDNSServersMacOS();
+
+    if (!currentDNS.isEmpty()) {
+
+        for (const QString &dns : currentDNS) {
+
+            if (dns.contains("10.") || dns.contains("172.") || dns.contains("192.168.")) {
+
+                return true;
+
+            }
+
+        }
+
+    }
+
+#endif
+
+
+
+    return false;
+
+}
+
+
+
+bool DapDNSController::emergencyDNSRestoration()
+
+{
+
+    qCritical() << "[DapDNSController] Emergency DNS restoration initiated";
+
+    
+
+    bool success = false;
+
+    
+
+    // Try multiple restoration methods
+
+#ifdef Q_OS_WINDOWS
+
+    // Method 1: Try registry restoration
+
+    if (restoreDefaultDNSWindows()) {
+
+        success = true;
+
+    } else {
+
+        // Method 2: Try netsh commands
+
+        QProcess process;
+
+        QStringList args;
+
+        args << "interface" << "ip" << "set" << "dns" << "name=\"*\"" << "dhcp";
+
+        process.start("netsh", args);
+
+        if (process.waitForFinished(5000) && process.exitCode() == 0) {
+
+            success = true;
+
+        } else {
+
+            // Method 3: Try direct registry restoration
+
+            qWarning() << "[DapDNSController] Emergency DNS restoration: netsh failed, trying direct registry";
+
+        }
+
+    }
+
+#endif
+
+
+
+#ifdef DAP_OS_LINUX
+
+    // Method 1: Try NetworkManager
+
+    if (restoreDefaultDNSLinux()) {
+
+        success = true;
+
+    } else {
+
+        // Method 2: Try direct resolv.conf restoration
+
+        QProcess process;
+
+        process.start("systemctl", QStringList() << "restart" << "systemd-resolved");
+
+        if (process.waitForFinished(5000) && process.exitCode() == 0) {
+
+            success = true;
+
+        }
+
+    }
+
+#endif
+
+
+
+#ifdef Q_OS_MACOS
+
+    // Method 1: Try SystemConfiguration
+
+    if (restoreDefaultDNSMacOS()) {
+
+        success = true;
+
+    } else {
+
+        // Method 2: Try networksetup commands
+
+        QProcess process;
+
+        process.start("networksetup", QStringList() << "-setdnsservers" << "Wi-Fi" << "empty");
+
+        if (process.waitForFinished(5000) && process.exitCode() == 0) {
+
+            success = true;
+
+        }
+
+    }
+
+#endif
+
+
+
+    if (success) {
+
+        qInfo() << "[DapDNSController] Emergency DNS restoration completed successfully";
+
+        emit dnsRestored();
+
+    } else {
+
+        qCritical() << "[DapDNSController] Emergency DNS restoration failed!";
+
+        emit errorOccurred("Emergency DNS restoration failed");
+
+    }
+
+    
+
+    return success;
+
+}
+
+
+
+bool DapDNSController::detectOrphanedVPNDNS() const
+
+{
+
+    // Check if current DNS settings look like they were set by VPN
+
+    QStringList currentDNS = getCurrentDNSServers();
+
+    
+
+    for (const QString &dns : currentDNS) {
+
+        // Check for private IP ranges commonly used by VPNs
+
+        if (dns.startsWith("10.") || dns.startsWith("172.") || dns.startsWith("192.168.")) {
+
+            qWarning() << "[DapDNSController] Detected potential orphaned VPN DNS:" << dns;
+
+            return true;
+
+        }
+
+    }
+
+    
+
+    return false;
+
+}
+
+
+
+// DNS Monitoring System Implementation
+
+
+
+void DapDNSController::startDNSMonitoring(int intervalMs)
+
+{
+
+    QMutexLocker locker(&m_mutex);
+
+    
+
+    if (m_dnsMonitoringActive) {
+
+        qDebug() << "[DapDNSController] DNS monitoring is already active";
+
+        return;
+
+    }
+
+    
+
+    m_monitoringInterval = intervalMs;
+
+    m_consecutiveFailures = 0;
+
+    m_dnsMonitoringActive = true;
+
+    
+
+    qInfo() << "[DapDNSController] Starting DNS monitoring with interval:" << intervalMs << "ms";
+
+    
+
+#ifdef Q_OS_MACOS
+
+    // On macOS, use SCDynamicStore for immediate notifications
+
+    // and QTimer as backup
+
+    if (!m_scMonitoringActive) {
+
+        setupSCDynamicStoreMonitoring();
+
+    }
+
+    
+
+    // Start timer with the same interval (not doubled) for more frequent checks
+
+    m_dnsMonitorTimer->start(intervalMs); // Use original interval, not doubled
+
+    qInfo() << "[DapDNSController] Timer started with interval:" << intervalMs << "ms";
+
+#else
+
+    // On other platforms, use QTimer polling
+
+    m_dnsMonitorTimer->start(intervalMs);
+
+#endif
+
+    
+
+    emit dnsMonitoringStarted();
+
+}
+
+
+
+void DapDNSController::stopDNSMonitoring()
+
+{
+
+    QMutexLocker locker(&m_mutex);
+
+    
+
+    if (!m_dnsMonitoringActive) {
+
+        qDebug() << "[DapDNSController] DNS monitoring is not active";
+
+        return;
+
+    }
+
+    
+
+    m_dnsMonitoringActive = false;
+
+    m_consecutiveFailures = 0;
+
+    
+
+    qInfo() << "[DapDNSController] Stopping DNS monitoring";
+
+    
+
+    m_dnsMonitorTimer->stop();
+
+    
+
+#ifdef Q_OS_MACOS
+
+    // Stop SCDynamicStore monitoring
+
+    if (m_scMonitoringActive) {
+
+        teardownSCDynamicStoreMonitoring();
+
+    }
+
+#endif
+
+    
+
+    emit dnsMonitoringStopped();
+
+}
+
+
+
+bool DapDNSController::isDNSMonitoringActive() const
+
+{
+
+    QMutexLocker locker(&m_mutex);
+
+    return m_dnsMonitoringActive;
+
+}
+
+
+
+void DapDNSController::setVPNConnectionState(bool connected)
+
+{
+
+    bool shouldStopMonitoring = false;
+
+    
+
+    {
+
+        QMutexLocker locker(&m_mutex);
+
+        
+
+        if (m_vpnConnected != connected) {
+
+            m_vpnConnected = connected;
+
+            qDebug() << "[DapDNSController] VPN connection state changed to:" << (connected ? "connected" : "disconnected");
+
+            
+
+            // If VPN disconnected, stop monitoring
+
+            if (!connected) {
+
+                shouldStopMonitoring = true;
+
+            }
+
+        }
+
+    } // mutex unlocked here
+
+    
+
+    // Call stopDNSMonitoring outside of mutex to avoid deadlock
+
+    if (shouldStopMonitoring) {
+
+        stopDNSMonitoring();
+
+    }
+
+}
+
+
+
+bool DapDNSController::isVPNConnected() const
+
+{
+
+    QMutexLocker locker(&m_mutex);
+
+    return m_vpnConnected;
+
+}
+
+
+
+void DapDNSController::setExpectedDNSServers(const QStringList &servers)
+
+{
+
+    QMutexLocker locker(&m_mutex);
+
+    m_expectedDNSServers = servers;
+
+    qDebug() << "[DapDNSController] Expected DNS servers set to:" << servers;
+
+}
+
+
+
+QStringList DapDNSController::getExpectedDNSServers() const
+
+{
+
+    QMutexLocker locker(&m_mutex);
+
+    return m_expectedDNSServers;
+
+}
+
+
+
+void DapDNSController::onMonitoringTimerTimeout()
+
+{
+
+    // This method runs in the timer's thread context
+
+    // We need to be careful about thread safety
+
+    
+
+    if (!m_vpnConnected || !m_dnsMonitoringActive) {
+
+        return;
+
+    }
+
+    
+
+    // Check DNS integrity
+
+    checkDNSIntegrity();
+
+}
+
+
+
+void DapDNSController::checkDNSIntegrity()
+
+{
+
+    if (!m_dnsMonitoringActive || m_expectedDNSServers.isEmpty()) {
+
+        return;
+
+    }
+
+    
+
+    QStringList currentDNS = getCurrentDNSServers();
+
+    
+
+    if (detectDNSChanges()) {
+
+        qWarning() << "[DapDNSController] DNS integrity violation detected!";
+
+        qWarning() << "[DapDNSController] Expected DNS:" << m_expectedDNSServers;
+
+        qWarning() << "[DapDNSController] Current DNS:" << currentDNS;
+
+        
+
+        // Attempt to restore expected DNS
+
+        if (!setDNSServers(m_expectedDNSServers)) {
+
+            qCritical() << "[DapDNSController] Failed to restore DNS servers!";
+
+            emit errorOccurred("Failed to restore DNS servers");
+
+        } else {
+
+            qInfo() << "[DapDNSController] DNS servers restored successfully";
+
+        }
+
+    }
+
+}
+
+
+
+bool DapDNSController::detectDNSChanges()
+
+{
+
+    if (m_expectedDNSServers.isEmpty()) {
+
+        return false;
+
+    }
+
+    
+
+    QStringList currentDNSServers = getCurrentDNSServers();
+
+    
+
+    // If no current DNS servers, consider it a change
+
+    if (currentDNSServers.isEmpty()) {
+
+        return true;
+
+    }
+
+    
+
+    // Check if current DNS servers match expected ones
+
+    if (currentDNSServers.size() != m_expectedDNSServers.size()) {
+
+        return true;
+
+    }
+
+    
+
+    // Compare each DNS server
+
+    for (int i = 0; i < currentDNSServers.size(); ++i) {
+
+        if (currentDNSServers[i] != m_expectedDNSServers[i]) {
+
+            return true;
+
+        }
+
+    }
+
+    
+
+    return false;
+
+}
+
+
+
+bool DapDNSController::shouldRestoreDNS() const
+
+{
+
+    // Always restore if VPN is connected and we have expected DNS servers
+
+    return m_vpnConnected && !m_expectedDNSServers.isEmpty();
+
+}
+
+
+
+void DapDNSController::logDNSChange(const QStringList &detected, const QStringList &expected)
+
+{
+
+    QString activeInterface = getActiveNetworkInterface();
+
+    
+
+    qWarning() << "[DapDNSController] ===== DNS CHANGE DETECTED =====";
+
+    qWarning() << "[DapDNSController] Timestamp:" << QDateTime::currentDateTime().toString(Qt::ISODate);
+
+    qWarning() << "[DapDNSController] VPN Connected:" << m_vpnConnected;
+
+    qWarning() << "[DapDNSController] Expected DNS:" << expected;
+
+    qWarning() << "[DapDNSController] Detected DNS:" << detected;
+
+    qWarning() << "[DapDNSController] Interface:" << activeInterface;
+
+    qWarning() << "[DapDNSController] ================================";
+
+}
+
+
+
+QString DapDNSController::getActiveNetworkInterface() const
+
+{
+
+#ifdef DAP_OS_LINUX
+
+    // Try to get active interface using NetworkManager
+
+    QProcess process;
+
+    process.setProcessChannelMode(QProcess::MergedChannels);
+
+    
+
+    QStringList args = {"-t", "-f", "NAME,TYPE,DEVICE", "connection", "show", "--active"};
+
+    process.start("nmcli", args);
+
+    
+
+    if (process.waitForFinished(3000)) {
+
+        QString output = QString::fromLocal8Bit(process.readAll());
+
+        QStringList lines = output.split('\n', Qt::SkipEmptyParts);
+
+        
+
+        for (const QString &line : lines) {
+
+            QStringList parts = line.split(':');
+
+            if (parts.size() >= 3) {
+
+                QString name = parts[0];
+
+                QString type = parts[1];
+
+                QString device = parts[2];
+
+                
+
+                // Skip VPN connections and loopback
+
+                if (type != "vpn" && device != "lo" && !device.isEmpty()) {
+
+                    return device;
+
+                }
+
+            }
+
+        }
+
+    }
+
+    
+
+    // Fallback: try to get default route interface
+
+    process.start("ip", QStringList() << "route" << "get" << "8.8.8.8");
+
+    if (process.waitForFinished(3000)) {
+
+        QString output = QString::fromLocal8Bit(process.readAll());
+
+        QRegularExpression devRegex(R"(dev\s+(\w+))");
+
+        QRegularExpressionMatch match = devRegex.match(output);
+
+        if (match.hasMatch()) {
+
+            return match.captured(1);
+
+        }
+
+    }
+
+#endif
+
+
+
+#ifdef Q_OS_WINDOWS
+
+    // Windows implementation would go here
+
+    return "Windows Interface";
+
+#endif
+
+
+
+#ifdef Q_OS_MACOS
+
+    // macOS implementation - get active network interface
+
+    QProcess process;
+
+    process.setProcessChannelMode(QProcess::MergedChannels);
+
+    
+
+    // First try to get the interface from the route table
+
+    process.start("route", QStringList() << "get" << "default");
+
+    if (process.waitForFinished(3000)) {
+
+        QString output = QString::fromLocal8Bit(process.readAll());
+
+        QRegularExpression interfaceRegex(R"(interface:\s*(\w+))");
+
+        QRegularExpressionMatch match = interfaceRegex.match(output);
+
+        if (match.hasMatch()) {
+
+            QString interface = match.captured(1);
+
+            qDebug() << "[DapDNSController] Active interface from route:" << interface;
+
+            return interface;
+
+        }
+
+    }
+
+    
+
+    // Fallback: try to get active network services
+
+    process.start("networksetup", QStringList() << "-listallnetworkservices");
+
+    if (process.waitForFinished(3000)) {
+
+        QString output = QString::fromLocal8Bit(process.readAll());
+
+        QStringList services = output.split('\n', Qt::SkipEmptyParts);
+
+        
+
+        // Skip the header line
+
+        if (!services.isEmpty()) {
+
+            services.removeFirst();
+
+        }
+
+        
+
+        // Check each service to find the active one
+
+        for (const QString &service : services) {
+
+            if (service.startsWith("*")) {
+
+                continue; // Skip disabled services
+
+            }
+
+            
+
+            // Check if this service is active
+
+            QProcess serviceProcess;
+
+            serviceProcess.start("networksetup", QStringList() << "-getinfo" << service);
+
+            if (serviceProcess.waitForFinished(3000)) {
+
+                QString serviceOutput = QString::fromLocal8Bit(serviceProcess.readAll());
+
+                if (serviceOutput.contains("IP address:") && !serviceOutput.contains("IP address: (null)")) {
+
+                    qDebug() << "[DapDNSController] Active service found:" << service;
+
+                    
+
+                    // Try to get hardware port for this service
+
+                    QProcess hwProcess;
+
+                    hwProcess.start("networksetup", QStringList() << "-listallhardwareports");
+
+                    if (hwProcess.waitForFinished(3000)) {
+
+                        QString hwOutput = QString::fromLocal8Bit(hwProcess.readAll());
+
+                        QStringList hwLines = hwOutput.split('\n');
+
+                        
+
+                        for (int i = 0; i < hwLines.size() - 1; i++) {
+
+                            if (hwLines[i].contains(service)) {
+
+                                QString deviceLine = hwLines[i + 1];
+
+                                QRegularExpression deviceRegex(R"(Device:\s*(\w+))");
+
+                                QRegularExpressionMatch deviceMatch = deviceRegex.match(deviceLine);
+
+                                if (deviceMatch.hasMatch()) {
+
+                                    QString device = deviceMatch.captured(1);
+
+                                    qDebug() << "[DapDNSController] Active device:" << device;
+
+                                    return device;
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    
+
+                    // If we can't get the device name, return the service name
+
+                    return service;
+
+                }
+
+            }
+
+        }
+
+    }
+
+    
+
+    // Last resort: try ifconfig to find active interface
+
+    process.start("ifconfig", QStringList());
+
+    if (process.waitForFinished(3000)) {
+
+        QString output = QString::fromLocal8Bit(process.readAll());
+
+        QStringList lines = output.split('\n');
+
+        
+
+        QString currentInterface;
+
+        for (const QString &line : lines) {
+
+            if (line.startsWith('\t') || line.startsWith(' ')) {
+
+                // This is a continuation of the current interface
+
+                if (!currentInterface.isEmpty() && line.contains("inet ") && 
+
+                    !line.contains("127.0.0.1") && !line.contains("inet 169.254")) {
+
+                    qDebug() << "[DapDNSController] Active interface from ifconfig:" << currentInterface;
+
+                    return currentInterface;
+
+                }
+
+            } else {
+
+                // New interface
+
+                QRegularExpression ifRegex(R"(^(\w+):)");
+
+                QRegularExpressionMatch ifMatch = ifRegex.match(line);
+
+                if (ifMatch.hasMatch()) {
+
+                    currentInterface = ifMatch.captured(1);
+
+                }
+
+            }
+
+        }
+
+    }
+
+    
+
+    qWarning() << "[DapDNSController] Could not determine active network interface, using default";
+
+    return "Wi-Fi";
+
+#endif
+
+
+
+    return "Unknown Interface";
+
+}
+
+
+
+void DapDNSController::resetFailureCounter()
+
+{
+
+    if (m_consecutiveFailures > 0) {
+
+        qDebug() << "[DapDNSController] Resetting failure counter from" << m_consecutiveFailures << "to 0";
+
+        m_consecutiveFailures = 0;
+
+    }
+
+}
+
+
+
+void DapDNSController::incrementFailureCounter()
+
+{
+
+    m_consecutiveFailures++;
+
+    qWarning() << "[DapDNSController] Incremented failure counter to" << m_consecutiveFailures;
+
+}
+
+
+
+// === Enhanced DNS validation ===
+
+bool DapDNSController::validateDNSServers(const QStringList &dnsServers) const
+
+{
+
+    if (dnsServers.isEmpty()) {
+
+        qWarning() << "[DNS] Empty DNS servers list";
+
+        return false;
+
+    }
+
+    
+
+    for (const QString &dns : dnsServers) {
+
+        if (!isValidIPAddress(dns)) {
+
+            qWarning() << "[DNS] Invalid IP address format:" << dns;
+
+            return false;
+
+        }
+
+        
+
+        // Check for reserved/problematic addresses
+
+        QHostAddress addr(dns);
+
+        if (addr.isLoopback()) {
+
+            qWarning() << "[DNS] Rejecting loopback address:" << dns;
+
+            return false;
+
+        }
+
+        
+
+        if (addr.isBroadcast() || addr.isMulticast()) {
+
+            qWarning() << "[DNS] Rejecting broadcast/multicast address:" << dns;
+
+            return false;
+
+        }
+
+        
+
+        // Check for "any" addresses (0.0.0.0 or ::)
+
+        if (addr == QHostAddress::AnyIPv4 || addr == QHostAddress::AnyIPv6) {
+
+            qWarning() << "[DNS] Rejecting 'any' address:" << dns;
+
+            return false;
+
+        }
+
+        
+
+        // Check for private/link-local addresses (typically not good for public DNS)
+
+        if (addr.isInSubnet(QHostAddress("169.254.0.0"), 16)) { // Link-local
+
+            qWarning() << "[DNS] Warning: Link-local address may not work:" << dns;
+
+        }
+
+    }
+
+    
+
+    return true;
+
+}
+
+
+
+// === Common helper methods (cross-platform) ===
+
+
+
+QString DapDNSController::escapeInterfaceName(const QString &ifaceName) const
+
+{
+
+    if (ifaceName.isEmpty()) {
+
+        return QString();
+
+    }
+
+    
+
+    // Check if quotes are needed
+
+    bool needsQuotes = ifaceName.contains(' ') || 
+
+                      ifaceName.contains('"') || 
+
+                      ifaceName.contains('\\') ||
+
+                      ifaceName.contains('&') ||
+
+                      ifaceName.contains('|') ||
+
+                      ifaceName.contains('^') ||
+
+                      ifaceName.contains('<') ||
+
+                      ifaceName.contains('>');
+
+    
+
+    if (!needsQuotes) {
+
+        return ifaceName;
+
+    }
+
+    
+
+    // Escape quotes and backslashes
+
+    QString escaped = ifaceName;
+
+    escaped.replace("\\", "\\\\");
+
+    escaped.replace("\"", "\\\"");
+
+    
+
+    return QString("\"%1\"").arg(escaped);
+
+}
+
