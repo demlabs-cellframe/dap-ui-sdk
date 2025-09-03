@@ -25,6 +25,7 @@ Item
     property string textColor: currTheme.white
 
     property alias textElement: textItem
+    property alias hovered: area.containsMouse
 
     Text
     {

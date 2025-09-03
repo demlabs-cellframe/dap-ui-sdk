@@ -33,6 +33,7 @@ Item
     property int spacing: 15 * scaleFactor
 
     property alias model: popupListView.model
+    property alias popupListView: popupListView
 
     property int currentIndex: -1
     property string currentText: displayText
@@ -318,7 +319,7 @@ Item
                             verticalAlignment: Text.AlignVCenter
                         }
 
-                        Image{
+                        Image {
                             property var data: getModelData(index, imageRole)
                             id: statusIcon
                             visible: data === "" ? false : true
