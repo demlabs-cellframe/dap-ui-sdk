@@ -25,6 +25,9 @@ Item {
     property color highColor: "#22D3EE"         //neon
     property color vertHighColor: "#9580FF"     //purple
 
+    property font fontInput: mainFont.dapFont.regular16
+    property font fontSlider: mainFont.dapFont.regular14
+
     signal valueChange
     signal cannotSetValue(bool isBigValue)
     //width: 278
@@ -97,7 +100,7 @@ Item {
                     anchors.left: parent.left
                     anchors.right: valueNameText.left
                     text: currentValue
-                    font: mainFont.dapFont.regular16
+                    font: fontInput
                     regExpValidator: /^[0-9]*\.?[0-9]{0,18}$/
                     inputMethodHints: CURRENT_OS === "ios" ? Qt.ImhNone : Qt.ImhFormattedNumbersOnly
                     defaultPlaceholderText: "0.0"
@@ -163,7 +166,7 @@ Item {
                     anchors.right: parent.right
                     horizontalAlignment: Text.AlignLeft
                     text: valueName
-                    font: mainFont.dapFont.regular16
+                    font: fontInput
                     color: currTheme.white
                 }
             }
@@ -230,6 +233,7 @@ Item {
                     anchors.fill: parent
                     anchors.margins: -4 * guiApp.scaleFactor
                     onClicked: {
+                        forceActiveFocus()
                         if (statesData.count > 0) {
                             let targetValue = statesData.get(0).minValue;
                             let medianValue = statesData.count > 2 ? statesData.get(2).minValue : targetValue;
@@ -276,6 +280,7 @@ Item {
                     anchors.fill: parent
                     anchors.margins: -4 * guiApp.scaleFactor
                     onClicked: {
+                        forceActiveFocus()
                         if (statesData.count > 1) {
                             let targetValue = statesData.get(1).minValue;
                             let medianValue = statesData.count > 2 ? statesData.get(2).minValue : targetValue;
@@ -318,8 +323,11 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     anchors.margins: -4 * guiApp.scaleFactor
-                    onClicked: if (statesData.count > 2)
-                        setValue(statesData.get(2).minValue)
+                    onClicked: {
+                        forceActiveFocus()
+                        if (statesData.count > 2)
+                            setValue(statesData.get(2).minValue)
+                    }
                 }
 
                 Behavior on color {
@@ -351,6 +359,7 @@ Item {
                     anchors.fill: parent
                     anchors.margins: -4 * guiApp.scaleFactor
                     onClicked: {
+                        forceActiveFocus()
                         if (statesData.count > 3) {
                             let targetValue = statesData.get(3).minValue;
                             let medianValue = statesData.count > 2 ? statesData.get(2).minValue : targetValue;
@@ -394,6 +403,7 @@ Item {
                     anchors.fill: parent
                     anchors.margins: -4 * guiApp.scaleFactor
                     onClicked: {
+                        forceActiveFocus()
                         if (statesData.count > 4) {
                             let targetValue = statesData.get(4).minValue;
                             let medianValue = statesData.count > 2 ? statesData.get(2).minValue : targetValue;
@@ -507,7 +517,7 @@ Item {
             Layout.topMargin: -8 * guiApp.scaleFactor
             text: currentState
             color: currentColor
-            font: mainFont.dapFont.regular14
+            font: fontSlider
 
             Behavior on color {
                 PropertyAnimation {
