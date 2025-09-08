@@ -233,7 +233,7 @@ Item {
                     anchors.fill: parent
                     anchors.margins: -4 * guiApp.scaleFactor
                     onClicked: {
-                        forceActiveFocus()
+                        forceActiveFocus();
                         if (statesData.count > 0) {
                             let targetValue = statesData.get(0).minValue;
                             let medianValue = statesData.count > 2 ? statesData.get(2).minValue : targetValue;
@@ -280,7 +280,7 @@ Item {
                     anchors.fill: parent
                     anchors.margins: -4 * guiApp.scaleFactor
                     onClicked: {
-                        forceActiveFocus()
+                        forceActiveFocus();
                         if (statesData.count > 1) {
                             let targetValue = statesData.get(1).minValue;
                             let medianValue = statesData.count > 2 ? statesData.get(2).minValue : targetValue;
@@ -324,9 +324,9 @@ Item {
                     anchors.fill: parent
                     anchors.margins: -4 * guiApp.scaleFactor
                     onClicked: {
-                        forceActiveFocus()
+                        forceActiveFocus();
                         if (statesData.count > 2)
-                            setValue(statesData.get(2).minValue)
+                            setValue(statesData.get(2).minValue);
                     }
                 }
 
@@ -359,7 +359,7 @@ Item {
                     anchors.fill: parent
                     anchors.margins: -4 * guiApp.scaleFactor
                     onClicked: {
-                        forceActiveFocus()
+                        forceActiveFocus();
                         if (statesData.count > 3) {
                             let targetValue = statesData.get(3).minValue;
                             let medianValue = statesData.count > 2 ? statesData.get(2).minValue : targetValue;
@@ -403,7 +403,7 @@ Item {
                     anchors.fill: parent
                     anchors.margins: -4 * guiApp.scaleFactor
                     onClicked: {
-                        forceActiveFocus()
+                        forceActiveFocus();
                         if (statesData.count > 4) {
                             let targetValue = statesData.get(4).minValue;
                             let medianValue = statesData.count > 2 ? statesData.get(2).minValue : targetValue;
