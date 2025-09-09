@@ -13,6 +13,8 @@ Item
 
     property string popupText: ""
     property alias mouseArea: mouseArea
+    property bool hovered: mouseArea.containsMouse
+    property bool setHovered: false
 
     signal copyClicked()
 
@@ -22,8 +24,8 @@ Item
         width: parent.width
         height: parent.height
         mipmap: true
-        source: mouseArea.containsMouse ? pathResources + pathTheme + "/icons/other/copy_hover_small.svg":
-                                          pathResources + pathTheme + "/icons/other/copy_small.svg"
+        source: mouseArea.containsMouse || setHovered ? pathResources + pathTheme + "/icons/other/copy_hover_small.svg":
+                                                        pathResources + pathTheme + "/icons/other/copy_small.svg"
     }
 
     MouseArea
@@ -33,9 +35,14 @@ Item
         hoverEnabled: true
         onClicked:
         {
-            print("DapCopyButton onClicked")
-            showInfoNotification(popupText, "check_icon.png")
-            copyClicked()
+            clickFunc()
         }
+    }
+
+    function clickFunc()
+    {
+        print("DapCopyButton onClicked")
+        showInfoNotification(popupText, "check_icon.png")
+        copyClicked()
     }
 }

@@ -36,6 +36,7 @@ Button
     property alias fontButton: buttonText.font
     ///@detalis horizontalAligmentText Horizontal alignment.
     property alias horizontalAligmentText:buttonText.horizontalAlignment
+    property alias verticalAligmentText:buttonText.verticalAlignment
     ///@detalis colorBackgroundButton This property overrides the background color.
     property alias colorBackgroundButton: dapBackgroundButton.color
     ///@detalis colorTextButton This property overrides the color of the text.
