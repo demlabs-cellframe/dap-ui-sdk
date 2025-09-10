@@ -18,7 +18,7 @@ DapCmdStates::DapCmdStates(QObject *parent)
 
 void DapCmdStates::sendCmd()
 {
-    DapCmdClientAbstract::sendCmd();
+    DapCmdClientAbstract::sendCmd(nullptr);
 }
 
 DapIndicator *DapCmdStates::sessionIndicator() const

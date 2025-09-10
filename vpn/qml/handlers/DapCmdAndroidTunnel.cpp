@@ -17,5 +17,7 @@ void DapCmdAndroidTunnel::handleResult(const QJsonObject &result)
 
 void DapCmdAndroidTunnel::handleError(int code, const QString &message)
 {
+    Q_UNUSED(code);
+    Q_UNUSED(message);
     qInfo() << message;
 }

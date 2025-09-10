@@ -65,3 +65,8 @@ void DapCmdUserData::userDataHandler(const QJsonValue &user, const QJsonValue &p
     }
     emit sigUserData(bUser, bPassword, bAddress);
 }
+
+void DapCmdUserData::sendCmd()
+{
+    DapCmdClientAbstract::sendCmd(nullptr);
+}

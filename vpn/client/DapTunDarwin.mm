@@ -69,100 +69,134 @@ void DapTunDarwin::tunnelManagerStart()
 {
     qDebug() << "DapTunDarwin::tunnelManagerStart";
 
-    //NSLog (@"Call loadAllFromPreferencesWithCompletionHandler");
-    __block NETunnelProviderManager *manager;
+    // Create provider configuration with server details
+    NSDictionary *providerConfig = @{
+        @"server": [NSString stringWithUTF8String: upstreamAddress().toLatin1().constData()],
+        @"mtu": @1380,
+        @"routes": @{
+            @"mode": @"full"  // KILL-SWITCH: Default to full tunnel for security
+        },
+        @"dns": @{
+            @"servers": @[@"1.1.1.1", @"8.8.8.8"],
+            @"domains": @[@"."]
+        }
+    };
 
-    manager = [[NETunnelProviderManager alloc] init];
+    // Load existing managers first
+    [NETunnelProviderManager loadAllFromPreferencesWithCompletionHandler:^(NSArray<NETunnelProviderManager *> * _Nullable managers, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"Load Error: %@", error.description);
+            return;
+        }
 
-    NETunnelProviderProtocol *protocol = [[NETunnelProviderProtocol alloc] init];
-    [protocol.includeAllNetworks: YES];
-   // [protocol.enforceRoutes: YES];
-    [protocol.serverAddress: [NSString stringWithUTF8String: upstreamAddress().toLatin1().constData()]];
-    [protocol.providerBundleIdentifier: [NSString stringWithUTF8String: "com.kelvpn" ]];
-
-    [manager.protocolConfiguration: protocol];
-    [manager.enabled: YES];
-    [manager setLocalizedDescription:@DAP_BRAND];
-
-    tunnelProtocol = protocol;
-    tunnelManager = manager;
-
-    NSLog(@"Connection desciption: %@", manager.localizedDescription);
-    NSLog(@"VPN status:  %i", manager.connection.status);
-    //[[NSNotificationCenter defaultCenter] addObserver:this selector:@selector(vpnConnectionStatusChanged) name:NEVPNStatusDidChangeNotification object:nil];
-
-    [manager saveToPreferencesWithCompletionHandler:^(NSError *error) {
-        if(error) {
-           NSLog(@"Save error: %@", error);
-        }else {
-            NSLog(@"No error");
-            [manager loadFromPreferencesWithCompletionHandler:^(NSError *error) {
-                if(error) {
-                    NSLog(@"Load error: %@", error);
-                }else {
-                    NEPacketTunnelNetworkSettings * settings = [[NEPacketTunnelNetworkSettings alloc] init];
-
-                    NSError *startError;
-                    [manager.connection startVPNTunnelAndReturnError:&startError];
-                    if(startError) {
-                        NSLog(@"Start error: %@", startError.localizedDescription);
-                    }
+        NETunnelProviderManager *manager = nil;
+        
+        // Check if we already have a manager
+        for (NETunnelProviderManager *existingManager in managers) {
+            if ([existingManager.localizedDescription isEqualToString:@DAP_BRAND]) {
+                manager = existingManager;
+                break;
+            }
+        }
+        
+        // Create new manager if none exists
+        if (!manager) {
+            manager = [[NETunnelProviderManager alloc] init];
+            
+            NETunnelProviderProtocol *protocol = [[NETunnelProviderProtocol alloc] init];
+            protocol.serverAddress = [NSString stringWithUTF8String: upstreamAddress().toLatin1().constData()];
+            // FIXED: Use correct bundle identifier that matches the extension's Info.plist
+            protocol.providerBundleIdentifier = [NSString stringWithUTF8String: "com.kelvpn.packettunnel"];
+            protocol.providerConfiguration = providerConfig;
+            
+            manager.protocolConfiguration = protocol;
+            manager.enabled = YES;
+            manager.localizedDescription = @DAP_BRAND;
+            
+            tunnelProtocol = protocol;
+            tunnelManager = manager;
+            
+            // Save the new manager
+            [manager saveToPreferencesWithCompletionHandler:^(NSError *saveError) {
+                if (saveError) {
+                    NSLog(@"Save error: %@", saveError);
+                } else {
+                    NSLog(@"Manager saved successfully");
+                    [self startTunnelWithManager:manager];
+                }
+            }];
+        } else {
+            // Update existing manager configuration
+            NETunnelProviderProtocol *protocol = (NETunnelProviderProtocol *)manager.protocolConfiguration;
+            protocol.providerConfiguration = providerConfig;
+            protocol.serverAddress = [NSString stringWithUTF8String: upstreamAddress().toLatin1().constData()];
+            
+            tunnelProtocol = protocol;
+            tunnelManager = manager;
+            
+            [manager saveToPreferencesWithCompletionHandler:^(NSError *saveError) {
+                if (saveError) {
+                    NSLog(@"Update error: %@", saveError);
+                } else {
+                    NSLog(@"Manager updated successfully");
+                    [self startTunnelWithManager:manager];
                 }
             }];
         }
     }];
+}
 
-/*    [NETunnelProviderManager loadAllFromPreferencesWithCompletionHandler:^(NSArray<NETunnelProviderManager *> * _Nullable managers, NSError * _Nullable error) {
-        if (error) {
-            NSLog(@"Load Error: %@", error.description);
-            return;
-        }else {
-            NSLog (@"Loaded well");
-        }
-
-        if (managers.count > 0) {
-            manager = managers[0];
-        }else {
-            [manager saveToPreferencesWithCompletionHandler:^(NSError *error) {
-                if(error) {
-                   NSLog(@"Save error: %@", error);
-                }else {
-                    NSLog(@"No error");
-                    [manager loadFromPreferencesWithCompletionHandler:^(NSError *error) {
-                        if(error) {
-                            NSLog(@"Load error: %@", error);
-                        }else {
-                            NEPacketTunnelNetworkSettings * settings = [[NEPacketTunnelNetworkSettings alloc] init];
-
-                            NSError *startError;
-                            [manager.connection startVPNTunnelAndReturnError:&startError];
-                            if(startError) {
-                                NSLog(@"Start error: %@", startError.localizedDescription);
-                            }
-                        }
-                    }];
-                }
-            }];
-        }
-    }];*/
-
-    //__block DapPacketTunnelProvider *provider = [[DapPacketTunnelProvider alloc] init];
-    //tunnelProvider = provider;
-    //[provider startTunnel];
-    @try{
-        NSError *startError;
-        NSDictionary *providerConfiguration = [protocol providerConfiguration];
-        [manager.connection startTunnelWithOptions:&startError];
-        if(startError) {
-            NSLog(@"Start error: %@", startError.localizedDescription);
-        }
-    }@catch (NSException *e) {
-        NSLog(@"Error %@",e);
+- (void)startTunnelWithManager:(NETunnelProviderManager *)manager {
+    NSLog(@"Starting tunnel with manager: %@", manager.localizedDescription);
+    
+    // Set up connection status monitoring
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(vpnConnectionStatusChanged:)
+                                                 name:NEVPNStatusDidChangeNotification
+                                               object:manager.connection];
+    
+    // Start the tunnel
+    NSError *startError;
+    [manager.connection startVPNTunnelWithOptions:nil andReturnError:&startError];
+    
+    if (startError) {
+        NSLog(@"Start error: %@", startError.localizedDescription);
+    } else {
+        NSLog(@"Tunnel start initiated successfully");
     }
+}
 
-
-    qDebug() << "Tunnel manager start over";
-
+- (void)vpnConnectionStatusChanged:(NSNotification *)notification {
+    NEVPNConnection *connection = notification.object;
+    NEVPNStatus status = connection.status;
+    
+    NSLog(@"VPN Status changed to: %ld", (long)status);
+    
+    switch (status) {
+        case NEVPNStatusConnected:
+            NSLog(@"VPN Connected");
+            emit connected();
+            break;
+        case NEVPNStatusDisconnected:
+            NSLog(@"VPN Disconnected");
+            emit disconnected();
+            break;
+        case NEVPNStatusConnecting:
+            NSLog(@"VPN Connecting");
+            emit connecting();
+            break;
+        case NEVPNStatusDisconnecting:
+            NSLog(@"VPN Disconnecting");
+            emit disconnecting();
+            break;
+        case NEVPNStatusInvalid:
+            NSLog(@"VPN Invalid");
+            emit error("Invalid VPN configuration");
+            break;
+        case NEVPNStatusReasserting:
+            NSLog(@"VPN Reasserting");
+            break;
+    }
 }
 
 /**
@@ -171,33 +205,37 @@ void DapTunDarwin::tunnelManagerStart()
 void DapTunDarwin::tunnelManagerStop()
 {
     qDebug() << "DapTunDarwin::tunnelManagerStop()";
-    NETunnelProviderManager * manager = ((NETunnelProviderManager *) tunnelManager);
-    [manager stop];
+    
+    NETunnelProviderManager *manager = (__bridge NETunnelProviderManager *)tunnelManager;
+    if (manager) {
+        // Remove status monitoring
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:NEVPNStatusDidChangeNotification
+                                                      object:manager.connection];
+        
+        // Stop the tunnel
+        [manager.connection stopVPNTunnel];
+        NSLog(@"Tunnel stop initiated");
+    }
 }
 
 
 /**
- * @brief DapTunDarwin::requestTunDeviceCreate
+ * @brief DapTunDarwin::tunDeviceCreate
  */
 void DapTunDarwin::tunDeviceCreate()
 {
-    qDebug() << "DapTunDarwin::tunDeviceCreate()";
-
+    qDebug() << "DapTunDarwin::tunDeviceCreate() - Starting NetworkExtension tunnel";
+    
+    // NetworkExtension handles tunnel creation automatically
     tunnelManagerStart();
 }
 
 void DapTunDarwin::workerStart() {
-    qInfo() <<"Tun device created" << m_tunSocket;
-    if (m_tunSocket > 0){
-        tunWorker->setTunSocket(m_tunSocket);
-        tunWorker->moveToThread(tunThread);
-        tunThread->start();
-        emit sigStartWorkerLoop();
-        qInfo() << "tunThread started, tun socket: " << m_tunSocket;
-    } else {
-        qInfo() << "Tun socket " << m_tunSocket << " already opened";
-        return;
-    }
+    qInfo() << "DapTunDarwin::workerStart() - NetworkExtension handles packet processing";
+    
+    // NetworkExtension handles packet processing in PacketTunnelProvider
+    // No need for separate worker thread
     onWorkerStarted();
 }
 
@@ -206,7 +244,8 @@ void DapTunDarwin::workerStart() {
  */
 void DapTunDarwin::onWorkerStarted()
 {
-    qDebug() << "DapTunDarwin::OnWorkerStarted()";
+    qDebug() << "DapTunDarwin::onWorkerStarted() - NetworkExtension tunnel ready";
+    emit created();
 }
 
 /**
@@ -214,5 +253,6 @@ void DapTunDarwin::onWorkerStarted()
  */
 void DapTunDarwin::onWorkerStopped()
 {
-    qDebug() << "DapTunDarwin::OnWorkerStopped()";
+    qDebug() << "DapTunDarwin::onWorkerStopped() - NetworkExtension tunnel stopped";
+    emit destroyed();
 }

@@ -1,11 +1,11 @@
 #pragma once
 
 #import <Foundation/Foundation.h>
-#import <NetworkExtension/NEPacketTunnelProvider.h>
+#import <NetworkExtension/NetworkExtension.h>
 
 @interface DapPacketTunnelProvider : NEPacketTunnelProvider
 
-- (void) startTunnel;
+// NetworkExtension required methods
 - (void)startTunnelWithOptions:(NSDictionary<NSString *,NSObject *> *)options
           completionHandler:(void (^)(NSError *error))completionHandler;
 - (void)stopTunnelWithReason:(NEProviderStopReason)reason
