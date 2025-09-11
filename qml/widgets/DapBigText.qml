@@ -17,6 +17,7 @@ Item
     // Hover state property and signal
     property bool isHover: false
     signal hoverChanged(bool isHovered)
+    signal clickedItem()
 
     property alias horizontalAlign: textItem.horizontalAlignment
     property alias verticalAlign: textItem.verticalAlignment
@@ -54,6 +55,11 @@ Item
             {
                 isHover = false
                 hoverChanged(false)
+            }
+
+            onClicked:
+            {
+                clickedItem()
             }
 
             DapCustomToolTip{
