@@ -48,6 +48,8 @@ DapQmlModelNodeNetworksList *DapQmlModelNodeNetworksList::instance()
 
 QObject *DapQmlModelNodeNetworksList::singletonProvider (QQmlEngine *engine, QJSEngine *scriptEngine)
 {
+  Q_UNUSED(engine)
+  Q_UNUSED(scriptEngine)
   return instance();
 }
 
@@ -112,6 +114,7 @@ int DapQmlModelNodeNetworksList::rowCount (const QModelIndex &parent) const
 
 int DapQmlModelNodeNetworksList::columnCount (const QModelIndex &parent) const
 {
+  Q_UNUSED(parent)
   return DapQmlModelNode::nodeFieldsMap.size();
 }
 

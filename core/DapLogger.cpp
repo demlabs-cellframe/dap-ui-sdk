@@ -35,7 +35,7 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, Type
     dap_set_log_tag_width(prefix_width);
     qInstallMessageHandler(messageHandler);
     m_appType = appType;
-    qDebug() << "App: " DAP_BRAND " " DAP_VERSION " " + appType;
+    qDebug() << "App: " DAP_BRAND " " DAP_VERSION " " + appType + " Build: " DAP_BUILD_NUMBER;
     qDebug() << systemInfo();
     setPathToLog(defaultLogPath(DAP_BRAND));
     QDir dir(m_pathToLog);

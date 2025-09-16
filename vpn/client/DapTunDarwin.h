@@ -25,6 +25,10 @@
 #include "DapTunUnixAbstract.h"
 #include <objc/objc-runtime.h>
 
+// Forward declarations for Objective-C types (using void* for C++ compatibility)
+typedef void* NETunnelProviderManagerRef;
+typedef void* NSNotificationRef;
+
 
 class DapTunDarwin:public DapTunUnixAbstract
 {
@@ -40,9 +44,11 @@ protected slots:
     void tunnelManagerStart();
     void tunnelManagerStop();
 private:
+    void startTunnelWithManager(NETunnelProviderManagerRef manager);
+    void vpnConnectionStatusChanged(NSNotificationRef notification);
+private:
 #ifdef __cplusplus
     id tunnelProtocol;
-    id tunnelProvider;
     id tunnelManager;
 #else
     DapPacketTunnelProvider* tunnelProvider;

@@ -2,6 +2,7 @@
 #import <Security/Security.h>
 #import <arpa/inet.h>
 #import <netinet/in.h>
+#import <os/log.h>
 #import "DapPacketTunnelProvider.h"
 #import "CoreBridge.h"
 
@@ -31,7 +32,14 @@
 - (void)startTunnelWithOptions:(NSDictionary<NSString *,NSObject *> *)options
           completionHandler:(void (^)(NSError *error))completionHandler
 {
-    NSLog(@"DapPacketTunnelProvider:: startTunnelWithOptions");
+    os_log_t logger = os_log_create("com.yourcompany.KelVPNService", "PacketTunnel");
+    os_log(logger, "===== STARTING TUNNEL =====");
+    os_log(logger, "Starting tunnel with options: %{public}@", options);
+    os_log(logger, "Protocol configuration: %{public}@", self.protocolConfiguration);
+    
+    NSLog(@"NE Provider: ===== STARTING TUNNEL =====");
+    NSLog(@"NE Provider: Starting tunnel with options: %@", options);
+    NSLog(@"NE Provider: Protocol configuration: %@", self.protocolConfiguration);
 
     // FIXED: Correct configuration parsing
     // serverAddress is NSString, not NSDictionary
@@ -75,23 +83,45 @@
         return;
     }
     
-    // Set tunnel network settings
+    // Set tunnel network settings with enhanced logging
     __unsafe_unretained typeof(self) weakSelf = self;
+    os_log(logger, "Setting tunnel network settings...");
+    NSLog(@"NE Provider: Setting tunnel network settings...");
+    
     [self setTunnelNetworkSettings:settings completionHandler:^(NSError * _Nullable error) {
         if (!weakSelf) { return; }
         if (error) {
-            NSLog(@"Failed to set tunnel network settings: %@", error);
+            NSLog(@"NE Provider: Failed to set tunnel network settings: %@", error);
             if (completionHandler) completionHandler(error);
             return;
         }
+        
+        os_log(logger, "Network settings applied successfully");
+        NSLog(@"NE Provider: Network settings applied successfully");
+        
+        // CRITICAL FIX: Validate that settings were actually applied
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [weakSelf validateNetworkSettingsApplied];
+        });
         
         // Start packet processing
         [weakSelf startPacketProcessing];
         weakSelf.isTunnelActive = YES;
         
-        NSLog(@"Tunnel started successfully");
+        NSLog(@"NE Provider: Tunnel started successfully, packet pump armed");
         if (completionHandler) completionHandler(nil);
     }];
+    
+    // Watchdog timer for 20 seconds
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (!weakSelf.isTunnelActive) {
+            NSLog(@"NE Provider: Watchdog timeout - tunnel not active after 20s");
+            NSError *timeoutError = [NSError errorWithDomain:@"DapPacketTunnelProvider" 
+                                                       code:-2 
+                                                   userInfo:@{NSLocalizedDescriptionKey: @"Tunnel activation timeout"}];
+            [weakSelf cancelTunnelWithError:timeoutError];
+        }
+    });
 }
 
 - (BOOL)validateConfiguration:(NSDictionary *)config error:(NSError **)error {
@@ -184,31 +214,67 @@
 }
 
 - (NEPacketTunnelNetworkSettings *)createNetworkSettingsWithConfig:(NSDictionary *)config {
+    // Read configuration from providerConfiguration
+    NSString *addr = config[@"address"];
+    NSString *gw = config[@"gateway"];
+    NSArray *dns = config[@"dns"] ?: @[];
+    NSArray *inc = config[@"routesInclude"] ?: @[];
+    NSArray *exc = config[@"routesExclude"] ?: @[];
+    NSNumber *mtu = config[@"mtu"];
+    
+    // Use gateway as tunnel remote address, fallback to server
+    NSString *remoteAddress = gw ?: config[@"server"] ?: @"10.0.0.1";
+    
     NEPacketTunnelNetworkSettings *settings = [[NEPacketTunnelNetworkSettings alloc] 
-                                               initWithTunnelRemoteAddress:config[@"server"]];
+                                               initWithTunnelRemoteAddress:remoteAddress];
     
-    // Configure IPv4 settings
-    NEIPv4Settings *ipv4Settings = [self createIPv4SettingsWithConfig:config];
-    if (ipv4Settings) {
-        settings.IPv4Settings = ipv4Settings;
-    }
-    
-    // Configure IPv6 settings
-    NEIPv6Settings *ipv6Settings = [self createIPv6SettingsWithConfig:config];
-    if (ipv6Settings) {
-        settings.IPv6Settings = ipv6Settings;
+    // Configure IPv4 settings with provided address
+    if (addr && addr.length > 0) {
+        // CRITICAL FIX: Use proper subnet mask for /24 network (10.11.12.x/24)
+        NEIPv4Settings *ipv4 = [[NEIPv4Settings alloc] 
+                               initWithAddresses:@[addr] 
+                               subnetMasks:@[@"255.255.255.0"]];
+        
+        // CRITICAL FIX: Configure default route through VPN gateway
+        NEIPv4Route *defaultRoute = [NEIPv4Route defaultRoute];
+        if (gw && gw.length > 0) {
+            defaultRoute.gatewayAddress = gw;
+        }
+        ipv4.includedRoutes = @[defaultRoute];
+        
+        // Configure additional routes if specified
+        if (inc.count > 0) {
+            NSMutableArray *allRoutes = [NSMutableArray arrayWithObject:defaultRoute];
+            [allRoutes addObjectsFromArray:[self convertStringRoutesToNEIPv4Routes:inc]];
+            ipv4.includedRoutes = allRoutes;
+        }
+        
+        if (exc.count > 0) {
+            ipv4.excludedRoutes = [self convertStringRoutesToNEIPv4Routes:exc];
+        }
+        
+        settings.IPv4Settings = ipv4;
+        NSLog(@"NE Provider: IPv4 settings created - address: %@, gateway: %@, routes: %@", addr, gw, ipv4.includedRoutes);
     }
     
     // Configure DNS settings
-    NEDNSSettings *dnsSettings = [self createDNSSettingsWithConfig:config];
-    if (dnsSettings) {
+    if (dns.count > 0) {
+        NEDNSSettings *dnsSettings = [[NEDNSSettings alloc] initWithServers:dns];
+        // CRITICAL FIX: Configure DNS for full tunnel (all domains through VPN)
+        dnsSettings.matchDomains = @[@"."];
         settings.DNSSettings = dnsSettings;
+        NSLog(@"NE Provider: DNS settings created - servers: %@, matchDomains: %@", dns, dnsSettings.matchDomains);
+    } else {
+        // CRITICAL FIX: Use default VPN DNS servers if none specified
+        NEDNSSettings *dnsSettings = [[NEDNSSettings alloc] initWithServers:@[@"1.1.1.1", @"8.8.8.8"]];
+        dnsSettings.matchDomains = @[@"."];
+        settings.DNSSettings = dnsSettings;
+        NSLog(@"NE Provider: Default DNS settings created - servers: [1.1.1.1, 8.8.8.8], matchDomains: [.]");
     }
     
     // Configure MTU
-    NSNumber *mtu = config[@"mtu"];
     if (mtu) {
-        settings.MTU = @([mtu integerValue]);
+        settings.MTU = mtu;
     } else {
         settings.MTU = @1380; // Default MTU for VPN
     }
@@ -345,7 +411,7 @@
 }
 
 - (void)startPacketProcessing {
-    NSLog(@"Starting packet processing with GCD timer");
+    NSLog(@"NE Provider: Starting packet processing with GCD timer");
     
     // FIXED: Use GCD timer instead of NSTimer to avoid retain cycles
     self.packetReadTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, self.ioQueue);
@@ -438,6 +504,8 @@
 }
 
 - (void)cancelTunnelWithError:(NSError *)error {
+    os_log_t logger = os_log_create("com.yourcompany.KelVPNService", "PacketTunnel");
+    os_log(logger, "cancelTunnelWithError: %{public}@ (code: %ld)", error.localizedDescription, (long)error.code);
     NSLog(@"DapPacketTunnelProvider:: cancelTunnelWithError: %@", error);
     
     self.isTunnelActive = NO;
@@ -550,6 +618,45 @@
     return [self isValidHostname:domain];
 }
 
+#pragma mark - Route Conversion Helper
+
+- (NSArray<NEIPv4Route *> *)convertStringRoutesToNEIPv4Routes:(NSArray<NSString *> *)stringRoutes {
+    NSMutableArray<NEIPv4Route *> *routes = [NSMutableArray array];
+    
+    for (NSString *routeString in stringRoutes) {
+        if ([routeString isEqualToString:@"0.0.0.0/0"]) {
+            // Default route
+            [routes addObject:[NEIPv4Route defaultRoute]];
+        } else if ([routeString containsString:@"/"]) {
+            // CIDR notation: 192.168.1.0/24
+            NSArray *parts = [routeString componentsSeparatedByString:@"/"];
+            if (parts.count == 2) {
+                NSString *address = parts[0];
+                NSInteger prefixLength = [parts[1] integerValue];
+                
+                // Convert prefix length to subnet mask
+                uint32_t mask = 0xFFFFFFFF << (32 - prefixLength);
+                NSString *subnetMask = [NSString stringWithFormat:@"%d.%d.%d.%d",
+                                      (mask >> 24) & 0xFF,
+                                      (mask >> 16) & 0xFF,
+                                      (mask >> 8) & 0xFF,
+                                      mask & 0xFF];
+                
+                NEIPv4Route *route = [[NEIPv4Route alloc] initWithDestinationAddress:address 
+                                                                        subnetMask:subnetMask];
+                [routes addObject:route];
+            }
+        } else {
+            // Single IP address
+            NEIPv4Route *route = [[NEIPv4Route alloc] initWithDestinationAddress:routeString 
+                                                                     subnetMask:@"255.255.255.255"];
+            [routes addObject:route];
+        }
+    }
+    
+    return [routes copy];
+}
+
 #pragma mark - Back-pressure and Error Handling
 
 - (void)writePacketWithBackPressure:(NSData *)packet protocol:(NSNumber *)protocol {
@@ -570,6 +677,29 @@
     // Example: Log error statistics
     // In production, you might want to implement exponential backoff retry
     // or trigger reconnection based on error type
+}
+
+#pragma mark - Network Settings Validation
+
+- (void)validateNetworkSettingsApplied {
+    NSLog(@"NE Provider: Validating network settings application...");
+    
+    // Check if we can read packets from the tunnel
+    // This indicates that the tunnel interface is properly configured
+    if (self.packetFlow) {
+        NSLog(@"NE Provider: Packet flow is available - tunnel interface configured");
+        
+        // Try to read packets to verify tunnel is working
+        [self.packetFlow readPacketsWithCompletionHandler:^(NSArray<NSData *> *packets, NSArray<NSNumber *> *protocols) {
+            if (packets && packets.count > 0) {
+                NSLog(@"NE Provider: SUCCESS - Received %lu packets from tunnel", (unsigned long)packets.count);
+            } else {
+                NSLog(@"NE Provider: WARNING - No packets received from tunnel (this may be normal if no traffic)");
+            }
+        }];
+    } else {
+        NSLog(@"NE Provider: ERROR - Packet flow not available - tunnel interface not configured");
+    }
 }
 
 @end
