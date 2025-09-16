@@ -78,6 +78,7 @@ Item {
                 rowSpacing: 8 * scaleFactor
                 
                 Repeater {
+                    id: wordsRepeater
                     model: fieldsNumber
                     
                     Item {
@@ -412,9 +413,10 @@ Item {
         }
         wordsModel = newWordsModel;
 
-        for(var i = 0; i < wordsGrid.children.length && i < fieldsNumber; i++) 
+        // Update text fields through repeater items
+        for(var i = 0; i < fieldsNumber; i++) 
         {
-            var item = wordsGrid.children[i];
+            var item = wordsRepeater.itemAt(i);
             if(item && item.children && item.children.length > 0) 
             {
                 var textField = item.children[0];
