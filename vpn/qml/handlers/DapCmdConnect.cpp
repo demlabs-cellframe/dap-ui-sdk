@@ -88,6 +88,12 @@ void DapCmdConnect::handleError(int code, const QString& message)
         emit errorMessage("Server not available. Network connection is disabled.");
         return;
     }
+  // network is unreachable
+  if (code == 101)
+  {
+      emit errorMessage("Server not available. Network connection is disabled.");
+      return;
+  }
     // unknown error
     if (code == 10053 && message == "Unknown error")
         return;
