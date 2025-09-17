@@ -45,6 +45,15 @@ Item {
             toggleswitch.state = "off";
         positionTransition.enabled = true
     }
+    
+    onCheckedChanged: {
+        positionTransition.enabled = false
+        if (checked)
+            toggleswitch.state = "on";
+        else
+            toggleswitch.state = "off";
+        positionTransition.enabled = true
+    }
 
     Rectangle {
         id: background
