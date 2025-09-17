@@ -565,6 +565,12 @@ void DapNode::initWeb3Connections()
 
         emit sigError(errorCode, errorMessage);
     });
+
+    // web3 connect denied -> show friendly notification to UI layer
+    connect(web3, &DapNodeWeb3::sigConnectDenied, this, [=](){
+        DEBUGINFO << "[CONNECT DENIED] Forwarding friendly UI notification";
+        emit sigError(0, QStringLiteral("Connection denied by wallet"));
+    });
     // get wallet data
     connect(web3, &DapNodeWeb3::sigWalletDataReady, this, &DapNode::parseDataWallet);
     // mempool contain transaction hash
