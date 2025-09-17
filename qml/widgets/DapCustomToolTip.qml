@@ -65,6 +65,9 @@ ToolTip {
                 target: root
 
                 function onUpdatePos() {
+                    if(!bottomRect.visible)
+                        return;
+
                     if (root.y < 0) {
                         bottomRect.anchors.top = backgroundToolTip.bottom;
                         bottomRect.anchors.topMargin = -(bottomRect.width / 2);

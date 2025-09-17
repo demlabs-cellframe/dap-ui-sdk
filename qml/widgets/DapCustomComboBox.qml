@@ -62,6 +62,32 @@ Item {
 
     implicitHeight: 45 * scaleFactor
 
+    /* Allow key handling when popup is open */
+    focus: true
+    Keys.onPressed: function (event) {
+        if (!(popup.visible || popupVisible))
+            return;
+
+        // Close by keyboard scrolling keys; do not block outer scroll (except Escape)
+        switch (event.key) {
+        case Qt.Key_Up:
+        case Qt.Key_Down:
+        case Qt.Key_PageUp:
+        case Qt.Key_PageDown:
+        case Qt.Key_Home:
+        case Qt.Key_End:
+            closeCombo();
+            event.accepted = false;
+            break;
+        case Qt.Key_Escape:
+            closeCombo();
+            event.accepted = true;
+            break;
+        default:
+            break;
+        }
+    }
+
     onModelChanged: {
         print("DapCustomComboBox", "onModelChanged", "popupListView.currentIndex", popupListView.currentIndex);
 
@@ -279,9 +305,9 @@ Item {
                             verticalAlignment: Text.AlignVCenter
                         }
 
-                        Image{
-                            property var data: getModelData(index, imageRole)
+                        Image {
                             id: statusIcon
+                            property var data: getModelData(index, imageRole)
                             visible: data === "" ? false : true
                             // wallets combobox
                             source: data === "Active" ? enabledIcon : disabledIcon
@@ -296,7 +322,9 @@ Item {
                         onClicked: {
                             forceActiveFocus();
                             popupListView.currentIndex = index;
+                            // Close completely after selection
                             popup.visible = false;
+                            popupVisible = false;
                             itemSelected(index);
                         }
                     }
@@ -422,13 +450,20 @@ Item {
                 var insideMain = pMain.x >= 0 && pMain.y >= 0 && pMain.x <= mainItem.width && pMain.y <= mainItem.height;
 
                 if (!(insidePopup || insideFake || insideMain)) {
-                    popup.close();
+                    closeCombo();
                 }
 
                 // Do not consume wheel to keep outer scroll working
                 w.accepted = false;
             }
         }
+    }
+
+    // Helper to fully close combo state (popup + internal flags)
+    function closeCombo() {
+        popupVisible = false;
+        popup.visible = false;
+        popup.close()
     }
 
     function getModelData(index, role) {
