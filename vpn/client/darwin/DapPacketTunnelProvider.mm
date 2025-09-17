@@ -84,7 +84,7 @@
     }
     
     // Set tunnel network settings with enhanced logging
-    __unsafe_unretained typeof(self) weakSelf = self;
+    __weak __typeof(self) weakSelf = self;
     os_log(logger, "Setting tunnel network settings...");
     NSLog(@"NE Provider: Setting tunnel network settings...");
     
@@ -417,7 +417,7 @@
     self.packetReadTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, self.ioQueue);
     dispatch_source_set_timer(self.packetReadTimer, dispatch_time(DISPATCH_TIME_NOW, 0), 50*NSEC_PER_MSEC, 5*NSEC_PER_MSEC);
     
-    __unsafe_unretained typeof(self) weakSelf = self;
+    __weak __typeof(self) weakSelf = self;
     dispatch_source_set_event_handler(self.packetReadTimer, ^{
         if (weakSelf && weakSelf.isTunnelActive) {
             [weakSelf readPacketsFromFlowAndFeedCore];
@@ -436,7 +436,7 @@
     }
     
     // FIXED: Use unsafe_unretained reference to avoid retain cycles (MRC mode)
-    __unsafe_unretained typeof(self) weakSelf = self;
+    __weak __typeof(self) weakSelf = self;
     [self.packetFlow readPacketsWithCompletionHandler:^(NSArray<NSData *> *packets, NSArray<NSNumber *> *protocols) {
         if (weakSelf) {
             [weakSelf handleIncomingPackets:packets protocols:protocols];
@@ -462,7 +462,7 @@
         }
         
         // FIXED: Use unsafe_unretained reference to avoid retain cycles (MRC mode)
-        __unsafe_unretained typeof(self) weakSelf = self;
+        __weak __typeof(self) weakSelf = self;
         [self.coreBridge processIncomingPacket:packet protocol:[protocol integerValue] completion:^(NSData *responsePacket, NSError *error) {
             if (!weakSelf) return;
             

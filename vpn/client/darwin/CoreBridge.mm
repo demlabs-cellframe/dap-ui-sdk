@@ -434,7 +434,7 @@
     [self stopHeartbeatTimer];
     
     // Use unsafe_unretained reference to avoid retain cycle (MRC mode)
-    __unsafe_unretained typeof(self) weakSelf = self;
+    __weak __typeof(self) weakSelf = self;
     self.heartbeatTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, self.processingQueue);
     dispatch_source_set_timer(self.heartbeatTimer, dispatch_time(DISPATCH_TIME_NOW, 30 * NSEC_PER_SEC), 30 * NSEC_PER_SEC, 5 * NSEC_PER_SEC);
     dispatch_source_set_event_handler(self.heartbeatTimer, ^{
