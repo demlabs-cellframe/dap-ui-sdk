@@ -139,8 +139,8 @@ void DapTunDarwin::tunnelManagerStart()
             
             NETunnelProviderProtocol *protocol = [[NETunnelProviderProtocol alloc] init];
             protocol.serverAddress = [NSString stringWithUTF8String: upstreamAddress().toLatin1().constData()];
-            // CRITICAL FIX: Use correct bundle identifier that matches the main app's Info.plist
-            protocol.providerBundleIdentifier = [NSString stringWithUTF8String: "com.yourcompany.KelVPNService"];
+            // Use the bundle identifier of the Packet Tunnel Provider extension
+            protocol.providerBundleIdentifier = @"com.KelVPN.PacketTunnel";
             protocol.providerConfiguration = providerConfig;
             
             NSLog(@"DapTunDarwin::tunnelManagerStart() - Protocol configured: server=%@, bundle=%@", 
