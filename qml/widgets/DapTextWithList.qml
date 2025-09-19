@@ -133,7 +133,7 @@ Item
                 }
 
                 id: tooltip
-                bottomRect.height: 0
+                bottomRect.visible: false
 
                 parent: area
                 width: getWidthTootip()
