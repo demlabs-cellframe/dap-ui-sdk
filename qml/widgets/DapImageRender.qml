@@ -13,6 +13,3 @@ Image {
         height: 0
     }
 }
-
-/*Image {
-}*/
