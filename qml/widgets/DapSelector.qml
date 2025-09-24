@@ -20,6 +20,7 @@ Rectangle
     property bool itemWidthEnabled: false
 
     property int itemWidth
+    property int itemRadius
 
     signal itemSelected()
 
@@ -58,7 +59,7 @@ Rectangle
             Rectangle {
                 id: contenMask
                 anchors.fill: parent
-                radius: height * 0.5
+                radius: itemRadius ? itemRadius : height * 0.5
                 visible: false
             }
             /* mask */

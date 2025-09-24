@@ -16,6 +16,10 @@ Item
     property bool hovered: mouseArea.containsMouse
     property bool setHovered: false
 
+    property string hoverIcon: pathResources + pathTheme + "/icons/other/copy_hover_small.svg"
+    property string normalIcon: pathResources + pathTheme + "/icons/other/copy_small.svg"
+
+
     signal copyClicked()
 
     Image
@@ -24,8 +28,8 @@ Item
         width: parent.width
         height: parent.height
         mipmap: true
-        source: mouseArea.containsMouse || setHovered ? pathResources + pathTheme + "/icons/other/copy_hover_small.svg":
-                                                        pathResources + pathTheme + "/icons/other/copy_small.svg"
+        source: mouseArea.containsMouse || setHovered ? hoverIcon:
+                                                        normalIcon
     }
 
     MouseArea
