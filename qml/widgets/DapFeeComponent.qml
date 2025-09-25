@@ -7,6 +7,7 @@ import DapCoinCalculator
 Item {
     id: root
     property int margins: 16 * guiApp.scaleFactor
+    property int selectorLeftRighnMargin: 0 * guiApp.scaleFactor
     property string currentValue: "0.01"
     property string minimalValue: "0.0"
     property string maximumValue: "100.0"
@@ -179,6 +180,8 @@ Item {
             Layout.preferredHeight: 24 * guiApp.scaleFactor
             // Layout.topMargin: 20 * guiApp.scaleFactor
             Layout.bottomMargin: 9 * guiApp.scaleFactor
+            Layout.leftMargin: selectorLeftRighnMargin
+            Layout.rightMargin: selectorLeftRighnMargin
 
             property int activeLevel: getActiveLevel()
 
