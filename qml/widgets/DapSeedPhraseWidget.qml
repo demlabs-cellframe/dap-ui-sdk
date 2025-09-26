@@ -53,6 +53,7 @@ Item {
 
     signal pasteWordsRequested()  // Request parent to handle paste
     signal copyWordsRequested()   // Request parent to handle copy
+    signal allWordsInserted()
     
     QMLClipboard {
         id: clipboard
@@ -360,6 +361,7 @@ Item {
             }
         }
         setEnableNext(true);
+        root.allWordsInserted()
     }
     
     function clearAllWords() 
