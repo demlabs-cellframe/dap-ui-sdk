@@ -222,8 +222,8 @@
     NSArray *exc = config[@"routesExclude"] ?: @[];
     NSNumber *mtu = config[@"mtu"];
     
-    // Use gateway as tunnel remote address, fallback to server
-    NSString *remoteAddress = gw ?: config[@"server"] ?: @"10.0.0.1";
+    // Use server as tunnel remote address, NOT gateway (tunnel endpoint must be actual server)
+    NSString *remoteAddress = config[@"server"] ?: @"10.0.0.1";
     
     NEPacketTunnelNetworkSettings *settings = [[NEPacketTunnelNetworkSettings alloc] 
                                                initWithTunnelRemoteAddress:remoteAddress];
