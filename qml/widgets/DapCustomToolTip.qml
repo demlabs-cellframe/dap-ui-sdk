@@ -14,13 +14,16 @@ ToolTip {
     property alias backgroundToolTip: backgroundToolTip
     property double scaleFactor: 1.0
     property int elideMode: Text.ElideRight
+    property int wrapMode: Text.WrapAnywhere
+    property bool wrapEnabled: false
 
     contentItem: Text {
         width: parent.width
         color: textColor
         text: contentText
         font: textFont
-        elide: elideMode
+        elide: root.wrapEnabled ? Text.ElideNone : root.elideMode
+        wrapMode: root.wrapEnabled ? root.wrapMode : Text.NoWrap
     }
 
     background: Item {

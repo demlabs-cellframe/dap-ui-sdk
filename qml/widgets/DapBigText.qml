@@ -36,6 +36,7 @@ Item
         color: textColor
         text: fullText
         verticalAlignment: Qt.AlignVCenter
+        horizontalAlignment: Qt.AlignLeft
         elide: Text.ElideMiddle
 
         MouseArea
