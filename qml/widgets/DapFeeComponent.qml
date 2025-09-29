@@ -86,7 +86,7 @@ Item {
             Item {
                 id: inputValueItem
                 property int spacing: 16 * guiApp.scaleFactor
-                implicitWidth: textMetrics.width + spacing + valueNameText.width > valueField.width - spacing ? valueField.width - spacing : textMetrics.width + spacing + valueNameText.width
+                implicitWidth: textMetrics.width + spacing + valueNameText.width > valueField.width - spacing ? valueField.width - spacing : textMetrics.width + spacing + valueNameText.width + (CURRENT_OS === "android" ? spacing : 0)
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -117,6 +117,15 @@ Item {
 
                     onTextChanged: {
                         textMetrics.text = text;
+
+                        // Update placeholder visibility
+                        if (!activeFocus) {
+                            if (text === "") {
+                                placeholderText = defaultPlaceholderText;
+                            } else {
+                                placeholderText = "";
+                            }
+                        }
                     }
 
                     onEditingFinished: {
@@ -151,6 +160,12 @@ Item {
 
                     onFocusChanged: {
                         cursorPosition = 0;
+                    }
+
+                    onActiveFocusChanged: {
+                        if (!activeFocus && text === "") {
+                            placeholderText = defaultPlaceholderText;
+                        }
                     }
 
                     TextMetrics {
