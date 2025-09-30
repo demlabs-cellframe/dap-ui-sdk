@@ -59,6 +59,18 @@ DapNode:: DapNode(QObject * obj, int requestTimeout) :
         qDebug() << "[Fee Debug] Fee isolated request timeout, returning to initial state";
         emit sigFeeReceived();
     });
+
+    // Periodic retry for node detection when node is not detected
+    m_nodeDetectRetryTimer = new QTimer(this);
+    m_nodeDetectRetryTimer->setSingleShot(false);
+    m_nodeDetectRetryTimer->setInterval(NODE_DETECT_REQUEST_REPEAT_PERIOD);
+    connect(m_nodeDetectRetryTimer, &QTimer::timeout, this, [this]() {
+        if (m_stm->nodeNotDetected.active()) {
+            emit repeatNodeDetection();
+        } else {
+            m_nodeDetectRetryTimer->stop();
+        }
+    });
     
     initWeb3Connections();
     initStmTransitions();
@@ -193,6 +205,11 @@ void DapNode::initStmTransitions()
     &m_stm->getWallets);
     // node detection -> get node status
     m_stm->nodeDetection.addTransition(web3, &DapNodeWeb3::nodeNotDetected,
+    &m_stm->nodeNotDetected);
+
+    // node detection -> node not detected on generic web3 error
+    // (e.g. invalid/missing status, unknown method, connection refused)
+    m_stm->nodeDetection.addTransition(this, &DapNode::errorDetected,
     &m_stm->nodeNotDetected);
 
     // node not detected -> node detection, repeat detection
@@ -352,10 +369,14 @@ void DapNode::initStmStates()
     // node detected
     connect(&m_stm->nodeNotDetected, &QState::entered, this, [=](){
         DEBUGINFO  << "&nodeNotDetected, &QState::entered";
-        if (!m_isCDBLogined)
-            QTimer::singleShot(NODE_DETECT_REQUEST_REPEAT_PERIOD, [=](){
-                emit repeatNodeDetection();
-            });
+        if (!m_isCDBLogined && m_nodeDetectRetryTimer && !m_nodeDetectRetryTimer->isActive()) {
+            m_nodeDetectRetryTimer->start();
+        }
+    });
+    connect(&m_stm->nodeNotDetected, &QState::exited, this, [=](){
+        if (m_nodeDetectRetryTimer && m_nodeDetectRetryTimer->isActive()) {
+            m_nodeDetectRetryTimer->stop();
+        }
     });
     //
     connect(&m_stm->nodeConnection, &QState::entered, this, [=](){
@@ -510,6 +531,11 @@ void DapNode::initWeb3Connections()
     // node detected signal
     connect(web3, &DapNodeWeb3::nodeDetected, this, &DapNode::sigNodeDetected);
     connect(web3, &DapNodeWeb3::checkNodeStatus, this, &DapNode::sigNodeDetected);
+    // Consider node as detected once Dashboard approves connection (Connect → connectionIdReceived)
+    connect(web3, &DapNodeWeb3::connectionIdReceived, this, [=](const QString &){
+        DEBUGINFO << "[Node Detect] connectionIdReceived -> emitting sigNodeDetected()";
+        emit sigNodeDetected();
+    });
     connect(web3, &DapNodeWeb3::statusOk, this, [=](){
         if (m_stm->transactionProcessing.active()) emit transactionProcessing();
         if (m_stm->gettingWalletsData.active()) emit gettingWalletsData();
@@ -538,6 +564,12 @@ void DapNode::initWeb3Connections()
           return;
 
         emit sigError(errorCode, errorMessage);
+    });
+
+    // web3 connect denied -> show friendly notification to UI layer
+    connect(web3, &DapNodeWeb3::sigConnectDenied, this, [=](){
+        DEBUGINFO << "[CONNECT DENIED] Forwarding friendly UI notification";
+        emit sigError(0, QStringLiteral("Connection denied by wallet"));
     });
     // get wallet data
     connect(web3, &DapNodeWeb3::sigWalletDataReady, this, &DapNode::parseDataWallet);

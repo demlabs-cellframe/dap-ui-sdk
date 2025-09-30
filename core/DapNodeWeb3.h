@@ -138,7 +138,8 @@ private:
                     const QString &urlPath, DapNetworkReply &a_netReply,
                     const QString &headers = "", bool ssl = false);
   bool jsonError() { return m_parseJsonError; }
-  void responseProcessing (const int error, const QString errorString = "", const bool httpFinished = true);
+  void responseProcessing (const int error, const QString errorString = "", const bool httpFinished = true,
+                           const QByteArray &replyDataOverride = QByteArray());
 
   void responseParsing (
     const int error,
@@ -147,7 +148,8 @@ private:
     int baseErrorCode,
     QString messageReplyDataError,
     ReplyMethodID parseMethod,
-    bool responceError);
+    bool responceError,
+    const QByteArray &replyDataOverride = QByteArray());
   /// @}
 
   /****************************************//**
@@ -219,6 +221,7 @@ private slots:
 signals:
   // -------- output signals --------
   void sigError (int errorCode, QString errorMessage);
+  void sigConnectDenied();
   void sigReceivedWalletsList (QStringList);
   void sigReceivedNetworksList (QStringList);
   void sigWalletDataReady (QJsonArray);

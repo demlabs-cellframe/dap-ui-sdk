@@ -212,6 +212,8 @@ private:
     // Timeouts for detaching from hanging on fee retrieval
     QTimer* m_feeTimeout = nullptr;
     QTimer* m_feeIsolatedTimeout = nullptr;
+    // Periodic retry for node detection while in nodeNotDetected state
+    QTimer* m_nodeDetectRetryTimer = nullptr;
 
 
 public slots:

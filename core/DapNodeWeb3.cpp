@@ -152,12 +152,14 @@ void DapNodeWeb3::sendRequest(QString request)
 {
     m_networkReply = new DapNetworkReply(this);
 
-    connect(m_networkReply, &DapNetworkReply::finished, this, [this]() {
-        responseProcessing(m_networkReply->error(), m_networkReply->errorString());
+    auto replyPtr = m_networkReply; // capture the specific reply instance
+    connect(m_networkReply, &DapNetworkReply::finished, this, [this, replyPtr]() {
+        // Pass raw reply to processing; avoid ad-hoc checks here
+        responseProcessing(replyPtr->error(), replyPtr->errorString(), true, replyPtr->getReplyData());
     });
 
-    connect(m_networkReply, &DapNetworkReply::sigError, this, [this]() {
-        responseProcessing(m_networkReply->error(), m_networkReply->errorString(), false);
+    connect(m_networkReply, &DapNetworkReply::sigError, this, [this, replyPtr]() {
+        responseProcessing(replyPtr->error(), replyPtr->errorString(), false, replyPtr->getReplyData());
     });
 
     m_networkRequest = request;
@@ -193,7 +195,8 @@ bool isVersionLessThan(const QString& version1, const QString& version2) {
 void DapNodeWeb3::responseProcessing (
   const int error,
   const QString errorString,
-  const bool httpFinished)
+  const bool httpFinished,
+  const QByteArray &replyDataOverride)
 {
   // get network request
   QString networkRequest  = std::move (m_networkRequest);
@@ -211,7 +214,8 @@ void DapNodeWeb3::responseProcessing (
           return;
         }
 
-        QJsonDocument doc = QJsonDocument::fromJson (m_networkReply->getReplyData());
+        const QByteArray raw = replyDataOverride.isEmpty() ? (m_networkReply ? m_networkReply->getReplyData() : QByteArray()) : replyDataOverride;
+        QJsonDocument doc = QJsonDocument::fromJson (raw);
 
         if (doc["status"].isString()) {
             if (doc["status"].toString() == QString("ok")) {
@@ -312,7 +316,8 @@ void DapNodeWeb3::responseProcessing (
     replyMethod.baseErrorCode,
     replyMethod.wrongReplyText,
     replyMethod.parseMethodID,
-    replyMethod.replyError);
+    replyMethod.replyError,
+    replyDataOverride);
 
 //  for (int k = 0; k < replyItems.count(); k++)
 //  {
@@ -378,7 +383,8 @@ void DapNodeWeb3::responseParsing (
 //    void(DapNodeWeb3::*parseMethod)(const QString&, int baseErrorCode, const QString&),
 //    void(DapNodeWeb3::*replyError)(int error),
   ReplyMethodID parseMethod,
-  bool responceError)
+  bool responceError,
+  const QByteArray &replyDataOverride)
 {
   /* on any error */
   if (error != QNetworkReply::NetworkError::NoError)
@@ -395,7 +401,15 @@ void DapNodeWeb3::responseParsing (
     }
 
   // no error reply
-  auto reply = m_networkReply->getReplyData();
+  auto reply = replyDataOverride.isEmpty() ? (m_networkReply ? m_networkReply->getReplyData() : QByteArray()) : replyDataOverride;
+  // Log raw JSON for wallet-related methods (diagnostics)
+  if (parseMethod == ReplyMethodID::ParseReplyConnect ||
+      parseMethod == ReplyMethodID::ParseReplyWallets ||
+      parseMethod == ReplyMethodID::ParseReplyNetworks ||
+      parseMethod == ReplyMethodID::ParseDataWallet)
+    {
+      DEBUGINFO << "[WEB3 RAW JSON]" << reply;
+    }
 //  qInfo() << "reply message: " << reply;
 
   // check reply message error
@@ -1504,6 +1518,17 @@ void DapNodeWeb3::parseJson (const QString &replyData, int baseErrorCode, const 
     {
       /* get details */
       auto errorMsgString = errorMsg.toString();
+
+      // Suppress generic UI error on explicit wallet denial for Connect and emit dedicated signal
+      if (a_replyName == QStringLiteral("parseReplyConnect")
+          && status == QStringLiteral("bad")
+          && errorMsgString.contains(QStringLiteral("Connection denied"), Qt::CaseInsensitive))
+      {
+        DEBUGINFO << "[CONNECT DENIED] Wallet denied connection. Suppressing sigError/UI notification";
+        emit sigConnectDenied();
+        m_parseJsonError = true;
+        return;
+      }
 
       /* notify on incorrect id */
       if (errorMsgString == "Incorrect id")
