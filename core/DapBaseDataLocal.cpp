@@ -859,19 +859,37 @@ void DapBaseDataLocal::setSerialKeyData(const QJsonObject& object)
 {
     if(object.isEmpty())
     {
-        resetSerialKeyData();
         return;
     }
     QString serialKey = object.value(JSON_SERIAL_KEY_KEY).toString();
+    bool hasSerial = object.contains(JSON_SERIAL_KEY_KEY);
+    bool hasIsActivated = object.contains(JSON_IS_ACTIVATED_KEY);
     bool isActivated = object.value(JSON_IS_ACTIVATED_KEY).toBool();
     qint64 timeStemp = object.value(JSON_LISENSE_TIME_KEY).toString().toLongLong();
     qint64 licenseTermTillLong = object.value(JSON_LICENSE_TERM_TILL_KEY).toInt();
     QDateTime licenseTermTill = QDateTime::fromSecsSinceEpoch(licenseTermTillLong);
     QDateTime time = QDateTime::fromSecsSinceEpoch(timeStemp);
-    m_serialKeyData->setSerialKey(std::move(serialKey));
-    m_serialKeyData->setDateActivate(time);
-    m_serialKeyData->setActivated(isActivated);
-    m_serialKeyData->setLicenseTermTill(licenseTermTill);
+
+    // Only update serial if the incoming value is non-empty. This avoids
+    // unintentionally clearing a valid stored serial key due to partial updates.
+    if (hasSerial && !serialKey.isEmpty()) {
+        m_serialKeyData->setSerialKey(std::move(serialKey));
+    }
+
+    // Update activation state if provided.
+    if (hasIsActivated) {
+        m_serialKeyData->setActivated(isActivated);
+    }
+
+    // Update activation date if provided (non-zero timestamp)
+    if (timeStemp != 0) {
+        m_serialKeyData->setDateActivate(time);
+    }
+
+    // Update license term if provided (non-zero)
+    if (licenseTermTillLong != 0) {
+        m_serialKeyData->setLicenseTermTill(licenseTermTill);
+    }
 }
 
 const QJsonArray DapBaseDataLocal::serialKeyDataListToJson() const
