@@ -83,6 +83,10 @@ Item {
     /// @brief Interface::Login class instance pointer
     property var interfaceObject
 
+    // Activated serial state (to hide input and show banner)
+    property bool serialActivated: false
+    property string activatedSerial: ""
+
     /// @}
     /****************************************//**
      * @name SIGNALS
@@ -155,6 +159,22 @@ Item {
     function switchTab(a_index) {
         internal.mode   = a_index;
         loginTypeKelContainer.update();
+    }
+
+    // Format serial as XXXX-XXXX-XXXX-XXXX (remove non-alphanumerics first)
+    function formatSerialForDisplay(raw) {
+        if (raw === undefined || raw === null)
+            return "____ ____ ____ ____";
+        var s = ("" + raw).replace(/[^A-Za-z0-9]/g, "");
+        if (s.length === 0)
+            return "____ ____ ____ ____";
+        var out = "";
+        for (var i = 0; i < s.length; i++) {
+            if (i > 0 && (i % 4) === 0)
+                out += "-";
+            out += s[i];
+        }
+        return out;
     }
 
     /// @}
@@ -238,6 +258,66 @@ Item {
         anchors.fill: parent
         visible: internal.mode === QuiLoginForm.Mode.M_SERIAL
 
+        // Debug line to verify property values during integration
+        DapQmlLabel {
+            id: dbgBannerInfo
+            z: 200
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: "[DBG] serialActivated=" + serialActivated + ", serial=" + (activatedSerial ? activatedSerial : "")
+            qss: "c-label"
+        }
+
+        /****************************************//**
+         * Activated banner (shown instead of input)
+         ********************************************/
+
+        Item {
+            id: activatedBanner
+            // Place banner exactly over the serial input area
+            anchors.top: enterKeyField.top
+            anchors.left: enterKeyField.left
+            width: enterKeyField.width
+            height: enterKeyField.height
+            visible: serialActivated === true
+            z: 1000
+
+            Column {
+                id: bannerColumn
+                anchors.centerIn: parent
+                width: parent.width * 0.9
+                spacing: 6
+                z: 1
+
+                DapQmlLabel {
+                    width: parent.width
+                    text: qsTr("Your serial key is activated")
+                    horizontalAlign: Text.AlignHCenter
+                    qss: "c-label"
+                    // Keep readable size; theme may override if defined
+                    fontSize: 18
+                    fontWeight: 700
+                    z: 2
+                    implicitHeight: contentHeight
+                }
+
+                DapQmlLabel {
+                    width: parent.width
+                    text: activatedSerial && activatedSerial.length > 0 ? formatSerialForDisplay(activatedSerial) : "____ ____ ____ ____"
+                    horizontalAlign: Text.AlignHCenter
+                    qss: "c-brand"
+                    fontSize: 16
+                    fontWeight: 600
+                    z: 2
+                    implicitHeight: contentHeight
+                }
+            }
+
+            // Debug: log when banner visibility or data changes
+            onVisibleChanged: {
+                console.log("[Login Banner] visible=", visible, "serialActivated=", serialActivated, "serial=", activatedSerial)
+            }
+        }
+
         /****************************************//**
          * Enter serial
          ********************************************/
@@ -288,6 +368,8 @@ Item {
             Keys.onRightPressed: {
                 event.accepted = true
             }
+            // Hide input when serial is already activated
+            visible: internal.mode === QuiLoginForm.Mode.M_SERIAL && serialActivated === false
         }
 
         /****************************************//**
