@@ -31,6 +31,7 @@ enum FieldId
 static DapQmlModelSettings *__inst = nullptr;
 static QList<Item> s_items;
 static QSet<QString> s_lastFilterKeywords;
+static bool s_connectWalletBusy = false;
 
 static qint32 s_daysLabelIndex    = -1;
 static qint32 s_rouExcIndex       = -1;
@@ -146,6 +147,19 @@ QHash<int, QByteArray> DapQmlModelSettings::roleNames() const
   return names;
 }
 
+bool DapQmlModelSettings::connectWalletBusy() const
+{
+  return s_connectWalletBusy;
+}
+
+void DapQmlModelSettings::setConnectWalletBusy(bool a_busy)
+{
+  if (s_connectWalletBusy == a_busy)
+    return;
+  s_connectWalletBusy = a_busy;
+  emit connectWalletBusyChanged();
+}
+
 
 void DapQmlModelSettings::_buildMenuItemsList()
 {
@@ -170,6 +184,7 @@ void DapQmlModelSettings::_buildMenuItemsList()
       Item{SI_CHECKBOX,   tr ("Dark theme"), "", "settings_icon ic_theme", "dark_themes",                    [](QObject *a_item) { emit __inst->sigDarkTheme (a_item->property ("checked").toBool()); } },
       //Item{SI_LINK,       tr ("Color theme"), "", "settings_icon ic_theme", "color_theme",                   [](QObject*) { emit __inst->sigColorTheme(); } },
       Item{SI_LINK,       tr ("Notification center"), "", "settings_icon ic_notification", "notification",   [](QObject*) { emit __inst->sigNotification(); } },
+      Item{SI_BUTTON,     tr ("Connect to wallet (NoCDB)"), "", "settings_icon ic_key", "connect_wallet_nocdb", [](QObject*) { emit __inst->sigConnectWalletNoCdb(); } },
   #endif // DISABLE_THEMES
 
       Item{SI_TITLE,      tr ("Support"), "", "settings_icon", "support",                                    [](QObject*){} },

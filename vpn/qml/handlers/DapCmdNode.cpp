@@ -542,6 +542,14 @@ void DapCmdNode::slotRequestNetworkFee (const QString &a_networkName)
     sendCmd (&request);
 }
 
+void DapCmdNode::slotRequestNodeDetectedCheck()
+{
+    DEBUGINFO << __PRETTY_FUNCTION__;
+    QJsonObject checkNode;
+    checkNode["node_detected_check"] = true;
+    sendCmd (&checkNode);
+}
+
 void DapCmdNode::slotChooseWallet (const QString &wallet)
 {
     DEBUGINFO << __PRETTY_FUNCTION__;

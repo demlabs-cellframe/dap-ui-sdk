@@ -109,6 +109,7 @@ public slots:
   void slotStartConnectByHistoryOrder (const DapNodeOrderInfo &a_info, const QString &a_token, const QString &a_network);
   void slotRequestIpNode (const QString &networkName, const QJsonArray &orderList);
   void slotRequestNetworkFee (const QString &a_networkName);
+  void slotRequestNodeDetectedCheck();
   /// @}
 
   /****************************************//**

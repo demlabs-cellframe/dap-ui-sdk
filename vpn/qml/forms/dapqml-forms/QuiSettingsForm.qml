@@ -165,6 +165,7 @@ Item {
                     checked: (model.icon === "settings_icon ic_theme") ? root.darkTheme : false
                     icon: model.icon
                     iconSize: resizer1.fontSize
+                    disableClicking: (model.icon === "settings_icon ic_key" && settingsModel.connectWalletBusy)
                     mouseArea.hoverEnabled: true
                     mouseArea.onEntered: delegate.hovered   = true
                     mouseArea.onExited:  delegate.hovered   = false

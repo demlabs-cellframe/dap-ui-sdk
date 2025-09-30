@@ -104,9 +104,17 @@ void DapNode::startCheckingNodeRequest()
         return;
     }
 
+    // Prefer starting detection even if we're not exactly in initialState
     if (m_stm->initialState.active()) {
         DEBUGINFO << __PRETTY_FUNCTION__ << " uiStartNodeDetection()";
         emit uiStartNodeDetection();
+        return;
+    }
+
+    // If we are already around detection states, just repeat detection
+    if (m_stm->nodeDetection.active() || m_stm->nodeNotDetected.active()) {
+        DEBUGINFO << __PRETTY_FUNCTION__ << " repeatNodeDetection()";
+        emit repeatNodeDetection();
         return;
     }
 
@@ -128,6 +136,17 @@ void DapNode::startCheckingNodeRequest()
         emit sigNodeDetected();
         return;
     }
+
+    // Fallback: gently return to initialState and trigger detection from there.
+    // If returning to initialState is not immediate (due to being in arbitrary state),
+    // use waitingCommand as a neutral hub to accept uiStartNodeDetection immediately.
+    DEBUGINFO << __PRETTY_FUNCTION__ << " forcing initialState->uiStartNodeDetection()";
+    emit errorDetected();
+    // Try fast-path via waitingCommand in parallel with initialState path
+    QTimer::singleShot(0, this, [this](){
+        emit uiStartNodeDetection();
+    });
+    return;
 }
 
 
@@ -194,6 +213,10 @@ void DapNode::initStmTransitions()
     // node detection -> get node status
     m_stm->nodeDetection.addTransition(web3, &DapNodeWeb3::nodeNotDetected,
     &m_stm->nodeNotDetected);
+
+    // allow re-triggering detection while already in nodeDetection
+    m_stm->nodeDetection.addTransition(this, &DapNode::repeatNodeDetection,
+    &m_stm->nodeDetection);
 
     // node not detected -> node detection, repeat detection
     m_stm->nodeNotDetected.addTransition(this, &DapNode::repeatNodeDetection,

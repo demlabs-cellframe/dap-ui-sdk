@@ -22,6 +22,7 @@ class DapQmlModelSettings : public QAbstractTableModel
    *******************************************/
   /// @{
   Q_PROPERTY (QString notifier READ notifier NOTIFY languageChanged)
+  Q_PROPERTY (bool connectWalletBusy READ connectWalletBusy NOTIFY connectWalletBusyChanged)
   /// @}
 
   /****************************************//**
@@ -63,6 +64,8 @@ public:
   Q_INVOKABLE void exec (int a_index, QObject *a_item = nullptr);
   Q_INVOKABLE QString notifier() const;
   Q_INVOKABLE QVariant value (int a_index, const QString &a_fieldName) const;
+  Q_INVOKABLE bool connectWalletBusy() const;
+  Q_INVOKABLE void setConnectWalletBusy(bool a_busy);
 private:
   void _buildMenuItemsList();
   void _updateMenuContent (const QSet<QString> &a_filterKeywords);
@@ -101,6 +104,7 @@ signals:
   //void sigColorTheme();
   void sigDarkTheme (bool a_state);
   void sigNotification();
+  void sigConnectWalletNoCdb();
 
   /* support */
   void sigBugSend();
@@ -143,6 +147,7 @@ signals:
 
   /* retranslation */
   void languageChanged();
+  void connectWalletBusyChanged();
   /// @}
 
   /****************************************//**

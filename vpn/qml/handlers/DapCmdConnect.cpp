@@ -56,6 +56,14 @@ void DapCmdConnect::sendCmdRestartService(bool if_running)
     sendCmd(&obj);
 }
 
+void DapCmdConnect::sendCmdSetNoCdbMode(bool enabled)
+{
+    QJsonObject obj;
+    obj["action"] = "SetNoCdbMode";
+    obj["enabled"] = enabled;
+    sendCmd(&obj);
+}
+
 void DapCmdConnect::handleResult(const QJsonObject& result)
 {
     qDebug() << "handleResult";
