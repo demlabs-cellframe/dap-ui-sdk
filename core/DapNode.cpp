@@ -390,6 +390,15 @@ void DapNode::initStmStates()
         m_walletsData = QJsonObject();
         walletDataRequest();
     });
+    
+    // connect app type detection signal from web3
+    connect(web3, &DapNodeWeb3::statusOk, this, [this](){
+        QString detectedAppType = web3->connectedAppType();
+        if (!detectedAppType.isEmpty()) {
+            emit sigConnectedAppTypeDetected(detectedAppType);
+        }
+    });
+    
     // get fee
     connect (&m_stm->getFee, &QState::entered, this, [=](){
         qDebug() << "[Fee Debug] Entering getFee state, starting timeout for network:" << m_networkName;
@@ -553,9 +562,9 @@ void DapNode::initWeb3Connections()
        emit sigCondTxCreateSuccess(m_transactionHash);
     });
     // transaction queued in Dashboard
-    connect(web3, &DapNodeWeb3::sigTransactionInQueue, this, [=](QString idQueue){
-       DEBUGINFO  << "&sigTransactionInQueue" << idQueue;
-       emit sigTransactionInQueue(idQueue);
+    connect(web3, &DapNodeWeb3::sigTransactionInQueue, this, [=](QString idQueue, QString appType){
+       DEBUGINFO  << "&sigTransactionInQueue" << idQueue << "App type:" << appType;
+       emit sigTransactionInQueue(idQueue, appType);
     });
     // list keys ready
     connect(web3, &DapNodeWeb3::sigListKeys, this, [=](QStringList listKeys) {
@@ -969,6 +978,15 @@ void NodeConnectStateMachine::init()
 
   /* finish */
   qDebug() << "nodeConnectMachine::init";
+}
+
+QString DapNode::getConnectedAppType() const
+{
+    // Access web3 component to get the detected app type
+    if (web3) {
+        return web3->connectedAppType();
+    }
+    return QString("Dashboard"); // Default fallback
 }
 
 /*-----------------------------------------*/

@@ -2,6 +2,7 @@
 #include <QMap>
 #include <QDebug>
 #include "DapNode.h"
+#include <QtCore/QMetaObject>
 
 // client, service side
 #define DEBUGINFO qDebug()<<"--->SrvCMD<---"
@@ -161,14 +162,15 @@ void DapCmdNode::sendTransactionInLedger()
     DEBUGINFO << "sendTransactionInLedger";
 }
 
-void DapCmdNode::sendTransactionInQueue(const QString& idQueue)
+void DapCmdNode::sendTransactionInQueue(const QString& idQueue, const QString& appType)
 {
     DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject response;
     response["transaction_in_queue"] = true;
     response["queue_id"] = idQueue;
+    response["app_type"] = appType;
     sendCmd(&response);
-    DEBUGINFO << "sendTransactionInQueue with ID:" << idQueue;
+    DEBUGINFO << "sendTransactionInQueue with ID:" << idQueue << "App type:" << appType;
 }
 
 void DapCmdNode::sendSigningInfo(qint32 utype, qint64 uid, qint64 units, QString price)
@@ -192,6 +194,12 @@ void DapCmdNode::sendFeeData (const QJsonObject &a_data)
   response["get_fee_data"] = a_data;
   sendCmd(&response);
   DEBUGINFO << "sendFeeData" << a_data;
+}
+
+Q_SLOT void DapCmdNode::slotRequestNodeDetectedCheck()
+{
+    DEBUGINFO << __PRETTY_FUNCTION__ << "Requesting current nodeDetected state for UI sync";
+    sendNodeDetected();
 }
 
 void DapCmdNode::handle(const QJsonObject* params)
@@ -302,5 +310,18 @@ void DapCmdNode::handle(const QJsonObject* params)
     {
         qDebug() << "Emitting getFeeData";
         emit getFeeData(params->value("get_fee_data").toString());
+    }
+}
+
+QString DapCmdNode::getConnectedAppType() const
+{
+    return m_connectedAppType;
+}
+
+void DapCmdNode::setConnectedAppType(const QString& appType)
+{
+    if (m_connectedAppType != appType) {
+        m_connectedAppType = appType;
+        qDebug() << "[DapCmdNode] Connected app type updated to:" << appType;
     }
 }

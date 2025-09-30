@@ -223,9 +223,11 @@ void DapNodeWeb3::responseProcessing (
                 if (dataObject.contains("cellframe-dashboard") && !dataObject["cellframe-dashboard"].toString().isEmpty()) {
                     cellframeDashboard = dataObject["cellframe-dashboard"].toString();
                     dashboardType = "dashboard";
+                    m_connectedAppType = "Dashboard"; // For UI display
                 } else if (dataObject.contains("cellframe-wallet") && !dataObject["cellframe-wallet"].toString().isEmpty()) {
                     cellframeDashboard = dataObject["cellframe-wallet"].toString();
                     dashboardType = "wallet";
+                    m_connectedAppType = "Cellframe-Wallet"; // For UI display
                 }
                 
                 QString cellframeNode = dataObject["cellframe-node"].toString();
@@ -912,7 +914,7 @@ void DapNodeWeb3::parseCondTxCreateReply (const QString &replyData, int baseErro
       if (dataObj["toQueue"].toBool() && dataObj.contains("idQueue")) {
         QString queueId = dataObj["idQueue"].toString();
         DEBUGINFO << "Transaction queued in Dashboard with ID:" << queueId;
-        emit sigTransactionInQueue(queueId);
+        emit sigTransactionInQueue(queueId, m_connectedAppType);
         return;
       }
       
@@ -1050,6 +1052,14 @@ void DapNodeWeb3::parseNodeIp (const QString &replyData, int baseErrorCode)
     return;
 
   QJsonObject data = doc.object();
+  QString status = data.value("status").toString();
+
+  // Handle special case where status is "bad" but parseJson didn't set error (e.g., "No records")
+  if (status == "bad") {
+    qDebug() << "🔍 [IP DEBUG] Dashboard status is 'bad' but treated as non-critical - emitting empty IP data";
+    emit sigNodeIp(QJsonObject());
+    return;
+  }
 
   if (data.contains ("data"))
   {
@@ -1088,27 +1098,11 @@ void DapNodeWeb3::parseNodeIp (const QString &replyData, int baseErrorCode)
         }
       }
       
-      qDebug() << "🔍 [IP DEBUG] IP Resolution Summary:" << validIpCount << "valid IPs," << unknownIpCount << "unknown from Dashboard," << (data.size() - validIpCount - unknownIpCount) << "other issues";
+      qDebug() << "🔍 [IP DEBUG] IP Resolution Summary:" << validIpCount
+               << "valid IPs," << unknownIpCount << "unknown from Dashboard," << (data.size() - validIpCount - unknownIpCount) << "other issues";
       
-      // Trigger diagnostics if many IPs are unknown
-      if (unknownIpCount > 0 && (unknownIpCount >= data.size() / 2 || unknownIpCount >= 3)) {
-        qDebug() << "🚨 [IP DEBUG] High number of unknown IPs detected, triggering diagnostics";
-        
-        // Collect failed nodes for diagnostics
-        QJsonArray failedNodes;
-        for (auto it = data.begin(); it != data.end(); ++it) {
-          if (it.value().toString().isEmpty()) { // These were "unknown ip" originally
-            failedNodes.append(it.key());
-          }
-        }
-        
-        // Trigger diagnostics (delayed to avoid interfering with current response)
-        QTimer::singleShot(1000, this, [this, failedNodes]() {
-          diagnoseDashboardNodeAvailability(m_networkName, failedNodes);
-        });
-      }
-      
-      data = validatedData;
+      qDebug() << "🔍 [IP DEBUG] Final validated IP data:" << QJsonDocument(validatedData).toJson(QJsonDocument::Compact);
+      emit sigNodeIp (validatedData);
     }
 
     /* if array -> convert to object with validation */
@@ -1518,6 +1512,24 @@ void DapNodeWeb3::parseJson (const QString &replyData, int baseErrorCode, const 
         clearStoredConnectionId();
         m_connectId.clear();
         emit sigIncorrectId();
+      }
+
+      // Special handling for Dashboard "No records" response for IP resolution
+      if (status == "bad" && a_replyName == "parseNodeIp") {
+        // Parse nested JSON in errorMsg to check if it's "No records"
+        QJsonDocument errorDoc = QJsonDocument::fromJson(errorMsgString.toUtf8());
+        if (!errorDoc.isNull() && errorDoc.isObject()) {
+          QJsonObject errorObj = errorDoc.object();
+          QString result = errorObj.value("result").toString();
+          
+          if (result.contains("No records")) {
+            qDebug() << "🔍 [IP DEBUG] Dashboard reports 'No records' for node IP - treating as empty result";
+            qDebug() << "🔍 [IP DEBUG] This is normal when nodes are offline or not registered in Dashboard";
+            
+            // Don't set error flag, allowing parseNodeIp to emit empty object
+            return;
+          }
+        }
       }
 
       /* print error */

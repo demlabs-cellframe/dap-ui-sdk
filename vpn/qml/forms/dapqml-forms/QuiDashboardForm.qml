@@ -47,6 +47,7 @@ Item {
     property QtObject internal: QtObject {
         property bool allowChooseServer: true
         property bool noCdbMode: false
+        property bool nodeDetected: false
     }
 
     /// @}
@@ -154,6 +155,10 @@ Item {
         root.internal.noCdbMode = a_value;
     }
 
+    function setNodeDetected(a_value) {
+        root.internal.nodeDetected = a_value;
+    }
+
     Component.onCompleted: setStatusIndicator(false);
 
     /// @}
@@ -169,8 +174,8 @@ Item {
         DapQmlRectangle {
             qss: "dashboard-nocdb-title-button"
             radius: height / 5
-            enabled: root.internal.noCdbMode
-            visible: root.internal.noCdbMode
+            enabled: root.internal.noCdbMode || root.internal.nodeDetected
+            visible: root.internal.noCdbMode || root.internal.nodeDetected
             opacity: enabled * 0.5 + 0.5
 
             DapQmlImage {

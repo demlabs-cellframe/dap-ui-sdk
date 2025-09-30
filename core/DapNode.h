@@ -192,6 +192,9 @@ public:
     QString getWeb3ConnectionId();
     void clearWeb3ConnectionId();
 
+    // Get connected app type (Dashboard or Cellframe-Wallet)
+    QString getConnectedAppType() const;
+
 private:
     void initStmTransitions();
     void initStmStates();
@@ -238,7 +241,7 @@ signals:
     void sigMempoolContainHash();
     void sigLedgerContainHash();
     void sigCondTxCreateSuccess(QString hash);
-    void sigTransactionInQueue(QString idQueue);
+    void sigTransactionInQueue(QString idQueue, QString appType);
     void sigConnectByOrder(const QString &networkName, const QString &txCondHash, const QString &token, const QString &srvUid, const QString &address, const uint16_t &port);
     void sigRepeatNodeConnecting();
 
@@ -274,6 +277,8 @@ signals:
     void sigFeeReceivedData(QJsonObject);
     void sigWalletsRequest();
 
+    // Signal when connected app type is detected (Dashboard or Cellframe-Wallet)
+    void sigConnectedAppTypeDetected(const QString& appType);
 };
 
 /*-----------------------------------------*/
