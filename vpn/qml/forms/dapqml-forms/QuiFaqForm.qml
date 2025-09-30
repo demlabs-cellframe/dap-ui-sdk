@@ -133,7 +133,22 @@ Item {
                 height: faqItemSizer.height + faqItemSep.height
                 onClicked: {
                     openedFlag = !openedFlag;
-                    root.internal.checkboxes[model.index] = !root.internal.checkboxes[model.index];
+                    root.internal.checkboxes[model.index] = openedFlag;
+
+                    if (openedFlag) {
+                        Qt.callLater(() => {
+                            const item = listview.itemAtIndex(model.index);
+                            if (item) {
+                                const estimatedHeight = (labelHeight > faqItemSizer.height ? labelHeight : faqItemSizer.height)
+                                             + faqItemSep.height + item.contentHeight;
+                                const targetY = item.y + estimatedHeight - listview.height;
+
+                                if (targetY > listview.contentY) {
+                                    listview.contentY = targetY;
+                                }
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -154,6 +169,13 @@ Item {
         clip: true
 
         delegate: faqItem
+
+        Behavior on contentY {
+            NumberAnimation {
+                duration: 250
+                easing.type: Easing.InOutQuad
+            }
+        }
     }
 }
 
