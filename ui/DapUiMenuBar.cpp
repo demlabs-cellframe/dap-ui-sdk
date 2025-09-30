@@ -112,7 +112,7 @@ void DapUiMenuBar::drawExpandedMenu(double a_color, double a_pos)
 void DapUiMenuBar::drawCenterBtn(QString a_btnIcon, int a_shift)
 {
     double l_k = m_mainWindow->size().width()/360.0;
-    // центральная кнопка
+    // central button
     QPixmap l_pixmap = QPixmap(a_btnIcon);
     l_pixmap = l_pixmap.scaledToHeight(52*l_k);
 
@@ -330,7 +330,7 @@ DapUiMenuBar::DapUiMenuBar(DapUiMainWindow * a_mainWindow, QBrush a_bgBrush, int
         scene->addItem(m_pixmap);
     });
 
-    // Формируем основной лэйаут
+    // Create main layout
     setObjectName("DapUiMenuBarWidget");
     setLayout(new QVBoxLayout());
     layout()->setContentsMargins(0,0,0,0);
@@ -339,11 +339,11 @@ DapUiMenuBar::DapUiMenuBar(DapUiMainWindow * a_mainWindow, QBrush a_bgBrush, int
     l_w->setStyleSheet("background: #20DCA3;");
 
     // QStateMachine;
-    stateHided               = new QState();     // меню скрыто
-    stateExpanded            = new QState();     // меню развёрнуто
+    stateHided               = new QState();     // menu hidden
+    stateExpanded            = new QState();     // menu expanded
     stateExpandedToMinimized = new QState();
     stateMinimizedToExpanded = new QState();
-    stateMinimized           = new QState();     // меню свёрнуто
+    stateMinimized           = new QState();     // menu collapsed
 
     m_sm.addState(stateHided);
     m_sm.addState(stateExpanded);
@@ -363,9 +363,9 @@ DapUiMenuBar::DapUiMenuBar(DapUiMainWindow * a_mainWindow, QBrush a_bgBrush, int
 
 */
 
-    // состояние скрытого меню
+    // hidden menu state
     connect(stateHided, &QState::entered, [=]{
-        // скрыть всё
+        // hide everything
         m_currentState = "hided";
         if (gv) gv->setVisible(false);
         setVisible(false);
@@ -376,7 +376,7 @@ DapUiMenuBar::DapUiMenuBar(DapUiMainWindow * a_mainWindow, QBrush a_bgBrush, int
         setVisible(true);
     });
 
-    // состояние развёрнутого меню.
+    // expanded menu state
     connect(stateExpanded, &QState::entered, [=]{
         m_currentState = "expanded";
         gvInit(false);

@@ -97,8 +97,13 @@ bool DapQmlModelNodeProxyBase::filterAcceptsRow (int a_row, const QModelIndex &)
     return true;
 
   bool match  = m_bridge->filterAcceptsRow (a_row, m_filter);
-  if (match)
+  int size = m_bridge->size();
+  if (match){
+    if (size < _indexMapCounter){
+      _indexMapCounter = 0;
+    }
     _indexMap.insert (a_row, _indexMapCounter++);
+  }
   return match;
 }
 

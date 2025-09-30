@@ -9,6 +9,9 @@
 
 // ui side
 
+/* FORWARD DECLARATIONS */
+class NoCdbCtl;
+
 /* DEFS */
 #define DEBUGINFO qDebug()<<" --->UiCMD<--- "
 
@@ -61,8 +64,7 @@ struct DapCmdNode::DapCmdNodeData
         QString unitValue;
         QString priceValue; // per portion
         QString portions;
-        QString fee;
-        QString totalFee;
+
         QString totalValue;
     } overview;
 };
@@ -80,6 +82,17 @@ static QHash<QString, const char *> s_unitConvertMap =
         { "MINUTE",   "MIN" },
         { "HOUR",     "HOUR" },
         { "DAY",      "DAY" },
+        
+        // Support for lowercase variants from orders
+        { "sec",      "SEC" },
+        { "min",      "MIN" },
+        { "hour",     "HOUR" },
+        { "day",      "DAY" },
+        { "tb",       "TB" },
+        { "gb",       "GB" },
+        { "mb",       "MB" },
+        { "kb",       "KB" },
+        { "b",        "B" },
         };
 
 /* LINKS */
@@ -95,6 +108,28 @@ DapCmdNode::DapCmdNode (QObject *parent)
 {
     /* clear */
     s_historyOrder.isSigned = false;
+    
+    // Initialize DapCmdNodeData with safe defaults to prevent data binding issues
+    _data->hasError = false;
+    _data->value = "";
+    _data->selectedUnit = "";
+    _data->maxPrice = "";
+    _data->minPrice = "";
+    _data->orderHash = "";
+    
+    // Initialize overview structure with empty values
+    _data->overview.ipAddress = "";
+    _data->overview.network = "";
+    _data->overview.wallet = "";
+    _data->overview.token = "";
+    _data->overview.tokenValue = "";
+    _data->overview.unit = "";
+    _data->overview.unitValue = "";
+    _data->overview.priceValue = "";
+    _data->overview.portions = "";
+    _data->overview.totalValue = "";
+    
+    qDebug() << "[OrderList Fix] DapCmdNodeData initialized with safe defaults";
 }
 
 DapCmdNode::~DapCmdNode()
@@ -147,12 +182,23 @@ void DapCmdNode::handleResult (const QJsonObject &params)
         return;
     }
 
+    // transaction in queue
+    if (params.value ("transaction_in_queue").isBool() && params.value ("transaction_in_queue").toBool())
+    {
+        QString queueId = params.value ("queue_id").toString();
+        QString appType = params.value ("app_type").toString();
+        DEBUGINFO << "transaction in queue with ID:" << queueId << "App type:" << appType;
+        emit sigTransactionInQueue(queueId, appType);
+        return;
+    }
+
     if (params.value ("order_list").isArray())
     {
         DEBUGINFO << "order list";
 
         /* get list */
         auto list = params.value ("order_list").toArray();
+        qDebug() << "🔍 [FILTER DEBUG] DapCmdNode::handleResult: Received order_list count =" << list.size();
 
         /* emit */
         emit sigOrderList (list);
@@ -355,8 +401,7 @@ void DapCmdNode::slotCondTxCreate()
     s_historyOrder.unitValue    = _data->overview.unitValue; // order.price();
     s_historyOrder.priceValue   = _data->overview.priceValue;
     s_historyOrder.portions     = _data->overview.portions;
-    s_historyOrder.fee          = _data->overview.fee;
-    s_historyOrder.totalFee     = _data->overview.totalFee;
+
     s_historyOrder.totalValue   = _data->overview.totalValue;
     s_historyOrder.created      = QDateTime::currentDateTime();
     s_historyOrder.isSigned     = false;
@@ -367,11 +412,33 @@ void DapCmdNode::slotStartSearchOrders()
 {
     DEBUGINFO << __PRETTY_FUNCTION__;
 
+    // Data synchronization note: Data should be synchronized via signals from UI layer
+    qDebug() << "[OrderList Fix] Using current stored values in _data structure";
+
+    // Validate essential data before proceeding
+    if (_data->overview.network.isEmpty()) {
+        qDebug() << "[OrderList Fix] ERROR: Network not selected, cannot proceed with search";
+        return;
+    }
+    
+    if (_data->overview.token.isEmpty()) {
+        qDebug() << "[OrderList Fix] ERROR: Token not selected, cannot proceed with search";
+        return;
+    }
+
     /* variables */
 
     QString unit      = _data->selectedUnit;
     qint64 minPrice   = _data->minPrice.toULongLong();
     qint64 maxPrice   = _data->maxPrice.toULongLong();
+
+    // Debug current values for troubleshooting
+    qDebug() << "[OrderList Fix] Search parameters validation:";
+    qDebug() << "  network:" << _data->overview.network;
+    qDebug() << "  token:" << _data->overview.token;
+    qDebug() << "  unit:" << _data->selectedUnit;
+    qDebug() << "  minPrice string:" << _data->minPrice << "parsed:" << minPrice;
+    qDebug() << "  maxPrice string:" << _data->maxPrice << "parsed:" << maxPrice;
 
     /* convert units */
 
@@ -393,6 +460,10 @@ void DapCmdNode::slotStartSearchOrders()
     searchOrders["unit"]          = _data->selectedUnit;
     searchOrders["min_price"]     = _data->minPrice;
     searchOrders["max_price"]     = _data->maxPrice;
+
+    // Additional validation before sending
+    qDebug() << "[OrderList Fix] Final JSON payload:";
+    qDebug() << "  search_orders:" << searchOrders;
 
     /* message body */
 
@@ -534,8 +605,7 @@ void DapCmdNode::slotSetTransactionInfo (const QVariant &a_valueMap)
         unitValue,
         priceValue,
         portions,
-        fee,
-        totalFee,
+
         totalValue,
     };
 
@@ -554,8 +624,7 @@ void DapCmdNode::slotSetTransactionInfo (const QVariant &a_valueMap)
             TFIELDITEM (unitValue),
             TFIELDITEM (priceValue),
             TFIELDITEM (portions),
-            TFIELDITEM (fee),
-            TFIELDITEM (totalFee),
+
             TFIELDITEM (totalValue),
         };
     const QVariantMap map = a_valueMap.toMap();
@@ -585,8 +654,7 @@ void DapCmdNode::slotSetTransactionInfo (const QVariant &a_valueMap)
         case FieldId::unitValue:  _data->overview.unitValue   = std::move (value); break;
         case FieldId::priceValue: _data->overview.priceValue  = std::move (value); break;
         case FieldId::portions:   _data->overview.portions    = std::move (value); break;
-        case FieldId::fee:        _data->overview.fee         = std::move (value); break;
-        case FieldId::totalFee:   _data->overview.totalFee    = std::move (value); break;
+
         case FieldId::totalValue: _data->overview.totalValue  = std::move (value); break;
         default:
             DEBUGINFO << __PRETTY_FUNCTION__ << "unknown fid:" << uint (fid) << i.key();
@@ -598,13 +666,17 @@ void DapCmdNode::slotSetTransactionInfo (const QVariant &a_valueMap)
 void DapCmdNode::slotSetMaxValueUnit (const QString &price)
 {
     DEBUGINFO << __PRETTY_FUNCTION__;
+    qDebug() << "[OrderList Fix] Setting maxPrice:" << price << "previous value:" << _data->maxPrice;
     _data->maxPrice = price;
+    qDebug() << "[OrderList Fix] maxPrice updated to:" << _data->maxPrice;
 }
 
 void DapCmdNode::slotSetMinValueUnit (const QString &price)
 {
     DEBUGINFO << __PRETTY_FUNCTION__;
+    qDebug() << "[OrderList Fix] Setting minPrice:" << price << "previous value:" << _data->minPrice;
     _data->minPrice = price;
+    qDebug() << "[OrderList Fix] minPrice updated to:" << _data->minPrice;
 }
 
 void OrderListData::setData (const QJsonArray &a_orderListData)
@@ -665,4 +737,29 @@ QJsonObject OrderListData::orderInfo (const QString &hash)
     //                  node_location:    Europe - Russia_2_1
     //                  tx_cond_hash:     0x0000000000000000000000000000000000000000000000000000000000000000
     //                  ext:              0x52025275737369615F325F3100
+}
+
+QString DapCmdNode::getConnectedAppType() const
+{
+    return m_connectedAppType;
+}
+
+void DapCmdNode::setConnectedAppType(const QString& appType)
+{
+    if (m_connectedAppType != appType) {
+        m_connectedAppType = appType;
+        qDebug() << "[DapCmdNode] Connected app type updated to:" << appType;
+    }
+}
+
+void DapCmdNode::slotWalletsDataRequest()
+{
+    DEBUGINFO << __PRETTY_FUNCTION__;
+    walletsRequest();
+}
+
+void DapCmdNode::slotNodeDetection()
+{
+    DEBUGINFO << __PRETTY_FUNCTION__;
+    startNodeDetection();
 }

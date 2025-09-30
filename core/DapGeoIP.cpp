@@ -24,13 +24,8 @@ DapGeoIP::DapGeoIP(QObject *parent)
         qDebug() << "Can't open" << dbPath.toStdString().c_str() << "-" << MMDB_strerror(status);
     }
 
-    DapCdbServer* server = DapCdbManager::instance().currentServer();
-    if (server) {
-        QUrl url("http://" + server->address + "/my_ip");
-        manager->get(QNetworkRequest(url));
-    } else {
-        qWarning() << "[DapGeoIP] No available CDB servers, skipping IP request.";
-    }
+    // Skip CDB IP request initialization - will be handled by service if needed
+    qDebug() << "[DapGeoIP] Initialized without CDB IP request";
 }
 
 DapGeoIP::~DapGeoIP() {

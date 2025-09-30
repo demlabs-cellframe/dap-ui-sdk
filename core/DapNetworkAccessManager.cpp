@@ -11,7 +11,19 @@ void DapNetworkAccessManager::requestHttp_POST(const QString &address, const uin
 {
     qDebug() << "Dap Client HTTP Requested - POST: " << urlPath ;
     bRunning = true;
-    dap_client_http_set_connect_timeout_ms(20000);
+    
+    // Configurable timeouts based on operation type
+    uint32_t connectTimeout = 20000; // 20s default
+    uint32_t readTimeout = 15000;    // 15s default (increased from 5s)
+    
+    // Special timeouts for noCDB node operations (slower response expected)
+    if (urlPath.contains("NodeList") || urlPath.contains("enc_init") || address.contains("198.199.111.10")) {
+        connectTimeout = 30000; // 30s for noCDB node operations
+        readTimeout = 25000;    // 25s for noCDB node operations
+        qDebug() << "[DapNetworkAccessManager] Using extended timeouts for noCDB operation:" << connectTimeout << "ms connect," << readTimeout << "ms read";
+    }
+    
+    dap_client_http_set_params(connectTimeout, readTimeout, 1024*1024);
     dap_client_http_request(nullptr, qPrintable(address), port, "POST", "text/plain", qPrintable(urlPath), body.constData(), static_cast<size_t>(body.size()), nullptr,
                             &DapNetworkAccessManager::responseCallback, &DapNetworkAccessManager::responseCallbackError,
                                    &netReply, headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
@@ -21,7 +33,30 @@ void DapNetworkAccessManager::requestHttp_GET(const QString &address, const uint
 {
     qDebug() << "Dap Client HTTP Requested - GET: " << urlPath ;
     bRunning = true;
-    dap_client_http_set_connect_timeout_ms(20000);
+    
+    // Configurable timeouts based on operation type  
+    uint32_t connectTimeout = 20000; // 20s default
+    uint32_t readTimeout = 15000;    // 15s default (increased from 5s)
+    
+    // Special timeouts for noCDB node operations (slower response expected)
+    if (urlPath.contains("NodeList") || urlPath.contains("enc_init") || address.contains("198.199.111.10")) {
+        connectTimeout = 30000; // 30s for noCDB node operations
+        readTimeout = 25000;    // 25s for noCDB node operations 
+        qDebug() << "[DapNetworkAccessManager] Using extended timeouts for noCDB operation:" << connectTimeout << "ms connect," << readTimeout << "ms read";
+    }
+    
+    dap_client_http_set_params(connectTimeout, readTimeout, 1024*1024);
+    dap_client_http_request(nullptr, qPrintable(address), port, "GET", "text/plain", qPrintable(urlPath), nullptr, 0, nullptr,
+                            &DapNetworkAccessManager::responseCallback, &DapNetworkAccessManager::responseCallbackError,
+                                   &netReply, headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
+}
+
+void DapNetworkAccessManager::requestHttp_GET_long_timeout(const QString &address, const uint16_t port, const QString &urlPath, const QString &headers, DapNetworkReply &netReply)
+{
+    qDebug() << "Dap Client HTTP Requested - GET (long timeout): " << urlPath ;
+    bRunning = true;
+    // Keep the same base timeout settings but extend read timeout specifically for long operations
+    dap_client_http_set_params(20000, 60000, 1024*1024); // 60 seconds read timeout for long operations
     dap_client_http_request(nullptr, qPrintable(address), port, "GET", "text/plain", qPrintable(urlPath), nullptr, 0, nullptr,
                             &DapNetworkAccessManager::responseCallback, &DapNetworkAccessManager::responseCallbackError, &netReply,
                                    headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
@@ -41,6 +76,10 @@ void DapNetworkAccessManager::responseCallback(void * a_response, size_t a_respo
     DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
     reply->setReply(QByteArray(reinterpret_cast<const char*>(a_response), static_cast<int>(a_response_size)));
     qDebug() << "[DapNetworkAccessManager]Dap Client HTTP Request: response received, size=" << a_response_size;
+    
+    // Reset timeouts to default values (15 seconds read timeout) after any request
+    dap_client_http_set_params(20000, 15000, 1024*1024);
+    
     reply->setError( 0 );
     emit reply->finished();
     reply->deleteLater();
@@ -55,6 +94,10 @@ void DapNetworkAccessManager::responseCallbackError(int a_err_code, void * a_obj
     qWarning() << "[DapNetworkAccessManager]Dap Client HTTP Request: error code " << a_err_code
                << ": " << buf;
     reply->setErrorStr(buf);
+    
+    // Reset timeouts to default values (15 seconds read timeout) after any request (including errors)
+    dap_client_http_set_params(20000, 15000, 1024*1024);
+    
 /*#else
                ;
     {

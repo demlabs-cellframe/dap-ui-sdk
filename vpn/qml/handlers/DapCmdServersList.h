@@ -18,6 +18,10 @@ signals:
     void sigErrorNetwork(const QString &msg);
 public slots:
     void sendCmdGetServersList() { sendCmd(); }
+    void setNoCdbMode(bool enabled) { m_noCdbMode = enabled; }
+
+private:
+    bool m_noCdbMode = false;
 };
 
 #endif // DAPCMDSERVERSLIST_H

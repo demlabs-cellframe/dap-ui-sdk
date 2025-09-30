@@ -176,7 +176,6 @@ Item {
                 }
                 valueEditInput.text = (editValue === "") ? "0" : editValue;
             }
-
             _updateFilterSetupValue();
         }
     }
@@ -304,6 +303,7 @@ Item {
 
     function setInternalMode(a_mode) {
         root.internal.mode  = a_mode;
+        console.log("Internal mode set to:", root.internal.mode);
     }
 
     function tabPressed(a_tabIndex) {
@@ -312,8 +312,6 @@ Item {
 
     function filterItemSelected (a_index, a_name) {
         let mode    = internal.mode;
-
-        console.log(`filterItemSelected at ${a_index}, value "${a_name}", mode ${mode}`)
 
         switch(mode)
         {
@@ -324,8 +322,11 @@ Item {
             break;
 
         case QuiNodeOrderList.Wallets:
-            root.internal.wallet                    = a_name;
-            csListViewWallets.model.currentIndex    = a_index;
+            if (csListViewWallets.model) {
+                /* Show all wallets in the model */
+            }
+            root.internal.wallet = a_name;
+            csListViewWallets.model.currentIndex = a_index;
             break;
 
         case QuiNodeOrderList.Tokens:
@@ -359,15 +360,21 @@ Item {
             break;
 
         case QuiNodeOrderList.Wallets:
-            root.internal.token     = " ";
-            //csListView.model.onWalletChange();
-            //csListViewTokens.model.currentIndex     = -1;
-            interfaceObject.setData(
-            {
-                wallet      : root.internal.wallet,
-                //token       : root.internal.token,
-            });
-            getDataFromInterface();
+            // Check if network is empty - if so, don't clear fields to allow auto-selection
+            if (root.internal.network === "" || root.internal.network === " ") {
+                // Network is empty, let C++ auto-select it
+                interfaceObject.setData({
+                    wallet: root.internal.wallet,
+                });
+                getDataFromInterface();
+            } else {
+                // Network is already selected, clear child fields
+                root.internal.token = " ";
+                interfaceObject.setData({
+                    wallet: root.internal.wallet,
+                });
+                getDataFromInterface();
+            }
             break;
 
         }
@@ -917,7 +924,14 @@ Item {
                     return `${model.price}`;
             }
             property string second:      `${model.server} - ${addressValue}`
-            property string addressValue: model.ipAddress !== "" ? model.ipAddress : "unknown ip"
+            property string addressValue: {
+                if (model.ipAddress && model.ipAddress !== "") {
+                    return model.ipAddress;
+                } else {
+                    // More informative message instead of generic "unknown ip"
+                    return "IP resolving...";
+                }
+            }
             property string labelTopQss:    "nodeorlist-label-size-14"
             property string labelBottomQss: "nodeorlist-label-size-14"
             property QtObject tooltip: QtObject {
@@ -1141,7 +1155,7 @@ Item {
             text: {
                 switch(swipe.currentIndex)
                 {
-                case QuiNodeOrderList.Tab.Search:   return qsTr("Search order");
+                case QuiNodeOrderList.Tab.Search:   return qsTr("Wallet Parameters");
                 case QuiNodeOrderList.Tab.List:     return root.internal.listTitle; //qsTr("Orders");
                 case QuiNodeOrderList.Tab.Overview: return qsTr("Transaction overview");
                 }
@@ -1390,7 +1404,7 @@ Item {
                     DapQmlStyle { item: btnConfirmSearch; qss: "nodeorlist-overview-confirm-btn" }
                     sourceComponent: pushButton
                     enabled: root.internal.isSearch ? true : root.internal.isFilterSetup
-                    property string text: root.internal.isSearch ? qsTr("SEARCH ORDER") : qsTr("CONFIRM")
+                    property string text: root.internal.isSearch ? qsTr("APPLY PARAMETERS") : qsTr("CONFIRM")
                     property color color
                     property color fill
                     property var cbClicked: function() {

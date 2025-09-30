@@ -71,10 +71,10 @@ void DapCmdConnect::handleError(int code, const QString& message)
     qDebug() << "handleError";
 //    Q_UNUSED(code);
     qWarning() << *m_errorObject;
-    // Сode: -10 (the hash of the conditional transaction) is temporarily ignored.
+    // Code: -10 (the hash of the conditional transaction) is temporarily ignored.
     if (code == -10)
     {
-        qWarning() << "Сode: -10 (the hash of the conditional transaction) is temporarily ignored.";
+        qWarning() << "Code: -10 (the hash of the conditional transaction) is temporarily ignored.";
         return;
     }
     if (code == 6543 || code == -1025){

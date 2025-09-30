@@ -31,7 +31,7 @@ DapConnectClient::DapConnectClient(QObject *parent) :
 {
     m_httpClient = new DapNetworkAccessManager();
 //    m_httpClient->setProxy(QNetworkProxy::NoProxy);
-  //  connect(m_httpClient, &DapNetworkAccessManager::finished, this, &DapConnectClient::finished); //todo_m: связать сигнал завершения менеджера с коллбеком
+  //  connect(m_httpClient, &DapNetworkAccessManager::finished, this, &DapConnectClient::finished); //todo_m: connect manager completion signal with callback
 }
 
 void DapConnectClient::request_GET(const QString& host,  quint16 port, const QString & urlPath,

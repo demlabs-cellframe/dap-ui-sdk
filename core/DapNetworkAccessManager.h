@@ -16,6 +16,7 @@ public:
     explicit DapNetworkAccessManager();
     void requestHttp_POST   (const QString &address, const uint16_t port, const QString &urlPath, const QByteArray &body, const QString &headers, DapNetworkReply &netReply);
     void requestHttp_GET    (const QString &address, const uint16_t port, const QString &urlPath, const QString &headers, DapNetworkReply &netReply);
+    void requestHttp_GET_long_timeout(const QString &address, const uint16_t port, const QString &urlPath, const QString &headers, DapNetworkReply &netReply);
     void requestHttp_GET_for_ping(const QString &address, const uint16_t port, const QString &urlPath, const QString &headers, DapNetworkReply &netReply);
 
     bool isRunning(){ return bRunning; }

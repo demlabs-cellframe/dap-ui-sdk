@@ -34,7 +34,7 @@ private:
     QState *stateMinimizedToExpanded;
     QState *stateMinimized;
 
-    // для некоторых функций проверка на состояние нужна
+    // state check is needed for some functions
     QString m_currentState;
 
     QTimer *m_t;
@@ -54,7 +54,7 @@ private:
     void gvInit(bool a_isMinimized);
     void gvConnect();
 
-    // находим левый верхний правый угол кнопки
+    // find the top left right corner of the button
     QPoint toExpandedMenuBtnPoint(double a_f);
 
 protected:

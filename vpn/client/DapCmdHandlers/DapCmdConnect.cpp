@@ -65,6 +65,11 @@ void DapCmdConnect::handle(const QJsonObject* params)
             qDebug() << "DapCmdConnect::RestartServiceIfRunning signal";
             emit sigRestartService(true);
             return;
+        } else if (req == "SetNoCdbMode") {
+            bool enabled = params->value("enabled").toBool(false);
+            qDebug() << "DapCmdConnect::SetNoCdbMode signal, enabled:" << enabled;
+            emit sigSetNoCdbMode(enabled);
+            return;
         }
     }
 

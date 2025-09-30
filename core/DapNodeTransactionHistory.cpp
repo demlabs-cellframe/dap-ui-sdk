@@ -21,8 +21,7 @@ enum class FieldId : quint8
   unitValue,
   priceValue,
   portions,
-  fee,
-  totalFee,
+
   totalValue,
   created,
   isSigned,
@@ -49,8 +48,7 @@ static const QHash<QByteArray, FieldId> s_fieldMap =
   FIELD (unitValue),
   FIELD (priceValue),
   FIELD (portions),
-  FIELD (fee),
-  FIELD (totalFee),
+
   FIELD (totalValue),
   FIELD (created),
   FIELD (isSigned),
@@ -84,8 +82,7 @@ DapNodeTransactionHistory::DapNodeTransactionHistory (QObject *parent)
     s_roles.INSERT_FIELD (unitValue);
     s_roles.INSERT_FIELD (priceValue);
     s_roles.INSERT_FIELD (portions);
-    s_roles.INSERT_FIELD (fee);
-    s_roles.INSERT_FIELD (totalFee);
+
     s_roles.INSERT_FIELD (totalValue);
     s_roles.INSERT_FIELD (created);
     s_roles.INSERT_FIELD (isSigned);
@@ -346,8 +343,7 @@ QVariant DapNodeTransactionHistory::data (const QModelIndex &index, int role) co
       case FieldId::unitValue:  return item.unitValue;
       case FieldId::priceValue: return item.priceValue;
       case FieldId::portions:   return item.portions;
-      case FieldId::fee:        return item.fee;
-      case FieldId::totalFee:   return item.totalFee;
+
       case FieldId::totalValue: return item.totalValue;
       case FieldId::created:    return item.created.toString ("hh:mm:ss dd.MM.yyyy");
       case FieldId::isSigned:   return item.isSigned;
@@ -403,8 +399,7 @@ void DapNodeTransactionHistory::Transaction::fromJson (const QJsonObject &a_obj)
       case FieldId::unitValue:  unitValue   = std::move (val); break;
       case FieldId::priceValue: priceValue  = std::move (val); break;
       case FieldId::portions:   portions    = std::move (val); break;
-      case FieldId::fee:        fee         = std::move (val); break;
-      case FieldId::totalFee:   totalFee    = std::move (val); break;
+
       case FieldId::totalValue: totalValue  = std::move (val); break;
       case FieldId::created:    created   = QDateTime::fromString (val, "hh:mm:ss dd.MM.yyyy"); break;
       case FieldId::isSigned:   isSigned  = i.value().toBool(); break;
@@ -425,8 +420,7 @@ QJsonObject DapNodeTransactionHistory::Transaction::toJsonObject() const
     { "unitValue",  unitValue },
     { "priceValue", priceValue },
     { "portions",   portions },
-    { "fee",        fee },
-    { "totalFee",   totalFee },
+
     { "totalValue", totalValue },
     { "created",    created.toString ("hh:mm:ss dd.MM.yyyy") },
     { "isSigned",   isSigned },
