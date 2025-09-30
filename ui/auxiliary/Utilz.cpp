@@ -44,6 +44,19 @@ namespace Utils
         return 0;
     }
 
+    bool isNewerVersion(const QString& availableVer, const QString currVer)
+    {
+        auto verTypes = {TypeVersion::MAJOR, TypeVersion::MINOR, TypeVersion::PAT};
+        for (auto verType : verTypes)
+        {
+            if (getNumberVersion(availableVer, verType) > getNumberVersion(currVer, verType))
+                return true;
+            else if (getNumberVersion(availableVer, verType) < getNumberVersion(currVer, verType))
+                break;
+        }
+        return false;
+    }
+
     QString getOSName()
     {
         #if defined(Q_OS_ANDROID)
@@ -63,7 +76,7 @@ namespace Utils
 
     int toIntValue(const QString &a_text)
     {
-        QRegExp regString("(\\d+)");
+        QRegularExpression regString("(\\d+)");
         regString.indexIn(a_text);
         return regString.cap(0).toInt();
     }

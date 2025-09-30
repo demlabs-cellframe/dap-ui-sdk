@@ -40,7 +40,7 @@ protected:
     virtual void keyPressEvent(QKeyEvent *e) override;
     virtual void pasteEvent(QString clipboardText);
 private:
-    QRegExp m_regExp{};
+    QRegularExpression m_regExp{};
 #ifdef Q_OS_ANDROID
     QVector <int> m_keys
     {

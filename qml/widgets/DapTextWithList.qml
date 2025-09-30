@@ -1,7 +1,7 @@
 import QtQuick 2.4
-import QtQml 2.12
+import QtQml
 import QtQuick.Controls 2.4
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 import QtQuick.Layouts 1.3
 
 import "qrc:/widgets"
@@ -133,7 +133,7 @@ Item
                 }
 
                 id: tooltip
-                bottomRect.height: 0
+                bottomRect.visible: false
 
                 parent: area
                 width: getWidthTootip()

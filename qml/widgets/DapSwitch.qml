@@ -1,5 +1,5 @@
 import QtQuick 2.4
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 
 Item {
     id: toggleswitch
@@ -38,6 +38,15 @@ Item {
 
     Component.onCompleted:
     {
+        positionTransition.enabled = false
+        if (checked)
+            toggleswitch.state = "on";
+        else
+            toggleswitch.state = "off";
+        positionTransition.enabled = true
+    }
+    
+    onCheckedChanged: {
         positionTransition.enabled = false
         if (checked)
             toggleswitch.state = "on";

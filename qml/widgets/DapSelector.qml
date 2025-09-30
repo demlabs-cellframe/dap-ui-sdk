@@ -1,15 +1,15 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.3
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 
 Rectangle
 {
     id: selectorItem
 
-    property int itemHorisontalBorder: 10
-    property int itemVerticalBorder: -2
-    property int viewerBorder: 4
+    property int itemHorisontalBorder: 10 * guiApp.scaleFactor
+    property int itemVerticalBorder: -2 * guiApp.scaleFactor
+    property int viewerBorder: 4 * guiApp.scaleFactor
     property int currentIndex: viewerItem.currentIndex
     property int defaultIndex: 0
     property font textFont: mainFont.dapFont.medium14
@@ -34,7 +34,7 @@ Rectangle
         id: viewerItem
         x: viewerBorder
         y: viewerBorder
-        width: contentItem.width + viewerBorder * 2
+        width: contentWidth + viewerBorder * 2
         height: selectorItem.height
 //        clip: true
         orientation: ListView.Horizontal
@@ -109,7 +109,7 @@ Rectangle
                     height: frameItem.height
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
-                    bottomPadding: CURRENT_OS === "win" ? 4 : 0
+                    bottomPadding: CURRENT_OS === "win" ? 4 * guiApp.scaleFactor : 0
                     color: textColor
                     font: textFont
                     text: name
@@ -121,8 +121,11 @@ Rectangle
                     anchors.fill: parent
 
                     onClicked: {
-                        viewerItem.currentIndex = index
-                        itemSelected()
+                        if(viewerItem.currentIndex !== index)
+                        {
+                            viewerItem.currentIndex = index
+                            itemSelected()
+                        }
                     }
                 }
             }
