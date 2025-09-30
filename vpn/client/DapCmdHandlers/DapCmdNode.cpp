@@ -2,6 +2,7 @@
 #include <QMap>
 #include <QDebug>
 #include "DapNode.h"
+#include <QtCore/QMetaObject>
 
 // client, service side
 #define DEBUGINFO qDebug()<<"--->SrvCMD<---"
@@ -115,6 +116,7 @@ QJsonObject DapCmdNode::transformKeys(const QJsonObject& inputObj) {
 
 void DapCmdNode::sendOrderList(const QJsonArray& orderList) {
     DEBUGINFO << __PRETTY_FUNCTION__;
+    qDebug() << "🔍 [FILTER DEBUG] DapCmdNode::sendOrderList: Input orders count =" << orderList.size();
 
     QJsonArray transformedOrderList;
     for (const auto& order : orderList) {
@@ -123,6 +125,8 @@ void DapCmdNode::sendOrderList(const QJsonArray& orderList) {
         transformedOrderList.append(transformedOrder);
     }
 
+    qDebug() << "🔍 [FILTER DEBUG] DapCmdNode::sendOrderList: Transformed orders count =" << transformedOrderList.size();
+    
     QJsonObject response;
     response["order_list"] = transformedOrderList;
     sendCmd(&response);
@@ -158,6 +162,17 @@ void DapCmdNode::sendTransactionInLedger()
     DEBUGINFO << "sendTransactionInLedger";
 }
 
+void DapCmdNode::sendTransactionInQueue(const QString& idQueue, const QString& appType)
+{
+    DEBUGINFO << __PRETTY_FUNCTION__;
+    QJsonObject response;
+    response["transaction_in_queue"] = true;
+    response["queue_id"] = idQueue;
+    response["app_type"] = appType;
+    sendCmd(&response);
+    DEBUGINFO << "sendTransactionInQueue with ID:" << idQueue << "App type:" << appType;
+}
+
 void DapCmdNode::sendSigningInfo(qint32 utype, qint64 uid, qint64 units, QString price)
 {
     DEBUGINFO << __PRETTY_FUNCTION__;
@@ -179,6 +194,12 @@ void DapCmdNode::sendFeeData (const QJsonObject &a_data)
   response["get_fee_data"] = a_data;
   sendCmd(&response);
   DEBUGINFO << "sendFeeData" << a_data;
+}
+
+Q_SLOT void DapCmdNode::slotRequestNodeDetectedCheck()
+{
+    DEBUGINFO << __PRETTY_FUNCTION__ << "Requesting current nodeDetected state for UI sync";
+    sendNodeDetected();
 }
 
 void DapCmdNode::handle(const QJsonObject* params)
@@ -267,7 +288,6 @@ void DapCmdNode::handle(const QJsonObject* params)
         QString nodeAddress  = oi.value("nodeAddress").toString();
         QString network      = params->value ("network").toString();
         qDebug() << "start_connect_by_order" << oi;
-        m_nocdbMode = true;
         qDebug() << "Emitting connectByOrder";
         emit connectByOrder(srvUid, nodeAddress, orderHash, network);
     }
@@ -290,5 +310,18 @@ void DapCmdNode::handle(const QJsonObject* params)
     {
         qDebug() << "Emitting getFeeData";
         emit getFeeData(params->value("get_fee_data").toString());
+    }
+}
+
+QString DapCmdNode::getConnectedAppType() const
+{
+    return m_connectedAppType;
+}
+
+void DapCmdNode::setConnectedAppType(const QString& appType)
+{
+    if (m_connectedAppType != appType) {
+        m_connectedAppType = appType;
+        qDebug() << "[DapCmdNode] Connected app type updated to:" << appType;
     }
 }

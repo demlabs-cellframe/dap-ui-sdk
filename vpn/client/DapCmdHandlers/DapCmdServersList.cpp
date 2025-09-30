@@ -16,6 +16,9 @@ DapCmdServersList::DapCmdServersList(QObject *parent)
     guiCall = true;
 
     connect(emitTimer, &QTimer::timeout, this, [=]() {
+        qDebug() << "[DapCmdServersList] emitTimer timeout - retrying CDB request";
+        // Stop timer immediately to prevent multiple calls
+        emitTimer->stop();
         sendRequestToCDB();
     });
 }
@@ -23,9 +26,34 @@ DapCmdServersList::DapCmdServersList(QObject *parent)
 void DapCmdServersList::handle(const QJsonObject* params)
 {
     DapCmdServiceAbstract::handle(params);
+    
+    // Stop any active timer to prevent conflicts
+    if (emitTimer && emitTimer->isActive()) {
+        qDebug() << "[DapCmdServersList] Stopping active timer for new request";
+        emitTimer->stop();
+    }
+    
+    // Skip CDB requests in noCDB mode
+    if (m_noCdbMode) {
+        qDebug() << "[noCDB] Skipping CDB server list request in noCDB mode";
+        if (loadServerList()) {
+            qDebug() << "[noCDB] Loaded cached server list";
+        } else {
+            qWarning() << "[noCDB] No cached server list available";
+            sendSimpleError(-32009, "No server list available in noCDB mode");
+        }
+        return;
+    }
+    
+    // Add protection against multiple simultaneous requests
+    if (m_requestInProgress) {
+        qDebug() << "[DapCmdServersList] Request already in progress, skipping";
+        return;
+    }
+    
+    m_requestInProgress = true;
     sendRequestToCDB();
     guiCall = true;
-
 }
 
 void DapCmdServersList::sendRequestToCDB() {
@@ -50,7 +78,12 @@ void DapCmdServersList::handleReplyFinished(DapNetworkReply* reply) {
 
     if (jsonDoc.isNull() || !jsonDoc.isArray()) {
         qCritical() << "Can't parse server response to JSON:" << jsonErr.errorString() << "on position" << jsonErr.offset;
-        processNextCDB(-32001, "Bad response from server. Parse error");
+                    if (m_noCdbMode) {
+                qDebug() << "[noCDB] Parse error in noCDB mode, skipping CDB fallback";
+                sendSimpleError(-32001, "Bad response from server. Parse error");
+            } else {
+                processNextCDB(-32001, "Bad response from server. Parse error");
+            }
         return;
     }
 
@@ -58,11 +91,19 @@ void DapCmdServersList::handleReplyFinished(DapNetworkReply* reply) {
     QJsonArray filteredArray = filterUnavailableServers(arr);
 
     if (filteredArray.isEmpty()) {
-        processNextCDB(-32003, "Empty nodelist after filtering, try another CDB...");
+                    if (m_noCdbMode) {
+                qDebug() << "[noCDB] Empty nodelist in noCDB mode, skipping CDB fallback";
+                sendSimpleError(-32003, "Empty nodelist after filtering");
+            } else {
+                processNextCDB(-32003, "Empty nodelist after filtering, try another CDB...");
+            }
     } else {
         qDebug() << "Filtered server list array:" << filteredArray;
         updateServerList(filteredArray);
     }
+    
+    // Reset request in progress flag
+    m_requestInProgress = false;
 }
 
 QJsonArray DapCmdServersList::filterUnavailableServers(const QJsonArray& arr) {
@@ -85,35 +126,67 @@ void DapCmdServersList::handleReplyError(DapNetworkReply* reply) {
 
     qWarning() << "[DapCmdServersList] Network error occurred:" << reply->errorString();
 
+    // Stop any active timer to prevent infinite loops
+    if (emitTimer && emitTimer->isActive()) {
+        qDebug() << "[DapCmdServersList] Stopping active emitTimer to prevent infinite loops.";
+        emitTimer->stop();
+    }
+
     if (guiCall) {
         qInfo() << "[DapCmdServersList] GUI call detected. Attempting to reload server list.";
         if (loadServerList()) {
-            qDebug() << "[DapCmdServersList] Server list reloaded successfully.";
+            qDebug() << "[DapCmdServersList] Server list reloaded successfully from cache.";
             guiCall = false;
+            // Don't start timer or emit nextCdb if we successfully loaded from cache
+            sendSimpleError(-32008, "CDBs not available. Loaded local server list.");
+            // Reset request in progress flag
+            m_requestInProgress = false;
+            return;
         } else {
-            qWarning() << "[DapCmdServersList] Failed to reload server list.";
+            qWarning() << "[DapCmdServersList] Failed to reload server list from cache.";
         }
     }
 
+    // Only start timer and emit nextCdb if we couldn't load from cache
     if (emitTimer && !emitTimer->isActive()) {
-        qDebug() << "[DapCmdServersList] Starting emitTimer.";
+        qDebug() << "[DapCmdServersList] Starting emitTimer for retry.";
         emitTimer->start();
     } else if (!emitTimer) {
         qWarning() << "[DapCmdServersList] emitTimer is null!";
     }
 
-    qInfo() << "[DapCmdServersList] Emitting nextCdb() signal.";
-    emit nextCdb();
+    // Skip CDB operations in noCDB mode
+    if (!m_noCdbMode) {
+        qInfo() << "[DapCmdServersList] Emitting nextCdb() signal.";
+        emit nextCdb();
+    } else {
+        qDebug() << "[noCDB] Skipping nextCdb signal in noCDB mode";
+    }
 
     sendSimpleError(reply->error(), reply->errorString());
+    
+    // Reset request in progress flag
+    m_requestInProgress = false;
 }
 
 
 void DapCmdServersList::processNextCDB(int errorCode, const QString& errorMessage) {
+    // Skip CDB operations in noCDB mode
+    if (m_noCdbMode) {
+        qDebug() << "[noCDB] Skipping processNextCDB in noCDB mode";
+        sendSimpleError(errorCode, errorMessage);
+        return;
+    }
+    
     auto& manager = DapCdbManager::instance();
 
     if (!manager.hasServers()) {
         qWarning() << "[DapCmdServersList] No CDB servers available.";
+        // Try to load from cache when no CDB servers are available
+        if (loadServerList()) {
+            qDebug() << "[DapCmdServersList] Server list reloaded successfully from cache.";
+            return;
+        }
         sendSimpleError(errorCode, errorMessage);
         return;
     }
@@ -123,17 +196,32 @@ void DapCmdServersList::processNextCDB(int errorCode, const QString& errorMessag
         manager.resetIndex();
 
         if (loadServerList()) {
-            qDebug() << "[DapCmdServersList] Server list reloaded successfully.";
+            qDebug() << "[DapCmdServersList] Server list reloaded successfully from cache.";
             return;
         }
     }
 
+    // Stop timer to prevent infinite loops when all CDB servers fail
+    if (emitTimer && emitTimer->isActive()) {
+        qDebug() << "[DapCmdServersList] Stopping emitTimer to prevent infinite CDB retries.";
+        emitTimer->stop();
+    }
+
     qWarning() << "[DapCmdServersList] Sending error:" << errorCode << errorMessage;
     sendSimpleError(errorCode, errorMessage);
+    
+    // Reset request in progress flag
+    m_requestInProgress = false;
 }
 
 
 void DapCmdServersList::sendRequestToCurrentCDB(DapNetworkReply* reply) {
+    // Skip CDB operations in noCDB mode
+    if (m_noCdbMode) {
+        qDebug() << "[noCDB] Skipping sendRequestToCurrentCDB in noCDB mode";
+        return;
+    }
+    
     DapCdbServer* server = DapCdbManager::instance().currentServer();
     if (!server) {
         qWarning() << "[DapCmdServersList] No CDB server available to send request.";
@@ -149,6 +237,9 @@ void DapCmdServersList::updateServerList(const QJsonArray& arr) {
 
     saveServerListToSettings(arr, time);
     emitServerListUpdate(arr, time);
+    
+    // Reset request in progress flag when successfully updating server list
+    m_requestInProgress = false;
 }
 
 bool DapCmdServersList::loadServerList() {
@@ -167,6 +258,9 @@ bool DapCmdServersList::loadServerList() {
     sendSimpleError(-32008, "CDBs not available. Loaded local server list. Update " + QDateTime::fromSecsSinceEpoch(time.toLongLong()).toString("yyyy-MM-dd HH:mm:ss"));
 
     emitServerListUpdate(arr, time);
+    
+    // Reset request in progress flag when loading from cache
+    m_requestInProgress = false;
 
     return true;
 }

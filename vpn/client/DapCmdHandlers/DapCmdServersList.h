@@ -34,11 +34,14 @@ signals:
 public slots:
     void setServersList(const QList<QString>& a_serversList) { m_serversList = a_serversList ; }
     void sendServerList(DapServerInfoList m_nodelist, QString time);
+    void setNoCdbMode(bool enabled) { m_noCdbMode = enabled; }
 
 private:
     QList<QString> m_serversList;
     bool guiCall;
+    bool m_noCdbMode = false;
     QTimer * emitTimer;
+    bool m_requestInProgress = false;  // Instance flag for request protection
 
     QJsonArray filterUnavailableServers(const QJsonArray& arr);
     void handleCdbIteratorError();

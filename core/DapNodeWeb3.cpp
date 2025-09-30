@@ -87,11 +87,19 @@ static const ReplyMethod s_dummyReply
 DapNodeWeb3::DapNodeWeb3 (QObject *obj, int requestTimeout) :
   QObject (obj),
   m_requestTimeout (requestTimeout),
-  m_connectId (QString()),
   m_networkReply (nullptr),
-  m_networkRequest (QString())
+  m_parseJsonError (false),
+  m_reconnectionAttempts (0)
 {
+  // Initialize HTTP client
   m_httpClient = new DapNetworkAccessManager();
+  
+  // Load stored connection ID on startup
+  QString storedId = loadStoredConnectionId();
+  if (!storedId.isEmpty()) {
+    m_connectId = storedId;
+    qDebug() << "🔗 [WEB3 ID] Loaded stored connection ID:" << m_connectId;
+  }
 }
 
 
@@ -114,6 +122,31 @@ void DapNodeWeb3::request_GET(const QString &host, quint16 port, const QString &
     m_httpClient->requestHttp_GET(host, port, urlPath, headers, a_netReply);
 }
 
+void DapNodeWeb3::request_GET_long_timeout(const QString &host, quint16 port, const QString &urlPath,
+                              DapNetworkReply &a_netReply, const QString &headers, bool ssl)
+{
+    Q_UNUSED(ssl)
+
+    qDebug() << "Sending GET request with long timeout to" << host << ":" << port << urlPath << "with headers:" << headers;
+
+    if (!m_httpClient) {
+        qWarning() << "m_httpClient is null, cannot process GET request";
+        return;
+    }
+
+    m_httpClient->requestHttp_GET_long_timeout(host, port, urlPath, headers, a_netReply);
+}
+
+QString extractMethod (const QString &inputString)
+{
+  QRegularExpression regex (R"(\?method=([^&]+))");
+  QRegularExpressionMatch match = regex.match (inputString);
+
+  if (match.hasMatch())
+    return match.captured (1);
+  else
+    return QString(); // If no match is found
+}
 
 void DapNodeWeb3::sendRequest(QString request)
 {
@@ -128,18 +161,15 @@ void DapNodeWeb3::sendRequest(QString request)
     });
 
     m_networkRequest = request;
-    request_GET(WEB3_URL, WEB3_PORT, request, *m_networkReply);
-}
-
-QString extractMethod (const QString &inputString)
-{
-  QRegularExpression regex (R"(\?method=([^&]+))");
-  QRegularExpressionMatch match = regex.match (inputString);
-
-  if (match.hasMatch())
-    return match.captured (1);
-  else
-    return QString(); // If no match is found
+    
+    // Use long timeout for transaction creation operations
+    QString methodName = extractMethod(request);
+    if (methodName == "CondTxCreate") {
+        DEBUGINFO << "Using long timeout for CondTxCreate operation";
+        request_GET_long_timeout(WEB3_URL, WEB3_PORT, request, *m_networkReply);
+    } else {
+        request_GET(WEB3_URL, WEB3_PORT, request, *m_networkReply);
+    }
 }
 
 bool isVersionLessThan(const QString& version1, const QString& version2) {
@@ -186,30 +216,44 @@ void DapNodeWeb3::responseProcessing (
         if (doc["status"].isString()) {
             if (doc["status"].toString() == QString("ok")) {
                 QJsonObject dataObject = doc["data"].toObject();
-                QString cellframeDashboard = dataObject["cellframe-dashboard"].toString();
+                
+                // Check for either cellframe-dashboard or cellframe-wallet
+                QString cellframeDashboard;
+                QString dashboardType;
+                if (dataObject.contains("cellframe-dashboard") && !dataObject["cellframe-dashboard"].toString().isEmpty()) {
+                    cellframeDashboard = dataObject["cellframe-dashboard"].toString();
+                    dashboardType = "dashboard";
+                    m_connectedAppType = "Dashboard"; // For UI display
+                } else if (dataObject.contains("cellframe-wallet") && !dataObject["cellframe-wallet"].toString().isEmpty()) {
+                    cellframeDashboard = dataObject["cellframe-wallet"].toString();
+                    dashboardType = "wallet";
+                    m_connectedAppType = "Cellframe-Wallet"; // For UI display
+                }
+                
                 QString cellframeNode = dataObject["cellframe-node"].toString();
 
                 QString minDashboardVersion = DapServiceDataLocal::instance()->getMinDashboardVersion();
                 QString minNodeVersion = DapServiceDataLocal::instance()->getMinNodeVersion();
 
-                bool isDashboardLess = isVersionLessThan(cellframeDashboard, minDashboardVersion);
+                bool isDashboardLess = !cellframeDashboard.isEmpty() ? isVersionLessThan(cellframeDashboard, minDashboardVersion) : false;
                 bool isNodeLess = isVersionLessThan(cellframeNode, minNodeVersion);
 
                 DEBUGINFO << "nodeStatusOk - " + doc["data"].toString();
-                DEBUGINFO << "cellframe-dashboard version: " << cellframeDashboard;
+                DEBUGINFO << "cellframe-" << dashboardType << " version: " << cellframeDashboard;
                 DEBUGINFO << "cellframe-node version: " << cellframeNode;
 
-                if (!isDashboardLess && !isNodeLess) {
+                // If we have either dashboard or wallet, consider it as normal
+                if ((!cellframeDashboard.isEmpty() && !isDashboardLess) && !isNodeLess) {
                     DEBUGINFO << "Node detected. No updates required.";
                     emit nodeDetected();
                     return;
-                } else if (isDashboardLess && isNodeLess) {
-                    QString errorMessage = "Update required for both dashboard and node.";
+                } else if ((!cellframeDashboard.isEmpty() && isDashboardLess) && isNodeLess) {
+                    QString errorMessage = QString("Update required for both %1 and node.").arg(dashboardType);
                     DEBUGINFO << errorMessage;
                     emit sigError(232, errorMessage);
                 } else {
-                    if (isDashboardLess) {
-                        QString errorMessage = QString("Update required for dashboard. ") +
+                    if (!cellframeDashboard.isEmpty() && isDashboardLess) {
+                        QString errorMessage = QString("Update required for %1. ").arg(dashboardType) +
                                                "Current version: " + cellframeDashboard + ", required: " + minDashboardVersion + ".";
                         DEBUGINFO << errorMessage;
                         emit sigError(233, errorMessage);
@@ -219,6 +263,12 @@ void DapNodeWeb3::responseProcessing (
                                                "Current version: " + cellframeNode + ", required: " + minNodeVersion + ".";
                         DEBUGINFO << errorMessage;
                         emit sigError(234, errorMessage);
+                    }
+                    // If neither dashboard nor wallet is present, but node is present, still consider it as detected
+                    if (cellframeDashboard.isEmpty() && !isNodeLess) {
+                        DEBUGINFO << "Node detected. No dashboard/wallet component found, but node is up to date.";
+                        emit nodeDetected();
+                        return;
                     }
                 }
             } else {
@@ -292,9 +342,21 @@ void DapNodeWeb3::nodeDetectedRequest()
 void DapNodeWeb3::nodeConnectionRequest()
 {
   // do not send connect if already present
-  if (!m_connectId.isEmpty())
+  if (!m_connectId.isEmpty()) {
+    qDebug() << "🔗 [WEB3 ID] Using existing connection ID:" << m_connectId;
     return emit connectionIdReceived (m_connectId);
+  }
 
+  // Try to load stored connection ID
+  QString storedId = loadStoredConnectionId();
+  if (!storedId.isEmpty()) {
+    m_connectId = storedId;
+    qDebug() << "🔗 [WEB3 ID] Using stored connection ID:" << m_connectId;
+    return emit connectionIdReceived (m_connectId);
+  }
+
+  // No stored ID found, request new connection
+  qDebug() << "🔗 [WEB3 ID] No stored connection ID, requesting new connection";
   // example connect request
   // http://127.0.0.1:8045/?method=Connect
   DEBUGINFO << "http://127.0.0.1:8045/?method=Connect";
@@ -394,7 +456,7 @@ void DapNodeWeb3::networksRequest()
   sendRequest (requesString);
 }
 
-void DapNodeWeb3::condTxCreateRequest (QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit, QString fee)
+void DapNodeWeb3::condTxCreateRequest (QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit)
 {
   m_networkName = networkName;
   QString requesString = QString ("?method=CondTxCreate&"
@@ -404,8 +466,8 @@ void DapNodeWeb3::condTxCreateRequest (QString walletName, QString networkName, 
                                   "walletName=%4&"
                                   "certName=%5&"
                                   "value=%6&"
+                                  "fee=&"
                                   "unit=%7&"
-                                  "fee=%8&"
                                   "srv_uid=1")
                          .arg (m_connectId)
                          .arg (networkName)
@@ -413,8 +475,7 @@ void DapNodeWeb3::condTxCreateRequest (QString walletName, QString networkName, 
                          .arg (walletName)
                          .arg (sertificateName)
                          .arg (value)
-                         .arg (unit)
-                         .arg (fee);
+                         .arg (unit);
   sendRequest (requesString);
 }
 
@@ -492,12 +553,20 @@ void DapNodeWeb3::getNodeIPRequest (const QString &networkName, const QJsonArray
     : "addr=" + list.begin()->toString();
   };
 
+  qDebug() << "🔍 [IP DEBUG] getNodeIPRequest for network:" << networkName << "with" << orderList.size() << "nodes";
+  
+  // Log all node addresses being requested
+  for (int i = 0; i < orderList.size(); ++i) {
+    qDebug() << "🔍 [IP DEBUG] Requesting IP for node" << (i+1) << "of" << orderList.size() << ":" << orderList[i].toString();
+  }
+
   QString requesString =
     QString ("?method=GetNodeIP"
              "&id=%1"
              "&net=%2&%3")
     .arg (m_connectId, networkName, addressArgument (orderList));
 
+  qDebug() << "🔍 [IP DEBUG] Sending GetNodeIP request:" << requesString;
   sendRequest (requesString);
 }
 
@@ -541,6 +610,7 @@ void DapNodeWeb3::getListKeysRequest (QString networkName)
 
 void DapNodeWeb3::parseReplyStatus (const QString &replyData, int baseErrorCode)
 {
+  Q_UNUSED(baseErrorCode)
 
   DEBUGINFO << __func__ << replyData;
 
@@ -582,7 +652,19 @@ void DapNodeWeb3::parseReplyConnect (const QString &replyData, int baseErrorCode
       // connection id
       if (data["id"].isString())
         {
-          m_connectId = data["id"].toString();
+          QString newConnectionId = data["id"].toString();
+          
+          // Only update if the ID has changed
+          if (m_connectId != newConnectionId) {
+            m_connectId = newConnectionId;
+            saveConnectionId(m_connectId);
+            qDebug() << "🔗 [WEB3 ID] New connection ID received and saved:" << m_connectId;
+          } else {
+            qDebug() << "🔗 [WEB3 ID] Received same connection ID, no update needed:" << m_connectId;
+          }
+          
+          m_reconnectionAttempts = 0; // Reset counter on successful connection
+          qDebug() << "🔄 [RECONNECTION DEBUG] Successfully connected to Dashboard, reconnection counter reset";
           emit connectionIdReceived (m_connectId);
           //DEBUGINFO << "[data][id]" << m_connectId;
         }
@@ -804,6 +886,17 @@ void DapNodeWeb3::parseCondTxCreateReply (const QString &replyData, int baseErro
   //        "errorMsg": "",
   //        "status": "ok"
   //    }
+  //
+  //    OR when transaction is queued:
+  //    {
+  //        "data": {
+  //            "idQueue": "0x688F93C77B18801981480A70D0ACDDB72689EC3A078DB2C2AB59AF7FFF1BFFBC",
+  //            "success": true,
+  //            "toQueue": true
+  //        },
+  //        "errorMsg": "",
+  //        "status": "ok"
+  //    }
 
   DEBUGINFO << __func__ << replyData;
 
@@ -813,11 +906,35 @@ void DapNodeWeb3::parseCondTxCreateReply (const QString &replyData, int baseErro
   if (jsonError())
     return;
 
-  if (doc["data"].isObject() && doc["data"].toObject()["tx_hash"].isString())
+  if (doc["data"].isObject())
     {
-      // get hash
-      QString transactionHash = doc["data"].toObject()["tx_hash"].toString();
-      emit sigCondTxCreateSuccess (transactionHash);
+      QJsonObject dataObj = doc["data"].toObject();
+      
+      // Check if transaction is queued
+      if (dataObj["toQueue"].toBool() && dataObj.contains("idQueue")) {
+        QString queueId = dataObj["idQueue"].toString();
+        DEBUGINFO << "Transaction queued in Dashboard with ID:" << queueId;
+        emit sigTransactionInQueue(queueId, m_connectedAppType);
+        return;
+      }
+      
+      // Check for transaction hash (immediate transaction)
+      QString transactionHash;
+      if (dataObj["tx_hash"].isString()) {
+        transactionHash = dataObj["tx_hash"].toString();
+        DEBUGINFO << "Found transaction hash in 'tx_hash' field:" << transactionHash;
+      }
+      else if (dataObj["hash"].isString()) {
+        transactionHash = dataObj["hash"].toString();
+        DEBUGINFO << "Found transaction hash in 'hash' field:" << transactionHash;
+      }
+      
+      if (!transactionHash.isEmpty()) {
+        emit sigCondTxCreateSuccess (transactionHash);
+      } else {
+        DEBUGINFO << "No valid transaction hash found in response data";
+        replyError(baseErrorCode + 60000, "Transaction hash not found", "Response doesn't contain valid transaction hash");
+      }
     }
 }
 
@@ -903,11 +1020,16 @@ void DapNodeWeb3::parseOrderList (const QString &replyData, int baseErrorCode)
       } else {
           qDebug().noquote().nospace() << __func__ << ": Failed to save replyData to file.";
       }
+      
+      // Emit error to notify upper layers about the JSON parsing failure
+      replyError(baseErrorCode + 70000, "JSON parsing error in order list", "Failed to parse order list response - invalid JSON format");
       return;
   }
 
   auto docArray  = doc["data"];
-  emit sigOrderList (docArray.isArray() ? docArray.toArray() : QJsonArray());
+  QJsonArray orderArray = docArray.isArray() ? docArray.toArray() : QJsonArray();
+  qDebug() << "🔍 [FILTER DEBUG] parseOrderList: Initial orders count =" << orderArray.size();
+  emit sigOrderList (orderArray);
 }
 
 void DapNodeWeb3::parseNodeIp (const QString &replyData, int baseErrorCode)
@@ -921,7 +1043,7 @@ void DapNodeWeb3::parseNodeIp (const QString &replyData, int baseErrorCode)
   //        "status": "ok"
   //    }
 
-  DEBUGINFO << __func__ << replyData;
+  qDebug() << "🔍 [IP DEBUG] parseNodeIp received:" << replyData;
 
   QJsonDocument doc;
   parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
@@ -930,26 +1052,72 @@ void DapNodeWeb3::parseNodeIp (const QString &replyData, int baseErrorCode)
     return;
 
   QJsonObject data = doc.object();
+  QString status = data.value("status").toString();
+
+  // Handle special case where status is "bad" but parseJson didn't set error (e.g., "No records")
+  if (status == "bad") {
+    qDebug() << "🔍 [IP DEBUG] Dashboard status is 'bad' but treated as non-critical - emitting empty IP data";
+    emit sigNodeIp(QJsonObject());
+    return;
+  }
 
   if (data.contains ("data"))
   {
     /* get data value */
     QJsonValue dataValue  = data.value ("data");
 
-    /* if object, resturn as is */
+    /* if object, return as is with validation */
     if (dataValue.isObject())
-      data  = data.value ("data").toObject();
+    {
+      data = data.value ("data").toObject();
+      
+      // Validate IP addresses in the response
+      QJsonObject validatedData;
+      int unknownIpCount = 0;
+      int validIpCount = 0;
+      
+      for (auto it = data.begin(); it != data.end(); ++it) {
+        QString key = it.key();
+        QString ipValue = it.value().toString();
+        
+        // Special handling for Dashboard's "unknown ip" response
+        if (ipValue == "unknown ip") {
+          unknownIpCount++;
+          validatedData.insert(key, ""); // Convert to empty string for UI
+          qDebug() << "🚨 [IP DEBUG] Dashboard returned 'unknown ip' for node:" << key;
+        } else if (isValidIPAddress(ipValue)) {
+          validIpCount++;
+          validatedData.insert(key, ipValue);
+          qDebug() << "🔍 [IP DEBUG] Valid IP found:" << key << "->" << ipValue;
+        } else if (ipValue.isEmpty()) {
+          validatedData.insert(key, ""); // Keep empty for UI handling
+          qDebug() << "🚨 [IP DEBUG] Empty IP for node:" << key;
+        } else {
+          qDebug() << "🚨 [IP DEBUG] Invalid IP format:" << ipValue << "for node:" << key;
+          validatedData.insert(key, ""); // Replace invalid with empty
+        }
+      }
+      
+      qDebug() << "🔍 [IP DEBUG] IP Resolution Summary:" << validIpCount
+               << "valid IPs," << unknownIpCount << "unknown from Dashboard," << (data.size() - validIpCount - unknownIpCount) << "other issues";
+      
+      qDebug() << "🔍 [IP DEBUG] Final validated IP data:" << QJsonDocument(validatedData).toJson(QJsonDocument::Compact);
+      emit sigNodeIp (validatedData);
+    }
 
-    /* if array -> convert to object */
+    /* if array -> convert to object with validation */
     else if (dataValue.isArray())
     {
       /* clear */
-      data      = QJsonObject();
+      data = QJsonObject();
 
       /* get array */
       auto jarr = dataValue.toArray();
+      
+      int unknownIpCount = 0;
+      int validIpCount = 0;
 
-      /* convert in cycle */
+      /* convert in cycle with validation */
       for (const auto &jarrItem : qAsConst (jarr))
       {
         QJsonObject jitem = jarrItem.toObject();
@@ -958,13 +1126,96 @@ void DapNodeWeb3::parseNodeIp (const QString &replyData, int baseErrorCode)
           continue;
 
         auto it = jitem.begin();
-
-        data.insert (it.key(), it.value());
+        QString key = it.key();
+        QString ipValue = it.value().toString();
+        
+        // Special handling for Dashboard's "unknown ip" response
+        if (ipValue == "unknown ip") {
+          unknownIpCount++;
+          data.insert(key, ""); // Convert to empty string for UI
+          qDebug() << "🚨 [IP DEBUG] Dashboard returned 'unknown ip' in array for node:" << key;
+        } else if (isValidIPAddress(ipValue)) {
+          validIpCount++;
+          data.insert(key, ipValue);
+          qDebug() << "🔍 [IP DEBUG] Valid IP from array:" << key << "->" << ipValue;
+        } else if (ipValue.isEmpty()) {
+          data.insert(key, ""); // Keep empty for UI handling
+          qDebug() << "🚨 [IP DEBUG] Empty IP in array for node:" << key;
+        } else {
+          qDebug() << "🚨 [IP DEBUG] Invalid IP in array:" << ipValue << "for node:" << key;
+          data.insert(key, ""); // Replace invalid with empty
+        }
       }
+      
+      qDebug() << "🔍 [IP DEBUG] Array IP Resolution Summary:" << validIpCount << "valid IPs," << unknownIpCount << "unknown from Dashboard," << (jarr.size() - validIpCount - unknownIpCount) << "other issues";
     }
 
+    qDebug() << "🔍 [IP DEBUG] Final parsed IP data:" << QJsonDocument(data).toJson(QJsonDocument::Compact);
     emit sigNodeIp (data);
+  } else {
+    qDebug() << "🚨 [IP DEBUG] No 'data' field found in response";
+    // Emit empty object to prevent hanging
+    emit sigNodeIp(QJsonObject());
   }
+}
+
+bool DapNodeWeb3::isValidIPAddress(const QString& ip) const
+{
+    if (ip.isEmpty()) {
+        return false; // Empty is not valid, but handled separately
+    }
+    
+    // IPv4 validation
+    QRegularExpression ipv4Regex(R"(^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$)");
+    if (!ipv4Regex.match(ip).hasMatch()) {
+        return false;
+    }
+    
+    // Check each octet is valid (0-255)
+    QStringList octets = ip.split('.');
+    for (const QString& octet : octets) {
+        bool ok;
+        int value = octet.toInt(&ok);
+        if (!ok || value < 0 || value > 255) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+void DapNodeWeb3::requestNodeListForDiagnostics(const QString &networkName)
+{
+    qDebug() << "🔍 [IP DEBUG] Requesting NodeList for diagnostics on network:" << networkName;
+    
+    QString requestString = QString("?method=NodeList&id=%1&net=%2")
+                           .arg(m_connectId)
+                           .arg(networkName);
+                           
+    qDebug() << "🔍 [IP DEBUG] Diagnostic NodeList request:" << requestString;
+    // Note: This will use the existing parseNodeList handler
+    sendRequest(requestString);
+}
+
+void DapNodeWeb3::diagnoseDashboardNodeAvailability(const QString &networkName, const QJsonArray &failedNodes)
+{
+    qDebug() << "🚨 [IP DEBUG] Dashboard Diagnostics for network:" << networkName;
+    qDebug() << "🚨 [IP DEBUG] Failed to resolve" << failedNodes.size() << "node IPs";
+    
+    for (int i = 0; i < failedNodes.size(); ++i) {
+        QString nodeAddr = failedNodes[i].toString();
+        qDebug() << "🚨 [IP DEBUG] Failed node" << (i+1) << ":" << nodeAddr;
+    }
+    
+    qDebug() << "🔍 [IP DEBUG] Possible causes for 'unknown ip':";
+    qDebug() << "🔍 [IP DEBUG] 1. Nodes are offline or not connected to network";
+    qDebug() << "🔍 [IP DEBUG] 2. Dashboard is not fully synchronized with network";
+    qDebug() << "🔍 [IP DEBUG] 3. Nodes haven't announced their IP addresses";
+    qDebug() << "🔍 [IP DEBUG] 4. Network connectivity issues";
+    qDebug() << "🔍 [IP DEBUG] 5. Nodes are behind NAT/firewall";
+    
+    // Request NodeList for comparison
+    requestNodeListForDiagnostics(networkName);
 }
 
 void DapNodeWeb3::parseFee (const QString &replyData, int baseErrorCode)
@@ -1079,6 +1330,7 @@ void DapNodeWeb3::parseNodeList (const QString &replyData, int baseErrorCode)
 //    "status": "ok"
 //    }
 
+  qDebug() << "🔍 [IP DEBUG] parseNodeList received for diagnostics";
   DEBUGINFO << __func__ << replyData;
 
   QJsonDocument doc;
@@ -1090,13 +1342,25 @@ void DapNodeWeb3::parseNodeList (const QString &replyData, int baseErrorCode)
   if (doc["data"].isArray())
     {
       QList<QMap<QString, QString>> nodeList;
+      QStringList availableNodeAddresses;
+      
       foreach (const auto &nodeJo, doc["data"].toArray())
         {
           QMap<QString, QString> itemDump;
           foreach (const QString &key, nodeJo.toObject().keys())
             itemDump[key] = nodeJo[key].toString();
           nodeList.append (itemDump);
+          
+          // Collect node addresses for diagnostic comparison
+          QString nodeAddr = nodeJo.toObject().value("node address").toString();
+          if (!nodeAddr.isEmpty()) {
+            availableNodeAddresses.append(nodeAddr);
+          }
         }
+        
+      qDebug() << "🔍 [IP DEBUG] Dashboard reports" << nodeList.size() << "nodes available in network";
+      qDebug() << "🔍 [IP DEBUG] Available node addresses:" << availableNodeAddresses;
+      
       emit sigNodeList (nodeList);
     }
 }
@@ -1244,8 +1508,28 @@ void DapNodeWeb3::parseJson (const QString &replyData, int baseErrorCode, const 
       /* notify on incorrect id */
       if (errorMsgString == "Incorrect id")
       {
+        qDebug() << "🔗 [WEB3 ID] Received 'Incorrect id' error, clearing stored connection ID";
+        clearStoredConnectionId();
         m_connectId.clear();
         emit sigIncorrectId();
+      }
+
+      // Special handling for Dashboard "No records" response for IP resolution
+      if (status == "bad" && a_replyName == "parseNodeIp") {
+        // Parse nested JSON in errorMsg to check if it's "No records"
+        QJsonDocument errorDoc = QJsonDocument::fromJson(errorMsgString.toUtf8());
+        if (!errorDoc.isNull() && errorDoc.isObject()) {
+          QJsonObject errorObj = errorDoc.object();
+          QString result = errorObj.value("result").toString();
+          
+          if (result.contains("No records")) {
+            qDebug() << "🔍 [IP DEBUG] Dashboard reports 'No records' for node IP - treating as empty result";
+            qDebug() << "🔍 [IP DEBUG] This is normal when nodes are offline or not registered in Dashboard";
+            
+            // Don't set error flag, allowing parseNodeIp to emit empty object
+            return;
+          }
+        }
       }
 
       /* print error */
@@ -1275,10 +1559,70 @@ void DapNodeWeb3::replyError (int errorCode, const QString &errorString, const Q
   // For reconnect to Dashboard
   if(errorString == "Incorrect id")
   {
-    nodeConnectionRequest();
-        //TODO: Need reset no cdb GUI status
+    m_reconnectionAttempts++;
+    qDebug() << "🔄 [RECONNECTION DEBUG] Incorrect ID received, attempt" << m_reconnectionAttempts << "of" << MAX_RECONNECTION_ATTEMPTS;
+    
+    if (m_reconnectionAttempts <= MAX_RECONNECTION_ATTEMPTS) {
+      qInfo() << "🔄 [RECONNECTION DEBUG] Attempting to reconnect to Dashboard...";
+      // Clear stored ID when it becomes invalid
+      clearStoredConnectionId();
+      m_connectId.clear();
+      nodeConnectionRequest();
+      //TODO: Need reset no cdb GUI status
+    } else {
+      qCritical() << "🚨 [RECONNECTION DEBUG] CRITICAL: Maximum reconnection attempts exceeded, stopping reconnection attempts";
+      m_reconnectionAttempts = 0; // Reset counter for next session
+      emit sigError (errorCode + 80000, "Maximum reconnection attempts exceeded - unable to establish connection to Dashboard");
+    }
   }
   else
     emit sigError (errorCode, errorGuiMessage);
 }
+
+/****************************************//**
+ * @name WEB3 CONNECTION ID PERSISTENCE
+ *******************************************/
+/// @{
+
+void DapNodeWeb3::saveConnectionId(const QString& connectionId)
+{
+  if (connectionId.isEmpty()) {
+    qWarning() << "🔗 [WEB3 ID] Attempted to save empty connection ID";
+    return;
+  }
+  
+  DapServiceDataLocal::saveSetting("web3_connection_id", connectionId);
+  qDebug() << "🔗 [WEB3 ID] Saved connection ID to storage:" << connectionId;
+}
+
+QString DapNodeWeb3::loadStoredConnectionId()
+{
+  QString storedId = DapServiceDataLocal::getSetting("web3_connection_id").toString();
+  if (!storedId.isEmpty()) {
+    qDebug() << "🔗 [WEB3 ID] Retrieved stored connection ID:" << storedId;
+  }
+  return storedId;
+}
+
+void DapNodeWeb3::clearStoredConnectionId()
+{
+  DapServiceDataLocal::removeSetting("web3_connection_id");
+  qDebug() << "🔗 [WEB3 ID] Cleared stored connection ID";
+}
+
+bool DapNodeWeb3::hasStoredConnectionId()
+{
+  return !DapServiceDataLocal::getSetting("web3_connection_id").toString().isEmpty();
+}
+
+void DapNodeWeb3::forceReconnect()
+{
+  qDebug() << "🔗 [WEB3 ID] Force reconnect requested - clearing stored ID and reconnecting";
+  clearStoredConnectionId();
+  m_connectId.clear();
+  m_reconnectionAttempts = 0;
+  nodeConnectionRequest();
+}
+
+/// @}
 

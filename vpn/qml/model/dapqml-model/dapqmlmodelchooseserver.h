@@ -73,9 +73,7 @@ public:
   /// return previous server name which was before setCheckedServer
   QString previousServer();
 
-#ifdef BRAND_KELVPN
   void allowModelReset (int a_amount = 1);
-#endif // BRAND_KELVPN
   /// @}
 
   /****************************************//**

@@ -83,7 +83,31 @@ bool DapQmlModelNodeWalletsList::isIndexed() const
 
 bool DapQmlModelNodeWalletsList::filterAcceptsRow (int a_row, const QString &a_filter) const
 {
-  return data (createIndex (a_row, 0), int (FieldId::misc)).toString() == a_filter;
+  if (a_filter.isEmpty() || a_filter == "-")
+    return true;
+
+  // Get the wallet data for this row
+  const auto &list = DapNodeWalletData::instance()->walletTokenList();
+  if (a_row < 0 || a_row >= list.size())
+    return false;
+
+  const auto &walletToken = list.at(a_row);
+  
+  // Check if this wallet belongs to the selected network
+  if (walletToken.network != a_filter)
+    return false;
+
+  // Get the network fee map to find the native token for this network
+  const auto &networkFeeMap = DapNodeWalletData::instance()->networkFeeMap();
+  auto it = networkFeeMap.find(walletToken.network);
+  
+  if (it != networkFeeMap.end()) {
+    QString nativeToken = it->feeTicker;
+    
+    // Only accept wallets that have the native token for this network
+    return walletToken.token == nativeToken;
+  }
+  return false;
 }
 
 const QString &DapQmlModelNodeWalletsList::wallet() const

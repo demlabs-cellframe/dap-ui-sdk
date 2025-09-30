@@ -35,25 +35,17 @@ DapQmlModelChooseServer::DapQmlModelChooseServer (QObject *parent)
   connect (DapQmlModelFullServerList::instance(), &DapQmlModelFullServerList::currentChanged,
            this, &DapQmlModelChooseServer::currentChanged);
 
-#ifdef BRAND_KELVPN
+  // Universal model reset handling for all brands
   connect (DapQmlModelFullServerList::instance(), &QAbstractListModel::modelAboutToBeReset,
            this, [this]
   {
-//    if (s_allowModelResetAmount > 0)
-//      beginResetModel();
     beginResetModel();
   });
   connect (DapQmlModelFullServerList::instance(), &QAbstractListModel::modelReset,
            this, [this]
   {
-//    if (s_allowModelResetAmount > 0)
-//    {
-//      endResetModel();
-//      s_allowModelResetAmount--;
-//    }
     endResetModel();
   });
-#endif // BRAND_KELVPN
 
   QTimer::singleShot (500, [this]
   {
@@ -93,9 +85,19 @@ int DapQmlModelChooseServer::hookInt()
 
 void DapQmlModelChooseServer::refresh()
 {
-//  beginResetModel();
-//  endResetModel();
+  // Force model reset to trigger UI update
+  beginResetModel();
+  endResetModel();
+  
+  // Emit refresh signal for QML components
   emit sigRefresh();
+  
+  // Force update of current server data
+  auto *serverList = DapQmlModelFullServerList::instance();
+  if (serverList) {
+    // Trigger data refresh from underlying model
+    serverList->refresh();
+  }
 }
 
 int DapQmlModelChooseServer::current() const
@@ -155,15 +157,13 @@ QString DapQmlModelChooseServer::previousServer()
   return m_previousServer;
 }
 
-#ifdef BRAND_KELVPN
 void DapQmlModelChooseServer::allowModelReset (int a_amount)
 {
-//  if (s_allowModelResetAmount < 0)
-//    s_allowModelResetAmount = a_amount;
-//  else
-//    s_allowModelResetAmount += a_amount;
+  // Universal model reset allowance for all brands
+  // This method is kept for backward compatibility
+  // The actual reset logic is now handled in the constructor
+  Q_UNUSED(a_amount)
 }
-#endif // BRAND_KELVPN
 
 /********************************************
  * OVERRIDE

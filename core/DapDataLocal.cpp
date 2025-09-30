@@ -20,6 +20,12 @@ DapDataLocal::DapDataLocal()
     if(keys.contains(SETTING_THEME)) {
         m_settingsMap[SETTING_THEME] = m_settings->value(SETTING_THEME);
     }
+    
+    // Load noCDB data into memory cache if it exists
+    if(keys.contains(NOCDB_DATA)) {
+        m_settingsMap[NOCDB_DATA] = m_settings->value(NOCDB_DATA);
+        qDebug() << "[DapDataLocal] Loaded NOCDB_DATA into m_settingsMap";
+    }
     if(!keys.contains(MIGRATION_KEY)) {
         qDebug() << "[DapDataLocal] Data needs to be migrated";
         m_needMigration = true;

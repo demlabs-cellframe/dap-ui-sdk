@@ -39,8 +39,7 @@ public:
     QString unitValue;
     QString priceValue; // per portion
     QString portions;
-    QString fee;
-    QString totalFee;
+
     QString totalValue;
     QDateTime created;
     bool isSigned;
