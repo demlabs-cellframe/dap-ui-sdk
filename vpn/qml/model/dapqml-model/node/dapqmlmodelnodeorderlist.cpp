@@ -274,11 +274,13 @@ void DapQmlModelNodeOrderList::_modelReset()
 
 int DapQmlModelNodeOrderList::rowCount (const QModelIndex &parent) const
 {
+  Q_UNUSED(parent);
   return p->items.size();
 }
 
 int DapQmlModelNodeOrderList::columnCount (const QModelIndex &parent) const
 {
+  Q_UNUSED(parent);
   return DapQmlModelNode::nodeFieldsMap.size();
 }
 

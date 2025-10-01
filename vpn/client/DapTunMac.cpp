@@ -43,29 +43,12 @@ DapTunMac::DapTunMac()
  */
 void DapTunMac::tunDeviceCreate()
 {
-    if (m_tunSocket > 0) {
-        qInfo() << "Already created";
-        return;
-    }
-    qDebug() << "tunDeviceCreate()";
-    setTunDeviceName("tun5");
-
-    m_tunSocket = ::open (("/dev/"+m_tunDeviceName).toLatin1().constData(),O_RDWR);
-
-    if(m_tunSocket <= 0){
-        qCritical() << "tunDeviceCreate() can't open "<< m_tunDeviceName;
-        return;
-    }
-
-    if (::fcntl(m_tunSocket, F_SETFL, O_NONBLOCK) < 0) {    ;
-        qCritical() << "tunDeviceCreate() can't switch socket to non-block mode";
-        return;
-    }
-
-    if (::fcntl(m_tunSocket, F_SETFD, FD_CLOEXEC) < 0){    ;
-        qCritical() << "tunDeviceCreate() can't switch socket to not be passed across execs";
-        return;
-    }
+    qDebug() << "DapTunMac::tunDeviceCreate - DEPRECATED: Using NetworkExtension instead";
+    
+    // This method is deprecated in favor of NetworkExtension
+    // NetworkExtension handles UTUN creation automatically
+    qCritical() << "Direct UTUN creation is deprecated. Use NetworkExtension instead.";
+    return;
 }
 
 /**
@@ -193,119 +176,29 @@ void DapTunMac::workerPrepare()
 
 void DapTunMac::backupAndApplyDNS()
 {
-    qDebug() << "backupAndApplyDNS()";
-    QSettings dnsSettigs;
-    dnsSettigs.setValue("ActiveNetIfs", "");
-
-    QFile file(":/macos/GetActiveNetIFs.sh");
-    if (!file.open(QFile::ReadOnly | QFile::Text)){
-        qWarning() << "Can't get resource script \":/macos/GetActiveNetIFs.sh\". Your DNS settings could be wrong";
-        return;
-    }
-    QTextStream in(&file);
-    QString script = in.readAll();
-
-    QProcess process;
-    process.setProgram("/bin/bash");
-    process.start();
-    process.write(script.toLatin1().constData());
-    process.closeWriteChannel();
-    process.waitForFinished();
-
-    QString l_strActiveNetIfs = process.readAllStandardOutput();
-    dnsSettigs.setValue("ActiveNetIfs", l_strActiveNetIfs);
-
-    QStringList l_lActiveNetIfs = l_strActiveNetIfs.split('\n');
-
-    bool isAnyNetIfs = false;
-    for (QString netIf : l_lActiveNetIfs){
-        if (netIf.isEmpty())
-            continue;
-        isAnyNetIfs = true;
-
-        process.setProgram("/bin/bash");
-        process.start();
-        process.write(QString("networksetup -getdnsservers %1 \n").arg(netIf).toLatin1().constData());
-        process.closeWriteChannel();
-        process.waitForFinished();
-        QString l_rawDNS = process.readAllStandardOutput();
-
-        QStringList l_listOfDNS = l_rawDNS.split('\n');
-        QString l_finalDNSString;
-        for (auto l_dns : l_listOfDNS){ // to prevent error from script
-            QHostAddress address(l_dns);
-            if (QAbstractSocket::IPv4Protocol == address.protocol()){
-                //qDebug() << "Valid IPv4 address: " << l_dns;
-                l_finalDNSString += l_dns + " ";
-            }
-            else if (QAbstractSocket::IPv6Protocol == address.protocol()){
-                //qDebug() << "Valid IPv6 address: " << l_dns;
-            }
-            else{
-                //qDebug() << "Unknown or invalid address: " << l_dns;
-            }
-        }
-        if (!l_finalDNSString.isEmpty())
-            dnsSettigs.setValue(netIf, l_finalDNSString);
-        else
-            dnsSettigs.setValue(netIf, "empty");//m_defaultGwOld);
-
-        //Logs for dns for particular netif
-        //QStringList l_lDNS = a_strDNS.split('\n');
-        //qDebug() << "----- DNS of " << netIf << ": ";
-        //for (QString l_dns : l_lDNS)
-        //    if (!l_dns.isEmpty())
-        //        qDebug() << "------------------ " << l_dns;
-
-        QString run = QString("networksetup -setdnsservers %1 %2").
-                             arg(netIf).arg(gw());
-        qDebug() << "cmd run [" << run << ']';
-        ::system(run.toLatin1().constData() );
-    }
-
-    if (!isAnyNetIfs){
-        qWarning() << "Can't get any active NetIf. Your DNS configuration could be wrong.";
-        return;
-    }
-
-    //Flush dns cache
-    QString run = QString("sudo killall -HUP mDNSResponder");
-    qDebug() << "cmd run [" << run << ']';
-    ::system(run.toLatin1().constData() );
-
-    dnsSettigs.sync();
+    qDebug() << "DapTunMac::backupAndApplyDNS - DEPRECATED: Using NetworkExtension instead";
+    
+    // This method is deprecated in favor of NetworkExtension
+    // NetworkExtension handles DNS configuration automatically through NEDNSSettings
+    qWarning() << "Direct DNS configuration is deprecated. Use NetworkExtension instead.";
+    return;
 }
 
 void DapTunMac::getBackDNS()
 {
-    qDebug() << "getBackDNS()";
-    QSettings dnsSettigs;
-    QString l_strActiveNetIfs = dnsSettigs.value("ActiveNetIfs").toString();
-
-    QStringList l_lActiveNetIfs = l_strActiveNetIfs.split('\n');
-
-    for (QString netIf : l_lActiveNetIfs){
-        if (netIf.isEmpty())
-            continue;
-
-        QString l_oldDNS = dnsSettigs.value(netIf).toString();
-        l_oldDNS.replace("\n", " ");
-        QString run = QString("networksetup -setdnsservers %1 %2").
-                             arg(netIf).arg(l_oldDNS);
-        qDebug() << "cmd run [" << run << ']';
-        ::system(run.toLatin1().constData() );
-    }
-
-    //Flush dns cache again, after restoring dns settings
-    QString run = QString("sudo killall -HUP mDNSResponder");
-    qDebug() << "cmd run [" << run << ']';
-    ::system(run.toLatin1().constData() );
+    qDebug() << "DapTunMac::getBackDNS - DEPRECATED: Using NetworkExtension instead";
+    
+    // This method is deprecated in favor of NetworkExtension
+    // NetworkExtension handles DNS restoration automatically
+    qWarning() << "Direct DNS restoration is deprecated. Use NetworkExtension instead.";
+    return;
 }
 
 void DapTunMac::addNewUpstreamRoute(const QString &a_dest) {
-    QString run;
-    run = QString("route add -host %2 %1")
-        .arg(m_defaultGwOld).arg(qPrintable(a_dest));
-    qDebug() << "cmd run [" << run << ']';
-     ::system(run.toLatin1().constData() );
+    qDebug() << "DapTunMac::addNewUpstreamRoute - DEPRECATED: Using NetworkExtension instead";
+    
+    // This method is deprecated in favor of NetworkExtension
+    // NetworkExtension handles routing automatically through NEPacketTunnelNetworkSettings
+    qWarning() << "Direct route management is deprecated. Use NetworkExtension instead.";
+    return;
 }

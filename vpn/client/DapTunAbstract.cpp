@@ -84,6 +84,21 @@ void DapTunAbstract::create(const QString &a_addr, const QString &a_gw,
     m_iUpstreamPort = a_upstreamPort;
     m_upstreamSocket = a_upstreamSocket;
     m_routingExceptionAddrs = a_routing_exceptions;
+    
+#ifdef Q_OS_DARWIN
+    // macOS: NetworkExtension manages TUN interface automatically
+    // Call tunDeviceCreate() to start NetworkExtension Provider with proper network config
+    qInfo() << "[DapTunAbstract] macOS: NE manages TUN; calling tunDeviceCreate() for NetworkExtension";
+    qInfo() << "[DapTunAbstract] Platform detected: Q_OS_DARWIN defined";
+    // CRITICAL FIX: Call tunDeviceCreate() to start NetworkExtension Provider
+    // emit created() will be called from DapTunDarwin::vpnConnectionStatusChanged when status is NEVPNStatusConnected
+    qInfo() << "[DapTunAbstract] macOS: Starting NetworkExtension Provider with network config";
+    tunDeviceCreate();
+    return;
+#else
+    qInfo() << "[DapTunAbstract] Platform: NOT macOS, using legacy TUN";
+#endif
+    
     tunDeviceCreate();
 }
 

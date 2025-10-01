@@ -20,6 +20,7 @@ SOURCES += \
     $$PWD/DapKeyCommon.cpp \
     $$PWD/DapConnectClient.cpp \
     $$PWD/DapHttpPing.cpp \
+    $$PWD/DapServerConnectivityChecker.cpp \
     $$PWD/DapServerInfo.cpp \
     $$PWD/DapSpeed.cpp \
     $$PWD/DapServersLocalStorage.cpp \
@@ -49,6 +50,7 @@ HEADERS += \
     $$PWD/DapKeyCommon.h \
     $$PWD/DapConnectClient.h \
     $$PWD/DapHttpPing.h \
+    $$PWD/DapServerConnectivityChecker.h \
     $$PWD/DapServerInfo.h \
     $$PWD/DapSpeed.h \
     $$PWD/DapServersLocalStorage.h \

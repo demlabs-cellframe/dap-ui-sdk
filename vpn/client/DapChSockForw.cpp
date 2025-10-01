@@ -285,7 +285,12 @@ void DapChSockForw::tunCreate()
     }
     m_fdListener->listen(QHostAddress::LocalHost, 22500);
 #else
+#ifdef Q_OS_DARWIN
+    // macOS: NetworkExtension handles packet processing, skip legacy worker
+    qInfo() << "[DapChSockForw] macOS: skip workerStart(); NetworkExtension handles packet processing";
+#else
     tun->workerStart();
+#endif
 #endif
 }
 
@@ -302,7 +307,12 @@ void DapChSockForw::workerStart(int a_tunSocket)
 {
     qDebug() << "set tun socket: " << a_tunSocket;
     tun->setTunSocket(a_tunSocket);
+#ifdef Q_OS_DARWIN
+    // macOS: NetworkExtension handles packet processing, skip legacy worker
+    qInfo() << "[DapChSockForw] macOS: skip workerStart() in workerStart(int); NetworkExtension handles packet processing";
+#else
     tun->workerStart(); // start loop
+#endif
 }
 
 /**

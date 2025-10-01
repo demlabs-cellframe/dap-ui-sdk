@@ -39,7 +39,7 @@ public:
     /// @param address Server address.
     void userDataHandler(const QJsonValue& user, const QJsonValue& password, const QJsonValue& address);
     
-    void sendCmd() { DapCmdClientAbstract::sendCmd(); }
+    void sendCmd();
 signals:
     /// The signal emitted in case of successful reception and verification of user data from the service.
     /// @param user User login.
