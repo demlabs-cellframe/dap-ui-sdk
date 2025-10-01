@@ -1,6 +1,6 @@
 import QtQuick 2.4
 import QtQuick.Controls 2.0
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 RadioButton
 {
     ///@detalis textButton Text RadioButton.
@@ -63,7 +63,7 @@ RadioButton
 
                 opacity: checked ? 1 : 0
 
-                source: "qrc:/Resources/" + pathTheme + "/icons/other/radio_btn_on.png"
+                source: pathResources + pathTheme + "/icons/other/radio_btn_on.png"
 
                 Behavior on opacity {
                     NumberAnimation {
@@ -78,7 +78,7 @@ RadioButton
 
                 opacity: checked ? 0 : 1
 
-                source: "qrc:/Resources/" + pathTheme + "/icons/other/radio_btn_off.png"
+                source: pathResources + pathTheme + "/icons/other/radio_btn_off.png"
 
                 Behavior on opacity {
                     NumberAnimation {
