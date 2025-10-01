@@ -1,19 +1,15 @@
 QT += core network
 
-include (../zip/zip.pri)
+include (../../cellframe-ui-sdk/Core/libdap-qt-helpers.pri)
 SOURCES += \
-    $$PWD/DapLogHandler.cpp \
     $$PWD/DapPluginsPathControll.cpp \
-    $$PWD/DapLogger.cpp \
     $$PWD/DapUtils.cpp
 
 HEADERS += \
     $$PWD/DapLocationInfo.h \
-    $$PWD/DapLogHandler.h \
     $$PWD/DapPluginsPathControll.h \
-    $$PWD/DapUtils.h \
-    $$PWD/DapLogger.h \
+    $$PWD/DapUtils.h 
 
 
 INCLUDEPATH += $$PWD
-INCLUDEPATH += $$PWD/../quazip
+# INCLUDEPATH += $$PWD/../quazip

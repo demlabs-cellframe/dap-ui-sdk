@@ -1,6 +1,5 @@
 QT += core network xml
-
-include (../zip/zip.pri)
+include (../../cellframe-ui-sdk/Core/libdap-qt-helpers.pri)
 SOURCES += \
     $$PWD/DapBaseDataLocal.cpp \
     $$PWD/DapBugReport.cpp \
@@ -8,7 +7,6 @@ SOURCES += \
     $$PWD/DapCdbManager.cpp \
     $$PWD/DapDownload.cpp \
     $$PWD/DapLocationInfo.cpp \
-    $$PWD/DapLogHandler.cpp \
     $$PWD/DapNetworkAccessManager.cpp \
     $$PWD/DapNetworkReply.cpp \
     $$PWD/DapNodeOrderInfo.cpp \
@@ -21,7 +19,6 @@ SOURCES += \
     $$PWD/DapServersData.cpp \
     $$PWD/DapCrypt.cpp \
     $$PWD/DapKeyMsrln.cpp \
-    $$PWD/DapLogger.cpp \
     $$PWD/DapKeyCommon.cpp \
     $$PWD/DapConnectClient.cpp \
     $$PWD/DapHttpPing.cpp \
@@ -39,7 +36,6 @@ HEADERS += \
     $$PWD/DapCdbManager.h \
     $$PWD/DapDownload.h \
     $$PWD/DapLocationInfo.h \
-    $$PWD/DapLogHandler.h \
     $$PWD/DapNetworkAccessManager.h \
     $$PWD/DapNetworkReply.h \
     $$PWD/DapNodeOrderInfo.h \
@@ -55,7 +51,6 @@ HEADERS += \
     $$PWD/DapUtils.h \
     $$PWD/InterfaceDapKey.h \
     $$PWD/DapKeyMsrln.h \
-    $$PWD/DapLogger.h \
     $$PWD/DapKeyCommon.h \
     $$PWD/DapConnectClient.h \
     $$PWD/DapHttpPing.h \
@@ -80,4 +75,4 @@ android {
 QT += androidextras
 }
 
-INCLUDEPATH += $$PWD/../quazip
+# INCLUDEPATH += $$PWD/../quazip
