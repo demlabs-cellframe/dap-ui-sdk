@@ -1,17 +1,18 @@
 import QtQuick 2.4
-import QtQml 2.12
+import QtQml
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.2
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 
 Image {
-    property string indicatorSrcNormal: "qrc:/Resources/"+ pathTheme +"/icons/other/ic_infoGray.svg"
-    property string indicatorSrcHover: "qrc:/Resources/"+ pathTheme +"/icons/other/ic_infoGray.svg"
+    property string indicatorSrcNormal: pathResources + pathTheme + "/icons/other/ic_infoGray.svg"
+    property string indicatorSrcHover:  pathResources + pathTheme + "/icons/other/ic_infoGray.svg"
     property string contentText: ""
     property alias toolTip: toolTip
     property alias text: text
     property alias mouseArea: area
     property font textFont: mainFont.dapFont.medium12
+    property double scaleFactor: 1.0
 
     signal clicked()
 
@@ -38,14 +39,14 @@ Image {
     ToolTip{
         id: toolTip
         visible: area.containsMouse
-        width: 213
-        y: -(height + 10)
+        width: 213 * scaleFactor
+        y: -(height + 10 * scaleFactor)
         x: 0
 
         contentItem:
         Item{
             anchors.fill: parent
-            anchors.margins: 8
+            anchors.margins: 8 * scaleFactor
             Text
             {
                 id: text

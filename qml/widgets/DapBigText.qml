@@ -1,7 +1,7 @@
 import QtQuick 2.4
-import QtQml 2.12
+import QtQml
 import QtQuick.Controls 2.4
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 
 import "qrc:/widgets"
 
@@ -12,6 +12,12 @@ Item
     property string fullText: "-"
     property bool showToolTip: true
     property bool alwaysHoverShow: false
+    property alias tooltip: tooltip
+    
+    // Hover state property and signal
+    property bool isHover: false
+    signal hoverChanged(bool isHovered)
+    signal clickedItem()
 
     property alias horizontalAlign: textItem.horizontalAlignment
     property alias verticalAlign: textItem.verticalAlignment
@@ -20,6 +26,7 @@ Item
     property string textColor: currTheme.white
 
     property alias textElement: textItem
+    property alias hovered: area.containsMouse
 
     Text
     {
@@ -29,6 +36,7 @@ Item
         color: textColor
         text: fullText
         verticalAlignment: Qt.AlignVCenter
+        horizontalAlignment: Qt.AlignLeft
         elide: Text.ElideMiddle
 
         MouseArea
@@ -37,6 +45,23 @@ Item
             anchors.fill: parent
             visible: showToolTip
             hoverEnabled: true
+
+            // Handle hover state changes
+            onEntered:
+            {
+                isHover = true
+                hoverChanged(true)
+            }
+            onExited:
+            {
+                isHover = false
+                hoverChanged(false)
+            }
+
+            onClicked:
+            {
+                clickedItem()
+            }
 
             DapCustomToolTip{
                 id: tooltip

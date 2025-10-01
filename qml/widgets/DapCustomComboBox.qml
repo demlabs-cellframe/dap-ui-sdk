@@ -1,21 +1,20 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
-import QtGraphicalEffects 1.0
+import QtQuick.Layouts
+import Qt5Compat.GraphicalEffects
+import QtQuick.Window 2.12
 
-Item
-{
+Item {
     id: mainItem
 
-    implicitHeight: 45
+    property double scaleFactor: 1.0
+    property int rightMarginIndicator: 16 * scaleFactor
+    property int leftMarginDisplayText: 16 * scaleFactor
+    property int leftMarginPopupContain: 16 * scaleFactor
+    property int rightMarginPopupContain: 16 * scaleFactor
+    property int popupBorderWidth: 1 * scaleFactor
 
-    property int rightMarginIndicator: 16
-    property int leftMarginDisplayText: 16
-    property int leftMarginPopupContain: 16
-    property int rightMarginPopupContain: 16
-    property int popupBorderWidth: 1
-
-    property int delegateHeight: 40
+    property int delegateHeight: 40 * scaleFactor
     property bool isHighPopup: false
 
     property int popupWidth: 0
@@ -29,11 +28,12 @@ Item
     property string displayTextNormalColor: currTheme.white
     property string displayTextPopupColor: currTheme.gray
 
-    property int maximumPopupHeight: 200
-    property int padding: 15
-    property int spacing: 15
+    property int maximumPopupHeight: 200 * scaleFactor
+    property int padding: 15 * scaleFactor
+    property int spacing: 15 * scaleFactor
 
     property alias model: popupListView.model
+    property alias popupListView: popupListView
 
     property int currentIndex: -1
     property string currentText: displayText
@@ -55,92 +55,111 @@ Item
     property color backgroundColorShow: currTheme.mainBackground
     property alias background: background
 
-    property string enabledIcon:""
-    property string disabledIcon:""
+    property string enabledIcon: ""
+    property string disabledIcon: ""
 
     signal itemSelected(var index)
-    signal currantDisplayTextChanged(var text)
+    signal currentDisplayTextChanged(var text)
 
-    onModelChanged:
-    {
-        print("DapCustomComboBox", "onModelChanged",
-              "popupListView.currentIndex", popupListView.currentIndex)
+    implicitHeight: 45 * scaleFactor
 
-        if (popupListView.currentIndex < 0)
-//            displayText = getModelData(0, mainTextRole)
-            displayText = defaultText
-        else
-            displayText = getModelData(popupListView.currentIndex, mainTextRole)
+    /* Allow key handling when popup is open */
+    focus: true
+    Keys.onPressed: function (event) {
+        if (!(popup.visible || popupVisible))
+            return;
 
-        currantDisplayTextChanged(displayText)
+        // Close by keyboard scrolling keys; do not block outer scroll (except Escape)
+        switch (event.key) {
+        case Qt.Key_Up:
+        case Qt.Key_Down:
+        case Qt.Key_PageUp:
+        case Qt.Key_PageDown:
+        case Qt.Key_Home:
+        case Qt.Key_End:
+            closeCombo();
+            event.accepted = false;
+            break;
+        case Qt.Key_Escape:
+            closeCombo();
+            event.accepted = true;
+            break;
+        default:
+            break;
+        }
     }
 
-    onCountChanged:
-    {
+    onModelChanged: {
+        print("DapCustomComboBox", "onModelChanged", "popupListView.currentIndex", popupListView.currentIndex);
+
+        if (popupListView.currentIndex < 0)
+            displayText = getModelData(0, mainTextRole);
+        else
+            displayText = getModelData(popupListView.currentIndex, mainTextRole);
+
+        if (displayText === "")
+            displayText = defaultText;
+
+        currentDisplayTextChanged(displayText);
+    }
+
+    onCountChanged: {
         // print("DapCustomComboBox", "onCountChanged",
         //       "popupListView.currentIndex", popupListView.currentIndex)
 
         if (popupListView.currentIndex < 0)
-            displayText = getModelData(0, mainTextRole)
+            displayText = getModelData(0, mainTextRole);
         else
-            displayText = getModelData(popupListView.currentIndex, mainTextRole)
+            displayText = getModelData(popupListView.currentIndex, mainTextRole);
 
-        currantDisplayTextChanged(displayText)
+        if (displayText === "")
+            displayText = defaultText;
+
+        currentDisplayTextChanged(displayText);
     }
 
-    Rectangle
-    {
+    Rectangle {
         id: background
         border.width: 0
         anchors.fill: parent
 
-        color: popupVisible && !isHighlightDisplayTextPopup ?
-                   backgroundColorNormal :
-                   backgroundColorShow
+        color: popupVisible && !isHighlightDisplayTextPopup ? backgroundColorNormal : backgroundColorShow
 
-        Rectangle
-        {
+        Rectangle {
             visible: popupVisible && changingRound && !isHighPopup && !isHighlightDisplayTextPopup
             height: parent.radius
-            anchors
-            {
-                right:parent.right
-                left:parent.left
-                bottom:parent.bottom
+            anchors {
+                right: parent.right
+                left: parent.left
+                bottom: parent.bottom
             }
             color: parent.color
         }
 
-        RowLayout
-        {
+        RowLayout {
             anchors.fill: parent
             anchors.leftMargin: leftMarginDisplayText
             anchors.rightMargin: rightMarginIndicator
 
-            Text
-            {
+            Text {
                 id: mainTextItem
                 Layout.fillWidth: true
 
-                text: mainItem.displayText
+                text: mainItem.displayText === "" ? defaultText : mainItem.displayText
                 font: mainItem.font
-                color: popupVisible && !isHighlightDisplayTextPopup ?
-                           displayTextPopupColor : displayTextNormalColor
+                color: popupVisible && !isHighlightDisplayTextPopup ? displayTextPopupColor : displayTextNormalColor
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
             }
 
-            Image
-            {
+            Image {
                 id: indicator
-                source: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrowDown.svg"
+                source: pathResources + pathTheme + "/icons/other/icon_arrowDown.svg"
                 rotation: popupVisible ? 180 : 0
                 mipmap: true
 
-                Behavior on rotation
-                {
-                    NumberAnimation
-                    {
+                Behavior on rotation {
+                    NumberAnimation {
                         duration: 200
                     }
                 }
@@ -148,8 +167,7 @@ Item
         }
     }
 
-    DropShadow
-    {
+    DropShadow {
         visible: popupVisible && !isHighPopup && !isHighlightDisplayTextPopup
         anchors.fill: background
         horizontalOffset: currTheme.hOffset
@@ -161,8 +179,7 @@ Item
         cached: true
     }
 
-    InnerShadow
-    {
+    InnerShadow {
         visible: popupVisible && isInnerShadow && !isHighPopup && !isHighlightDisplayTextPopup
         anchors.fill: background
         horizontalOffset: 1
@@ -175,252 +192,209 @@ Item
         spread: 0
     }
 
-    MouseArea
-    {
+    MouseArea {
         id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
-        onPressed:
-        {
-            popupVisible = !popupVisible
+        onPressed: {
+            forceActiveFocus();
+            popupVisible = !popupVisible;
 
-            popup.visible = popupVisible
+            popup.visible = popupVisible;
 
-//            print("DapCustomComboBox", "mouseArea",
-//                  "popupVisible", popupVisible)
+            //            print("DapCustomComboBox", "mouseArea",
+            //                  "popupVisible", popupVisible)
 
-            if (popupVisible)
-            {
-                popupListView.positionViewAtIndex(
-                            currentIndex, ListView.Contain)
+            if (popupVisible) {
+                popupListView.positionViewAtIndex(currentIndex, ListView.Contain);
             }
         }
     }
 
-    Popup
-    {
+    Popup {
         id: popup
-
-//        visible: popupVisible
-
-        scale: mainWindow.scale
-
-//        x: 0
-//        y: mainItem.height
-
-        x: -width*(1/scale-1)*0.5
-        y: isHighPopup ? -delegateHeight * (mainItem.count - 1) : mainItem.height - height*(1/scale-1)*0.5
+        // scale: scaleFactor
+        x: -width * (1 / scale - 1) * 0.5
+        y: isHighPopup ? -delegateHeight * (mainItem.count - 1) : mainItem.height - height * (1 / scaleFactor - 1) * 0.5
 
         width: popupBackground.width
         height: popupBackground.height
 
         padding: 0
+        modal: false
+        dim: false
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
 
+        onVisibleChanged: {
+            //            print("DapCustomComboBox", "onVisibleChanged",
+            //                  "visible", visible,
+            //                  "popupVisible", popupVisible)
 
-        onVisibleChanged:
-        {
-//            print("DapCustomComboBox", "onVisibleChanged",
-//                  "visible", visible,
-//                  "popupVisible", popupVisible)
-
-            if (!mouseArea.containsMouse &&
-                visible === false && popupVisible === true)
-                popupVisible = false
+            if (!mouseArea.containsMouse && visible === false && popupVisible === true)
+                popupVisible = false;
         }
 
-        Rectangle
-        {
+        Rectangle {
             id: popupBackground
             radius: background.radius
             width: popupWidth === 0 ? mainItem.width : popupWidth
-            height: !isHighPopup ? popupListView.height + border.width * 2 :  popupListView.height + border.width * 2 + delegateHeight + radius
+            height: !isHighPopup ? popupListView.height + border.width * 2 : popupListView.height + border.width * 2 + delegateHeight + radius
 
             color: isSingleColor ? background.color : currTheme.mainBackground
 
             border.width: popupBorderWidth
             border.color: currTheme.mainBackground
 
-            Rectangle
-            {
+            Rectangle {
                 visible: popupVisible && changingRound
                 height: parent.radius
-                anchors
-                {
-                    right:parent.right
-                    left:parent.left
-                    bottom:parent.top
+                anchors {
+                    right: parent.right
+                    left: parent.left
+                    bottom: parent.top
                 }
                 color: parent.color
             }
 
-            ListView
-            {
+            ListView {
                 id: popupListView
 
-//                visible: popupVisible
+                //                visible: popupVisible
 
                 x: popupBackground.border.width
                 y: popupBackground.border.width
-                width: popupBackground.width - popupBackground.border.width*2
-                implicitHeight:
-                    contentHeight < maximumPopupHeight ?
-                        contentHeight : maximumPopupHeight
+                width: popupBackground.width - popupBackground.border.width * 2
+                implicitHeight: contentHeight < maximumPopupHeight ? contentHeight : maximumPopupHeight
 
                 clip: true
 
-                ScrollIndicator.vertical:
-                    ScrollIndicator { }
+                ScrollIndicator.vertical: ScrollIndicator {}
 
-                delegate:
-                Rectangle
-                {
+                delegate: Rectangle {
                     id: menuDelegate
                     width: popupWidth === 0 ? mainItem.width : popupWidth
                     height: {
-                        if(index === currentIndex && isNecessaryToHideCurrentIndex)
-                        {
-                            return 0
+                        if (index === currentIndex && isNecessaryToHideCurrentIndex) {
+                            return 0;
                         }
 
-                        return delegateHeight
+                        return delegateHeight;
                     }
 
-                    color: area.containsMouse ?
-                               currTheme.lime :
-                               isSingleColor ? background.color : currTheme.mainBackground
+                    color: area.containsMouse ? currTheme.lime : isSingleColor ? background.color : currTheme.mainBackground
 
-                    RowLayout
-                    {
+                    RowLayout {
                         anchors.fill: parent
                         anchors.leftMargin: leftMarginPopupContain
                         anchors.rightMargin: rightMarginPopupContain
 
-                        Text
-                        {
+                        Text {
                             Layout.fillWidth: true
                             text: getModelData(index, mainTextRole)
-                            color: area.containsMouse ?
-                                       currTheme.boxes :
-                                       currTheme.white
+                            color: area.containsMouse ? currTheme.boxes : currTheme.white
                             font: mainItem.font
                             elide: Text.ElideRight
                             verticalAlignment: Text.AlignVCenter
                         }
 
-                        Text
-                        {
+                        Text {
                             text: getModelData(index, secondTextRole)
-                            color: area.containsMouse ?
-                                       currTheme.boxes :
-                                       currTheme.white
+                            color: area.containsMouse ? currTheme.boxes : currTheme.white
                             font.family: mainItem.font.family
                             font.pointSize: mainItem.font.pointSize - 3
                             elide: Text.ElideRight
                             verticalAlignment: Text.AlignVCenter
                         }
 
-                        Image{
-                            property var data: getModelData(index, imageRole)
+                        Image {
                             id: statusIcon
+                            property var data: getModelData(index, imageRole)
                             visible: data === "" ? false : true
                             // wallets combobox
                             source: data === "Active" ? enabledIcon : disabledIcon
                             mipmap: true
-
                         }
                     }
 
-                    MouseArea
-                    {
+                    MouseArea {
                         id: area
                         anchors.fill: parent
                         hoverEnabled: true
-                        onClicked:
-                        {
-                            popupListView.currentIndex = index
-                            popup.visible = false
-                            itemSelected(index)
+                        onClicked: {
+                            forceActiveFocus();
+                            popupListView.currentIndex = index;
+                            // Close completely after selection
+                            popup.visible = false;
+                            popupVisible = false;
+                            itemSelected(index);
                         }
                     }
                 }
 
-                onCurrentIndexChanged:
-                {
-                    displayText = getModelData(currentIndex, mainTextRole)
-                    currantDisplayTextChanged(displayText)
-                    mainItem.currentIndex = currentIndex
-                    if(displayText)
-                    {
+                onCurrentIndexChanged: {
+                    displayText = getModelData(currentIndex, mainTextRole);
+                    currentDisplayTextChanged(displayText);
+                    mainItem.currentIndex = currentIndex;
+                    if (displayText) {
                         console.log("New item selected: " + displayText);
                     }
                 }
             }
-            
-            Rectangle
-            {
+
+            Rectangle {
                 id: fakeField
                 border.width: 0
-//                anchors.fill: parent
+                //                anchors.fill: parent
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: popupListView.bottom
                 anchors.topMargin: background.radius
                 visible: isHighPopup
                 height: isHighPopup ? mainItem.height - background.radius * 2 : 0
-                color: popupVisible ?
-                        backgroundColorNormal :
-                        backgroundColorShow
+                color: popupVisible ? backgroundColorNormal : backgroundColorShow
 
-                RowLayout
-                {
+                RowLayout {
                     anchors.fill: parent
                     anchors.leftMargin: leftMarginDisplayText
                     anchors.rightMargin: rightMarginIndicator
 
-                    Text
-                    {
+                    Text {
                         id: fakeMainTextItem
                         Layout.fillWidth: true
 
-                        text: mainItem.displayText
+                        text: mainItem.displayText === "" ? defaultText : mainItem.displayText
                         font: mainItem.font
-                        color: popupVisible ?
-                                displayTextPopupColor : displayTextNormalColor
+                        color: popupVisible ? displayTextPopupColor : displayTextNormalColor
                         verticalAlignment: Text.AlignVCenter
                         elide: Text.ElideRight
                     }
 
-                    Image
-                    {
+                    Image {
                         id: fakeIndicator
-                        source: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrowDown.svg"
+                        source: pathResources + pathTheme + "/icons/other/icon_arrowDown.svg"
                         rotation: popupVisible ? 180 : 0
                         mipmap: true
 
-                        Behavior on rotation
-                        {
-                            NumberAnimation
-                            {
+                        Behavior on rotation {
+                            NumberAnimation {
                                 duration: 200
                             }
                         }
                     }
                 }
 
-                MouseArea
-                {
+                MouseArea {
                     anchors.fill: parent
                     hoverEnabled: true
-                    onClicked:
-                    {
-                        popup.visible = false
+                    onClicked: {
+                        forceActiveFocus();
+                        popup.visible = false;
                     }
                 }
             }
         }
 
-        DropShadow
-        {
+        DropShadow {
             visible: popupVisible
             anchors.fill: popupBackground
             horizontalOffset: currTheme.hOffset
@@ -432,8 +406,7 @@ Item
             cached: true
         }
 
-        InnerShadow
-        {
+        InnerShadow {
             visible: popupVisible && isInnerShadow
             anchors.fill: popupBackground
             horizontalOffset: 1
@@ -446,26 +419,72 @@ Item
         }
     }
 
-    function getModelData(index, role)
-    {
-        if(count <= 0)
-            return ""
+    // Close popup on wheel scroll outside of the component (field + popup)
+    Item {
+        id: overlayCatcher
+        // Observe wheel events outside component bounds; prefer Overlay.overlay, fallback to window contentItem
+        parent: Overlay.overlay ? Overlay.overlay : (mainItem.window ? mainItem.window.contentItem : mainItem)
+        anchors.fill: parent
+        visible: popup.visible
+        z: -1
+
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: false
+            // Do not consume clicks; we only listen for wheel and let others pass
+            acceptedButtons: Qt.NoButton
+            propagateComposedEvents: true
+            onWheel: function (w) {
+                // Check if wheel is inside popup background
+                var pPopup = popupBackground.mapFromItem(Overlay.overlay, w.x, w.y);
+                var insidePopup = pPopup.x >= 0 && pPopup.y >= 0 && pPopup.x <= popupBackground.width && pPopup.y <= popupBackground.height;
+
+                // If high popup mode draws extra field area, include it into inside test
+                var insideFake = false;
+                if (fakeField && fakeField.visible) {
+                    var pFake = fakeField.mapFromItem(Overlay.overlay, w.x, w.y);
+                    insideFake = pFake.x >= 0 && pFake.y >= 0 && pFake.x <= fakeField.width && pFake.y <= fakeField.height;
+                }
+
+                // Check if wheel is inside the main component field
+                var pMain = mainItem.mapFromItem(Overlay.overlay, w.x, w.y);
+                var insideMain = pMain.x >= 0 && pMain.y >= 0 && pMain.x <= mainItem.width && pMain.y <= mainItem.height;
+
+                if (!(insidePopup || insideFake || insideMain)) {
+                    closeCombo();
+                }
+
+                // Do not consume wheel to keep outer scroll working
+                w.accepted = false;
+            }
+        }
+    }
+
+    // Helper to fully close combo state (popup + internal flags)
+    function closeCombo() {
+        popupVisible = false;
+        popup.visible = false;
+        popup.close()
+    }
+
+    function getModelData(index, role) {
+        if (count <= 0)
+            return "";
 
         if (model.get(index) === undefined)
-            return ""
+            return "";
 
-        var text = model.get(index)[role]
+        var text = model.get(index)[role];
 
         if (text === undefined)
-            return ""
+            return "";
         else
             return text;
     }
 
-    function setCurrentIndex(index)
-    {
-        popupListView.currentIndex = index
-        mainItem.currentIndex = index
-//        currentIndex = index
+    function setCurrentIndex(index) {
+        popupListView.currentIndex = index;
+        mainItem.currentIndex = index;
+    //        currentIndex = index
     }
 }

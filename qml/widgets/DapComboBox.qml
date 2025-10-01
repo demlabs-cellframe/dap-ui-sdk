@@ -1,7 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
-import QtGraphicalEffects 1.0
+import QtQuick.Layouts
+import Qt5Compat.GraphicalEffects
 
 ComboBox {
     id: control
@@ -83,7 +83,7 @@ ComboBox {
         y: control.topPadding + (control.availableHeight - height) / 2
 
         fillMode: Image.PreserveAspectFit
-        source: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrow_down.png"
+        source: pathResources + pathTheme + "/icons/other/icon_arrow_down.png"
 //        source: "qrc:/icon_arrow_down.png"
         sourceSize.width: 24 
         rotation: control.popup.opened ? 180 : 0

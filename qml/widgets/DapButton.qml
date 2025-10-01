@@ -1,6 +1,6 @@
-import QtGraphicalEffects 1.0
-import QtQuick 2.9
-import QtQuick.Controls 2.0
+import QtQuick
+import QtQuick.Controls
+import Qt5Compat.GraphicalEffects
 
 Button
 {
@@ -36,12 +36,13 @@ Button
     property alias fontButton: buttonText.font
     ///@detalis horizontalAligmentText Horizontal alignment.
     property alias horizontalAligmentText:buttonText.horizontalAlignment
+    property alias verticalAligmentText:buttonText.verticalAlignment
     ///@detalis colorBackgroundButton This property overrides the background color.
     property alias colorBackgroundButton: dapBackgroundButton.color
     ///@detalis colorTextButton This property overrides the color of the text.
     property alias colorTextButton: buttonText.color
     ///@detalis borderColorButton Sets the color of the border.
-    property string borderColorButton
+    property color borderColorButton
     ///@detalis borderWidthButton Sets the width of the border.
     property int borderWidthButton
     ///@detalis dapHorizontalAlignment Horizontal text alignment.
@@ -65,9 +66,9 @@ Button
 
     property color defaultColor: shadowColor
 
-    property color shadowColor : currTheme.mainButtonShadow
+    property color shadowColor : currTheme.shadowColor
 //    property string shadowColor : currTheme.buttonShadow
-    property color innerShadowColor : currTheme.buttonsShadowInner
+    property color innerShadowColor : currTheme.reflection
     property color innerShadowPressColor : "#1F242F"
 
     property double opacityDropShadow: 0.44
@@ -83,6 +84,7 @@ Button
     //Blocked interactive in list view if pressed and unlock if released
     property bool listInteractivFlagDisabled: false
     property Item parentList
+    property alias containsMouse: control.containsMouse
 
     hoverEnabled: true
 
@@ -190,8 +192,7 @@ Button
                 anchors.left: parent.left
                 anchors.leftMargin: indentImageLeftButton
                 source: dapButton.hovered ? hoverImageButton : normalImageButton
-                width: widthImageButton
-                height: heightImageButton
+                sourceSize: Qt.size(widthImageButton, heightImageButton)
             }
 
             ParallelAnimation {
@@ -342,3 +343,4 @@ Button
         }
     }
 }
+

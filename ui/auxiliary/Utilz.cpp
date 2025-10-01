@@ -76,7 +76,7 @@ namespace Utils
 
     int toIntValue(const QString &a_text)
     {
-        QRegExp regString("(\\d+)");
+        QRegularExpression regString("(\\d+)");
         regString.indexIn(a_text);
         return regString.cap(0).toInt();
     }
@@ -112,8 +112,8 @@ namespace Utils
         {
             case QLocale::English   : return "English";
             case QLocale::Chinese   : return "中文";
-            case QLocale::Russian   : return "Русский";
-            case QLocale::Ukrainian : return "Український";
+            case QLocale::Russian   : return "Russian";
+            case QLocale::Ukrainian : return "Ukrainian";
             case QLocale::French    : return "Française";
             case QLocale::Korean    : return "한국어";
             case QLocale::Thai      : return "ไทย";

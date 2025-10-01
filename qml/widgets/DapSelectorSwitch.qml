@@ -1,7 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.3
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 
 Rectangle
 {
@@ -17,6 +17,11 @@ Rectangle
     property string secondName: "second"
     property string secondColor: currTheme.mainButtonColorNormal1
     property bool secondSelected: !firstSelected
+    property bool isHovered: mouseArea.containsMouse
+    
+    property bool firstDisabled: false
+    property bool secondDisabled: false
+    property string disabledColor: currTheme.input
 
     signal toggled()
 
@@ -48,7 +53,7 @@ Rectangle
             bottomPadding: CURRENT_OS === "win" ? 2 : 0
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            color: currTheme.white
+            color: firstDisabled ? disabledColor : currTheme.white
             font: mainFont.dapFont.medium14
             text: firstName
         }
@@ -75,7 +80,7 @@ Rectangle
             bottomPadding: CURRENT_OS === "win" ? 2 : 0
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            color: currTheme.white
+            color: secondDisabled ? disabledColor : currTheme.white
             font: mainFont.dapFont.medium14
             text: secondName
         }
@@ -92,27 +97,31 @@ Rectangle
         radius: height * 0.5
         height: firstItem.height
         width: firstItem.width
+        visible: !(firstDisabled && secondDisabled)
 
     }
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
+        hoverEnabled: true
 
         onClicked: {
-            if (firstSelected)
-            {
+            if (firstDisabled && secondDisabled) {
+                return
+            }
+            
+            if (firstSelected && !secondDisabled) {
                 firstSelected = false
                 firstAnim.stop()
                 secondAnim.start()
-            }
-            else
-            {
+                toggled()
+            } else if (!firstSelected && !firstDisabled) {
                 firstSelected = true
                 secondAnim.stop()
                 firstAnim.start()
+                toggled()
             }
-
-            toggled()
         }
     }
 
@@ -170,11 +179,33 @@ Rectangle
             selectedRect.width = firstItem.width
         }
         else
-        {
+    {
             firstSelected = false
             selectedRect.color = secondColor
             selectedRect.x = secondItem.x
             selectedRect.width = secondItem.width
+        }
+    }
+
+    function setDisabled(firstOptionDisabled, secondOptionDisabled) {
+        firstDisabled = firstOptionDisabled
+        secondDisabled = secondOptionDisabled
+        
+        if (firstDisabled && secondDisabled) {
+            return
+        }
+        
+        if (firstSelected && firstDisabled && !secondDisabled) {
+            setSelected("second")
+        } else if (!firstSelected && secondDisabled && !firstDisabled) {
+            setSelected("first")
+        } else if (!firstDisabled && !secondDisabled) {
+            selectedRect.visible = true
+            if (firstSelected) {
+                setSelected("first")
+            } else {
+                setSelected("second")
+            }
         }
     }
 

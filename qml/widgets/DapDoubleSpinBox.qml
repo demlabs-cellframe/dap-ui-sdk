@@ -1,6 +1,6 @@
-import QtQuick 2.9
+import QtQuick
 import QtQuick.Controls 2.2
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 
 SpinBox {
     id: spinbox
@@ -45,11 +45,16 @@ SpinBox {
         TextInput {
             z: 2
             id: textInput
+            // width: spinbox.width - minusButton.width * 2 - 4
 
-            anchors.top: spinbox.top
-            anchors.bottom: spinbox.bottom
+            // // anchors.top: spinbox.top
+            // // anchors.bottom: spinbox.bottom
 
-            height: spinbox.height
+            anchors.fill: spinbox
+            anchors.leftMargin: minusButton.width + 1
+            anchors.rightMargin: minusButton.width + 1
+
+            // height: spinbox.height
             text: spinbox.textFromValue(spinbox.value, spinbox.locale)
 
             font: spinbox.font
