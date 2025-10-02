@@ -44,6 +44,8 @@ Item {
         id: title
         text: titleText
         qss: "dialog-title"
+
+        property string legacyTitleText: qsTr("Serial key history") + lang.notifier
         property string titleText: qsTr("Serial key history") + lang.notifier
     }
 
@@ -117,7 +119,8 @@ Item {
             height: resizer.height + spacer.height
 
             DapQmlButton {
-                x: (parent.width - width) / 2
+                anchors.left: parent.left
+                anchors.leftMargin: 0
                 y: spacer.height / 2
                 z: 50
                 width: contentRect.width // resizer.width
@@ -127,7 +130,9 @@ Item {
                 subText: " "
                 mainQss: "ph-btn-label-main"
                 subQss: "ph-btn-label-main"
-                icon: Brand.isOldStyle() ? "ic_key-item" : "null-size null-pos"
+                icon: ""
+                iconSize: 0
+                mainTextOffsetX: 0
                 iconRight: "ic_copy"
                 iconSize: icnResizer.height
                 iconRightSize: icnCpyResizer.height
