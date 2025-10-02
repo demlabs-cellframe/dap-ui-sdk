@@ -21,22 +21,48 @@
  */
 DapTunLinux::DapTunLinux()
 {
-    if(nmcliVersion.size()==0){ // If not detected before - detect nmcli version
+if(nmcliVersion.size()==0) // If not detected before - detect nmcli version
+{
         QProcess cmdProcess;
-        // Command to get nmcli version
-        cmdProcess.start("nmcli -v");
-        cmdProcess.waitForFinished(-1);
+        // Command to get nmcli version (program + args, not a single string)
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        env.insert("LC_ALL", "C");
+        env.insert("LANG", "C");
+        cmdProcess.setProcessEnvironment(env);
+        cmdProcess.start("nmcli", QStringList() << "-v");
+if(!cmdProcess.waitForFinished(3000))
+{
+            qWarning() << "nmcli version request timeout";
+        }
         QByteArray cmdOutput = cmdProcess.readAllStandardOutput();
-        nmcliVersion= QString::fromUtf8(cmdOutput).split(' ').takeLast();
+if(cmdOutput.isEmpty())
+{
+            // some distros print to stderr
+            cmdOutput = cmdProcess.readAllStandardError();
+        }
+        // Robust parse: find last token with digits and dots
+        QString output = QString::fromUtf8(cmdOutput).trimmed();
+        QStringList tokens = output.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
+        QString candidate;
+        for(int i=tokens.size()-1;i>=0;--i){
+            if(tokens.at(i).contains(QRegularExpression("^[0-9]+(\\.[0-9]+)*$"))){
+                candidate = tokens.at(i);
+                break;
+            }
+        }
+        nmcliVersion = candidate;
         nmcliVersion=nmcliVersion.replace("\n","");
         QStringList nmcliVersionNumbers= nmcliVersion.split('.');
-        if(nmcliVersionNumbers.size() ==3) {
+        if(nmcliVersionNumbers.size() >= 2) {
             qDebug()<< QString("nmcli version detected: %1.%2.%3")
                             .arg(nmcliVersionNumbers.at(0).toInt())
                             .arg(nmcliVersionNumbers.at(1).toInt())
-                            .arg(nmcliVersionNumbers.at(2).toInt());
-        } else {
-            qFatal("nmcli client not found");
+                            .arg(nmcliVersionNumbers.size()>2 ? nmcliVersionNumbers.at(2).toInt() : 0);
+        }
+        else
+        {
+            qWarning() << QString("nmcli client not found or unparsable output: \"%1\"").arg(output);
+            Q_ASSERT_X(false, "DapTunLinux", "nmcli client not found or unparsable output");
         }
     }
     connect(SigUnixHandler::getInstance(), &SigUnixHandler::sigKill,
@@ -49,7 +75,8 @@ DapTunLinux::DapTunLinux()
 void DapTunLinux::tunDeviceCreate()
 {
     qDebug() << "[DapTunLinux::tunDeviceCreate]";
-    if (m_tunSocket > 0) {
+    if(m_tunSocket > 0)
+    {
         qInfo() << "Socket already open";
         return;
     }
@@ -67,7 +94,8 @@ void DapTunLinux::tunDeviceCreate()
     */
     
     /* open the clone device */
-    if ((fd = ::open(clonedev, O_RDWR)) < 0 ) {
+    if((fd = ::open(clonedev, O_RDWR)) < 0 )
+    {
         qCritical() << "Can't open /dev/net/tun device!";
         return;
     }
@@ -75,13 +103,16 @@ void DapTunLinux::tunDeviceCreate()
     ::memset(&ifr,0,sizeof(ifr));
     ifr.ifr_flags = flags;   /* IFF_TUN or IFF_TAP, plus maybe IFF_NO_PI */
     
-    if (dev[0]) {
+    if(dev[0])
+    {
         ::strncpy(ifr.ifr_name, dev, IFNAMSIZ);
-    }else
+    }
+    else
         /* try to create the device */
         
         
-        if (::ioctl(fd, TUNSETIFF, (void *) &ifr) < 0) {
+        if(::ioctl(fd, TUNSETIFF, (void *) &ifr) < 0)
+        {
             qCritical() << "Can't create tun network interface!";
             
             ::close(fd);
@@ -259,7 +290,7 @@ void DapTunLinux::onWorkerStarted()
     
     ::system(cmdConnAdd.toLatin1().constData());
 
-    if (!connectionExists(DAP_BRAND)) {
+    if(!connectionExists(DAP_BRAND)) {
         qCritical() << "Failed to create connection " DAP_BRAND;
         return;
     }
@@ -307,7 +338,7 @@ void DapTunLinux::onWorkerStarted()
     QString connUpCmd = QString("nmcli connection up %1").arg(DAP_BRAND).toLatin1().constData();
     qDebug() << connUpCmd;
     int result = ::system(connUpCmd.toLatin1().constData());
-    if (result != 0) {
+    if(result != 0) {
         qCritical() << "Failed to bring up connection " DAP_BRAND;
         return;
     }
@@ -326,7 +357,7 @@ void DapTunLinux::onWorkerStarted()
  */
 void DapTunLinux::tunDeviceDestroy()
 {
-    if (!connectionExists(DAP_BRAND)) {
+    if(!connectionExists(DAP_BRAND)) {
         qWarning() << "Connection " DAP_BRAND " does not exist, skipping deletion.";
         return;
     }
@@ -337,7 +368,7 @@ void DapTunLinux::tunDeviceDestroy()
     ::system("nmcli connection down " DAP_BRAND);
     ::system("nmcli connection delete " DAP_BRAND);
 
-    if (updateRouteTable)    {
+    if(updateRouteTable)    {
         QString run = QString("ip route add default via %1").arg(m_defaultGwOld);
         qDebug() << "cmd run [" << run << ']';
         ::system(run.toLatin1().constData());
