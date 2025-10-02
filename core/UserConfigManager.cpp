@@ -5,6 +5,7 @@
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QDebug>
+#include <QRegularExpression>
 
 #ifdef Q_OS_WIN
 #include <windows.h>

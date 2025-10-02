@@ -19,6 +19,9 @@
 */
 
 #include "DapChBase.h"
+#include <QByteArray>
+#include <QString>
+#include <cstring>
 
 void DapChBase::write_str(char ch, const QString& str)
 {

@@ -22,7 +22,12 @@
 #define DAPSACHBASE_H
 
 #include "DapChannelPacket.h"
+#include <QObject>
+#include <QString>
+#include <QByteArray>
 #include <memory>
+#include <cstdlib>
+#include <cstring>
 
 class DapChBase : public QObject
 {

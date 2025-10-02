@@ -25,9 +25,12 @@
 #include <QQueue>
 #include <QPair>
 #include <QTimer>
-#include <DapCrypt.h>
 #include <QAbstractSocket>
 #include <QTcpSocket>
+#include <QObject>
+#include <QString>
+#include <QByteArray>
+#include <DapCrypt.h>
 
 #include "DapConnectClient.h"
 #include "DapSession.h"

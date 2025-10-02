@@ -7,7 +7,7 @@ DapServersLocalStorage::DapServersLocalStorage(QObject *parent,
                                                const QString& fileName)
     : QObject(parent)
 {
-    QString dataLocation = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+    QString dataLocation = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     if(dataLocation.isEmpty()) {
         qCritical() << "Writable location cannot be determined";
         return;

@@ -53,7 +53,7 @@ bool DapServerConnectivityChecker::tcpConnectTest(const QString& host, quint16 p
     m_tcpTimer->setInterval(m_timeoutMs);
     
     connect(m_tcpSocket, &QTcpSocket::connected, this, &DapServerConnectivityChecker::onTcpConnected);
-    connect(m_tcpSocket, QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::error),
+    connect(m_tcpSocket, &QAbstractSocket::errorOccurred,
             this, &DapServerConnectivityChecker::onTcpError);
     connect(m_tcpTimer, &QTimer::timeout, this, &DapServerConnectivityChecker::onTcpTimeout);
     
@@ -129,7 +129,7 @@ bool DapServerConnectivityChecker::socketPingTest(const QString& host, quint16 p
         completeCheck(result);
     });
     
-    connect(m_socketPingSocket, QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::error),
+    connect(m_socketPingSocket, &QAbstractSocket::errorOccurred,
             this, [this](QAbstractSocket::SocketError error) {
         Q_UNUSED(error)
         m_socketPingTimer->stop();

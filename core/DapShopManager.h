@@ -61,6 +61,10 @@ private:
     QString m_sku;
     QString m_lastError;
 
+    static const QString PLAN_1M;
+    static const QString PLAN_6M;
+    static const QString PLAN_12M;
+
     QMap<int, ProductState> m_products;
 };
 

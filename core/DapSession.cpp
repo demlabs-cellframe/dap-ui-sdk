@@ -719,7 +719,7 @@ void DapSession::onAuthorize()
                     qDebug() << "ts_active_till (set): "
                              << DapServiceDataLocal::instance()->serialKeyData()->licenseTermTill().toString(Qt::ISODate);
                     qDebug() << "ts_active_till (timestamp): "
-                             << DapServiceDataLocal::instance()->serialKeyData()->licenseTermTill().toTime_t();
+                             << DapServiceDataLocal::instance()->serialKeyData()->licenseTermTill().toSecsSinceEpoch();
                 }
                 else
                 {

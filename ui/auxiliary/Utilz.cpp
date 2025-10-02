@@ -77,8 +77,10 @@ namespace Utils
     int toIntValue(const QString &a_text)
     {
         QRegularExpression regString("(\\d+)");
-        regString.indexIn(a_text);
-        return regString.cap(0).toInt();
+        QRegularExpressionMatch match = regString.match(a_text);
+        if (match.hasMatch())
+            return match.captured(0).toInt();
+        return 0;
     }
 
     QString convertByte(const quint64 &byte)

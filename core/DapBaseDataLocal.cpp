@@ -1,4 +1,5 @@
 #include <QStandardPaths>
+#include <QRandomGenerator>
 
 #include <QXmlStreamReader>
 #include <QJsonObject>
@@ -477,7 +478,7 @@ QString DapBaseDataLocal::getRandomString(int size)
 
     QString randomString;
     for(int i=0; i < randomStringLength; ++i){
-        int index = qrand() % possibleCharacters.length();
+        const int index = QRandomGenerator::global()->bounded(possibleCharacters.length());
         QChar nextChar = possibleCharacters.at(index);
         randomString.append(nextChar);
     }

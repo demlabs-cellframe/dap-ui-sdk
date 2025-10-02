@@ -115,7 +115,7 @@ void DapBugReportHistory::slotNewReport (const QString &a_reportNumber)
 
     /* check if already exists */
     for (const auto &item : qAsConst(m_items))
-        if (item.number == a_reportNumber)
+        if (QString::number(item.number) == a_reportNumber)
             return;
 
     /* store and save */

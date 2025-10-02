@@ -7,12 +7,17 @@
 #include <QAndroidJniEnvironment>
 #endif
 
+// Plan identifiers (SKU)
+const QString DapShopManager::PLAN_1M = QStringLiteral("plan_1m");
+const QString DapShopManager::PLAN_6M = QStringLiteral("plan_6m");
+const QString DapShopManager::PLAN_12M = QStringLiteral("plan_12m");
+
 // The product ID
 const QStringList DapShopManager::m_productNames = {
     "Undefined",
-    PLAN_1M,
-    PLAN_6M,
-    PLAN_12M
+    DapShopManager::PLAN_1M,
+    DapShopManager::PLAN_6M,
+    DapShopManager::PLAN_12M
 };
 
 void DapShopManager::setupConnections()

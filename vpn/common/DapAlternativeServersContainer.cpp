@@ -1,4 +1,5 @@
 #include "DapAlternativeServersContainer.h"
+#include <QRandomGenerator>
 
 DapAlternativeServersContainer::DapAlternativeServersContainer(QObject *a_parent /*= nullptr*/)
     : QObject(a_parent)
@@ -22,7 +23,7 @@ DapServerInfo DapAlternativeServersContainer::takeNext(const QString& a_location
         serversList = m_servers.values(a_location);
     }
 
-    int randomIndex = qrand() % serversList.size();
+    int randomIndex = QRandomGenerator::global()->bounded(serversList.size());
 
     DapServerInfo randomServer = serversList.value(randomIndex);
     m_servers.remove(randomServer.location(), randomServer);
