@@ -50,7 +50,7 @@ void DapTunAbstract::initWorker()
     });*/
 #endif
 
-    if (tunWorker == nullptr) {
+    if(tunWorker == nullptr) {
         qWarning() << "[DapTunAbstract::initWorker] tunWorker is nullptr";
         return;
     }
@@ -150,7 +150,7 @@ int parseTextToInt(QString text, int a, int b, char splitChar)
 void DapTunAbstract::readNetrowkInformFromFile()
 {
     QFile file(tempNetFileName);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qWarning() << "Error open " << tempNetFileName;
         return;
     }
@@ -159,23 +159,23 @@ void DapTunAbstract::readNetrowkInformFromFile()
     while (!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
 
-        if(xml.name() == "tunAddr") {
+        if(xml.name() == QLatin1StringView("tunAddr")) {
             xml.readNext();
             qDebug() << "tunAddr = " << xml.text();
             xml.readNext();
-        } else if(xml.name() == "tunDest") {
+        } else if(xml.name() == QLatin1StringView("tunDest")) {
             xml.readNext();
             qDebug() << "tunDest = " << xml.text();
             xml.readNext();
-        } else if(xml.name() == "ip_host") {
+        } else if(xml.name() == QLatin1StringView("ip_host")) {
             xml.readNext();
             qDebug() << "ip_host = " << xml.text();
             xml.readNext();
-        } else if(xml.name() == "default_gw") {
+        } else if(xml.name() == QLatin1StringView("default_gw")) {
             xml.readNext();
             qDebug() << "default_gw = " << xml.text();
             xml.readNext();
-        } else if(xml.name() == "date_create") {
+        } else if(xml.name() == QLatin1StringView("date_create")) {
             xml.readNext();
             QString strDate = xml.text().toString();
             int year  = parseTextToInt(strDate, 0, 0, '.');

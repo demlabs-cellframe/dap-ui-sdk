@@ -1,3 +1,5 @@
+# Define repository root for relative paths (supports standalone builds)
+set(REPO_ROOT ${CMAKE_CURRENT_LIST_DIR}/..)
 cmake_minimum_required(VERSION 3.16)
 
 project(dap_ui_sdk LANGUAGES CXX)
@@ -18,6 +20,12 @@ find_package(Qt6 REQUIRED COMPONENTS
   Widgets
 )
 find_package(ZLIB REQUIRED)
+
+# Ensure brand headers (DapClientDefinitions.h) are on include path for all sources and AUTOGEN
+if(NOT DEFINED BRAND)
+  set(BRAND "KelVPN")
+endif()
+include_directories(${REPO_ROOT}/brand/${BRAND}/DapChainVpnService)
 
 # Collect sources (core and vpn/common). Tests and QML/client/UI/widgets are excluded for now.
 file(GLOB_RECURSE DAPUI_CORE_SOURCES
@@ -43,7 +51,7 @@ file(GLOB DAPUI_STREAM_HEADERS
 
 # Core C++ helpers from cellframe-ui-sdk (Cert, Logger, etc.)
 file(GLOB CELLFRAME_UI_CORE_SOURCES
-  ${CMAKE_SOURCE_DIR}/cellframe-ui-sdk/Core/*.cpp
+  ${REPO_ROOT}/cellframe-ui-sdk/Core/*.cpp
 )
 
 # Crypto sources (Cert/Key implementation)
@@ -58,8 +66,8 @@ set(DAPUI_UI_AUX_SOURCES
 
 # Chain net service channels (Qt wrappers over Cellframe stream)
 set(CELLFRAME_UI_STREAM_CH_SOURCES
-  ${CMAKE_SOURCE_DIR}/cellframe-ui-sdk/stream/ch/chain/net/srv/DapStreamChChainNetSrv.cpp
-  ${CMAKE_SOURCE_DIR}/cellframe-ui-sdk/stream/ch/chain/net/srv/vpn/DapStreamChChainNetSrvVpn.cpp
+  ${REPO_ROOT}/cellframe-ui-sdk/stream/ch/chain/net/srv/DapStreamChChainNetSrv.cpp
+  ${REPO_ROOT}/cellframe-ui-sdk/stream/ch/chain/net/srv/vpn/DapStreamChChainNetSrvVpn.cpp
 )
 
 # TUN drivers (platform-specific)
@@ -135,19 +143,21 @@ add_library(${PROJECT_NAME} STATIC
   ${DAPUI_VPN_STATE_MACHINE}
   ${DAPUI_VPN_SERVICE_SOURCES}
   ${DAPUI_UI_AUX_SOURCES}
-  ${CMAKE_SOURCE_DIR}/cellframe-ui-sdk/zip/packzip.cpp
-  ${CMAKE_SOURCE_DIR}/cellframe-ui-sdk/zip/unpackzip.cpp
-  ${CMAKE_SOURCE_DIR}/cellframe-ui-sdk/zip/zipbase.cpp
+  ${REPO_ROOT}/cellframe-ui-sdk/zip/packzip.cpp
+  ${REPO_ROOT}/cellframe-ui-sdk/zip/unpackzip.cpp
+  ${REPO_ROOT}/cellframe-ui-sdk/zip/zipbase.cpp
   ${CELLFRAME_UI_CORE_SOURCES}
   ${DAPUI_CRYPTO_SOURCES}
   ${CELLFRAME_UI_STREAM_CH_SOURCES}
 )
 
 # Prepare third-party include shims expected by legacy includes
+# Use paths relative to this CMake file to support standalone builds
+set(REPO_ROOT ${CMAKE_CURRENT_LIST_DIR}/..)
 set(THIRDPARTY_INC_DIR ${CMAKE_CURRENT_BINARY_DIR}/thirdparty_includes)
 file(MAKE_DIRECTORY ${THIRDPARTY_INC_DIR}/maxminddb)
 configure_file(
-  ${CMAKE_SOURCE_DIR}/cellframe-sdk/3rdparty/libmaxminddb/maxminddb.h
+  ${REPO_ROOT}/cellframe-sdk/3rdparty/libmaxminddb/maxminddb.h
   ${THIRDPARTY_INC_DIR}/maxminddb/maxminddb.h
   COPYONLY
 )
@@ -158,33 +168,33 @@ target_include_directories(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/core
     ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common
     ${THIRDPARTY_INC_DIR}
-    ${CMAKE_SOURCE_DIR}/cellframe-ui-sdk/zip
-    ${CMAKE_SOURCE_DIR}/cellframe-ui-sdk/Core
-    ${CMAKE_SOURCE_DIR}/dap-ui-sdk/stream
-    ${CMAKE_SOURCE_DIR}/dap-ui-sdk/vpn/client
-    ${CMAKE_SOURCE_DIR}/dap-ui-sdk/vpn/client/linux-src
-    ${CMAKE_SOURCE_DIR}/dap-ui-sdk/vpn/client/DapStateMachine
-    ${CMAKE_SOURCE_DIR}/dap-ui-sdk/vpn/qml/handlers
-    ${CMAKE_SOURCE_DIR}/dap-ui-sdk/vpn/service
-    ${CMAKE_SOURCE_DIR}/dap-ui-sdk/ui/auxiliary
-    ${CMAKE_SOURCE_DIR}/brand/${BRAND}/DapChainVpnService
-    ${CMAKE_SOURCE_DIR}/DapNetworkMonitor
-    ${CMAKE_SOURCE_DIR}/cellframe-sdk/dap-sdk/core/include
-    ${CMAKE_SOURCE_DIR}/cellframe-sdk/dap-sdk/crypto/include
-    ${CMAKE_SOURCE_DIR}/cellframe-sdk/dap-sdk/net/client/include
-    ${CMAKE_SOURCE_DIR}/cellframe-sdk/dap-sdk/net/common/http/include
-    ${CMAKE_SOURCE_DIR}/cellframe-sdk/dap-sdk/io/include
-    ${CMAKE_SOURCE_DIR}/cellframe-sdk/dap-sdk/net/stream/
-    ${CMAKE_SOURCE_DIR}/cellframe-sdk/dap-sdk/net/stream/stream/include
-    ${CMAKE_SOURCE_DIR}/cellframe-sdk/dap-sdk/net/stream/ch/include
-    ${CMAKE_SOURCE_DIR}/cellframe-sdk/dap-sdk/net/stream/session/include
-    ${CMAKE_SOURCE_DIR}/cellframe-sdk/dap-sdk/net/server/http_server/include
-    ${CMAKE_SOURCE_DIR}/cellframe-sdk/global-db/include
-    ${CMAKE_SOURCE_DIR}/cellframe-sdk/modules/common/include
-    ${CMAKE_SOURCE_DIR}/cellframe-sdk/modules/net/include
-    ${CMAKE_SOURCE_DIR}/cellframe-sdk/modules/chain/include
-    ${CMAKE_SOURCE_DIR}/cellframe-ui-sdk/stream/ch/chain/net/srv
-    ${CMAKE_SOURCE_DIR}/cellframe-ui-sdk/stream/ch/chain/net/srv/vpn
+    ${REPO_ROOT}/cellframe-ui-sdk/zip
+    ${REPO_ROOT}/cellframe-ui-sdk/Core
+    ${REPO_ROOT}/dap-ui-sdk/stream
+    ${REPO_ROOT}/dap-ui-sdk/vpn/client
+    ${REPO_ROOT}/dap-ui-sdk/vpn/client/linux-src
+    ${REPO_ROOT}/dap-ui-sdk/vpn/client/DapStateMachine
+    ${REPO_ROOT}/dap-ui-sdk/vpn/qml/handlers
+    ${REPO_ROOT}/dap-ui-sdk/vpn/service
+    ${REPO_ROOT}/dap-ui-sdk/ui/auxiliary
+    ${REPO_ROOT}/brand/${BRAND}/DapChainVpnService
+    ${REPO_ROOT}/DapNetworkMonitor
+    ${REPO_ROOT}/cellframe-sdk/dap-sdk/core/include
+    ${REPO_ROOT}/cellframe-sdk/dap-sdk/crypto/include
+    ${REPO_ROOT}/cellframe-sdk/dap-sdk/net/client/include
+    ${REPO_ROOT}/cellframe-sdk/dap-sdk/net/common/http/include
+    ${REPO_ROOT}/cellframe-sdk/dap-sdk/io/include
+    ${REPO_ROOT}/cellframe-sdk/dap-sdk/net/stream/
+    ${REPO_ROOT}/cellframe-sdk/dap-sdk/net/stream/stream/include
+    ${REPO_ROOT}/cellframe-sdk/dap-sdk/net/stream/ch/include
+    ${REPO_ROOT}/cellframe-sdk/dap-sdk/net/stream/session/include
+    ${REPO_ROOT}/cellframe-sdk/dap-sdk/net/server/http_server/include
+    ${REPO_ROOT}/cellframe-sdk/global-db/include
+    ${REPO_ROOT}/cellframe-sdk/modules/common/include
+    ${REPO_ROOT}/cellframe-sdk/modules/net/include
+    ${REPO_ROOT}/cellframe-sdk/modules/chain/include
+    ${REPO_ROOT}/cellframe-ui-sdk/stream/ch/chain/net/srv
+    ${REPO_ROOT}/cellframe-ui-sdk/stream/ch/chain/net/srv/vpn
     ${CMAKE_CURRENT_SOURCE_DIR}/crypto/include
 )
 

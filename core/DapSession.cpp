@@ -65,7 +65,7 @@ DapSession::DapSession(QObject * obj, int requestTimeout) :
 DapSession::~DapSession()
 {
     delete m_dapCrypt;
-    if (m_dapCryptCDB)
+    if(m_dapCryptCDB)
         delete m_dapCryptCDB;
 }
 
@@ -97,7 +97,7 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObje
                                                    const QByteArray* data, bool isCDB, bool isCriticalReq)
 {
     DapNetworkReply *netReply = new DapNetworkReply(this);
-    if (slot) {
+    if(slot) {
         connect(netReply, SIGNAL(finished()), obj, slot);
     }
 
@@ -106,10 +106,10 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObje
         const QString errorString = netReply->errorString();
 
         qInfo() << "[DapSession::_buildNetworkReplyReq] - errorNetwork: " + errorString + "code: " + QString::number(errorCode);
-        if (isCriticalReq) {  // Error code 110 as timeout
+        if(isCriticalReq) {  // Error code 110 as timeout
             emit errorNetwork(errorCode, errorString);
 
-            if (slot_err) {
+            if(slot_err) {
                 QMetaObject::invokeMethod(obj, slot_err, Qt::AutoConnection, Q_ARG(const QString&, errorString));
             }
         } else {
@@ -118,7 +118,7 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObje
     });
 
     const QString keyHeader = QString("KeyID: %1\r\n").arg(isCDB ? m_sessionKeyID_CDB : m_sessionKeyID);
-    if (data) {
+    if(data) {
         DapConnectClient::instance()->request_POST(isCDB ? m_CDBaddress : m_upstreamAddress,
                                                    isCDB ? m_CDBport : m_upstreamPort,
                                                    urlPath, *data, *netReply, keyHeader);
@@ -139,10 +139,10 @@ DapNetworkReply* DapSession::requestServerPublicKey()
     qDebug() << "🔍 [CONNECTION DEBUG] requestServerPublicKey called";
     qDebug() << "🔍 [CONNECTION DEBUG] Current upstream: " << m_upstreamAddress << ":" << m_upstreamPort;
     
-    if (m_upstreamAddress.isEmpty()) {
+    if(m_upstreamAddress.isEmpty()) {
         qCritical() << "🚨 [CONNECTION DEBUG] CRITICAL: Attempting to connect with empty upstream address!";
     }
-    if (m_upstreamPort == 0) {
+    if(m_upstreamPort == 0) {
         qCritical() << "🚨 [CONNECTION DEBUG] CRITICAL: Attempting to connect with zero upstream port!";
     }
     
@@ -164,10 +164,10 @@ DapNetworkReply* DapSession::requestServerPublicKey()
 
 void DapSession::sendBugReport(const QByteArray &data)
 {
-    if (!m_dapCryptCDB)
+    if(!m_dapCryptCDB)
     {
         DapCdbServer* server = DapCdbManager::instance().currentServer();
-        if (server) {
+        if(server) {
             this->setDapUri(server->address, server->port);
         } else {
             qWarning() << "[DapSession] No CDB server available to set!";
@@ -195,7 +195,7 @@ void DapSession::getRemainLimits(const QString& net_id, const QString& a_pkey, c
 {
     QByteArray data;
 
-    if (!m_dapCryptCDB)
+    if(!m_dapCryptCDB)
     {
         this->setDapUri (address, port);
         auto *l_tempConn = new QMetaObject::Connection();
@@ -219,10 +219,10 @@ void DapSession::getRemainLimits(const QString& net_id, const QString& a_pkey, c
 
 void DapSession::sendBugReportStatusRequest(const QByteArray &data)
 {
-    if (!m_dapCryptCDB)
+    if(!m_dapCryptCDB)
     {
         DapCdbServer* server = DapCdbManager::instance().currentServer();
-        if (server) {
+        if(server) {
             this->setDapUri(server->address, server->port);
         } else {
             qWarning() << "[DapSession] No CDB server available to set!";
@@ -256,7 +256,7 @@ void DapSession::sendSignUpRequest(const QString &host, const QString &email, co
 QString readJsonFile(const QString& filePath)
 {
     QFile file(filePath);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qWarning() << "Failed to open file:" << filePath;
         return QString();
     }
@@ -297,13 +297,13 @@ void DapSession::getNews()
 
         //******* For news debbuging ********//
         QString filePath = DapLogger::getPathToLog() + "/news.json";
-        if (QFile::exists(filePath))
+        if(QFile::exists(filePath))
         {
             qDebug() << "File 'news.json' exists. Reading content...";
 
             QString jsonContent = readJsonFile(filePath);
 
-            if (!jsonContent.isEmpty())
+            if(!jsonContent.isEmpty())
             {
                 jsonDoc = QJsonDocument::fromJson(jsonContent.toUtf8());
 
@@ -324,7 +324,7 @@ void DapSession::getNews()
     });
 
     DapCdbServer* server = DapCdbManager::instance().currentServer();
-    if (server) {
+    if(server) {
         DapConnectClient::instance()->request_GET(server->address, server->port, URL_NEWS, *m_netNewsReply);
     } else {
         qWarning() << "[DapChainVpnService] No CDB server available for news request.";
@@ -378,7 +378,7 @@ void DapSession::onEnc()
     m_sessionKeyID = QByteArray::fromBase64(json_encrypt_id.toString().toLatin1());
     QByteArray bobMsg = QByteArray::fromBase64(json_encrypt_msg.toString().toLatin1());
 
-    if (bobMsg.size() != MSRLN_PKB_BYTES)
+    if(bobMsg.size() != MSRLN_PKB_BYTES)
     {
         QString errorMessage = tr ("Bad length encrypt message from server");
         qCritical() << "Server Bob message is failed, length = " << bobMsg.length();
@@ -416,13 +416,13 @@ DapNetworkReply* DapSession::encRequest(const QString& reqData, const QString& u
 {
     qInfo() << "encRequest " + QString(isCDB ? "CDB" : "noCDB") + " mode";
     DapCrypt *l_dapCrypt = isCDB ? m_dapCryptCDB : m_dapCrypt;
-    if (!l_dapCrypt)
+    if(!l_dapCrypt)
     {
         qCritical() << "Invalid key!";
         return nullptr;
     }
     QByteArray BAreqData, BAreqDataEnc;
-    if (reqData.length()) { // It might be GET...
+    if(reqData.length()) { // It might be GET...
         BAreqData = reqData.toLatin1();
         l_dapCrypt->encode(BAreqData, BAreqDataEnc, KeyRoleSession);
     }
@@ -481,28 +481,28 @@ void DapSession::setDapUri(const QString& addr, const uint16_t port)
     qDebug() << "🔍 [CONNECTION DEBUG] Set upstream: " << addr << ":" << port;
     
     // Validate address
-    if (addr.isEmpty()) {
+    if(addr.isEmpty()) {
         qCritical() << "🚨 [CONNECTION DEBUG] CRITICAL: Empty address provided to setDapUri!";
         emit errorNetwork(111, "Invalid connection parameters: empty address");
         return;
     }
     
     // Validate port
-    if (port == 0) {
+    if(port == 0) {
         qCritical() << "🚨 [CONNECTION DEBUG] CRITICAL: Zero port provided to setDapUri!";
         emit errorNetwork(112, "Invalid connection parameters: zero port");
         return;
     }
     
     // Additional validation for address format
-    if (addr.contains(" ") || addr.length() < 7) { // minimum IP: "1.1.1.1" = 7 chars
+    if(addr.contains(" ") || addr.length() < 7) { // minimum IP: "1.1.1.1" = 7 chars
         qCritical() << "🚨 [CONNECTION DEBUG] CRITICAL: Invalid address format:" << addr;
         emit errorNetwork(113, QString("Invalid connection parameters: malformed address '%1'").arg(addr));
         return;
     }
     
     // Port range validation
-    if (port < 1 || port > 65535) {
+    if(port < 1 || port > 65535) {
         qCritical() << "🚨 [CONNECTION DEBUG] CRITICAL: Invalid port range:" << port;
         emit errorNetwork(114, QString("Invalid connection parameters: port %1 out of range").arg(port));
         return;
@@ -525,7 +525,7 @@ void DapSession::onKeyActivated()
     QByteArray dByteArr;
     m_dapCrypt->decode(m_netKeyActivateReply->getReplyData(), dByteArr, KeyRoleSession);
     QString op_code = QString::fromLatin1(dByteArr).left(4);
-    if (op_code == OP_CODE_SERIAL_ACTIVATED)
+    if(op_code == OP_CODE_SERIAL_ACTIVATED)
     {
         qInfo() << "Serial key activated, try to authorize";
         emit authRequested();
@@ -579,26 +579,26 @@ void DapSession::onAuthorize()
 
     QString op_code = QString::fromUtf8(dByteArr).left(4);
 
-    if (op_code == OP_CODE_GENERAL_ERR)
+    if(op_code == OP_CODE_GENERAL_ERR)
     {
         qDebug() << "[onAuthorize] Unknown authorization error";
         emit errorAuthorization (tr ("Unknown authorization error"));
         return;
     }
-    else if (op_code == OP_CODE_ALREADY_ACTIVATED)
+    else if(op_code == OP_CODE_ALREADY_ACTIVATED)
     {
         qDebug() << "[onAuthorize] Serial key already activated on another device";
         emit errorAuthorization (tr ("Serial key already activated on another device"));
         return;
     }
-    else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB)
+    else if(op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB)
     {
         QString str = isSerial ? "Serial key not found in database" : "Login not found in database";
         qDebug() << "[onAuthorize] " << str;
         emit errorAuthorization (isSerial ? tr("Serial key not found in database") : tr("Login not found in database"));
         return;
     }
-    else if (op_code == OP_CODE_LOGIN_INCORRECT_PSWD)
+    else if(op_code == OP_CODE_LOGIN_INCORRECT_PSWD)
     {
         if(m_user.isEmpty() && !isSerial)
         {
@@ -613,31 +613,31 @@ void DapSession::onAuthorize()
         }
         return;
     }
-    else if (op_code == OP_CODE_SUBSCRIBE_EXPIRED)
+    else if(op_code == OP_CODE_SUBSCRIBE_EXPIRED)
     {
         qDebug() << "[onAuthorize] Serial key expired";
         emit errorAuthorization (tr ("Serial key expired"));
         return;
     }
-    else if (op_code == OP_CODE_CANT_CONNECTION_TO_DB)
+    else if(op_code == OP_CODE_CANT_CONNECTION_TO_DB)
     {
         qDebug() << "[onAuthorize] Can't connect to database";
         emit errorAuthorization (tr ("Can't connect to database"));
         return;
     }
-    else if (op_code == OP_CODE_INCORRECT_SYM)
+    else if(op_code == OP_CODE_INCORRECT_SYM)
     {
         qDebug() << "[onAuthorize] Incorrect symbols in request";
         emit errorAuthorization (tr ("Incorrect symbols in request"));
         return;
     }
-    else if (op_code == OP_CODE_LOGIN_INACTIVE)
+    else if(op_code == OP_CODE_LOGIN_INACTIVE)
     {
         qDebug() << "[onAuthorize] activate key";
         emit activateKey();
         return;
     }
-    else if (op_code == OP_CODE_WRONG_ORDER)
+    else if(op_code == OP_CODE_WRONG_ORDER)
     {
         qDebug() << "[onAuthorize] Can't find order!";
         emit errorAuthorization (tr ("Can't find order!"));
@@ -661,12 +661,12 @@ void DapSession::onAuthorize()
             return;
         }
 
-        if (m_xmlStreamReader.name() == "auth_info")
+        if(m_xmlStreamReader.name() == QLatin1StringView("auth_info"))
         {
             while(m_xmlStreamReader.readNextStartElement())
             {
                 qDebug() << " auth_info = " << m_xmlStreamReader.name();
-                if (m_xmlStreamReader.name() == "cookie")
+                if(m_xmlStreamReader.name() == QLatin1StringView("cookie"))
                 {
                     m_cookie = m_xmlStreamReader.readElementText();
                     qDebug() << "m_cookie: " << m_cookie;
@@ -674,43 +674,39 @@ void DapSession::onAuthorize()
                     //requestServerList();
                     emit authorized(m_cookie);
                 }
-                else if (m_xmlStreamReader.name() == "tx_cond_tpl")
+                else if(m_xmlStreamReader.name() == QLatin1StringView("tx_cond_tpl"))
                 {
                     while(m_xmlStreamReader.readNextStartElement())
                     {
                         qDebug() << " tx_cond_tpl: " << m_xmlStreamReader.name();
-                        if (m_xmlStreamReader.name() == "net")
+                        if(m_xmlStreamReader.name() == QLatin1StringView("net"))
                         {
                             m_cdbAuthNet = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvNet: " << m_cdbAuthNet;
                         }
-                        else if (m_xmlStreamReader.name() == "token")
+                        else if(m_xmlStreamReader.name() == QLatin1StringView("token"))
                         {
                             m_cdbAuthToken = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvToken: " << m_cdbAuthToken;
                         }
-                        else if (m_xmlStreamReader.name() == "tx_cond")
+                        else if(m_xmlStreamReader.name() == QLatin1StringView("tx_cond"))
                         {
                             m_cdbAuthTxCond = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvTxCond: " << m_cdbAuthTxCond;
                         }
-                        else if (m_xmlStreamReader.name() == "max_price")
+                        else if(m_xmlStreamReader.name() == QLatin1StringView("max_price"))
                         {
                             m_cdbMaxPrice = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvMaxPrice: " << m_cdbMaxPrice;
                         }
-                        else
-                        {
-                            qWarning() <<"Unknown element" << m_xmlStreamReader.readElementText();
-                        }
                     }
                 }
-                else if (m_xmlStreamReader.name() == "ts_active_till")
+                else if(m_xmlStreamReader.name() == QLatin1StringView("ts_active_till"))
                 {
                     QString licenseTermTill = m_xmlStreamReader.readElementText();
                     qDebug() << "Parsed ts_active_till: " << licenseTermTill;
 
-                    if (licenseTermTill == "0"){
+                    if(licenseTermTill == "0"){
                       licenseTermTill = "-1";
                     }
 
@@ -736,7 +732,7 @@ void DapSession::onAuthorize()
             m_xmlStreamReader.skipCurrentElement();
         }
     }
-    if (!isAuth) {
+    if(!isAuth) {
         emit errorAuthorization (tr ("Authorization error"));
     }
 
@@ -749,7 +745,7 @@ void DapSession::onAuthorize()
 void DapSession::preserveCDBSession()
 {
     qInfo() << "Saving CDB session data";
-    if (m_dapCryptCDB)
+    if(m_dapCryptCDB)
     {
         delete m_dapCryptCDB;
     }
@@ -788,32 +784,36 @@ void DapSession::onNewTxCond()
     while(m_xmlStreamReader.readNextStartElement())
     {
         qDebug() << " name = " << m_xmlStreamReader.name();
-        if (m_xmlStreamReader.name() == "auth_info")
+        if(m_xmlStreamReader.name() == QLatin1StringView("auth_info"))
         {
             while(m_xmlStreamReader.readNextStartElement())
             {
                 qDebug() << " auth_info = " << m_xmlStreamReader.name();
-                if (m_xmlStreamReader.name() == "tx_cond_tpl")
+                if(m_xmlStreamReader.name() == QLatin1StringView("cookie"))
+                {
+                    m_cookie = m_xmlStreamReader.readElementText();
+                }
+                else if(m_xmlStreamReader.name() == QLatin1StringView("tx_cond_tpl"))
                 {
                     while(m_xmlStreamReader.readNextStartElement())
                     {
                         qDebug() << " tx_cond_tpl: " << m_xmlStreamReader.name();
-                        if (m_xmlStreamReader.name() == "net")
+                        if(m_xmlStreamReader.name() == QLatin1StringView("net"))
                         {
                             m_cdbAuthNet = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvNet: " << m_cdbAuthNet;
                         }
-                        else if (m_xmlStreamReader.name() == "token")
+                        else if(m_xmlStreamReader.name() == QLatin1StringView("token"))
                         {
                             m_cdbAuthToken = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvToken: " << m_cdbAuthToken;
                         }
-                        else if (m_xmlStreamReader.name() == "tx_cond")
+                        else if(m_xmlStreamReader.name() == QLatin1StringView("tx_cond"))
                         {
                             m_cdbAuthTxCond = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvTxCond: " << m_cdbAuthTxCond;
                         }
-                        else if (m_xmlStreamReader.name() == "max_price")
+                        else if(m_xmlStreamReader.name() == QLatin1StringView("max_price"))
                         {
                            m_cdbMaxPrice = m_xmlStreamReader.readElementText();
                            qDebug() << "m_srvMaxPrice: " << m_cdbMaxPrice;
@@ -866,7 +866,7 @@ void DapSession::answerSignUp()
 void DapSession::answerBugReport()
 {
     auto reply = m_netSendBugReportReply->getReplyData();
-    if (reply.size() <= 0)
+    if(reply.size() <= 0)
     {
         qCritical() << "Wrong reply";
         return;
@@ -887,7 +887,7 @@ void DapSession::errorResetSerialKey(const QString& error)
 
 void DapSession::onResetSerialKey()
 {
-    if (m_netKeyActivateReply->getReplyData().isEmpty()) {
+    if(m_netKeyActivateReply->getReplyData().isEmpty()) {
         emit sigResetSerialKeyError(2, tr("Wrong answer from server"));
         return;
     }
@@ -907,7 +907,7 @@ void DapSession::onResetSerialKey()
         {OP_CODE_INCORRECT_SYM, tr("Incorrect symbols in request")}
     };
 
-    if (errorMessages.contains(op_code)) {
+    if(errorMessages.contains(op_code)) {
         emit sigResetSerialKeyError(1, errorMessages.value(op_code));
         return;
     }
@@ -917,7 +917,7 @@ void DapSession::onResetSerialKey()
 
 void DapSession::answerBugReportsStatus()
 {
-    if (!m_netBugReportsStatusReply)
+    if(!m_netBugReportsStatusReply)
         return;
     qInfo() << "Bugreport status reply: " << m_netBugReportsStatusReply->getReplyData();
     emit receivedBugReportStatusAnswer(QString::fromUtf8(m_netBugReportsStatusReply->getReplyData()));
@@ -925,7 +925,7 @@ void DapSession::answerBugReportsStatus()
 
 void DapSession::answerBugReportsStatusError(const QString& msg)
 {
-    if (msg.isEmpty())
+    if(msg.isEmpty())
         return;
     qInfo() << "Bugreport status reply error: " << msg;
 }
@@ -1006,14 +1006,14 @@ DapNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const Q
 
 void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey) {
 
-    if (a_serial.isEmpty()){
+    if(a_serial.isEmpty()){
         emit sigResetSerialKeyError (1, tr ("Reset error: Service - serial key is empty"));
         return;
     }
 
-    if (!m_dapCryptCDB) {
+    if(!m_dapCryptCDB) {
         DapCdbServer* server = DapCdbManager::instance().currentServer();
-        if (server) {
+        if(server) {
             this->setDapUri(server->address, server->port);
         } else {
             qWarning() << "[DapSession] No CDB server available to set!";
@@ -1040,7 +1040,7 @@ void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domai
 void DapSession::requestPurchaseVerify(const QJsonObject *params)
 {
     QJsonDocument jdoc(*params);
-    if (!m_dapCryptCDB) {
+    if(!m_dapCryptCDB) {
         auto it = DapServiceDataLocal::instance()->getCdbIterator();
         this->setDapUri(it->address, it->port);
         auto *l_tempConn = new QMetaObject::Connection();
