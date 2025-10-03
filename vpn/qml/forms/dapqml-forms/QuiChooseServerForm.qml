@@ -2,7 +2,7 @@
 
 import QtQuick 2.15
 import QtQuick.Controls 2.12
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 import com.DapQmlWidgets 1.0
 import "qrc:/dapqml-widgets"
 

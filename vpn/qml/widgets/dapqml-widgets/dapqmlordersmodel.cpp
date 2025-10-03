@@ -1,5 +1,5 @@
 /* INCLUDES */
-#include "dapqmlordersmodel.h""
+#include "dapqmlordersmodel.h"
 #include "style/qsslink.h"
 #include "DapDataLocal.h"
 

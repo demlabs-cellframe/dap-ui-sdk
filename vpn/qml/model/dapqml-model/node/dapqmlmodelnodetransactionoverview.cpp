@@ -268,7 +268,7 @@ QVariantMap _jsonObjectToVariantMap (const QJsonObject &a_value)
 {
   QVariantMap result;
   for (auto it = a_value.begin(); it != a_value.end(); it++)
-    result.insert (it.key(), it.value());
+    result.insert (it.key(), it.value().toVariant());
   return result;
 }
 /*-----------------------------------------*/
