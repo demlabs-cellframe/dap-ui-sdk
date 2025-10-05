@@ -31,9 +31,80 @@ include_directories(${REPO_ROOT}/brand/${BRAND}/DapChainVpnService)
 file(GLOB_RECURSE DAPUI_CORE_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/core/*.cpp
 )
+
+# EXCLUDE migrated classes
+# DapNode* and DapCdbManager (migrated to DapChainVpnService/web3)
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapNode\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapNodeWeb3\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapNodeOrderInfo\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapNodeTransactionHistory\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapNodeWalletData\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapCdbManager\\.cpp$")
+# DapGeoIP (migrated to Common/Service/GeoIP)
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapGeoIP\\.cpp$")
+# DapBugReportHistory (migrated to Common/Service/BugReport)
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapBugReportHistory\\.cpp$")
+# DapSession (migrated to DapChainVpnService/vpn)
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapSession\\.cpp$")
+# DapSpeed (migrated to Common/Commands/Common)
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapSpeed\\.cpp$")
+# DapSerialKey* (migrated to Common/Service/SerialKey)
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapSerialKeyData\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapSerialKeyHistory\\.cpp$")
+# DapBugReport (migrated to Common/Service/BugReport)
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapBugReport\\.cpp$")
+# DataLocal classes (migrated to Common/Service/DataLocal)
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapDataLocal\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapBaseDataLocal\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapServiceDataLocal\\.cpp$")
+# Network classes (migrated to Common/Network)
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapConnectClient\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapNetworkAccessManager\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapNetworkReply\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapHttpPing\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapDownload\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapServerConnectivityChecker\\.cpp$")
+# Crypto classes (migrated to Common/Crypto)
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapCrypt\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapKeyCommon\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapKeyMsrln\\.cpp$")
+# Utils (migrated to Common/Utils)
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapUtils\\.cpp$")
+# Shop (migrated to Common/Shop)
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapShopManager\\.cpp$")
+# Servers (migrated to Common/Service/Servers)
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapServerInfo\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapServerList\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapServersData\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapServersLocalStorage\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapLocationInfo\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DataToUpdate\\.cpp$")
+# Notifications (migrated to Common/Service/Notifications)
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapNotification\\.cpp$")
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapNotificationHistory\\.cpp$")
+# Updates (migrated to Common/Service/Updates)
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapUpdateOperationLogic\\.cpp$")
+# Config (migrated to Common/Service/Config)
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/UserConfigManager\\.cpp$")
+# BugReportData (migrated to Common/Service/BugReport)
+list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapBugReportData\\.cpp$")
+
 file(GLOB_RECURSE DAPUI_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/core/*.h
 )
+
+# EXCLUDE migrated headers
+# DapNode* and DapCdbManager headers (migrated to DapChainVpnService/web3)
+list(FILTER DAPUI_CORE_HEADERS EXCLUDE REGEX ".*/DapNode\\.h$")
+list(FILTER DAPUI_CORE_HEADERS EXCLUDE REGEX ".*/DapNodeWeb3\\.h$")
+list(FILTER DAPUI_CORE_HEADERS EXCLUDE REGEX ".*/DapNodeOrderInfo\\.h$")
+list(FILTER DAPUI_CORE_HEADERS EXCLUDE REGEX ".*/DapNodeTransactionHistory\\.h$")
+list(FILTER DAPUI_CORE_HEADERS EXCLUDE REGEX ".*/DapNodeWalletData\\.h$")
+list(FILTER DAPUI_CORE_HEADERS EXCLUDE REGEX ".*/DapCdbManager\\.h$")
+# DapGeoIP header (migrated to Common/Service/GeoIP)
+list(FILTER DAPUI_CORE_HEADERS EXCLUDE REGEX ".*/DapGeoIP\\.h$")
+# DapBugReportHistory header (migrated to Common/Service/BugReport)
+list(FILTER DAPUI_CORE_HEADERS EXCLUDE REGEX ".*/DapBugReportHistory\\.h$")
 file(GLOB_RECURSE DAPUI_VPN_COMMON_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/*.cpp
 )
@@ -41,13 +112,17 @@ file(GLOB_RECURSE DAPUI_VPN_COMMON_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/*.h
 )
 
-# Stream layer (needed by Service)
-file(GLOB DAPUI_STREAM_SOURCES
-  ${CMAKE_CURRENT_SOURCE_DIR}/stream/*.cpp
-)
-file(GLOB DAPUI_STREAM_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/stream/*.h
-)
+# Stream layer (MIGRATED to DapChainVpnService/vpn/stream/)
+# All stream classes moved to DapChainVpnService/vpn during Architecture V3 migration
+# Commenting out to avoid multiple definition errors with dap-vpn-controller
+# file(GLOB DAPUI_STREAM_SOURCES
+#   ${CMAKE_CURRENT_SOURCE_DIR}/stream/*.cpp
+# )
+# file(GLOB DAPUI_STREAM_HEADERS
+#   ${CMAKE_CURRENT_SOURCE_DIR}/stream/*.h
+# )
+set(DAPUI_STREAM_SOURCES)  # Empty - migrated
+set(DAPUI_STREAM_HEADERS)  # Empty - migrated
 
 # Core C++ helpers from cellframe-ui-sdk (Cert, Logger, etc.)
 file(GLOB CELLFRAME_UI_CORE_SOURCES
@@ -70,55 +145,20 @@ set(CELLFRAME_UI_STREAM_CH_SOURCES
   ${REPO_ROOT}/cellframe-ui-sdk/stream/ch/chain/net/srv/vpn/DapStreamChChainNetSrvVpn.cpp
 )
 
-# TUN drivers (platform-specific)
+# TUN drivers (MIGRATED to DapChainVpnService/vpn/)
+# All TUN/TAP classes moved to service layer as part of Architecture V3
 set(DAPUI_TUN_SOURCES)
 set(DAPUI_TUN_HEADERS)
-if(UNIX AND NOT APPLE AND NOT ANDROID)
-  list(APPEND DAPUI_TUN_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client/DapTunAbstract.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client/DapTunWorkerAbstract.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client/DapTunWorkerUnix.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client/DapTunUnixAbstract.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client/linux-src/DapTunLinux.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client/SigUnixHandler.cpp
-  )
-  list(APPEND DAPUI_TUN_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client/DapTunAbstract.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client/DapTunWorkerAbstract.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client/DapTunWorkerUnix.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client/DapTunUnixAbstract.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client/linux-src/DapTunLinux.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client/SigUnixHandler.h
-  )
-endif()
 
-# VPN client state machine
-file(GLOB DAPUI_VPN_STATE_MACHINE
-  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client/DapStateMachine/*.cpp
-)
+# VPN client state machine (migrated to Common/StateMachine)
+# file(GLOB DAPUI_VPN_STATE_MACHINE
+#   ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client/DapStateMachine/*.cpp
+# )
+set(DAPUI_VPN_STATE_MACHINE)  # Empty - migrated to Common/StateMachine
 
-# Service client (platform-specific native parts)
-set(DAPUI_VPN_SERVICE_SOURCES
-  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/service/DapServiceClient.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/service/DapServiceNativeAbstract.cpp
-)
-if(UNIX AND NOT APPLE AND NOT ANDROID)
-  list(APPEND DAPUI_VPN_SERVICE_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/service/DapServiceNativeLinux.cpp
-  )
-elseif(APPLE)
-  list(APPEND DAPUI_VPN_SERVICE_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/service/DapServiceNativeDarwin.cpp
-  )
-elseif(ANDROID)
-  list(APPEND DAPUI_VPN_SERVICE_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/service/DapServiceNativeAndroid.cpp
-  )
-elseif(WIN32)
-  list(APPEND DAPUI_VPN_SERVICE_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/service/DapServiceNativeWindows.cpp
-  )
-endif()
+# Service client (MIGRATED to Common/Service/IPC/)
+# All IPC client classes moved to modular structure as part of Architecture V3
+set(DAPUI_VPN_SERVICE_SOURCES)  # Empty
 
 ## Network monitor now provided by separate target dap_network_monitor
 
@@ -128,6 +168,29 @@ list(FILTER DAPUI_CORE_HEADERS EXCLUDE REGEX ".*/core/test/.*")
 list(FILTER DAPUI_VPN_COMMON_SOURCES EXCLUDE REGEX ".*/vpn/common/.*/.*Test.*\\.(cpp|c)$")
 list(FILTER DAPUI_VPN_COMMON_HEADERS EXCLUDE REGEX ".*/vpn/common/.*/.*Test.*\\.(h|hpp)$")
 list(FILTER DAPUI_VPN_COMMON_SOURCES EXCLUDE REGEX ".*/vpn/common/DapCommonTest/.*")
+
+# Exclude classes migrated to Common/Commands/Common (Architecture V3)
+# All command base classes moved to modular structure
+list(REMOVE_ITEM DAPUI_VPN_COMMON_SOURCES
+  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapJsonCmdController.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapServerConnectionInfo.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapState.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapIndicator.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapCmdAbstract.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapCmdParser.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapCmdClientAbstract.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapCmdServiceAbstract.cpp
+)
+list(REMOVE_ITEM DAPUI_VPN_COMMON_HEADERS
+  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapJsonCmdController.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapServerConnectionInfo.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapState.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapIndicator.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapCmdAbstract.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapCmdParser.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapCmdClientAbstract.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapCmdServiceAbstract.h
+)
 
 
 
@@ -174,11 +237,24 @@ target_include_directories(${PROJECT_NAME}
     ${REPO_ROOT}/dap-ui-sdk/vpn/client
     ${REPO_ROOT}/dap-ui-sdk/vpn/client/linux-src
     ${REPO_ROOT}/dap-ui-sdk/vpn/client/DapStateMachine
-    ${REPO_ROOT}/dap-ui-sdk/vpn/qml/handlers
+    # ${REPO_ROOT}/dap-ui-sdk/vpn/qml/handlers  # MIGRATED to Common/Commands/Client/ClientHandlers
     ${REPO_ROOT}/dap-ui-sdk/vpn/service
     ${REPO_ROOT}/dap-ui-sdk/ui/auxiliary
     ${REPO_ROOT}/brand/${BRAND}/DapChainVpnService
     ${REPO_ROOT}/DapNetworkMonitor
+    # Architecture V3 - Migrated Common modules
+    ${REPO_ROOT}/Common/Service/BugReport  
+    ${REPO_ROOT}/Common/Service/DataLocal  
+    ${REPO_ROOT}/Common/Service/Servers  
+    ${REPO_ROOT}/Common/Service/SerialKey
+    ${REPO_ROOT}/Common/Service/GeoIP
+    ${REPO_ROOT}/Common/Crypto  
+    ${REPO_ROOT}/Common/Network  
+    ${REPO_ROOT}/Common/Utils
+    ${REPO_ROOT}/Common/StateMachine
+    ${REPO_ROOT}/Common/Commands/Common
+    ${REPO_ROOT}/DapChainVpnService/vpn  
+    ${REPO_ROOT}/DapChainVpnService/web3
     ${REPO_ROOT}/cellframe-sdk/dap-sdk/core/include
     ${REPO_ROOT}/cellframe-sdk/dap-sdk/crypto/include
     ${REPO_ROOT}/cellframe-sdk/dap-sdk/net/client/include
@@ -233,23 +309,20 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif()
 
 # ---------------- Handlers libraries ----------------
-file(GLOB DAPUI_CLIENT_CMD_HANDLERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client/DapCmdHandlers/*.cpp
-)
-add_library(dap_ui_handlers_service STATIC ${DAPUI_CLIENT_CMD_HANDLERS})
-target_include_directories(dap_ui_handlers_service
-  PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client/DapStateMachine
-)
-target_link_libraries(dap_ui_handlers_service PUBLIC dap_ui_sdk Qt6::Core Qt6::Network Qt6::StateMachine Qt6::Core5Compat)
+# Service Handlers migrated to Common/Commands/Service/ServiceHandlers
+# file(GLOB DAPUI_CLIENT_CMD_HANDLERS
+#   ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client/DapCmdHandlers/*.cpp
+# )
+# add_library(dap_ui_handlers_service STATIC ${DAPUI_CLIENT_CMD_HANDLERS})
+# target_include_directories(dap_ui_handlers_service
+#   PUBLIC
+#     ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client
+#     ${CMAKE_CURRENT_SOURCE_DIR}/vpn/client/DapStateMachine
+# )
+# target_link_libraries(dap_ui_handlers_service PUBLIC dap_ui_sdk Qt6::Core Qt6::Network Qt6::StateMachine Qt6::Core5Compat)
 
-file(GLOB DAPUI_QML_HANDLERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/qml/handlers/*.cpp
-)
-add_library(dap_ui_handlers_qml STATIC ${DAPUI_QML_HANDLERS})
-target_include_directories(dap_ui_handlers_qml
-  PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/vpn/qml/handlers
-)
-target_link_libraries(dap_ui_handlers_qml PUBLIC dap_ui_sdk Qt6::Core Qt6::Network Qt6::StateMachine Qt6::Core5Compat)
+# QML Handlers (MIGRATED to Common/Commands/Client/ClientHandlers/)
+# All QML command handlers (24 files) moved to modular structure as part of Architecture V3
+# Note: This library is kept as INTERFACE for backward compatibility with existing code
+add_library(dap_ui_handlers_qml INTERFACE)
+target_link_libraries(dap_ui_handlers_qml INTERFACE Qt6::Core Qt6::Network Qt6::StateMachine Qt6::Core5Compat)
