@@ -4,7 +4,7 @@ import QtQuick 2.11
 import QtQuick.Shapes 1.4
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 import "qrc:/dapqml-widgets"
 import DapQmlStyle 1.0
 import Brand 1.0
