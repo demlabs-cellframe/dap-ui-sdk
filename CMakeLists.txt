@@ -16,9 +16,10 @@ find_package(Qt6 REQUIRED COMPONENTS
   Network
   StateMachine
   Core5Compat
-  Xml
   Widgets
 )
+# Qt Xml is optional: link if available
+find_package(Qt6 COMPONENTS Xml QUIET)
 find_package(ZLIB REQUIRED)
 
 # Ensure brand headers (DapClientDefinitions.h) are on include path for all sources and AUTOGEN
@@ -172,7 +173,7 @@ list(FILTER DAPUI_VPN_COMMON_SOURCES EXCLUDE REGEX ".*/vpn/common/DapCommonTest/
 # Exclude classes migrated to Common/Commands/Common (Architecture V3)
 # All command base classes moved to modular structure
 list(REMOVE_ITEM DAPUI_VPN_COMMON_SOURCES
-  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapJsonCmdController.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapCommandControllerAbstract.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapServerConnectionInfo.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapState.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapIndicator.cpp
@@ -182,7 +183,7 @@ list(REMOVE_ITEM DAPUI_VPN_COMMON_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapCmdServiceAbstract.cpp
 )
 list(REMOVE_ITEM DAPUI_VPN_COMMON_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapJsonCmdController.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapCommandControllerAbstract.h
   ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapServerConnectionInfo.h
   ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapState.h
   ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common/DapIndicator.h
@@ -283,12 +284,15 @@ target_link_libraries(${PROJECT_NAME}
     Qt6::Network
     Qt6::StateMachine
     Qt6::Core5Compat
-    Qt6::Xml
     Qt6::Widgets
     dap_network_monitor
     cellframe-sdk
     ZLIB::ZLIB
 )
+
+if(TARGET Qt6::Xml)
+  target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Xml)
+endif()
 
 target_compile_definitions(${PROJECT_NAME}
   PUBLIC

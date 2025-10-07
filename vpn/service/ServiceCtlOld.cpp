@@ -7,12 +7,12 @@
 #include "ServiceCtlOld.h"
 #include "dap_common.h"
 
-ServiceCtlOld::ServiceCtlOld(DapJsonCmdController* controller, QObject *parent)
+ServiceCtlOld::ServiceCtlOld(DapCommandControllerAbstract* controller, QObject *parent)
     : DapServiceClient("DAP_SERVICE_NAME", parent), m_controller(controller)
 {
     Q_ASSERT(controller);
 
-    connect(m_controller, &DapJsonCmdController::sendDapCmd,
+    connect(m_controller, &DapCommandControllerAbstract::sendDapCmd,
             this, &DapServiceClient::sendCmd);
 
     connect(this,&ServiceCtlOld::ctlConnected, [=]{

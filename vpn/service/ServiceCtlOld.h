@@ -3,7 +3,7 @@
 
 #include "DapServiceClient.h"
 #include <QMap>
-#include <DapJsonCmdController.h>
+#include <DapCommandControllerAbstract.h>
 
 class ServiceCtlOld;
 
@@ -12,7 +12,7 @@ class ServiceCtlOld : public DapServiceClient
 {
     Q_OBJECT
 public:
-    ServiceCtlOld(DapJsonCmdController* controller, QObject *parent = Q_NULLPTR);
+    ServiceCtlOld(DapCommandControllerAbstract* controller, QObject *parent = Q_NULLPTR);
     bool tapStatus = false;
 
     bool startService();
@@ -26,7 +26,7 @@ protected:
 signals:
     void started();
 private:
-    DapJsonCmdController* m_controller;
+    DapCommandControllerAbstract* m_controller;
     bool bInsurerConnect = false;
 };
 
