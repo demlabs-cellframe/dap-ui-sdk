@@ -250,7 +250,7 @@ target_include_directories(${PROJECT_NAME}
     ${REPO_ROOT}/Common/Service/SerialKey
     ${REPO_ROOT}/Common/Service/GeoIP
     ${REPO_ROOT}/Common/Crypto  
-    ${REPO_ROOT}/Common/Network  
+    ${REPO_ROOT}/DapChainVpnService/Network  # Moved from Common in Phase 9  
     ${REPO_ROOT}/Common/Utils
     ${REPO_ROOT}/Common/StateMachine
     ${REPO_ROOT}/Common/Commands/Common
