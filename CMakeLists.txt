@@ -65,7 +65,7 @@ list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapNetworkReply\\.cpp$")
 list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapHttpPing\\.cpp$")
 list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapDownload\\.cpp$")
 list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapServerConnectivityChecker\\.cpp$")
-# Crypto classes (migrated to Common/Crypto)
+# Crypto classes (migrated to DapChainVpnService/Crypto)
 list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapCrypt\\.cpp$")
 list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapKeyCommon\\.cpp$")
 list(FILTER DAPUI_CORE_SOURCES EXCLUDE REGEX ".*/DapKeyMsrln\\.cpp$")
@@ -130,10 +130,10 @@ file(GLOB CELLFRAME_UI_CORE_SOURCES
   ${REPO_ROOT}/cellframe-ui-sdk/Core/*.cpp
 )
 
-# Crypto sources (Cert/Key implementation)
-file(GLOB DAPUI_CRYPTO_SOURCES
-  ${CMAKE_CURRENT_SOURCE_DIR}/crypto/src/*.cpp
-)
+# Crypto sources (Cert/Key implementation) - REMOVED: not actively used
+# file(GLOB DAPUI_CRYPTO_SOURCES
+#   ${CMAKE_CURRENT_SOURCE_DIR}/crypto/src/*.cpp
+# )
 
 # UI auxiliary helpers (only Utils required for CLI)
 set(DAPUI_UI_AUX_SOURCES
@@ -211,7 +211,7 @@ add_library(${PROJECT_NAME} STATIC
   ${REPO_ROOT}/cellframe-ui-sdk/zip/unpackzip.cpp
   ${REPO_ROOT}/cellframe-ui-sdk/zip/zipbase.cpp
   ${CELLFRAME_UI_CORE_SOURCES}
-  ${DAPUI_CRYPTO_SOURCES}
+  # ${DAPUI_CRYPTO_SOURCES}  # REMOVED: not actively used, methods inline or unused
   ${CELLFRAME_UI_STREAM_CH_SOURCES}
 )
 
@@ -249,12 +249,15 @@ target_include_directories(${PROJECT_NAME}
     ${REPO_ROOT}/Common/Service/Servers  
     ${REPO_ROOT}/Common/Service/SerialKey
     ${REPO_ROOT}/Common/Service/GeoIP
-    ${REPO_ROOT}/Common/Crypto  
+    # ${REPO_ROOT}/dap-ui-sdk/crypto/include  # REMOVED: conflicts with DapChainVpnService/Crypto/DapCrypto.h
+    ${REPO_ROOT}/DapChainVpnService/Crypto  # Moved from Common/Crypto (low-level DapCrypto for encryption)
     ${REPO_ROOT}/DapChainVpnService/Network  # Moved from Common in Phase 9  
     ${REPO_ROOT}/Common/Utils
     ${REPO_ROOT}/Common/StateMachine
     ${REPO_ROOT}/Common/Commands/Common
     ${REPO_ROOT}/DapChainVpnService/vpn  
+    ${REPO_ROOT}/DapChainVpnService/vpn/tunnel  # For DapTunNative.h
+    ${REPO_ROOT}/DapChainVpnService/vpn/stream  # For DapStreamer.h
     ${REPO_ROOT}/DapChainVpnService/web3
     ${REPO_ROOT}/cellframe-sdk/dap-sdk/core/include
     ${REPO_ROOT}/cellframe-sdk/dap-sdk/crypto/include
@@ -272,7 +275,7 @@ target_include_directories(${PROJECT_NAME}
     ${REPO_ROOT}/cellframe-sdk/modules/chain/include
     ${REPO_ROOT}/cellframe-ui-sdk/stream/ch/chain/net/srv
     ${REPO_ROOT}/cellframe-ui-sdk/stream/ch/chain/net/srv/vpn
-    ${CMAKE_CURRENT_SOURCE_DIR}/crypto/include
+    # ${CMAKE_CURRENT_SOURCE_DIR}/crypto/include  # REMOVED: conflicts with DapChainVpnService/Crypto/DapCrypto.h
 )
 
 # Exclude Android-specific ShopManager on non-Android platforms
