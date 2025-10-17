@@ -22,11 +22,14 @@ find_package(Qt6 REQUIRED COMPONENTS
 find_package(Qt6 COMPONENTS Xml QUIET)
 find_package(ZLIB REQUIRED)
 
-# Ensure brand headers (DapClientDefinitions.h) are on include path for all sources and AUTOGEN
+# Brand name is available as a string macro only; no project headers are included
 if(NOT DEFINED BRAND)
   set(BRAND "KelVPN")
 endif()
-include_directories(${REPO_ROOT}/brand/${BRAND}/DapChainVpnService)
+
+# Options to control decoupled build
+option(DAP_UI_SDK_STANDALONE "Build without pulling sibling project sources" OFF)
+option(DAP_UI_SDK_BRAND_NAME "Optional brand name string for SDK-only builds" "")
 
 # Collect sources (core and vpn/common). Tests and QML/client/UI/widgets are excluded for now.
 file(GLOB_RECURSE DAPUI_CORE_SOURCES
@@ -140,11 +143,6 @@ set(DAPUI_UI_AUX_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/ui/auxiliary/Utilz.cpp
 )
 
-# Chain net service channels (Qt wrappers over Cellframe stream)
-set(CELLFRAME_UI_STREAM_CH_SOURCES
-  ${REPO_ROOT}/cellframe-ui-sdk/stream/ch/chain/net/srv/DapStreamChChainNetSrv.cpp
-  ${REPO_ROOT}/cellframe-ui-sdk/stream/ch/chain/net/srv/vpn/DapStreamChChainNetSrvVpn.cpp
-)
 
 # TUN drivers (MIGRATED to DapChainVpnService/vpn/)
 # All TUN/TAP classes moved to service layer as part of Architecture V3
@@ -231,6 +229,8 @@ target_include_directories(${PROJECT_NAME}
   PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/core
     ${CMAKE_CURRENT_SOURCE_DIR}/vpn/common
+    ${CMAKE_CURRENT_SOURCE_DIR}/brand
+    ${CMAKE_CURRENT_SOURCE_DIR}/brand/default
     ${THIRDPARTY_INC_DIR}
     ${REPO_ROOT}/cellframe-ui-sdk/zip
     ${REPO_ROOT}/cellframe-ui-sdk/Core
@@ -241,24 +241,7 @@ target_include_directories(${PROJECT_NAME}
     # ${REPO_ROOT}/dap-ui-sdk/vpn/qml/handlers  # MIGRATED to Common/Commands/Client/ClientHandlers
     ${REPO_ROOT}/dap-ui-sdk/vpn/service
     ${REPO_ROOT}/dap-ui-sdk/ui/auxiliary
-    ${REPO_ROOT}/brand/${BRAND}/DapChainVpnService
     ${REPO_ROOT}/DapNetworkMonitor
-    # Architecture V3 - Migrated Common modules
-    ${REPO_ROOT}/Common/Service/BugReport  
-    ${REPO_ROOT}/Common/Service/DataLocal  
-    ${REPO_ROOT}/Common/Service/Servers  
-    ${REPO_ROOT}/Common/Service/SerialKey
-    ${REPO_ROOT}/Common/Service/GeoIP
-    # ${REPO_ROOT}/dap-ui-sdk/crypto/include  # REMOVED: conflicts with DapChainVpnService/Crypto/DapCrypto.h
-    ${REPO_ROOT}/DapChainVpnService/Crypto  # Moved from Common/Crypto (low-level DapCrypto for encryption)
-    ${REPO_ROOT}/DapChainVpnService/Network  # Moved from Common in Phase 9  
-    ${REPO_ROOT}/Common/Utils
-    ${REPO_ROOT}/Common/StateMachine
-    ${REPO_ROOT}/Common/Commands/Common
-    ${REPO_ROOT}/DapChainVpnService/vpn  
-    ${REPO_ROOT}/DapChainVpnService/vpn/tunnel  # For DapTunNative.h
-    ${REPO_ROOT}/DapChainVpnService/vpn/stream  # For DapStreamer.h
-    ${REPO_ROOT}/DapChainVpnService/web3
     ${REPO_ROOT}/cellframe-sdk/dap-sdk/core/include
     ${REPO_ROOT}/cellframe-sdk/dap-sdk/crypto/include
     ${REPO_ROOT}/cellframe-sdk/dap-sdk/net/client/include
@@ -273,6 +256,8 @@ target_include_directories(${PROJECT_NAME}
     ${REPO_ROOT}/cellframe-sdk/modules/common/include
     ${REPO_ROOT}/cellframe-sdk/modules/net/include
     ${REPO_ROOT}/cellframe-sdk/modules/chain/include
+        ${REPO_ROOT}/cellframe-sdk/dap-sdk/3rdparty/uthash/src
+        ${CMAKE_CURRENT_BINARY_DIR}/../cellframe-sdk/dap-sdk/crypto/XKCP/xkcp_build_src/bin/libdap-XKCP-x8664-native.a.headers
     ${REPO_ROOT}/cellframe-ui-sdk/stream/ch/chain/net/srv
     ${REPO_ROOT}/cellframe-ui-sdk/stream/ch/chain/net/srv/vpn
     # ${CMAKE_CURRENT_SOURCE_DIR}/crypto/include  # REMOVED: conflicts with DapChainVpnService/Crypto/DapCrypto.h
@@ -302,6 +287,10 @@ target_compile_definitions(${PROJECT_NAME}
     DAP_VERSION="${DAP_VERSION_STR}"
     DAP_BRAND="${BRAND}"
 )
+
+if(DAP_UI_SDK_BRAND_NAME)
+  target_compile_definitions(${PROJECT_NAME} PUBLIC DAP_UI_BRAND_NAME="${DAP_UI_SDK_BRAND_NAME}")
+endif()
 
 # Cross-platform compile options
 # - include sys/socket.h only on UNIX (Linux/Android)

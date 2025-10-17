@@ -20,7 +20,8 @@ HEADERS += \
     $$PWD/DapCmdAbstract.h \
     $$PWD/DapCmdClientAbstract.h \
     $$PWD/DapCmdServiceAbstract.h \
-    $$PWD/../../../brand/$$BRAND/DapChainVpnService/DapClientDefinitions.h
+    $$PWD/../../brand/DapUiBrandConfig.h
 
 INCLUDEPATH += $$PWD  \
-    $$PWD/../../../brand/$$BRAND/DapChainVpnService
+    $$PWD/../../brand \
+    $$PWD/../../brand/default
