@@ -257,7 +257,7 @@ target_include_directories(${PROJECT_NAME}
     ${REPO_ROOT}/cellframe-sdk/modules/net/include
     ${REPO_ROOT}/cellframe-sdk/modules/chain/include
         ${REPO_ROOT}/cellframe-sdk/dap-sdk/3rdparty/uthash/src
-        ${CMAKE_CURRENT_BINARY_DIR}/../cellframe-sdk/dap-sdk/crypto/XKCP/xkcp_build_src/bin/libdap-XKCP-x8664-native.a.headers
+        ${XKCP_INCLUDE_DIR}
     ${REPO_ROOT}/cellframe-ui-sdk/stream/ch/chain/net/srv
     ${REPO_ROOT}/cellframe-ui-sdk/stream/ch/chain/net/srv/vpn
     # ${CMAKE_CURRENT_SOURCE_DIR}/crypto/include  # REMOVED: conflicts with DapChainVpnService/Crypto/DapCrypto.h
