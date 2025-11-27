@@ -7,7 +7,6 @@ DapGeoIP::DapGeoIP(QObject *parent)
     : QObject(parent), dbPath(PATH_TO_DB), manager(new QNetworkAccessManager(this))
 {
     if (QFile::exists(dbPath)) {
-
         connect(manager, &QNetworkAccessManager::finished, this, &DapGeoIP::onIPReceived);
 
         QFile f(dbPath);
@@ -20,19 +19,31 @@ DapGeoIP::DapGeoIP(QObject *parent)
             qDebug() << "Can't open " << dbPath.toStdString().c_str() << " - " << MMDB_strerror(status);
         }
 
-        //manager->get(QNetworkRequest(QUrl("http://api.ipify.org")));
+        // Prepare request only if CDB list and iterator are valid
+        auto dataLocal = DapServiceDataLocal::instance();
+        const auto &list = dataLocal->cdbServersList();
+        auto it = dataLocal->getCdbIterator();
+        if (list.isEmpty() || it == list.end()) {
+            qWarning() << "[GeoIP] CDB list empty or iterator invalid; skipping request";
+            emit sigCountryIsoCodeExists();
+            return;
+        }
 
-        /* get cdb address */
-        auto address  = DapServiceDataLocal::instance()->getCdbIterator()->address;
-        auto url      = QUrl ("http://" + address + "/my_ip");
+        const auto address = it->address;
+        if (address.isEmpty()) {
+            qWarning() << "[GeoIP] CDB address is empty; skipping request";
+            emit sigCountryIsoCodeExists();
+            return;
+        }
 
-        /* send request */
-        manager->get (QNetworkRequest (url));
+        const auto url = QUrl(QStringLiteral("http://") + address + QStringLiteral("/my_ip"));
+        manager->get(QNetworkRequest(url));
 
     } else {
         qDebug() << "Database file does not exist: " << dbPath.toStdString().c_str();
+        // Emit to unblock any waiters; will result in empty country code
+        emit sigCountryIsoCodeExists();
     }
-
 }
 
 DapGeoIP::~DapGeoIP() {

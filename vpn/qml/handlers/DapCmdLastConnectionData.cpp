@@ -33,3 +33,8 @@ void DapCmdLastConnectionData::lastConnectionDataHandler(const QJsonValue &start
     qDebug() << "DapCmdLastConnectionData::lastConnectionDataHandler" << bStartTime << startTime << qdtStartTime;
     emit sigLastConnectionData (qdtStartTime);
 }
+
+void DapCmdLastConnectionData::sendCmd()
+{
+    DapCmdClientAbstract::sendCmd(nullptr);
+}

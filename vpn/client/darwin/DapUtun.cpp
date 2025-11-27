@@ -50,7 +50,7 @@ void DapUtun::executeCommand(const QString &cmd)
     qDebug() << "Executing command:" << cmd;
 
     QProcess process;
-    process.start(cmd);
+    process.start("/bin/sh", {"-c", cmd});
 
     if (!process.waitForFinished(2000)) {
         qWarning() << "Command failed to execute:" << process.errorString();
@@ -74,87 +74,12 @@ void DapUtun::executeCommand(const QString &cmd)
 
 void DapUtun::tunDeviceCreate()
 {
-    qDebug() << "[DapUtun::tunDeviceCreate]";
-
-    if (m_tunSocket > 0) {
-        qInfo() << "Socket already open";
-        return;
-    }
-
-    // Lambda function to retrieve error messages
-    auto getErrorString = []() -> QString {
-        int err = errno;
-        char errbuf[256];
-        ::strerror_r(err, errbuf, sizeof(errbuf));
-        return QString("%1 (code %2)").arg(errbuf).arg(err);
-    };
-
-    // Initialize the control structure
-    struct ctl_info l_ctl_info = {0};
-
-    // Copy utun control name
-    if (::strlcpy(l_ctl_info.ctl_name, UTUN_CONTROL_NAME, sizeof(l_ctl_info.ctl_name))
-        >= sizeof(l_ctl_info.ctl_name)) {
-        emit error(QString("UTUN_CONTROL_NAME %1 is too long").arg(UTUN_CONTROL_NAME));
-        return;
-    }
-
-    // Create utun socket
-    int l_tun_fd = ::socket(PF_SYSTEM, SOCK_DGRAM, SYSPROTO_CONTROL);
-    if (l_tun_fd < 0) {
-        emit error(QString("Opening utun device control (SYSPROTO_CONTROL) error: %1")
-                       .arg(getErrorString()));
-        return;
-    }
-    qInfo() << "Utun SYSPROTO_CONTROL descriptor obtained";
-
-    // Retrieve control ID via ioctl
-    if (::ioctl(l_tun_fd, CTLIOCGINFO, &l_ctl_info) < 0) {
-        ::close(l_tun_fd);
-        emit error(QString("Can't execute ioctl(CTLIOCGINFO): %1").arg(getErrorString()));
-        return;
-    }
-    qInfo() << "Utun CTLIOCGINFO structure passed through ioctl";
-
-    // Trying to connect with one of utunX devices
-    int l_ret = -1;
-    for (int l_unit = 0; l_unit < 256; l_unit++) {
-        struct sockaddr_ctl l_sa_ctl = {0};
-        l_sa_ctl.sc_id = l_ctl_info.ctl_id;
-        l_sa_ctl.sc_len = sizeof(l_sa_ctl);
-        l_sa_ctl.sc_family = AF_SYSTEM;
-        l_sa_ctl.ss_sysaddr = AF_SYS_CONTROL;
-        l_sa_ctl.sc_unit = l_unit + 1;
-
-        l_ret = ::connect(l_tun_fd, reinterpret_cast<struct sockaddr*>(&l_sa_ctl), sizeof(l_sa_ctl));
-        if (l_ret == 0)
-            break;
-    }
-
-    if (l_ret < 0) {
-        ::close(l_tun_fd);
-        emit error(QString("Can't create utun device: %1").arg(getErrorString()));
-        return;
-    }
-    // Get iface name of newly created utun dev.
-    qInfo() << "Utun device created";
-
-    // Retrieve the name of the utun network interface
-    char l_utunname[20] = {0};
-    socklen_t l_utunname_len = sizeof(l_utunname);
-    if (::getsockopt(l_tun_fd, SYSPROTO_CONTROL, UTUN_OPT_IFNAME, l_utunname, &l_utunname_len)) {
-        ::close(l_tun_fd);
-        emit error(QString("Can't get utun device name: %1").arg(getErrorString()));
-        return;
-    }
-
+    qDebug() << "[DapUtun::tunDeviceCreate] - DEPRECATED: Using NetworkExtension instead";
     
-    /* this is the special file descriptor that the caller will use to talk
-    * with the virtual interface */
-    m_tunDeviceName = QString::fromLatin1(l_utunname, l_utunname_len - 1);
-    qInfo() << "Created utun" << m_tunDeviceName << "network interface";
-
-    m_tunSocket = l_tun_fd;
+    // This method is deprecated in favor of NetworkExtension
+    // NetworkExtension handles UTUN creation automatically
+    emit error("Direct UTUN creation is deprecated. Use NetworkExtension instead.");
+    return;
 }
 
 QString DapUtun::getInternetInterface()
@@ -285,88 +210,12 @@ void DapUtun::clearAllDNS() {
 
 void DapUtun::onWorkerStarted()
 {
-    qDebug() << "Starting tunnel creation";
-
-    if (m_tunSocket <= 0) {
-        qCritical() << "Failed to bring up network interface: invalid tunnel socket";
-        return;
-    }
-
-    saveCurrentConnectionInterfaceData();
-
-    m_currentInterface = getCurrentNetworkInterface();
-    if (m_currentInterface.isEmpty()) {
-        qCritical() << "No active network interface found!";
-        return;
-    }
-
-    if (!isLocalAddress(upstreamAddress())) {
-        QString run = QString("route add -host %2 %1")
-                          .arg(m_defaultGwOld)
-                          .arg(upstreamAddress());
-        executeCommand(run);
-    }
-
-    for (const auto &address : m_routingExceptionAddrs) {
-        QString run = QString("route add -host %2 %1")
-                          .arg(m_defaultGwOld)
-                          .arg(address);
-        executeCommand(run);
-    }
-
-    // QString cmdConnAdd = QString(
-    //                          "networksetup -createnetworkservice %1 %2 ;"
-    //                          "networksetup -setnetworkserviceenabled %1 on;"
-    //                          "networksetup -setmanual %1 %3 255.255.255.255 %4;"
-    //                          ).arg(DAP_BRAND)
-    //                          .arg(tunDeviceName())
-    //                          .arg(addr())
-    //                          .arg(gw());
-
-    // qDebug() << "Network service creation command:" << cmdConnAdd;
-    // DapUtils::shellCmd(cmdConnAdd);
-
-    QString cmdSetDNS = QString("networksetup -setdnsservers %1 %2")
-                            .arg(m_currentInterface)
-                            .arg(gw());
-
-    qDebug() << "Setting DNS for" << m_currentInterface << "to:" << gw();
-    DapUtils::shellCmd(cmdSetDNS);
-
-    QString ifconfigCmd = QString("ifconfig %1 %2 %3")
-                              .arg(tunDeviceName())
-                              .arg(addr())
-                              .arg(gw());
-    executeCommand(ifconfigCmd);
-    qDebug() << "Configured interface" << tunDeviceName() << "with IP" << addr() << "and gateway" << gw();
-
-    executeCommand("route delete default");
-    qDebug() << "Removed default route:" << m_defaultGwOld;
-
-    QString gateway = gw();
-    qDebug() << "Gateway obtained: " << gateway;
-    if (!gateway.isEmpty()) {
-        executeCommand(QString("route add default %1").arg(gateway));
-        qDebug() << "Added default route:" << gateway;
-
-        executeCommand(QString("route add -net 224.0.0.0/4 %1").arg(gateway));
-        qDebug() << "Added multicast route via gateway:" << gateway;
-
-        executeCommand(QString("route add -net 255.255.255.255/32 %1").arg(gateway));
-        qDebug() << "Added broadcast route via gateway:" << gateway;
-    } else {
-        qWarning() << "Gateway is empty, cannot set up default routes";
-    }
-
-    QString cmdAddAdditionalRoutes = QString("networksetup -setadditionalroutes %1").arg(DAP_BRAND);
-    foreach (const QString &additionalRoute, appleAdditionalRoutes) {
-        cmdAddAdditionalRoutes += " " + additionalRoute;
-    }
-    qDebug() << "Additional Apple routes command:" << cmdAddAdditionalRoutes;
-    DapUtils::shellCmd(cmdAddAdditionalRoutes);
-
-    m_isCreated = true;
-    emit created();
+    qDebug() << "DapUtun::onWorkerStarted - DEPRECATED: Using NetworkExtension instead";
+    
+    // This method is deprecated in favor of NetworkExtension
+    // NetworkExtension handles all network configuration automatically
+    emit error("Direct network configuration is deprecated. Use NetworkExtension instead.");
+    return;
 }
 
 QString DapUtun::getCurrentNetworkInterface()
@@ -374,7 +223,7 @@ QString DapUtun::getCurrentNetworkInterface()
     qDebug() << "Fetching current active network interface...";
 
     QProcess routeProcess;
-    routeProcess.start("route get default");
+    routeProcess.start("route", {"get", "default"});
     routeProcess.waitForFinished();
     QString routeOutput = routeProcess.readAllStandardOutput();
 
@@ -396,7 +245,7 @@ QString DapUtun::getCurrentNetworkInterface()
     }
 
     QProcess serviceOrderProcess;
-    serviceOrderProcess.start("networksetup -listnetworkserviceorder");
+    serviceOrderProcess.start("/bin/sh", {"-c", "networksetup -listnetworkserviceorder"});
     serviceOrderProcess.waitForFinished();
     QString serviceOrderOutput = serviceOrderProcess.readAllStandardOutput();
 
@@ -418,31 +267,10 @@ QString DapUtun::getCurrentNetworkInterface()
 
 void DapUtun::tunDeviceDestroy()
 {
+    qDebug() << "DapUtun::tunDeviceDestroy - DEPRECATED: Using NetworkExtension instead";
+    
+    // This method is deprecated in favor of NetworkExtension
+    // NetworkExtension handles cleanup automatically
     DapTunUnixAbstract::tunDeviceDestroy();
-
-    if (!isLocalAddress(upstreamAddress())){
-        QString cmdDeleteUpstream = QString("route delete -host %1")
-                                        .arg(upstreamAddress());
-        executeCommand(cmdDeleteUpstream);
-    }
-
-    for (const auto &route : m_routingExceptionAddrs) {
-        QString cmdDeleteException = QString("route delete -host %1")
-                                         .arg(route);
-        executeCommand(cmdDeleteException);
-    }
-
-    // Other routes connected with tunnel should be destroyed autimaticly
-
-    // Restore default gateway
-    QString cmdRestoreDefault = QString("route add default %1")
-                                    .arg(m_defaultGwOld);
-    executeCommand(cmdRestoreDefault);
-    qInfo() << "Restored default route:" << m_defaultGwOld;
-
-    QString cmdRestoreDNS = QString("networksetup -setdnsservers \"%1\" %2")
-                                .arg(m_currentInterface)
-                                .arg(m_defaultGwOld);
-    executeCommand(cmdRestoreDNS);
-    qInfo() << "Restored DNS settings for" << m_currentInterface << "to" << m_defaultGwOld;
+    return;
 }

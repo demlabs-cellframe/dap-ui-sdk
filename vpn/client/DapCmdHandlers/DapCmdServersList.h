@@ -27,6 +27,7 @@ private:
     QList<QString> m_serversList;
     bool guiCall;
     QTimer * emitTimer;
+    bool m_errorSentOnce = false;
 
     void sendServerList(const QJsonArray& arr, const QString &time);
     void sendRequestToCDB();

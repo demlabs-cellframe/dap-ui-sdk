@@ -34,7 +34,7 @@ public:
     /// @param startTime Connection start time.
     void lastConnectionDataHandler(const QJsonValue& startTime);
     
-    void sendCmd() { DapCmdClientAbstract::sendCmd(); }
+    void sendCmd();
 signals:
     /// The signal emitted in case of successful reception of data on the last successful connection.
     /// @param startTime Connection start time.

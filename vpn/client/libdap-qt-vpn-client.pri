@@ -36,10 +36,10 @@ android{
 }
 
 darwin {
-#    HEADERS  += $$PWD/DapTunDarwin.h
-#    $$PWD/DapTunWorkerDarwin.h
-#    SOURCES += $$PWD/DapTunWorkerDarwin.cpp \
-#    $$PWD/DapTunDarwin.mm
+    HEADERS  += $$PWD/DapTunDarwin.h \
+    $$PWD/DapTunWorkerDarwin.h
+    SOURCES += $$PWD/DapTunWorkerDarwin.cpp \
+    $$PWD/DapTunDarwin.mm
     include ($$PWD/darwin/darwin.pri)
     #INCLUDEPATH += /usr/local/opt/openssl/include
     #LIBS += -L/usr/local/opt/openssl/lib
