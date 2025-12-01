@@ -17,6 +17,7 @@ Item
     // Hover state property and signal
     property bool isHover: false
     signal hoverChanged(bool isHovered)
+    signal clickedItem()
 
     property alias horizontalAlign: textItem.horizontalAlignment
     property alias verticalAlign: textItem.verticalAlignment
@@ -25,6 +26,7 @@ Item
     property string textColor: currTheme.white
 
     property alias textElement: textItem
+    property alias hovered: area.containsMouse
 
     Text
     {
@@ -34,6 +36,7 @@ Item
         color: textColor
         text: fullText
         verticalAlignment: Qt.AlignVCenter
+        horizontalAlignment: Qt.AlignLeft
         elide: Text.ElideMiddle
 
         MouseArea
@@ -53,6 +56,11 @@ Item
             {
                 isHover = false
                 hoverChanged(false)
+            }
+
+            onClicked:
+            {
+                clickedItem()
             }
 
             DapCustomToolTip{

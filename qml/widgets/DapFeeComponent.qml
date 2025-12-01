@@ -6,6 +6,8 @@ import DapCoinCalculator
 
 Item {
     id: root
+    property int margins: 16 * guiApp.scaleFactor
+    property int selectorLeftRighnMargin: 0 * guiApp.scaleFactor
     property string currentValue: "0.01"
     property string minimalValue: "0.0"
     property string maximumValue: "100.0"
@@ -23,6 +25,9 @@ Item {
     property color recommendedColor: "#10B981"  //green
     property color highColor: "#22D3EE"         //neon
     property color vertHighColor: "#9580FF"     //purple
+
+    property font fontInput: mainFont.dapFont.regular16
+    property font fontSlider: mainFont.dapFont.regular14
 
     signal valueChange
     signal cannotSetValue(bool isBigValue)
@@ -58,8 +63,8 @@ Item {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.leftMargin: 16 * guiApp.scaleFactor
-        anchors.rightMargin: 16 * guiApp.scaleFactor
+        anchors.leftMargin: margins
+        anchors.rightMargin: margins
 
         // Input field
         Rectangle {
@@ -81,7 +86,7 @@ Item {
             Item {
                 id: inputValueItem
                 property int spacing: 16 * guiApp.scaleFactor
-                implicitWidth: textMetrics.width + spacing + valueNameText.width > valueField.width - spacing ? valueField.width - spacing : textMetrics.width + spacing + valueNameText.width
+                implicitWidth: textMetrics.width + spacing + valueNameText.width > valueField.width - spacing ? valueField.width - spacing : textMetrics.width + spacing + valueNameText.width + (CURRENT_OS === "android" ? spacing : 0)
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -96,7 +101,7 @@ Item {
                     anchors.left: parent.left
                     anchors.right: valueNameText.left
                     text: currentValue
-                    font: mainFont.dapFont.regular16
+                    font: fontInput
                     regExpValidator: /^[0-9]*\.?[0-9]{0,18}$/
                     inputMethodHints: CURRENT_OS === "ios" ? Qt.ImhNone : Qt.ImhFormattedNumbersOnly
                     defaultPlaceholderText: "0.0"
@@ -112,6 +117,15 @@ Item {
 
                     onTextChanged: {
                         textMetrics.text = text;
+
+                        // Update placeholder visibility
+                        if (!activeFocus) {
+                            if (text === "") {
+                                placeholderText = defaultPlaceholderText;
+                            } else {
+                                placeholderText = "";
+                            }
+                        }
                     }
 
                     onEditingFinished: {
@@ -148,6 +162,12 @@ Item {
                         cursorPosition = 0;
                     }
 
+                    onActiveFocusChanged: {
+                        if (!activeFocus && text === "") {
+                            placeholderText = defaultPlaceholderText;
+                        }
+                    }
+
                     TextMetrics {
                         id: textMetrics
                         font: valueText.font
@@ -162,7 +182,7 @@ Item {
                     anchors.right: parent.right
                     horizontalAlignment: Text.AlignLeft
                     text: valueName
-                    font: mainFont.dapFont.regular16
+                    font: fontInput
                     color: currTheme.white
                 }
             }
@@ -175,6 +195,8 @@ Item {
             Layout.preferredHeight: 24 * guiApp.scaleFactor
             // Layout.topMargin: 20 * guiApp.scaleFactor
             Layout.bottomMargin: 9 * guiApp.scaleFactor
+            Layout.leftMargin: selectorLeftRighnMargin
+            Layout.rightMargin: selectorLeftRighnMargin
 
             property int activeLevel: getActiveLevel()
 
@@ -229,6 +251,7 @@ Item {
                     anchors.fill: parent
                     anchors.margins: -4 * guiApp.scaleFactor
                     onClicked: {
+                        forceActiveFocus();
                         if (statesData.count > 0) {
                             let targetValue = statesData.get(0).minValue;
                             let medianValue = statesData.count > 2 ? statesData.get(2).minValue : targetValue;
@@ -275,6 +298,7 @@ Item {
                     anchors.fill: parent
                     anchors.margins: -4 * guiApp.scaleFactor
                     onClicked: {
+                        forceActiveFocus();
                         if (statesData.count > 1) {
                             let targetValue = statesData.get(1).minValue;
                             let medianValue = statesData.count > 2 ? statesData.get(2).minValue : targetValue;
@@ -317,8 +341,11 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     anchors.margins: -4 * guiApp.scaleFactor
-                    onClicked: if (statesData.count > 2)
-                        setValue(statesData.get(2).minValue)
+                    onClicked: {
+                        forceActiveFocus();
+                        if (statesData.count > 2)
+                            setValue(statesData.get(2).minValue);
+                    }
                 }
 
                 Behavior on color {
@@ -350,6 +377,7 @@ Item {
                     anchors.fill: parent
                     anchors.margins: -4 * guiApp.scaleFactor
                     onClicked: {
+                        forceActiveFocus();
                         if (statesData.count > 3) {
                             let targetValue = statesData.get(3).minValue;
                             let medianValue = statesData.count > 2 ? statesData.get(2).minValue : targetValue;
@@ -393,6 +421,7 @@ Item {
                     anchors.fill: parent
                     anchors.margins: -4 * guiApp.scaleFactor
                     onClicked: {
+                        forceActiveFocus();
                         if (statesData.count > 4) {
                             let targetValue = statesData.get(4).minValue;
                             let medianValue = statesData.count > 2 ? statesData.get(2).minValue : targetValue;
@@ -506,7 +535,7 @@ Item {
             Layout.topMargin: -8 * guiApp.scaleFactor
             text: currentState
             color: currentColor
-            font: mainFont.dapFont.regular14
+            font: fontSlider
 
             Behavior on color {
                 PropertyAnimation {
@@ -575,22 +604,29 @@ Item {
             // Has integer part - drop decimal but add .0
             return integerPart + ".0";
         } else {
-            // Only decimal part - find first significant digit
-            let firstSignificantPos = -1;
+            // Only decimal part - count significant digits
+            let significantCount = 0;
+            let significantPositions = [];
+
             for (let i = decimalIndex + 1; i < valueStr.length; i++) {
                 if (valueStr[i] !== '0') {
-                    firstSignificantPos = i - decimalIndex;
-                    break;
+                    significantCount++;
+                    significantPositions.push(i - decimalIndex); // position after decimal point
                 }
             }
 
-            if (firstSignificantPos === -1) {
-                return "0";
+            // If only one significant digit → return as is
+            if (significantCount == 1) {
+                return valueStr;
             }
 
-            // Round to first significant digit (0.001, 0.01, 0.1)
-            let roundedValue = "0." + "0".repeat(firstSignificantPos - 1) + "1";
-            return roundedValue;
+            // If multiple significant digits → round to first position
+            if (significantCount > 1) {
+                let firstPos = significantPositions[0]; // first significant position
+                return valueStr.substring(0, decimalIndex + firstPos + 1);
+            }
+
+            return "0";
         }
     }
 
@@ -742,6 +778,96 @@ Item {
             maxValue: rangeValues.veryHighStop,
             enabled: false
         });
+    }
+
+    // Test function for roundValue with various inputs
+    function testRoundValue() {
+        console.log("\n=== ROUND VALUE TEST RESULTS ===");
+
+        let testValues = ["0.06"      // 1 significant digit
+            , "0.006"     // 1 significant digit
+            , "0.0066"    // 2 significant digits
+            , "0.00066"   // 2 significant digits
+            , "0.123456"  // Multiple significant digits
+            , "0.000123"  // Small number with multiple digits
+            , "0.1"       // Single decimal
+            , "0.001"     // Small single decimal
+            , "0.002"     // Another small single decimal
+            , "0.009"     // Another small single decimal
+            , "0.005"     // Edge case
+            , "0.0001"    // Very small
+            , "0.00001"   // Even smaller
+            , "0.000001"  // Very very small
+            , "0.111"     // Repeating digits
+            , "5.0"       // Integer with .0
+            , "123.0"     // Large integer with .0
+            , "0.0"       // Zero
+            , "0"         // Plain zero
+            , "100.50"     // Mixed number
+        ];
+
+        console.log("Input\t\t→\tOutput\t\tDescription");
+        console.log("─".repeat(80));
+
+        let tableData = [];
+
+        testValues.forEach(function (value) {
+            let result = roundValue(value);
+            let description = getTestDescription(value);
+
+            tableData.push({
+                input: value,
+                output: result,
+                description: description
+            });
+
+            // Format output for readability
+            let inputStr = value.toString().padEnd(12, ' ');
+            let outputStr = result.toString().padEnd(12, ' ');
+
+            console.log(inputStr + "→\t" + outputStr + description);
+        });
+
+        console.log("─".repeat(80));
+        console.log("Test completed successfully!\n");
+
+        return tableData;
+    }
+
+    function getTestDescription(value) {
+        if (!coinCalculator.isValid(value) || coinCalculator.isEqual(value, "0")) {
+            return "Invalid or zero input";
+        }
+
+        let valueStr = value.toString();
+        let decimalIndex = valueStr.indexOf('.');
+
+        if (decimalIndex === -1) {
+            return "Integer - no decimal point";
+        }
+
+        let integerPart = valueStr.substring(0, decimalIndex);
+
+        if (integerPart !== "0" && integerPart !== "") {
+            return "Has integer part - drops decimal";
+        } else {
+            // Count significant digits
+            let significantCount = 0;
+
+            for (let i = decimalIndex + 1; i < valueStr.length; i++) {
+                if (valueStr[i] !== '0') {
+                    significantCount++;
+                }
+            }
+
+            if (significantCount === 1) {
+                return "1 significant digit - unchanged";
+            } else if (significantCount > 1) {
+                return significantCount + " significant digits - rounded";
+            } else {
+                return "No significant digits";
+            }
+        }
     }
 
     // Public function to commit current input value
