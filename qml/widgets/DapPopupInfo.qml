@@ -145,6 +145,12 @@ Item {
             rectItem.width = width
             stopX = mainWindow.width - (popup.width + 24 * scaleFactor)
         }
+        else
+        {
+            // Reset to default width when width is 0
+            rectItem.width = 168 * scaleFactor
+            stopX = mainWindow.width - (popup.width + 24 * scaleFactor)
+        }
         if(height)
             rectItem.height = height
 
