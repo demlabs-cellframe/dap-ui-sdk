@@ -50,12 +50,14 @@ TextField {
     Keys.onEnterPressed: focus = false
 
     onPressAndHold: {
-        if (contextMenuEnabled)
+        // Disable custom context menu on iOS to use native iOS menu
+        if (contextMenuEnabled && Qt.platform.os !== "ios")
             openMenu();
     }
 
     onReleased: function (event) {
-        if (event.button === Qt.RightButton && contextMenuEnabled)
+        // Disable custom context menu on iOS to use native iOS menu
+        if (event.button === Qt.RightButton && contextMenuEnabled && Qt.platform.os !== "ios")
             openMenu();
     }
 
