@@ -51,6 +51,7 @@ Item {
     signal clearAllClicked()
     signal wordChanged(int index, string word)
 
+
     signal pasteWordsRequested()  // Request parent to handle paste
     signal copyWordsRequested()   // Request parent to handle copy
     signal allWordsInserted()
