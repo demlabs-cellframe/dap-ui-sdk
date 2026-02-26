@@ -1,4 +1,5 @@
 #include "DapCmdStates.h"
+#include "DapStateConnectionController.h"
 
 void DapCmdStates::handle(const QJsonObject* params)
 {
@@ -7,6 +8,8 @@ void DapCmdStates::handle(const QJsonObject* params)
     QJsonObject result;
 
     result.insert("states", _activeStateMachine->getJsonCachedStates());
+    result.insert(QStringLiteral("tunnel_active"), _activeStateMachine->isTunnelActive());
+    result.insert(QStringLiteral("connection_state"), getConnectionStateName());
     if(!userRequestState.isEmpty()){
         result.insert(QStringLiteral("user_request_state"), userRequestState);
         qDebug() << "[DapCmdStates] type:  user_request_state, state: " << userRequestState;
@@ -35,6 +38,26 @@ DapCmdStates::DapCmdStates(QObject *parent)
 {
     _activeStateMachine = DapStateMachine::instance();
     Q_ASSERT(_activeStateMachine);
+}
+
+void DapCmdStates::setConnectionController(DapStateConnectionController *controller)
+{
+    m_connectionController = controller;
+}
+
+QString DapCmdStates::getConnectionStateName() const
+{
+    if(!m_connectionController)
+        return QStringLiteral("DISCONNECT");
+
+    switch(m_connectionController->getCurrentState())
+    {
+    case DapStateConnectionController::DISCONNECT:    return QStringLiteral("DISCONNECT");
+    case DapStateConnectionController::CONNECTING:    return QStringLiteral("CONNECTING");
+    case DapStateConnectionController::CONNECT:       return QStringLiteral("CONNECT");
+    case DapStateConnectionController::DISCONNECTING: return QStringLiteral("DISCONNECTING");
+    }
+    return QStringLiteral("DISCONNECT");
 }
 
 QString DapCmdStates::getUserRequestState()

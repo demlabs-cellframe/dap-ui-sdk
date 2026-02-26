@@ -39,6 +39,7 @@ private:
     DapIndicator *m_stream;
     DapIndicator *m_session;
     DapIndicator *m_tunnel;
+    bool m_tunnelActive = false;
 
     bool allStatesIsTrue();
     bool allStatesIsFalse();
@@ -63,6 +64,10 @@ signals:
 
     void sigAllIndicatorStatesIsFalse();
     void sigAllIndicatorStatesIsTrue();
+
+    void sigConnectionLostWithTunnel();
+    void sigServiceConnectionState(const QString& state);
+    void sigServiceAlreadyConnected();
 
     void sigUserStateConnect();
     void sigUserStateDisconnect();

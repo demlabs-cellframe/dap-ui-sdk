@@ -23,6 +23,7 @@ This file is part of DAP UI SDK the open source project
 
 #include "DapUtils.h"
 #include "darwin/DapUtun.h"
+#include "TunnelStateManager.h"
 
 DapUtun::DapUtun()
     : DapTunUnixAbstract()
@@ -365,6 +366,14 @@ void DapUtun::onWorkerStarted()
     qDebug() << "Additional Apple routes command:" << cmdAddAdditionalRoutes;
     DapUtils::shellCmd(cmdAddAdditionalRoutes);
 
+    TunnelStateManager::instance().saveTunnelState(
+        tunDeviceName(),
+        gw(),
+        m_defaultGwOld,
+        upstreamAddress(),
+        m_currentInterface
+    );
+
     m_isCreated = true;
     emit created();
 }
@@ -418,31 +427,54 @@ QString DapUtun::getCurrentNetworkInterface()
 
 void DapUtun::tunDeviceDestroy()
 {
+    if(!m_isCreated)
+    {
+        qDebug() << "[DapUtun] tunDeviceDestroy() skipped — already destroyed";
+        return;
+    }
+    m_isCreated = false;
+
     DapTunUnixAbstract::tunDeviceDestroy();
 
-    if (!isLocalAddress(upstreamAddress())){
+    if(!upstreamAddress().isEmpty() && !isLocalAddress(upstreamAddress()))
+    {
         QString cmdDeleteUpstream = QString("route delete -host %1")
                                         .arg(upstreamAddress());
         executeCommand(cmdDeleteUpstream);
     }
 
-    for (const auto &route : m_routingExceptionAddrs) {
+    for(const auto &route : m_routingExceptionAddrs)
+    {
         QString cmdDeleteException = QString("route delete -host %1")
                                          .arg(route);
         executeCommand(cmdDeleteException);
     }
 
-    // Other routes connected with tunnel should be destroyed autimaticly
+    if(!m_defaultGwOld.isEmpty())
+    {
+        QString cmdRestoreDefault = QString("route add default %1")
+                                        .arg(m_defaultGwOld);
+        executeCommand(cmdRestoreDefault);
+        qInfo() << "Restored default route:" << m_defaultGwOld;
+    }
 
-    // Restore default gateway
-    QString cmdRestoreDefault = QString("route add default %1")
-                                    .arg(m_defaultGwOld);
-    executeCommand(cmdRestoreDefault);
-    qInfo() << "Restored default route:" << m_defaultGwOld;
+    if(!m_currentInterface.isEmpty() && !m_defaultGwOld.isEmpty())
+    {
+        QString cmdRestoreDNS = QString("networksetup -setdnsservers \"%1\" %2")
+                                    .arg(m_currentInterface, m_defaultGwOld);
+        executeCommand(cmdRestoreDNS);
+        qInfo() << "Restored DNS settings for" << m_currentInterface << "to" << m_defaultGwOld;
+    }
 
-    QString cmdRestoreDNS = QString("networksetup -setdnsservers \"%1\" %2")
-                                .arg(m_currentInterface)
-                                .arg(m_defaultGwOld);
-    executeCommand(cmdRestoreDNS);
-    qInfo() << "Restored DNS settings for" << m_currentInterface << "to" << m_defaultGwOld;
+    TunnelStateManager::instance().clearTunnelState();
+
+    m_defaultGwOld.clear();
+    m_currentInterface.clear();
+    m_lastUsedConnectionName.clear();
+    m_lastUsedConnectionDevice.clear();
+    m_sUpstreamAddress.clear();
+    m_routingExceptionAddrs.clear();
+    m_tunDeviceName.clear();
+    m_addr.clear();
+    m_gw.clear();
 }

@@ -41,6 +41,8 @@ darwin {
 #    SOURCES += $$PWD/DapTunWorkerDarwin.cpp \
 #    $$PWD/DapTunDarwin.mm
     include ($$PWD/darwin/darwin.pri)
+    HEADERS += $$PWD/TunnelStateManager.h
+    SOURCES += $$PWD/TunnelStateManager.cpp
     #INCLUDEPATH += /usr/local/opt/openssl/include
     #LIBS += -L/usr/local/opt/openssl/lib
     LIBS += -framework NetworkExtension

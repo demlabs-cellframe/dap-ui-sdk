@@ -26,6 +26,7 @@ void DapIndicatorSession::initAllowedSubstatesTransitions() {
     addAllowedSubstatesTransitions(cdbLogouted,             cdbHandshakeRequest);
     addAllowedSubstatesTransitions(cdbHandshakeRequest,     cdbHandshakeReply);
     addAllowedSubstatesTransitions(cdbHandshakeRequest,     networkErr);
+    addAllowedSubstatesTransitions(cdbHandshakeRequest,     cdbLogouted);
     addAllowedSubstatesTransitions(cdbHandshakeReply,       cdbKeyActivation);
     addAllowedSubstatesTransitions(cdbHandshakeReply,       cdbLogined);
     addAllowedSubstatesTransitions(cdbHandshakeReply,       cdbLogouted);
@@ -43,5 +44,6 @@ void DapIndicatorSession::initAllowedSubstatesTransitions() {
     addAllowedSubstatesTransitions(no_cdbModeConnecting,    no_cdbModeConnect);
     addAllowedSubstatesTransitions(no_cdbModeConnect,       cdbLogoutRequest);
     addAllowedSubstatesTransitions(no_cdbModeConnecting,    networkErr);
+    addAllowedSubstatesTransitions(no_cdbModeConnecting,    cdbLogouted);
     addAllowedSubstatesTransitions(no_cdbModeConnect,       networkErr);
 }

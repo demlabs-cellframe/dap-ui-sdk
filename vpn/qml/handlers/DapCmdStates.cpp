@@ -102,12 +102,19 @@ void DapCmdStates::handleResult(const QJsonObject& result)
     QString userRequest = QStringLiteral("user_request_state");
     QString serverChange = QStringLiteral("server_change_state");
 
+    if(result.contains(QStringLiteral("tunnel_active")))
+    {
+        m_tunnelActive = result.value(QStringLiteral("tunnel_active")).toBool();
+    }
 
     if(result.contains("states")){
         QJsonObject states = result.value("states").toObject();
 
         emit sigNewState(states);
 
+        // Update all indicator states first, then check aggregate signals.
+        // Checking inside the loop causes false positives because states
+        // processed later still hold their old values during earlier checks.
         for(const auto& stateName: states.keys())
         {
             if(!stateCallbacks.contains(stateName)) {
@@ -116,11 +123,16 @@ void DapCmdStates::handleResult(const QJsonObject& result)
             }
             IndicatorState state = DapIndicator::fromString(states.value(stateName).toString());
             (this->*stateCallbacks[stateName])(state);
+        }
 
-            if(allStatesIsTrue()) {
-                qDebug() << "emit AllStatesIsTrue signal";
-                emit sigAllIndicatorStatesIsTrue();
-            } else if(allStatesIsFalse()) {
+        if(allStatesIsTrue()) {
+            qDebug() << "emit AllStatesIsTrue signal";
+            emit sigAllIndicatorStatesIsTrue();
+        } else if(allStatesIsFalse()) {
+            if(m_tunnelActive) {
+                qDebug() << "emit sigConnectionLostWithTunnel signal";
+                emit sigConnectionLostWithTunnel();
+            } else {
                 qDebug() << "emit sigAllStatesIsFalse signal";
                 emit sigAllIndicatorStatesIsFalse();
             }
@@ -132,6 +144,16 @@ void DapCmdStates::handleResult(const QJsonObject& result)
 
     if(result.contains(serverChange)){
         serverChangedHandler(result.value(serverChange).toString());
+    }
+
+    if(result.contains(QStringLiteral("connection_state")))
+    {
+        QString connState = result.value(QStringLiteral("connection_state")).toString();
+        emit sigServiceConnectionState(connState);
+        if(connState == QStringLiteral("CONNECT"))
+        {
+            emit sigServiceAlreadyConnected();
+        }
     }
 }
 
