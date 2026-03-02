@@ -4,17 +4,39 @@
 void DapCmdStates::handle(const QJsonObject* params)
 {
     DapCmdServiceAbstract::handle(params);
-    QString userRequestState = getUserRequestState();
     QJsonObject result;
 
-    result.insert("states", _activeStateMachine->getJsonCachedStates());
-    result.insert(QStringLiteral("tunnel_active"), _activeStateMachine->isTunnelActive());
-    result.insert(QStringLiteral("connection_state"), getConnectionStateName());
-    if(!userRequestState.isEmpty()){
-        result.insert(QStringLiteral("user_request_state"), userRequestState);
-        qDebug() << "[DapCmdStates] type:  user_request_state, state: " << userRequestState;
+    if(m_crashRecoveryOverride)
+    {
+        QJsonObject fakeStates;
+        fakeStates.insert(QStringLiteral("session"), QStringLiteral("true"));
+        fakeStates.insert(QStringLiteral("stream"), QStringLiteral("true"));
+        fakeStates.insert(QStringLiteral("tunnel"), QStringLiteral("true"));
+        result.insert("states", fakeStates);
+        result.insert(QStringLiteral("tunnel_active"), true);
+        result.insert(QStringLiteral("connection_state"), QStringLiteral("CONNECT"));
+        result.insert(QStringLiteral("user_request_state"), QStringLiteral("Connect"));
+        qDebug() << "[DapCmdStates] Crash recovery override: sending fake CONNECT state";
+    }
+    else
+    {
+        QString userRequestState = getUserRequestState();
+        result.insert("states", _activeStateMachine->getJsonCachedStates());
+        result.insert(QStringLiteral("tunnel_active"), _activeStateMachine->isTunnelActive());
+        result.insert(QStringLiteral("connection_state"), getConnectionStateName());
+        if(!userRequestState.isEmpty())
+        {
+            result.insert(QStringLiteral("user_request_state"), userRequestState);
+            qDebug() << "[DapCmdStates] type:  user_request_state, state: " << userRequestState;
+        }
     }
     sendCmd(&result);
+}
+
+void DapCmdStates::setCrashRecoveryOverride(bool enabled)
+{
+    m_crashRecoveryOverride = enabled;
+    qInfo() << "[DapCmdStates] Crash recovery override:" << enabled;
 }
 
 void DapCmdStates::sendServerChanged()

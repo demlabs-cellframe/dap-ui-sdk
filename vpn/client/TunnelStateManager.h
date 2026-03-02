@@ -1,65 +1,41 @@
-#ifndef TUNNELSTATEMANAGER_H
-#define TUNNELSTATEMANAGER_H
+#pragma once
 
+#include <QObject>
 #include <QString>
 #include <QJsonObject>
-#include <QJsonArray>
 
 /**
- * @brief Manages VPN tunnel state persistence for crash recovery
- *
- * Saves tunnel configuration to a file when the tunnel is activated
- * and removes it when properly deactivated. On service startup, if the state
- * file exists and the PID is dead, it means the previous session crashed
- * and we need to cleanup routes/DNS.
+ * Singleton that persists tunnel state to tunnel_state.json.
+ * Used to detect and recover from crashes where routes/DNS
+ * were left modified, leaving the system without connectivity.
  */
-class TunnelStateManager
+class TunnelStateManager : public QObject
 {
+    Q_OBJECT
 public:
-    static TunnelStateManager& instance();
+    static TunnelStateManager &instance();
 
-    /**
-     * @brief Save current tunnel state to file
-     * @param tunDevice Tunnel device name (e.g., utun5)
-     * @param vpnGateway VPN gateway IP address
-     * @param oldDefaultGw Previous default gateway (to restore)
-     * @param upstreamAddr VPN server address (to remove route)
-     * @param networkInterface Network interface name (to restore DNS)
-     */
-    void saveTunnelState(
-        const QString& tunDevice,
-        const QString& vpnGateway,
-        const QString& oldDefaultGw,
-        const QString& upstreamAddr,
-        const QString& networkInterface
-    );
+    void saveTunnelState(const QString &a_tunDevice,
+                         const QString &a_vpnGateway,
+                         const QString &a_oldDefaultGw,
+                         const QString &a_upstreamAddr,
+                         const QString &a_networkInterface);
 
-    /**
-     * @brief Clear saved tunnel state (call on clean shutdown)
-     */
     void clearTunnelState();
 
-    /**
-     * @brief Check if there's a crashed tunnel state that needs cleanup
-     * @return true if state file exists and PID is not running
-     */
     bool hasCrashedState() const;
 
-    /**
-     * @brief Cleanup routes and DNS from a crashed session
-     */
     void cleanupCrashedState();
+    void resetDnsOnly();
 
-    QString stateFilePath() const;
+    QJsonObject loadTunnelState() const;
+
+signals:
+    void crashRecoveryCompleted();
 
 private:
-    TunnelStateManager();
-    ~TunnelStateManager() = default;
+    explicit TunnelStateManager(QObject *parent = nullptr);
+    Q_DISABLE_COPY(TunnelStateManager)
 
-    TunnelStateManager(const TunnelStateManager&) = delete;
-    TunnelStateManager& operator=(const TunnelStateManager&) = delete;
-
-    QString m_stateFilePath;
+    QString stateFilePath() const;
 };
-
-#endif // TUNNELSTATEMANAGER_H

@@ -15,6 +15,7 @@ public:
     void handle(const QJsonObject* statesInfo) override;
     void sendServerChanged();
     void setConnectionController(DapStateConnectionController *controller);
+    void setCrashRecoveryOverride(bool enabled);
 private:
     void sendCmdStates(const QString& stateName, const QString stateVal);
     void sendUserRequestState();
@@ -23,6 +24,7 @@ private:
 private:
     DapStateMachine *_activeStateMachine;
     DapStateConnectionController *m_connectionController = nullptr;
+    bool m_crashRecoveryOverride = false;
 };
 
 #endif // DAPCMDSTATESHANDLER_H
