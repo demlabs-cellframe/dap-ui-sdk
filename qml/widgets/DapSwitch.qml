@@ -24,16 +24,9 @@ Item {
     property int leverOnPosition: width - lever.width - leverMargin
 
     function toggle() {
-        if (toggleswitch.state == "on")
-        {
-            toggleswitch.state = "off";
-            toggled()
-        }
-        else
-        {
-            toggleswitch.state = "on";
-            toggled()
-        }
+        // Update checked property - this will trigger onCheckedChanged which updates state
+        checked = !checked;
+        toggled();
     }
 
     Component.onCompleted:
@@ -92,13 +85,13 @@ Item {
             name: "on"
             PropertyChanges { target: lever; x: leverOnPosition }
             PropertyChanges { target: lever; source: imageOn }
-            PropertyChanges { target: toggleswitch; checked: true }
+            // Removed: PropertyChanges for checked - causes circular dependency with onCheckedChanged
         },
         State {
             name: "off"
             PropertyChanges { target: lever; x: leverOffPosition }
             PropertyChanges { target: lever; source: imageOff }
-            PropertyChanges { target: toggleswitch; checked: false }
+            // Removed: PropertyChanges for checked - causes circular dependency with onCheckedChanged
         }
     ]
 
