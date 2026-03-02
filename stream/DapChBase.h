@@ -21,6 +21,7 @@
 #ifndef DAPSACHBASE_H
 #define DAPSACHBASE_H
 
+#include <QObject>
 #include "DapChannelPacket.h"
 
 class DapChBase : public QObject

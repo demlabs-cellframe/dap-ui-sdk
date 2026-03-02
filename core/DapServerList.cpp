@@ -1476,7 +1476,7 @@ void InsertServerOperation::finish()
 
   switch (_result)
     {
-    case Insert: _sortedIndexes.insert (_list.begin() + _destination, _insertedIndex); break;
+    case Insert: _sortedIndexes.insert (_destination, _insertedIndex); break;
     case Append: _sortedIndexes.append (_insertedIndex); break;
     }
 

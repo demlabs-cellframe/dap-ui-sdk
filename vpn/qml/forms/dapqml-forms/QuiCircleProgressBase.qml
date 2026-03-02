@@ -1,7 +1,7 @@
 import QtQuick 2.11
 import QtQuick.Shapes 1.4
 import QtQuick.Layouts 1.4
-import QtGraphicalEffects 1.12
+import Qt5Compat.GraphicalEffects
 import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 

@@ -452,7 +452,7 @@ Item {
             qss: "login-btn-orders-history-frame"
 
             property int fontSize
-            property int fontWeight
+            property int fontWeight: Font.Normal
 
             /* top rectangle */
 

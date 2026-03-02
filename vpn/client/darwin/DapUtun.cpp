@@ -51,7 +51,7 @@ void DapUtun::executeCommand(const QString &cmd)
     qDebug() << "Executing command:" << cmd;
 
     QProcess process;
-    process.start(cmd);
+    process.startCommand(cmd);
 
     if (!process.waitForFinished(2000)) {
         qWarning() << "Command failed to execute:" << process.errorString();
@@ -383,7 +383,7 @@ QString DapUtun::getCurrentNetworkInterface()
     qDebug() << "Fetching current active network interface...";
 
     QProcess routeProcess;
-    routeProcess.start("route get default");
+    routeProcess.start("route", QStringList() << "get" << "default");
     routeProcess.waitForFinished();
     QString routeOutput = routeProcess.readAllStandardOutput();
 
@@ -405,7 +405,7 @@ QString DapUtun::getCurrentNetworkInterface()
     }
 
     QProcess serviceOrderProcess;
-    serviceOrderProcess.start("networksetup -listnetworkserviceorder");
+    serviceOrderProcess.start("networksetup", QStringList() << "-listnetworkserviceorder");
     serviceOrderProcess.waitForFinished();
     QString serviceOrderOutput = serviceOrderProcess.readAllStandardOutput();
 

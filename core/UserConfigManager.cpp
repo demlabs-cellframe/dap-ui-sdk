@@ -5,6 +5,7 @@
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QDebug>
+#include <QRegularExpression>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -77,17 +78,18 @@ QString UserConfigManager::getGuiUser() const {
     QStringList lines = output.split('\n');
 
     // Regular expressions to match session identifiers
-    QRegExp guiSessionRegex(":\\d+");       // Matches GUI sessions like :0, :1, etc.
-    QRegExp ttyRegex("tty\\d+");            // Matches tty sessions like tty1, tty2, etc.
+    QRegularExpression guiSessionRegex(":\\d+");
+    QRegularExpression ttyRegex("tty\\d+");
+    QRegularExpression whitespaceRegex("\\s+");
 
     // Priority check for GUI session identifiers
-    for (const QString& line : lines) {
+    for(const QString& line : lines) {
         qDebug() << "Processing line:" << line;
 
-        if (line.contains(guiSessionRegex) || line.contains("wayland") || line.contains("seat0")) {
+        if(line.contains(guiSessionRegex) || line.contains("wayland") || line.contains("seat0")) {
             qDebug() << "Found high-priority GUI session line:" << line;
-            QStringList parts = line.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
-            if (!parts.isEmpty()) {
+            QStringList parts = line.split(whitespaceRegex, Qt::SkipEmptyParts);
+            if(!parts.isEmpty()) {
                 qDebug() << "Returning GUI user (high-priority):" << parts[0];
                 return parts[0];
             }
@@ -95,12 +97,12 @@ QString UserConfigManager::getGuiUser() const {
     }
 
     // Secondary check for tty and pts sessions
-    for (const QString& line : lines) {
+    for(const QString& line : lines) {
         qDebug() << "Processing line (secondary):" << line;
-        if (line.contains(ttyRegex) || line.contains("pts")) {
+        if(line.contains(ttyRegex) || line.contains("pts")) {
             qDebug() << "Found secondary session line:" << line;
-            QStringList parts = line.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
-            if (!parts.isEmpty()) {
+            QStringList parts = line.split(whitespaceRegex, Qt::SkipEmptyParts);
+            if(!parts.isEmpty()) {
                 qDebug() << "Returning user (secondary):" << parts[0];
                 return parts[0];
             }

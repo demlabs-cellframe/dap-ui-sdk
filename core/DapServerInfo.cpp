@@ -2,6 +2,7 @@
 #include "DapServerInfo.h"
 
 #include <QMetaEnum>
+#include <algorithm>
 
 /********************************************
  *
@@ -148,7 +149,7 @@ QJsonObject DapServerInfo::toJSON() const
 
 void DapServerInfo::sortServerList (QList<DapServerInfo> &serverList)
 {
-  qSort (serverList.begin(), serverList.end());
+  std::sort (serverList.begin(), serverList.end());
 
   QList<DapServerInfo> availableServerList, notAvailableServerList;
 

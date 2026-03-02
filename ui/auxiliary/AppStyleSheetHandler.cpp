@@ -50,20 +50,23 @@ QString AppStyleSheetHandler::getWidgetStyleSheet(StyleSheatSearchPar a_searchPa
     if (!a_searchPar.pseudoClass.isEmpty())
         a_searchPar.pseudoClass = ":" + a_searchPar.pseudoClass;
 
-    QRegExp regExp(QString("%1%2%3%4\\s*"
-                           "\\{"
-                                "([^\\}]*)"
-                           "\\}")
-                   .arg(a_searchPar.widgetName).arg(a_searchPar.subcontrol).arg(a_searchPar.dinamicProperty).arg(a_searchPar.pseudoClass));
+    QRegularExpression regExp(QString("%1%2%3%4\\s*"
+                                      "\\{"
+                                           "([^\\}]*)"
+                                      "\\}")
+                              .arg(a_searchPar.widgetName, a_searchPar.subcontrol, a_searchPar.dinamicProperty, a_searchPar.pseudoClass));
 
+    QRegularExpressionMatch match = regExp.match(appStyleSheet());
     // If not found output and return empty
-    if (regExp.lastIndexIn(appStyleSheet()) == -1) {
-        qWarning() << "styleSheet not found: " << regExp;
+    if(!match.hasMatch()) {
+        qWarning() << "styleSheet not found: " << regExp.pattern();
         return "";
     }
 
     //If found return found capture 1 without spaces and new line symbols
-    return regExp.cap(1).remove(QRegExp("(\\s|\\n)"));
+    QString result = match.captured(1);
+    result.remove(QRegularExpression("(\\s|\\n)"));
+    return result;
 
 }
 
@@ -158,14 +161,14 @@ QApplication *AppStyleSheetHandler::appInstance()
 
 QString AppStyleSheetHandler::convertPointsToPixels(const QString a_stylesheet)
 {
-    const QRegExp regExp("([\\d.])+((pt\\+)|(pt-)|(pt))");
+    const QRegularExpression regExp("([\\d.])+((pt\\+)|(pt-)|(pt))");
     QMap<int, QString> matches;
     auto data = a_stylesheet;
-    auto pos = 0;
 
-    while ((pos = regExp.indexIn(data, pos)) != -1) {
-        matches[pos] = regExp.cap(0);
-        pos += regExp.matchedLength();
+    QRegularExpressionMatchIterator it = regExp.globalMatch(data);
+    while(it.hasNext()) {
+        QRegularExpressionMatch match = it.next();
+        matches[match.capturedStart()] = match.captured(0);
     }
 
     int displacement = 0; // diference between the begin strings length and the end strings length

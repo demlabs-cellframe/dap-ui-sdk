@@ -4,6 +4,8 @@
 #
 #-------------------------------------------------
 
+greaterThan(QT_MAJOR_VERSION, 5): QT += statemachine core5compat
+
 SOURCES += \
     $$PWD/schedule.cpp\
     $$PWD/schedules.cpp

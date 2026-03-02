@@ -4,7 +4,7 @@ import QtQuick 2.12
 import DapQmlStyle 1.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.0
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 import Qt.labs.platform 1.1
 import StyleDebugTree 1.0
 import TextEditContextMenu 1.0

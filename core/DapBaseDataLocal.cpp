@@ -7,6 +7,7 @@
 #include <QtDebug>
 #include <QCoreApplication>
 #include <QTime>
+#include <QRandomGenerator>
 
 #include "DapBaseDataLocal.h"
 #include "DapSerialKeyData.h"
@@ -488,7 +489,7 @@ QString DapBaseDataLocal::getRandomString(int size)
 
     QString randomString;
     for(int i=0; i < randomStringLength; ++i){
-        int index = qrand() % possibleCharacters.length();
+        int index = QRandomGenerator::global()->bounded(possibleCharacters.length());
         QChar nextChar = possibleCharacters.at(index);
         randomString.append(nextChar);
     }
@@ -532,7 +533,7 @@ void DapBaseDataLocal::updateCdbList (const DapCdbServerList &a_newCdbList)
     /* clear old and store new */
     m_cdbServersList.clear();
 
-    for (const auto &cdb : qAsConst(a_newCdbList))
+    for (const auto &cdb : std::as_const(a_newCdbList))
         m_cdbServersList << cdb;
 
     /* update iterator */
@@ -577,7 +578,7 @@ void DapBaseDataLocal::loadBugReport()
         && !array.isEmpty())
     {
         /* parse array */
-        for (const auto &obj : qAsConst (array))
+        for (const auto &obj : std::as_const (array))
         {
             auto item = m_bugReportHistory->jsonToItem(obj.toObject());
             if (item.number)
@@ -592,7 +593,7 @@ void DapBaseDataLocal::saveBugReport()
 {
     QJsonArray array;
 
-    for (const auto &item : qAsConst(m_bugReportHistory->getBagreports()))
+    for (const auto &item : std::as_const(m_bugReportHistory->getBagreports()))
         array << m_bugReportHistory->itemToJson(item);
 
     saveToSettings (TEXT_BUGREPORT_HISTORY, array);
@@ -652,7 +653,7 @@ QJsonObject DapBaseDataLocal::toJson()
             QDate threeDaysAgo = QDate::currentDate().addDays(-3);
             int count = 0;
             
-            for (const auto &item : qAsConst(notifications))
+            for (const auto &item : std::as_const(notifications))
             {
                 if (count >= REDUCED_MAX_NOTIFICATIONS) break;
                 
@@ -955,7 +956,7 @@ const QJsonArray DapBaseDataLocal::bugReportHistoryToJson() const
     QList<int> keys = bugReports.keys();
     qDebug() << "[DapBaseDataLocal][bugReportHistoryToJson] the number of bug reports being moved: " << keys.size();
 
-    for(const auto& key: qAsConst(keys))
+    for(const auto& key: std::as_const(keys))
     {
         QJsonObject object;
         const auto& item = bugReports[key];
@@ -1018,7 +1019,7 @@ const QJsonObject DapBaseDataLocal::settingsToJson()
     {
         QStringList listKeys = m_settings->allKeys();
         qDebug() << "[DapBaseDataLocal][settingsToJson] setting keys: " << listKeys;
-        for(const auto& key: qAsConst(listKeys))
+        for(const auto& key: std::as_const(listKeys))
         {
             if(TEXT_SERIAL_KEY == key || TEXT_PENDING_SERIAL_KEY == key || TEXT_SERIAL_KEY_HISTORY == key ||
                 TEXT_BUGREPORT_HISTORY == key || LAST_NODE_LIST_UPDATE == key || LAST_NODE_LIST_UPDATE_TIME == key ||
@@ -1041,7 +1042,7 @@ const QJsonObject DapBaseDataLocal::settingsToJson()
                 const int MAX_NOTIFICATIONS = 50;
                 
                 // Iterate through notifications and apply filters
-                for (const auto &item : qAsConst(originalNotifications))
+                for (const auto &item : std::as_const(originalNotifications))
                 {
                     QJsonObject notification = item.toObject();
                     

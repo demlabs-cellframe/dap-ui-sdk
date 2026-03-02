@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QDebug>
 #include <QString>
+#include <QRegularExpression>
 
 
 namespace Utils
@@ -76,9 +77,9 @@ namespace Utils
 
     int toIntValue(const QString &a_text)
     {
-        QRegExp regString("(\\d+)");
-        regString.indexIn(a_text);
-        return regString.cap(0).toInt();
+        QRegularExpression regString("(\\d+)");
+        QRegularExpressionMatch match = regString.match(a_text);
+        return match.captured(0).toInt();
     }
 
     QString convertByte(const quint64 &byte)

@@ -1,4 +1,5 @@
 QT += core network xml
+greaterThan(QT_MAJOR_VERSION, 5): QT += statemachine core5compat
 
 include (../zip/zip.pri)
 SOURCES += \
