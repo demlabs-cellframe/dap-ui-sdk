@@ -1,9 +1,6 @@
 #include <QtDebug>
 #include <QTimer>
-#ifdef Q_OS_ANDROID
-#include <QtAndroid>
-#include <QtAndroidExtras/QAndroidJniObject>
-#endif
+#include "DapAndroidCompat.h"
 #include "ServiceCtlOld.h"
 #include "dap_common.h"
 

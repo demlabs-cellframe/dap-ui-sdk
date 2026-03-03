@@ -1,8 +1,7 @@
-﻿#include "DapTunAndroid.h"
+#include "DapTunAndroid.h"
 
 
-#include <QtAndroid>
-#include <QtAndroidExtras>
+#include "DapAndroidCompat.h"
 #include <jni.h>
 #include <unistd.h>
 #include <QTcpSocket>

@@ -77,6 +77,7 @@ win32{
 }
 android {
 lessThan(QT_MAJOR_VERSION, 6): QT += androidextras
+greaterThan(QT_MAJOR_VERSION, 5): QT += core-private
 }
 
 INCLUDEPATH += $$PWD/../quazip

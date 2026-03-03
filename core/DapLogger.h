@@ -14,10 +14,7 @@
 #include "dap_file_utils.h"
 #include <QRegularExpression>
 
-#ifdef Q_OS_ANDROID
-#include <QtAndroid>
-#include <QAndroidJniObject>
-#endif
+#include "DapAndroidCompat.h"
 
 enum TypeLogCleaning
 {

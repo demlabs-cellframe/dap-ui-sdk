@@ -1,8 +1,5 @@
 #include "DapPluginsPathControll.h"
-#ifdef Q_OS_ANDROID
-#include <QtAndroid>
-#include <QAndroidJniObject>
-#endif
+#include "DapAndroidCompat.h"
 #ifdef Q_OS_WIN
 #include "registry.h"
 #endif

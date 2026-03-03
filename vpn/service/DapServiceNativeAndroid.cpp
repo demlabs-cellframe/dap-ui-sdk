@@ -1,7 +1,5 @@
 #include <QtDebug>
-#include <QAndroidJniObject>
-#include <QAndroidIntent>
-#include <QtAndroid>
+#include "DapAndroidCompat.h"
 
 #include "DapServiceNativeAndroid.h"
 #include <QTimer>

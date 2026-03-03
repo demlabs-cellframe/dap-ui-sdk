@@ -5,10 +5,7 @@
 #include <QString>
 #include <QMap>
 
-#ifdef Q_OS_ANDROID
-#include <QtAndroidExtras/qandroidjniobject.h>
-#include <QtAndroidExtras/qandroidactivityresultreceiver.h>
-#endif
+#include "DapAndroidCompat.h"
 
 class DapShopManager : public QObject
 {
