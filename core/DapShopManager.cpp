@@ -2,7 +2,9 @@
 #include <QString>
 #include <QDebug>
 
+#ifdef Q_OS_ANDROID
 #include "DapAndroidCompat.h"
+#endif
 
 // The product ID
 const QStringList DapShopManager::m_productNames = {

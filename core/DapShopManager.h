@@ -5,7 +5,9 @@
 #include <QString>
 #include <QMap>
 
+#ifdef Q_OS_ANDROID
 #include "DapAndroidCompat.h"
+#endif
 
 class DapShopManager : public QObject
 {

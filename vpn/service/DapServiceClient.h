@@ -17,7 +17,9 @@ typedef QLocalSocket DapUiSocket;
 typedef QLocalSocket::LocalSocketError DapUiSocketError;
 #endif
 
+#ifdef Q_OS_ANDROID
 #include "DapAndroidCompat.h"
+#endif
 
 #if defined(Q_OS_ANDROID)
 #include "DapServiceNativeAndroid.h"
