@@ -41,6 +41,12 @@ namespace QtAndroid
     {
         return QNativeInterface::QAndroidApplication::sdkVersion();
     }
+
+    template<typename Func>
+    inline auto runOnAndroidThread(Func &&func)
+    {
+        return QNativeInterface::QAndroidApplication::runOnAndroidMainThread(std::forward<Func>(func));
+    }
 }
 
 #else // Qt5

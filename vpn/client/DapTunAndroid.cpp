@@ -59,7 +59,7 @@ void DapTunAndroid::workerStart() {
     }
     tunWorker->setTunSocket(m_tunSocket);
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    tunFuture = QtConcurrent::run([tunWorkerAndroid] { tunWorkerAndroid->loop(); });
+    tunFuture = QtConcurrent::run([this] { tunWorkerAndroid->loop(); });
 #else
     tunFuture = QtConcurrent::run(tunWorkerAndroid, &DapTunWorkerUnix::loop);
 #endif
