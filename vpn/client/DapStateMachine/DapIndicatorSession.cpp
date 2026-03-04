@@ -15,7 +15,7 @@ void DapIndicatorSession::init(DapState *s, const QString& stateName)
     no_cdbModeConnect       = new DapState(_true->name()            + "no_cdbModeConnect",       _true);
     no_cdbModeConnecting    = new DapState(_falseToTrue->name()     + "no_cdbModeConnecting",    _falseToTrue);
 
-//    no_cdbDisconnect        = new DapState(_false->name()           + "no_cdbDisconnect",        _false);
+    no_cdbDisconnect        = new DapState(_false->name()           + "no_cdbDisconnect",        _false);
 //    no_cdbModeDisconnecting = new DapState(_trueToFalse->name()     + "no_cdbModeDisconnecting", _trueToFalse);
 
     _false->setInitialState(cdbLogouted);

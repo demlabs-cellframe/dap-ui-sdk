@@ -19,6 +19,7 @@ public:
     void requestHttp_GET_for_ping(const QString &address, const uint16_t port, const QString &urlPath, const QString &headers, DapNetworkReply &netReply);
 
     bool isRunning(){ return bRunning; }
+    static QString dapClientHttpErrorToString(int a_err_code);
 signals:
     void finished();
 

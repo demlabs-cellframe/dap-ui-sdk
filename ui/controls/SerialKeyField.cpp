@@ -6,9 +6,15 @@ SerialKeyField::SerialKeyField(QWidget *parent)
 #if defined(Q_OS_MAC)
    this->setAttribute(Qt::WA_MacShowFocusRect,false);
 #endif
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    m_regExp=QRegularExpression("[a-z"+QString(VALIDATOR)+"]"
+                   "{0,"+QString::number(MAX_COUNT_CHAR)+"}");
+    QValidator* validator=new QRegularExpressionValidator(m_regExp);
+#else
     m_regExp=QRegExp("[a-z"+QString(VALIDATOR)+"]"
                    "{0,"+QString::number(MAX_COUNT_CHAR)+"}");
     QValidator* validator=new QRegExpValidator(m_regExp);
+#endif
     setValidator(validator);
     setMaxLength(MAX_COUNT_CHAR);
     setInputMethodHints(Qt::ImhLatinOnly|Qt::ImhNoPredictiveText|Qt::ImhPreferUppercase|Qt::ImhUppercaseOnly);

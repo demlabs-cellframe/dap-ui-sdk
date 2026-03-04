@@ -2,7 +2,11 @@
 #define SERIALKEYFIELD_H
 
 #include <QLineEdit>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QRegularExpressionValidator>
+#else
 #include <QRegExpValidator>
+#endif
 #include <QDebug>
 #include <QInputMethodEvent>
 #include <QApplication>
@@ -40,7 +44,11 @@ protected:
     virtual void keyPressEvent(QKeyEvent *e) override;
     virtual void pasteEvent(QString clipboardText);
 private:
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    QRegularExpression m_regExp{};
+#else
     QRegExp m_regExp{};
+#endif
 #ifdef Q_OS_ANDROID
     QVector <int> m_keys
     {
