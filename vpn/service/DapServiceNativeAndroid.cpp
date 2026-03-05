@@ -28,15 +28,12 @@ void DapServiceNativeAndroid::checkInstallation()
         QAndroidIntent serviceIntent(QtAndroid::androidActivity().object(),
                                      "com/" DAP_BRAND "/" DAP_BRAND "Service");
 
-        QString method_name = "startService";
-        
-        if (QtAndroid::androidSdkVersion() < 26)
-        {
-            method_name = "startService";
-        }
+        const char *method_name = (QtAndroid::androidSdkVersion() >= 26)
+                                  ? "startForegroundService"
+                                  : "startService";
 
         QtAndroid::androidActivity().callObjectMethod(
-                    method_name.toStdString().c_str(),
+                    method_name,
                     "(Landroid/content/Intent;)Landroid/content/ComponentName;",
                     serviceIntent.handle().object<jobject>());
     }

@@ -29,7 +29,16 @@ namespace QtAndroid
 
     inline QJniObject androidService()
     {
-        return QJniObject(QNativeInterface::QAndroidApplication::context());
+        QJniObject ctx(QNativeInterface::QAndroidApplication::context());
+        if (!ctx.isValid())
+            return QJniObject();
+        QJniEnvironment env;
+        jclass serviceClass = env.findClass("android/app/Service");
+        if (!serviceClass)
+            return QJniObject();
+        if (env->IsInstanceOf(ctx.object(), serviceClass))
+            return ctx;
+        return QJniObject();
     }
 
     inline QJniObject androidActivity()
