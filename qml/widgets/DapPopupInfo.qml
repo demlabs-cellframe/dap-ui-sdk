@@ -149,14 +149,19 @@ Item {
             // Reset to default width when width=0 is passed
             rectItem.width = 168 * scaleFactor
         }
-        stopX = mainWindow.width - (popup.width + 24 * scaleFactor)
 
         if(height)
             rectItem.height = height
 
+        // Recalculate animation endpoints using rectItem.width directly
+        // (popup.width binding may not have propagated yet)
+        startX = mainWindow.width
+        stopX = mainWindow.width - (rectItem.width + 24 * scaleFactor)
+
         showTimer.stop()
         hideTimer.stop()
 
+        showAnim.stop()
         showAnim.start()
 
         infoText = text
