@@ -25,6 +25,8 @@ This file is part of DAP UI SDK the open source project
 #include "darwin/DapUtun.h"
 #include "TunnelStateManager.h"
 
+static const int SHELL_CMD_TIMEOUT = 10000;
+
 DapUtun::DapUtun()
     : DapTunUnixAbstract()
 {
@@ -42,7 +44,7 @@ DapUtun::DapUtun()
         "255.255.255.255 255.255.255.255" });
 
     connect(SigUnixHandler::getInstance(), &SigUnixHandler::sigKill,
-            this, &DapUtun::tunDeviceDestroy, Qt::DirectConnection);
+            this, &DapUtun::tunDeviceDestroy);
 }
 
 
@@ -160,7 +162,7 @@ void DapUtun::tunDeviceCreate()
 
 QString DapUtun::getInternetInterface()
 {
-    return DapUtils::shellCmd("route get 8.8.8.8 | grep interface | awk '{print $2;}'");
+    return DapUtils::shellCmd("route get 8.8.8.8 | grep interface | awk '{print $2;}'", SHELL_CMD_TIMEOUT);
 }
 void DapUtun::saveCurrentConnectionInterfaceData() {
     m_lastUsedConnectionDevice = getInternetInterface();
@@ -168,7 +170,7 @@ void DapUtun::saveCurrentConnectionInterfaceData() {
 
     QString cmdList = QString("networksetup -listnetworkserviceorder | grep 'Hardware Port' | grep %1")
                           .arg(m_lastUsedConnectionDevice);
-    QString result = DapUtils::shellCmd(cmdList);
+    QString result = DapUtils::shellCmd(cmdList, SHELL_CMD_TIMEOUT);
 
     QStringList parts = result.split(":");
     if (parts.length() < 3) {
@@ -187,7 +189,7 @@ void DapUtun::saveCurrentConnectionInterfaceData() {
 
     QString cmdGetInfo = QString("networksetup -getinfo \"%1\" | grep Router")
                              .arg(m_lastUsedConnectionName);
-    result = DapUtils::shellCmd(cmdGetInfo);
+    result = DapUtils::shellCmd(cmdGetInfo, SHELL_CMD_TIMEOUT);
 
     QStringList infoLines = result.split("\n", Qt::SkipEmptyParts);
     if (infoLines.isEmpty()) {
@@ -301,6 +303,10 @@ void DapUtun::onWorkerStarted()
         return;
     }
 
+    // Set early so tunDeviceDestroy() will run cleanup if SIGTERM arrives
+    // during route/DNS configuration below
+    m_isCreated = true;
+
     if (!isLocalAddress(upstreamAddress())) {
         QString run = QString("route add -host %2 %1")
                           .arg(m_defaultGwOld)
@@ -332,7 +338,7 @@ void DapUtun::onWorkerStarted()
                             .arg(gw());
 
     qDebug() << "Setting DNS for" << m_currentInterface << "to:" << gw();
-    DapUtils::shellCmd(cmdSetDNS);
+    DapUtils::shellCmd(cmdSetDNS, SHELL_CMD_TIMEOUT);
 
     QString ifconfigCmd = QString("ifconfig %1 %2 %3")
                               .arg(tunDeviceName())
@@ -364,7 +370,7 @@ void DapUtun::onWorkerStarted()
         cmdAddAdditionalRoutes += " " + additionalRoute;
     }
     qDebug() << "Additional Apple routes command:" << cmdAddAdditionalRoutes;
-    DapUtils::shellCmd(cmdAddAdditionalRoutes);
+    DapUtils::shellCmd(cmdAddAdditionalRoutes, SHELL_CMD_TIMEOUT);
 
     TunnelStateManager::instance().saveTunnelState(
         tunDeviceName(),
@@ -374,7 +380,6 @@ void DapUtun::onWorkerStarted()
         m_currentInterface
     );
 
-    m_isCreated = true;
     emit created();
 }
 
@@ -384,7 +389,7 @@ QString DapUtun::getCurrentNetworkInterface()
 
     QProcess routeProcess;
     routeProcess.start("route", QStringList() << "get" << "default");
-    routeProcess.waitForFinished();
+    routeProcess.waitForFinished(SHELL_CMD_TIMEOUT);
     QString routeOutput = routeProcess.readAllStandardOutput();
 
     qDebug() << "Raw route get default output:" << routeOutput;
@@ -406,7 +411,7 @@ QString DapUtun::getCurrentNetworkInterface()
 
     QProcess serviceOrderProcess;
     serviceOrderProcess.start("networksetup", QStringList() << "-listnetworkserviceorder");
-    serviceOrderProcess.waitForFinished();
+    serviceOrderProcess.waitForFinished(SHELL_CMD_TIMEOUT);
     QString serviceOrderOutput = serviceOrderProcess.readAllStandardOutput();
 
     qDebug() << "Raw network service order output:" << serviceOrderOutput;
