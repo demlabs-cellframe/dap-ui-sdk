@@ -40,14 +40,37 @@ TextField {
 
     property var regExpValidator: /.*/
 
+    property bool detectNonLatinInput: false
+    property bool nonLatinInputDetected: false
+
     signal updateFeild
+    signal returnKeyPressed()
+
+    inputMethodHints: detectNonLatinInput ? Qt.ImhLatinOnly : Qt.ImhNone
 
     validator: RegularExpressionValidator {
         regularExpression: regExpValidator
     }
 
-    Keys.onReturnPressed: focus = false
-    Keys.onEnterPressed: focus = false
+    Keys.onReturnPressed:
+    {
+        returnKeyPressed()
+        focus = false
+    }
+    Keys.onEnterPressed:
+    {
+        returnKeyPressed()
+        focus = false
+    }
+    Keys.onPressed: function(event)
+    {
+        if (detectNonLatinInput && event.text.length > 0
+                && event.text.charCodeAt(0) > 0x1F)
+        {
+            nonLatinInputDetected = !/^[!-~]$/.test(event.text)
+        }
+        event.accepted = false
+    }
 
     onPressAndHold: {
         // Disable custom context menu on iOS to use native iOS menu
