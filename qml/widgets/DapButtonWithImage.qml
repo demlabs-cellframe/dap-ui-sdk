@@ -6,15 +6,15 @@ Button {
     property string pathImage: ""
     property bool isLeftImage: true
     property string buttonText: ""
-    property int widthImage: 24
-    property int heightImage: 24
+    property int widthImage: 24 * guiApp.scaleFactor
+    property int heightImage: 24 * guiApp.scaleFactor
     property color textCollor: currTheme.white
     property color backgroundColor: currTheme.buttonGray
     property color hoverBackgroundColor: currTheme.buttonLightGray
-    property int backgroundRadius: 4
+    property int backgroundRadius: 4 * guiApp.scaleFactor
 
     contentItem: RowLayout {
-        spacing: 4
+        spacing: 4 * guiApp.scaleFactor
         Item {
             Layout.fillWidth: true
         }

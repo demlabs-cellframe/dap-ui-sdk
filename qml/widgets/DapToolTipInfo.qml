@@ -65,7 +65,7 @@ Image {
             {
                 id: backgroundToolTip
                 anchors.fill: parent
-                radius: 4
+                radius: 4 * scaleFactor
                 color: currTheme.mainBackground
             }
             DropShadow {
@@ -86,7 +86,7 @@ Image {
                 color: currTheme.shadowColor
                 horizontalOffset: 2
                 verticalOffset: 2
-                radius: 10
+                radius: 10 * scaleFactor
                 samples: 20
                 opacity: 1
             }

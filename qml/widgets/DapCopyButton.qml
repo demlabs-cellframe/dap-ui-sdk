@@ -8,8 +8,8 @@ import "qrc:/widgets"
 Item
 {
     id: root
-    width: 16
-    height: 16
+    width: 16 * guiApp.scaleFactor
+    height: 16 * guiApp.scaleFactor
 
     property string popupText: ""
     property alias mouseArea: mouseArea

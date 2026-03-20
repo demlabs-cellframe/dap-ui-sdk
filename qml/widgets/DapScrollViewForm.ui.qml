@@ -32,7 +32,7 @@ MouseArea
     property bool mouseAtArrow
 
     id: dapScrollButton
-    width: 36 
+    width: 36 * guiApp.scaleFactor
     height: width
 
     hoverEnabled: true

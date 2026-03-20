@@ -16,8 +16,8 @@ Rectangle
 
     anchors.fill: parent
     color: currTheme.backgroundMainScreen
-    radius: 16 
-    width: 678 
+    radius: 16 * guiApp.scaleFactor
+    width: 678 * guiApp.scaleFactor 
 
 //    anchors
 //    {

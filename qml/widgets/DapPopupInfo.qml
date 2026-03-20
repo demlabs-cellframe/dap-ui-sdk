@@ -101,8 +101,8 @@ Item {
         shadowBlur: 1.0
         shadowEnabled: true
         shadowColor: currTheme.shadowColor
-        shadowVerticalOffset: 5
-        shadowHorizontalOffset: 5
+        shadowVerticalOffset: 5 * scaleFactor
+        shadowHorizontalOffset: 5 * scaleFactor
     }
 
     RowLayout

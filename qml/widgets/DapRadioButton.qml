@@ -52,18 +52,19 @@ RadioButton
     ///Indicator Options.
     indicator:
         Item{
-            width: indicatorInnerSize
-            height: indicatorInnerSize
+            implicitWidth: indicatorInnerSize
+            implicitHeight: indicatorInnerSize
             anchors.verticalCenter: parent.verticalCenter
 
             DapImageRender {
                 anchors.verticalCenter: parent.verticalCenter
-                width: indicatorInnerSize
-                height: indicatorInnerSize
+                // implicitWidth: indicatorInnerSize
+                // implicitHeight: indicatorInnerSize
 
                 opacity: checked ? 1 : 0
 
                 source: pathResources + pathTheme + "/icons/other/radio_btn_on.png"
+                sourceSize: Qt.size(indicatorInnerSize * guiApp.scaleFactor, indicatorInnerSize * guiApp.scaleFactor)
 
                 Behavior on opacity {
                     NumberAnimation {
@@ -73,12 +74,13 @@ RadioButton
             }
             DapImageRender {
                 anchors.verticalCenter: parent.verticalCenter
-                width: indicatorInnerSize
-                height: indicatorInnerSize
+                // implicitWidth: indicatorInnerSize
+                // implicitHeight: indicatorInnerSize
 
                 opacity: checked ? 0 : 1
 
                 source: pathResources + pathTheme + "/icons/other/radio_btn_off.png"
+                sourceSize: Qt.size(indicatorInnerSize * guiApp.scaleFactor, indicatorInnerSize * guiApp.scaleFactor)
 
                 Behavior on opacity {
                     NumberAnimation {

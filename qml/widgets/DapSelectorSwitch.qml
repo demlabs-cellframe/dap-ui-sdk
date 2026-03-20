@@ -7,9 +7,9 @@ Rectangle
 {
     id: selectorSwitchItem
 
-    property int itemHorisontalBorder: 10
+    property int itemHorisontalBorder: 10 * guiApp.scaleFactor
     property int itemVerticalBorder: -2
-    property int viewerBorder: 4
+    property int viewerBorder: 4 * guiApp.scaleFactor
     property int animDuration: 200
     property string firstName: "first"
     property string firstColor: currTheme.mainButtonColorNormal0
