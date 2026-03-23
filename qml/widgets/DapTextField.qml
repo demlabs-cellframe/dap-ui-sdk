@@ -45,8 +45,11 @@ TextField {
 
     signal updateFeild
     signal returnKeyPressed()
+    signal nonLatinInputChecked(bool isNonLatin)
 
-    inputMethodHints: detectNonLatinInput ? Qt.ImhLatinOnly : Qt.ImhNone
+    inputMethodHints: detectNonLatinInput
+                      && (Qt.platform.os === "android" || Qt.platform.os === "ios")
+                      ? Qt.ImhLatinOnly : Qt.ImhNone
 
     validator: RegularExpressionValidator {
         regularExpression: regExpValidator
@@ -67,7 +70,9 @@ TextField {
         if (detectNonLatinInput && event.text.length > 0
                 && event.text.charCodeAt(0) > 0x1F)
         {
-            nonLatinInputDetected = !/^[!-~]$/.test(event.text)
+            var result = !/^[!-~]$/.test(event.text)
+            nonLatinInputDetected = result
+            nonLatinInputChecked(result)
         }
         event.accepted = false
     }
