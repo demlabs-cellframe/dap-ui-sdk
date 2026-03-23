@@ -23,15 +23,15 @@ Item
     property string textColor: currTheme.white
     property string textHoverColor: currTheme.white
 
-    property int heightTooltip: 80
-    property int widthTooltip: 167
+    property int heightTooltip: 80 * guiApp.scaleFactor
+    property int widthTooltip: 167 * guiApp.scaleFactor
 
-    property int minWidthTooltip: 167
-    property int maxWidthTooltip: 300
-    property int heightStrTooltip: 20
+    property int minWidthTooltip: 167 * guiApp.scaleFactor
+    property int maxWidthTooltip: 300 * guiApp.scaleFactor
+    property int heightStrTooltip: 20 * guiApp.scaleFactor
     property int heightDiffStrTooltip: 2
 
-    property int marginTextTooltip: 12
+    property int marginTextTooltip: 12 * guiApp.scaleFactor
     property string colorHeadStrTooltip: currTheme.gray
     property string colorStrTooltip: currTheme.white
     property alias listView: list
@@ -154,7 +154,7 @@ Item
                             width: parent.width
                             height: heightStrTooltip
                             RowLayout {
-                                spacing: 3
+                                spacing: 3 * guiApp.scaleFactor
                                 Text {
                                     id: nameRow
                                     text: name

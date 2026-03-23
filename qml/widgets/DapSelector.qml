@@ -24,7 +24,7 @@ Rectangle
 
     signal itemSelected()
 
-    implicitWidth: viewerItem.width
+    implicitWidth: itemWidthEnabled ? 0 : viewerItem.width
 
     border.color: currTheme.input
     color: currTheme.mainBackground
@@ -35,8 +35,8 @@ Rectangle
         id: viewerItem
         x: viewerBorder
         y: viewerBorder
-        width: contentWidth + viewerBorder * 2
         height: selectorItem.height
+        width: contentWidth + viewerBorder * 2
 //        clip: true
         orientation: ListView.Horizontal
         interactive: false
@@ -114,7 +114,6 @@ Rectangle
                     color: textColor
                     font: textFont
                     text: name
-
                 }
 
                 MouseArea

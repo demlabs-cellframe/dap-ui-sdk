@@ -269,9 +269,9 @@ Button
     DropShadow {
         id: shadow
         anchors.fill: dapBackgroundButton
-        horizontalOffset: 2
-        verticalOffset: 2
-        radius: 7
+        horizontalOffset: 2 * guiApp.scaleFactor
+        verticalOffset: 2 * guiApp.scaleFactor
+        radius: 7 * guiApp.scaleFactor
         samples: 10
         cached: true
         color: shadowColor
@@ -285,7 +285,7 @@ Button
         anchors.fill: dapBackgroundButton
         horizontalOffset: 1
         verticalOffset: 1
-        radius: 4
+        radius: 4 * guiApp.scaleFactor
         samples: 10
         cached: true
         color: innerShadowColor

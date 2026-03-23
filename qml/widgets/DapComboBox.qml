@@ -6,12 +6,12 @@ import Qt5Compat.GraphicalEffects
 ComboBox {
     id: control
 
-    implicitHeight: 45 
+    implicitHeight: 45 * guiApp.scaleFactor
 
-    leftPadding: 15 
-    rightPadding: 15 
+    leftPadding: 15 * guiApp.scaleFactor
+    rightPadding: 15 * guiApp.scaleFactor
 
-    property int maximumPopupHeight: 200 
+    property int maximumPopupHeight: 200 * guiApp.scaleFactor 
 
     property string mainTextRole: "name"
     property string secondTextRole: "secondname"
@@ -33,7 +33,7 @@ ComboBox {
         {
             anchors.fill: parent
             anchors.leftMargin: parent.leftPadding
-            anchors.rightMargin: 20 
+            anchors.rightMargin: 20 * guiApp.scaleFactor
 
             Text
             {
@@ -77,15 +77,15 @@ ComboBox {
     DapImageRender
     {
         id: canvas
-        width: 24 
-        height: 24 
+        width: 24 * guiApp.scaleFactor
+        height: 24 * guiApp.scaleFactor
         x: control.width - width - control.rightPadding
         y: control.topPadding + (control.availableHeight - height) / 2
 
         fillMode: Image.PreserveAspectFit
         source: pathResources + pathTheme + "/icons/other/icon_arrow_down.png"
 //        source: "qrc:/icon_arrow_down.png"
-        sourceSize.width: 24 
+        sourceSize.width: 24 * guiApp.scaleFactor
         rotation: control.popup.opened ? 180 : 0
 
         Behavior on rotation { NumberAnimation { duration: 200 } }

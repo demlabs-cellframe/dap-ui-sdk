@@ -11,7 +11,7 @@ RowLayout {
     property alias textColor: textItem.textColor
     property var textFont: mainFont.dapFont.regular13
 
-    spacing: 3
+    spacing: 3 * guiApp.scaleFactor
 
     Item
     {

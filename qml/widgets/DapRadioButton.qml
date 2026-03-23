@@ -16,7 +16,7 @@ RadioButton
     ///@detalis backgroundColor RadioButton background color
     property alias backgroundColor:backgroundColor.color
     ///@detalis spaceIndicatorText The gap between the indicator and the text.
-    property int spaceIndicatorText
+    property real spaceIndicatorText
     ///@detalis indicatorBorder Border indicator.
 //    property alias indicatorBorder: indicatorRadioButton.border
     ///@detalis indicatorBorderColor Border color indicator.
@@ -28,9 +28,9 @@ RadioButton
     ///@detalis indicatorInnerColorNormal Color of the inner circle in normal condition.
     property string indicatorInnerColorNormal
     ///@detalis indicatorSize The size of the main circle of the indicator.
-    property int indicatorSize
+    property real indicatorSize
     ///@detalis indicatorInnerSize The size of the inner circle of the indicator.
-    property int indicatorInnerSize
+    property real indicatorInnerSize
 
 
     id: customRadioButton
@@ -42,7 +42,7 @@ RadioButton
             id: nameButton
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.leftMargin: customRadioButton.indicator.width + spaceIndicatorText
+            anchors.leftMargin: customRadioButton.indicator.implicitWidth + spaceIndicatorText
             verticalAlignment: Text.AlignVCenter
             anchors.verticalCenter: parent.verticalCenter
             color: currTheme.white
@@ -52,18 +52,19 @@ RadioButton
     ///Indicator Options.
     indicator:
         Item{
-            width: indicatorInnerSize
-            height: indicatorInnerSize
+            implicitWidth: indicatorInnerSize
+            implicitHeight: indicatorInnerSize
             anchors.verticalCenter: parent.verticalCenter
 
             DapImageRender {
                 anchors.verticalCenter: parent.verticalCenter
-                width: indicatorInnerSize
-                height: indicatorInnerSize
+                // implicitWidth: indicatorInnerSize
+                // implicitHeight: indicatorInnerSize
 
                 opacity: checked ? 1 : 0
 
                 source: pathResources + pathTheme + "/icons/other/radio_btn_on.png"
+                sourceSize: Qt.size(indicatorInnerSize, indicatorInnerSize)
 
                 Behavior on opacity {
                     NumberAnimation {
@@ -73,12 +74,13 @@ RadioButton
             }
             DapImageRender {
                 anchors.verticalCenter: parent.verticalCenter
-                width: indicatorInnerSize
-                height: indicatorInnerSize
+                // implicitWidth: indicatorInnerSize
+                // implicitHeight: indicatorInnerSize
 
                 opacity: checked ? 0 : 1
 
                 source: pathResources + pathTheme + "/icons/other/radio_btn_off.png"
+                sourceSize: Qt.size(indicatorInnerSize, indicatorInnerSize)
 
                 Behavior on opacity {
                     NumberAnimation {
