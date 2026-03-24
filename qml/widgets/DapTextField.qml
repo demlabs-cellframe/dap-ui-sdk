@@ -40,14 +40,42 @@ TextField {
 
     property var regExpValidator: /.*/
 
+    property bool detectNonLatinInput: false
+    property bool nonLatinInputDetected: false
+
     signal updateFeild
+    signal returnKeyPressed()
+    signal nonLatinInputChecked(bool isNonLatin)
+
+    inputMethodHints: detectNonLatinInput
+                      && (Qt.platform.os === "android" || Qt.platform.os === "ios")
+                      ? Qt.ImhLatinOnly : Qt.ImhNone
 
     validator: RegularExpressionValidator {
         regularExpression: regExpValidator
     }
 
-    Keys.onReturnPressed: focus = false
-    Keys.onEnterPressed: focus = false
+    Keys.onReturnPressed:
+    {
+        returnKeyPressed()
+        focus = false
+    }
+    Keys.onEnterPressed:
+    {
+        returnKeyPressed()
+        focus = false
+    }
+    Keys.onPressed: function(event)
+    {
+        if (detectNonLatinInput && event.text.length > 0
+                && event.text.charCodeAt(0) > 0x1F)
+        {
+            var result = !/^[!-~]$/.test(event.text)
+            nonLatinInputDetected = result
+            nonLatinInputChecked(result)
+        }
+        event.accepted = false
+    }
 
     onPressAndHold: {
         // Disable custom context menu on iOS to use native iOS menu
@@ -136,7 +164,7 @@ TextField {
         anchors.rightMargin: root.bottomLineLeftRightMargins
         anchors.topMargin: root.bottomLineSpacing
 
-        height: 1 * guiApp.scaleFactor
+        implicitHeight: 1
         color: root.bottomLineColor
 
         Behavior on width {
@@ -217,7 +245,7 @@ TextField {
             Rectangle {
                 id: background
                 anchors.fill: parent
-                radius: 4
+                radius: 4 * guiApp.scaleFactor
                 color: backgroundColor
             }
             DropShadow {
@@ -225,7 +253,7 @@ TextField {
                 anchors.fill: background
                 horizontalOffset: 2
                 verticalOffset: 2
-                radius: 4
+                radius: 4 * guiApp.scaleFactor
                 samples: 10
                 cached: true
                 color: "#000000"
@@ -252,7 +280,7 @@ TextField {
             Rectangle {
                 anchors.fill: parent
                 anchors.margins: 4 * guiApp.scaleFactor
-                radius: 4
+                radius: 4 * guiApp.scaleFactor
                 opacity: enabled ? 1 : 0.3
                 color: parent.hovered ? contextMenuBackgroundColorHover : contextMenuBackgroundColorNormal
             }

@@ -127,7 +127,7 @@ Item {
 
         Rectangle {
             visible: popupVisible && changingRound && !isHighPopup && !isHighlightDisplayTextPopup
-            height: parent.radius
+            implicitHeight: parent.radius
             anchors {
                 right: parent.right
                 left: parent.left
@@ -155,6 +155,7 @@ Item {
             Image {
                 id: indicator
                 source: pathResources + pathTheme + "/icons/other/icon_arrowDown.svg"
+                sourceSize: Qt.size(24 * scaleFactor, 24 * scaleFactor)
                 rotation: popupVisible ? 180 : 0
                 mipmap: true
 
@@ -182,8 +183,8 @@ Item {
     InnerShadow {
         visible: popupVisible && isInnerShadow && !isHighPopup && !isHighlightDisplayTextPopup
         anchors.fill: background
-        horizontalOffset: 1
-        verticalOffset: 1
+        horizontalOffset: 1 * scaleFactor
+        verticalOffset: 1 * scaleFactor
         radius: 1
         samples: 10
         cached: true
@@ -213,12 +214,11 @@ Item {
 
     Popup {
         id: popup
-        // scale: scaleFactor
-        x: -width * (1 / scale - 1) * 0.5
-        y: isHighPopup ? -delegateHeight * (mainItem.count - 1) : mainItem.height - height * (1 / scaleFactor - 1) * 0.5
+        x: 0
+        y: isHighPopup ? -delegateHeight * (mainItem.count - 1) : mainItem.height
 
-        width: popupBackground.width
-        height: popupBackground.height
+        implicitWidth: popupBackground.implicitWidth
+        implicitHeight: popupBackground.implicitHeight
 
         padding: 0
         modal: false
@@ -237,8 +237,8 @@ Item {
         Rectangle {
             id: popupBackground
             radius: background.radius
-            width: popupWidth === 0 ? mainItem.width : popupWidth
-            height: !isHighPopup ? popupListView.height + border.width * 2 : popupListView.height + border.width * 2 + delegateHeight + radius
+            implicitWidth: popupWidth === 0 ? mainItem.width : popupWidth
+            implicitHeight: !isHighPopup ? popupListView.implicitHeight + border.width * 2 : popupListView.implicitHeight + border.width * 2 + delegateHeight + radius
 
             color: isSingleColor ? background.color : currTheme.mainBackground
 
@@ -247,7 +247,7 @@ Item {
 
             Rectangle {
                 visible: popupVisible && changingRound
-                height: parent.radius
+                implicitHeight: parent.radius
                 anchors {
                     right: parent.right
                     left: parent.left
@@ -273,7 +273,7 @@ Item {
                 delegate: Rectangle {
                     id: menuDelegate
                     width: popupWidth === 0 ? mainItem.width : popupWidth
-                    height: {
+                    implicitHeight: {
                         if (index === currentIndex && isNecessaryToHideCurrentIndex) {
                             return 0;
                         }
@@ -350,7 +350,7 @@ Item {
                 anchors.top: popupListView.bottom
                 anchors.topMargin: background.radius
                 visible: isHighPopup
-                height: isHighPopup ? mainItem.height - background.radius * 2 : 0
+                implicitHeight: isHighPopup ? mainItem.implicitHeight - background.radius * 2 : 0
                 color: popupVisible ? backgroundColorNormal : backgroundColorShow
 
                 RowLayout {
@@ -443,12 +443,12 @@ Item {
                 var insideFake = false;
                 if (fakeField && fakeField.visible) {
                     var pFake = fakeField.mapFromItem(Overlay.overlay, w.x, w.y);
-                    insideFake = pFake.x >= 0 && pFake.y >= 0 && pFake.x <= fakeField.width && pFake.y <= fakeField.height;
+                    insideFake = pFake.x >= 0 && pFake.y >= 0 && pFake.x <= fakeField.width && pFake.y <= fakeField.implicitHeight;
                 }
 
                 // Check if wheel is inside the main component field
                 var pMain = mainItem.mapFromItem(Overlay.overlay, w.x, w.y);
-                var insideMain = pMain.x >= 0 && pMain.y >= 0 && pMain.x <= mainItem.width && pMain.y <= mainItem.height;
+                var insideMain = pMain.x >= 0 && pMain.y >= 0 && pMain.x <= mainItem.width && pMain.y <= mainItem.implicitHeight;
 
                 if (!(insidePopup || insideFake || insideMain)) {
                     closeCombo();

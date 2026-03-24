@@ -45,9 +45,9 @@ Rectangle
     {
         id: shadow
         anchors.fill: firstRect
-        horizontalOffset: 2
-        verticalOffset: 2
-        radius: 10
+        horizontalOffset: 2 * guiApp.scaleFactor
+        verticalOffset: 2 * guiApp.scaleFactor
+        radius: 10 * guiApp.scaleFactor
         samples: 10
 //        fast: true
         cached: true

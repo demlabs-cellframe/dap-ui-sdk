@@ -12,7 +12,7 @@ Item {
 
     property int indicatorSize: 0
 
-    width: 100; height: 50
+    width: 100 * guiApp.scaleFactor; height: 50 * guiApp.scaleFactor
 
     property bool checked: false
 
@@ -55,16 +55,16 @@ Item {
         radius: height*0.5
         color: backgroundColor
         border.color: borderColor
-        border.width: 2
+        border.width: 2 * guiApp.scaleFactor
     }
 
     InnerShadow
     {
         id: shadow
         anchors.fill: background
-        horizontalOffset: 4
-        verticalOffset: 4
-        radius: 10
+        horizontalOffset: 4 * guiApp.scaleFactor
+        verticalOffset: 4 * guiApp.scaleFactor
+        radius: 10 * guiApp.scaleFactor
         fast: true
         cached: true
         color: shadowColor

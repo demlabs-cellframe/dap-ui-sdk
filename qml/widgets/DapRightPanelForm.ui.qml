@@ -37,28 +37,28 @@ Page
     DapButton
     {
         id: buttonClose
-        height: 20 
-        width: 20 
-        heightImageButton: 10 
-        widthImageButton: 10 
+        height: 20 * guiApp.scaleFactor
+        width: 20 * guiApp.scaleFactor
+        heightImageButton: 10 * guiApp.scaleFactor
+        widthImageButton: 10 * guiApp.scaleFactor
         activeFrame: false
         normalImageButton: pathResources + pathTheme + "/close_icon.png"
         hoverImageButton:  pathResources + pathTheme + "/close_icon_hover.png"
     }
 
     //Header height
-    dapHeader.height: 36 
-    dapRightPanelWidth: visible? 350  : 0 
+    dapHeader.height: 36 * guiApp.scaleFactor
+    dapRightPanelWidth: visible ? 350 * guiApp.scaleFactor : 0
     width: dapRightPanelWidth
     anchors {
         top: parent.top
-        topMargin: 24 
+        topMargin: 24 * guiApp.scaleFactor
         right: parent.right
-        rightMargin: 24 
+        rightMargin: 24 * guiApp.scaleFactor
 //        left: parent.left
 //        leftMargin: 24 
         bottom: parent.bottom
-        bottomMargin: 20 
+        bottomMargin: 20 * guiApp.scaleFactor
     }
 
     background:

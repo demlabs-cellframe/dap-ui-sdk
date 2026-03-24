@@ -12,6 +12,10 @@ SpinBox {
     value: defaultValue * factor
     stepSize: realStep * factor
     editable: true
+    onValueChanged:
+    {
+        textInput.text = textFromValue(value, locale)
+    }
 
     property int decimals: 2
 
@@ -32,7 +36,6 @@ SpinBox {
     }
 
     textFromValue: function(value, locale) {
-        console.log("textFromValue realValue", realValue)
         spinbox.editedValue = realValue
         return Number(value / factor).toLocaleString(locale, 'f', spinbox.decimals)
     }
@@ -55,7 +58,7 @@ SpinBox {
             anchors.rightMargin: minusButton.width + 1
 
             // height: spinbox.height
-            text: spinbox.textFromValue(spinbox.value, spinbox.locale)
+            text: spinbox.displayText
 
             font: spinbox.font
             color: currTheme.white
@@ -75,11 +78,14 @@ SpinBox {
             onTextEdited:
             {
                 var tempValue = Number.fromLocaleString(spinbox.locale, textInput.text)
+                tempValue = Math.max(realFrom, Math.min(realTo, tempValue))
+                spinbox.editedValue = tempValue
+            }
 
-                if (tempValue >= realFrom && tempValue <= realTo)
-                    spinbox.editedValue = tempValue
-
-                console.log("onTextEdited editedValue", editedValue)
+            onActiveFocusChanged:
+            {
+                if (!activeFocus)
+                    text = spinbox.textFromValue(spinbox.value, spinbox.locale)
             }
     }
 

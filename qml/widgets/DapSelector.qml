@@ -1,7 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.3
-import Qt5Compat.GraphicalEffects
 
 Rectangle
 {
@@ -24,7 +23,7 @@ Rectangle
 
     signal itemSelected()
 
-    implicitWidth: viewerItem.width
+    implicitWidth: itemWidthEnabled ? 0 : viewerItem.width
 
     border.color: currTheme.input
     color: currTheme.mainBackground
@@ -35,55 +34,45 @@ Rectangle
         id: viewerItem
         x: viewerBorder
         y: viewerBorder
-        width: contentWidth + viewerBorder * 2
         height: selectorItem.height
-//        clip: true
+        width: contentWidth + viewerBorder * 2
         orientation: ListView.Horizontal
         interactive: false
 
         currentIndex: defaultIndex
 
-//        onCurrentItemChanged:
-//        {
-//            print("onCurrentItemChanged", model.get(currentIndex).color)
-//            gradColor = model.get(currentIndex).color
-////            hl.color = model.get(currentIndex).color
-//        }
-
         highlight:
-        Item {
-            property var gradColor:
-                viewerItem.model.get(viewerItem.currentIndex).color
+        Rectangle
+        {
+            radius: itemRadius ? itemRadius : height * 0.5
+            gradient: Gradient
+            {
+                orientation: Gradient.Horizontal
+                GradientStop
+                {
+                    position: 0.0
+                    color:
+                    {
+                        if (viewerItem.currentIndex < 0
+                            || viewerItem.currentIndex >= viewerItem.count)
+                            return currTheme.mainButtonColorNormal0
 
-            /* mask source */
-            Rectangle {
-                id: contenMask
-                anchors.fill: parent
-                radius: itemRadius ? itemRadius : height * 0.5
-                visible: false
-            }
-            /* mask */
-            OpacityMask {
-                anchors.fill: content
-                source: content
-                maskSource: contenMask
-            }
-            Canvas{
-                id: content
-                anchors.fill: parent
-                opacity: 0
-                onPaint: {
-                    var ctx = getContext("2d")
+                        var c = viewerItem.model.get(viewerItem.currentIndex).color
+                        return c !== undefined ? c : currTheme.mainButtonColorNormal0
+                    }
+                }
+                GradientStop
+                {
+                    position: 1.0
+                    color:
+                    {
+                        if (viewerItem.currentIndex < 0
+                            || viewerItem.currentIndex >= viewerItem.count)
+                            return currTheme.mainButtonColorNormal1
 
-                    var gradient = ctx.createLinearGradient(0,parent.height/2,parent.width,parent.height/2)
-                    gradient.addColorStop(0, gradColor === undefined ?
-                                              currTheme.mainButtonColorNormal0 :
-                                              gradColor)
-                    gradient.addColorStop(1, gradColor === undefined ?
-                                              currTheme.mainButtonColorNormal1 :
-                                              gradColor)
-                    ctx.fillStyle = gradient
-                    ctx.fillRect(0,0,parent.width,parent.height)
+                        var c = viewerItem.model.get(viewerItem.currentIndex).color
+                        return c !== undefined ? c : currTheme.mainButtonColorNormal1
+                    }
                 }
             }
         }
@@ -103,8 +92,6 @@ Rectangle
                 Text
                 {
                     id: textItem
-//                    x: itemHorisontalBorder
-//                    y: itemVerticalBorder
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.horizontalCenter: parent.horizontalCenter
                     height: frameItem.height
@@ -114,14 +101,14 @@ Rectangle
                     color: textColor
                     font: textFont
                     text: name
-
                 }
 
                 MouseArea
                 {
                     anchors.fill: parent
 
-                    onClicked: {
+                    onClicked:
+                    {
                         if(viewerItem.currentIndex !== index)
                         {
                             viewerItem.currentIndex = index

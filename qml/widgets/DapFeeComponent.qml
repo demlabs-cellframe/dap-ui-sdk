@@ -76,7 +76,7 @@ Item {
             color: currTheme.secondaryBackground
             border.width: 1 * guiApp.scaleFactor
             border.color: currTheme.input
-            radius: 4
+            radius: 4 * guiApp.scaleFactor
 
             MouseArea {
                 anchors.fill: parent
