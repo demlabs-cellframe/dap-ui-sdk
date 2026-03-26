@@ -23,6 +23,9 @@ This file is part of DAP UI SDK the open source project
 
 #include "DapUtils.h"
 #include "darwin/DapUtun.h"
+#include "TunnelStateManager.h"
+
+static const int SHELL_CMD_TIMEOUT = 10000;
 
 DapUtun::DapUtun()
     : DapTunUnixAbstract()
@@ -41,7 +44,7 @@ DapUtun::DapUtun()
         "255.255.255.255 255.255.255.255" });
 
     connect(SigUnixHandler::getInstance(), &SigUnixHandler::sigKill,
-            this, &DapUtun::tunDeviceDestroy, Qt::DirectConnection);
+            this, &DapUtun::tunDeviceDestroy);
 }
 
 
@@ -50,7 +53,7 @@ void DapUtun::executeCommand(const QString &cmd)
     qDebug() << "Executing command:" << cmd;
 
     QProcess process;
-    process.start(cmd);
+    process.startCommand(cmd);
 
     if (!process.waitForFinished(2000)) {
         qWarning() << "Command failed to execute:" << process.errorString();
@@ -159,7 +162,7 @@ void DapUtun::tunDeviceCreate()
 
 QString DapUtun::getInternetInterface()
 {
-    return DapUtils::shellCmd("route get 8.8.8.8 | grep interface | awk '{print $2;}'");
+    return DapUtils::shellCmd("route get 8.8.8.8 | grep interface | awk '{print $2;}'", SHELL_CMD_TIMEOUT);
 }
 void DapUtun::saveCurrentConnectionInterfaceData() {
     m_lastUsedConnectionDevice = getInternetInterface();
@@ -167,7 +170,7 @@ void DapUtun::saveCurrentConnectionInterfaceData() {
 
     QString cmdList = QString("networksetup -listnetworkserviceorder | grep 'Hardware Port' | grep %1")
                           .arg(m_lastUsedConnectionDevice);
-    QString result = DapUtils::shellCmd(cmdList);
+    QString result = DapUtils::shellCmd(cmdList, SHELL_CMD_TIMEOUT);
 
     QStringList parts = result.split(":");
     if (parts.length() < 3) {
@@ -186,7 +189,7 @@ void DapUtun::saveCurrentConnectionInterfaceData() {
 
     QString cmdGetInfo = QString("networksetup -getinfo \"%1\" | grep Router")
                              .arg(m_lastUsedConnectionName);
-    result = DapUtils::shellCmd(cmdGetInfo);
+    result = DapUtils::shellCmd(cmdGetInfo, SHELL_CMD_TIMEOUT);
 
     QStringList infoLines = result.split("\n", Qt::SkipEmptyParts);
     if (infoLines.isEmpty()) {
@@ -300,6 +303,10 @@ void DapUtun::onWorkerStarted()
         return;
     }
 
+    // Set early so tunDeviceDestroy() will run cleanup if SIGTERM arrives
+    // during route/DNS configuration below
+    m_isCreated = true;
+
     if (!isLocalAddress(upstreamAddress())) {
         QString run = QString("route add -host %2 %1")
                           .arg(m_defaultGwOld)
@@ -331,7 +338,7 @@ void DapUtun::onWorkerStarted()
                             .arg(gw());
 
     qDebug() << "Setting DNS for" << m_currentInterface << "to:" << gw();
-    DapUtils::shellCmd(cmdSetDNS);
+    DapUtils::shellCmd(cmdSetDNS, SHELL_CMD_TIMEOUT);
 
     QString ifconfigCmd = QString("ifconfig %1 %2 %3")
                               .arg(tunDeviceName())
@@ -363,9 +370,16 @@ void DapUtun::onWorkerStarted()
         cmdAddAdditionalRoutes += " " + additionalRoute;
     }
     qDebug() << "Additional Apple routes command:" << cmdAddAdditionalRoutes;
-    DapUtils::shellCmd(cmdAddAdditionalRoutes);
+    DapUtils::shellCmd(cmdAddAdditionalRoutes, SHELL_CMD_TIMEOUT);
 
-    m_isCreated = true;
+    TunnelStateManager::instance().saveTunnelState(
+        tunDeviceName(),
+        gw(),
+        m_defaultGwOld,
+        upstreamAddress(),
+        m_currentInterface
+    );
+
     emit created();
 }
 
@@ -374,8 +388,8 @@ QString DapUtun::getCurrentNetworkInterface()
     qDebug() << "Fetching current active network interface...";
 
     QProcess routeProcess;
-    routeProcess.start("route get default");
-    routeProcess.waitForFinished();
+    routeProcess.start("route", QStringList() << "get" << "default");
+    routeProcess.waitForFinished(SHELL_CMD_TIMEOUT);
     QString routeOutput = routeProcess.readAllStandardOutput();
 
     qDebug() << "Raw route get default output:" << routeOutput;
@@ -396,8 +410,8 @@ QString DapUtun::getCurrentNetworkInterface()
     }
 
     QProcess serviceOrderProcess;
-    serviceOrderProcess.start("networksetup -listnetworkserviceorder");
-    serviceOrderProcess.waitForFinished();
+    serviceOrderProcess.start("networksetup", QStringList() << "-listnetworkserviceorder");
+    serviceOrderProcess.waitForFinished(SHELL_CMD_TIMEOUT);
     QString serviceOrderOutput = serviceOrderProcess.readAllStandardOutput();
 
     qDebug() << "Raw network service order output:" << serviceOrderOutput;
@@ -418,31 +432,54 @@ QString DapUtun::getCurrentNetworkInterface()
 
 void DapUtun::tunDeviceDestroy()
 {
+    if(!m_isCreated)
+    {
+        qDebug() << "[DapUtun] tunDeviceDestroy() skipped — already destroyed";
+        return;
+    }
+    m_isCreated = false;
+
     DapTunUnixAbstract::tunDeviceDestroy();
 
-    if (!isLocalAddress(upstreamAddress())){
+    if(!upstreamAddress().isEmpty() && !isLocalAddress(upstreamAddress()))
+    {
         QString cmdDeleteUpstream = QString("route delete -host %1")
                                         .arg(upstreamAddress());
         executeCommand(cmdDeleteUpstream);
     }
 
-    for (const auto &route : m_routingExceptionAddrs) {
+    for(const auto &route : m_routingExceptionAddrs)
+    {
         QString cmdDeleteException = QString("route delete -host %1")
                                          .arg(route);
         executeCommand(cmdDeleteException);
     }
 
-    // Other routes connected with tunnel should be destroyed autimaticly
+    if(!m_defaultGwOld.isEmpty())
+    {
+        QString cmdRestoreDefault = QString("route add default %1")
+                                        .arg(m_defaultGwOld);
+        executeCommand(cmdRestoreDefault);
+        qInfo() << "Restored default route:" << m_defaultGwOld;
+    }
 
-    // Restore default gateway
-    QString cmdRestoreDefault = QString("route add default %1")
-                                    .arg(m_defaultGwOld);
-    executeCommand(cmdRestoreDefault);
-    qInfo() << "Restored default route:" << m_defaultGwOld;
+    if(!m_currentInterface.isEmpty() && !m_defaultGwOld.isEmpty())
+    {
+        QString cmdRestoreDNS = QString("networksetup -setdnsservers \"%1\" %2")
+                                    .arg(m_currentInterface, m_defaultGwOld);
+        executeCommand(cmdRestoreDNS);
+        qInfo() << "Restored DNS settings for" << m_currentInterface << "to" << m_defaultGwOld;
+    }
 
-    QString cmdRestoreDNS = QString("networksetup -setdnsservers \"%1\" %2")
-                                .arg(m_currentInterface)
-                                .arg(m_defaultGwOld);
-    executeCommand(cmdRestoreDNS);
-    qInfo() << "Restored DNS settings for" << m_currentInterface << "to" << m_defaultGwOld;
+    TunnelStateManager::instance().clearTunnelState();
+
+    m_defaultGwOld.clear();
+    m_currentInterface.clear();
+    m_lastUsedConnectionName.clear();
+    m_lastUsedConnectionDevice.clear();
+    m_sUpstreamAddress.clear();
+    m_routingExceptionAddrs.clear();
+    m_tunDeviceName.clear();
+    m_addr.clear();
+    m_gw.clear();
 }

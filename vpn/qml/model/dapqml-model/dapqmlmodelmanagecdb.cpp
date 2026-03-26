@@ -8,7 +8,11 @@
 #include <QRect>
 
 #ifdef Q_OS_ANDROID
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QRegularExpressionValidator>
+#else
 #include <QRegExpValidator>
+#endif
 #endif // Q_OS_ANDROID
 
 /* VARS */
@@ -196,6 +200,15 @@ static bool parseServerData (DapQmlModelManageCdb *a_model, const QVariant &a_da
   {
 #ifdef Q_OS_ANDROID
     /* reg exps & validators */
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    static QRegularExpression rx [2] = {
+      QRegularExpression {"(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])"},
+      QRegularExpression {"^(0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"},
+    };
+
+    static QRegularExpressionValidator v1{rx[0]};
+    static QRegularExpressionValidator v2{rx[1]};
+#else
     static QRegExp rx [2] = {
       QRegExp {"(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])"},
       QRegExp {"^(0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"},
@@ -203,6 +216,7 @@ static bool parseServerData (DapQmlModelManageCdb *a_model, const QVariant &a_da
 
     static QRegExpValidator v1{rx[0]};
     static QRegExpValidator v2{rx[1]};
+#endif
 
     /* values */
     int pos       = 0;

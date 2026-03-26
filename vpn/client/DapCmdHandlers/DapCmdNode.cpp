@@ -93,7 +93,7 @@ void DapCmdNode::sendOrderList(const QJsonArray& orderList)
     DEBUGINFO << __PRETTY_FUNCTION__;
 
     for (const auto order : orderList) {
-        qDebug() << order["hash"] << " " << order["node_addr"] << " " << order["node_location"];
+        qDebug() << order[QLatin1String("hash")] << " " << order[QLatin1String("node_addr")] << " " << order[QLatin1String("node_location")];
     }
 
     QJsonObject response;

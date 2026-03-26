@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QImage>
+#include <QMetaType>
 
 /****************************************//**
  * @brief Dap image

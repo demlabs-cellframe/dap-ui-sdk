@@ -57,6 +57,7 @@ void DapStateMachine::addUserRequestDisconnectSignal(const QObject *sender, cons
 {
     userRequestStateConnect->addTransition(sender,signal,userRequestStateDisconnect);
     userRequestStateConnectNoCDB->addTransition(sender,signal,userRequestStateDisconnect);
+    userRequestStateError->addTransition(sender,signal,userRequestStateDisconnect);
 
     connect (this->userRequestStateConnect, &DapState::entered, [] {
         qDebug() << "DapStateMachine::addUserRequestDisconnectSignal - userRequestStateConnect";
@@ -74,11 +75,30 @@ void DapStateMachine::addUserRequestDisconnectSignal(const QObject *sender, cons
 void DapStateMachine::addUserRequestConnect(const QObject *sender, const char *signal)
 {
     userRequestStateDisconnect->addTransition(sender,signal,userRequestStateConnect);
+    userRequestStateError->addTransition(sender,signal,userRequestStateConnect);
 }
 
 void DapStateMachine::addUserRequestConnectNoCDB(const QObject *sender, const char *signal)
 {
     userRequestStateDisconnect->addTransition(sender,signal,userRequestStateConnectNoCDB);
+    userRequestStateError->addTransition(sender,signal,userRequestStateConnectNoCDB);
+}
+
+void DapStateMachine::addUserRequestErrorSignal(const QObject *sender, const char *signal)
+{
+    userRequestStateConnect->addTransition(sender, signal, userRequestStateError);
+    userRequestStateConnectNoCDB->addTransition(sender, signal, userRequestStateError);
+}
+
+bool DapStateMachine::isTunnelActive() const
+{
+    // Use cached indicator state instead of live QStateMachine sub-state
+    // to avoid race: tunnelFalse.entered fires before tunDisabled.entered,
+    // so tunDisabled->active() may return false when tunnel is already "false"
+    auto *cachedState = m_indicatorStateCache.object(DapIndicator::Type::Tunnel);
+    if(!cachedState)
+        return false;
+    return *cachedState != DapIndicator::State::False;
 }
 
 void DapStateMachine::_initUserRequestStates()
@@ -87,5 +107,6 @@ void DapStateMachine::_initUserRequestStates()
     userRequestStateDisconnect = new DapState(userRequestStates->name() + "Disconnect", userRequestStates);
     userRequestStateConnect = new DapState(userRequestStates->name() + "Connect", userRequestStates);
     userRequestStateConnectNoCDB = new DapState(userRequestStates->name() + "ConnectNoCDB", userRequestStates);
+    userRequestStateError = new DapState(userRequestStates->name() + "Error", userRequestStates);
     userRequestStates->setInitialState(userRequestStateDisconnect);
 }

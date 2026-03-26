@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+class QSocketNotifier;
+
 class SigUnixHandler : public QObject
 {
     Q_OBJECT
@@ -13,6 +15,11 @@ public:
     static SigUnixHandler * getInstance() { static SigUnixHandler handler_obj; return &handler_obj; }
 signals:
     void sigKill();
+private slots:
+    void handleSignal();
+private:
+    static int s_sigFd[2];
+    QSocketNotifier *m_notifier = nullptr;
 };
 
 #endif // SIGUNIXHANDLER_H

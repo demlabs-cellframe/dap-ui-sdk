@@ -75,7 +75,11 @@ void DapSerialKeyData::reset()
 {
     this->setActivated(false);
     this->setSerialKey("");
+#if QT_VERSION >= QT_VERSION_CHECK(5, 8, 0)
+    this->m_licenseTermTill = QDateTime::fromSecsSinceEpoch(0);
+#else
     this->m_licenseTermTill = QDateTime::fromTime_t(0);
+#endif
 }
 
 const QDateTime &DapSerialKeyData::licenseTermTill() const
@@ -143,13 +147,13 @@ void DapSerialKeyData::operator=(const DapSerialKeyData &a_another)
 {
     this->setSerialKey(a_another.serialKey());
     this->setActivated(a_another.isActivated());
-    this->setLicenseTermTill(QString::number(a_another.licenseTermTill().toTime_t()));
+    this->setLicenseTermTill(QString::number(a_another.licenseTermTill().toSecsSinceEpoch()));
 }
 
 QDataStream &operator<<(QDataStream &a_outStream, const DapSerialKeyData &a_serialKeyData)
 {
     a_outStream << a_serialKeyData.serialKey() << DapUtils::toByteArray(a_serialKeyData.isActivated())
-                << QString::number(a_serialKeyData.licenseTermTill().toTime_t());
+                << QString::number(a_serialKeyData.licenseTermTill().toSecsSinceEpoch());
     return a_outStream;
 }
 

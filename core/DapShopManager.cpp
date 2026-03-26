@@ -3,8 +3,7 @@
 #include <QDebug>
 
 #ifdef Q_OS_ANDROID
-#include <QtAndroid>
-#include <QAndroidJniEnvironment>
+#include "DapAndroidCompat.h"
 #endif
 
 // The product ID

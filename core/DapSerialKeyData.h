@@ -52,7 +52,11 @@ public slots:
 private:
     QString m_serialKey;
     bool m_isActivated;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 8, 0)
+    QDateTime m_licenseTermTill = QDateTime::fromSecsSinceEpoch(0);
+#else
     QDateTime m_licenseTermTill = QDateTime::fromTime_t(0);
+#endif
     QDateTime m_activatedDate = QDateTime::currentDateTime();
 
 protected:

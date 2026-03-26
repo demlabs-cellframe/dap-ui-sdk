@@ -10,7 +10,11 @@
 #endif
 
 #ifdef Q_OS_ANDROID
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QtCore/private/qandroidextras_p.h>
+#else
 #include <QAndroidService>
+#endif
 #include <android/log.h>
 #endif
 

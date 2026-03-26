@@ -21,6 +21,7 @@
 #include "DapCrypt.h"
 #include "DapKeyCommon.h"
 #include <QDebug>
+#include <QRandomGenerator>
 #include "DapSession.h"
 
 /**
@@ -70,7 +71,7 @@ QString DapCrypt::getRandomString(int lengthStr)
 
     for(int i = 0; i < lengthStr; ++i)
     {
-        int index = qrand() % possibleCharacters.length();
+        int index = QRandomGenerator::global()->bounded(possibleCharacters.length());
         randomString.append(possibleCharacters.at(index));
     }
     return randomString;

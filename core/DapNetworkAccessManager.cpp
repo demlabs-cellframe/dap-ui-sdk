@@ -1,5 +1,6 @@
 #include "DapNetworkAccessManager.h"
 #include "DapHttpPing.h"
+#include <errno.h>
 
 DapNetworkAccessManager::DapNetworkAccessManager()
                     :QObject(nullptr)
@@ -50,28 +51,51 @@ void DapNetworkAccessManager::responseCallbackError(int a_err_code, void * a_obj
 {
     DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
     reply->setError(a_err_code);
-    char buf[400] = { };
-    strerror_r(a_err_code, buf, sizeof(buf));
+    QString errorStr = dapClientHttpErrorToString(a_err_code);
     qWarning() << "[DapNetworkAccessManager]Dap Client HTTP Request: error code " << a_err_code
-               << ": " << buf;
-    reply->setErrorStr(buf);
-/*#else
-               ;
-    {
-        char buf[400] = { };
-        FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                      NULL,
-                      a_err_code,
-                      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                      buf,
-                      sizeof(buf),
-                      NULL);
-        reply->setErrorStr(buf);
-        qWarning() << reply->errorString();
-    }
-#endif*/
+               << ": " << errorStr;
+    reply->setErrorStr(errorStr);
     emit reply->sigError();
     reply->deleteLater();
+}
+
+QString DapNetworkAccessManager::dapClientHttpErrorToString(int a_err_code)
+{
+    if(a_err_code == ETIMEDOUT)
+        return QStringLiteral("Connection timed out");
+#ifdef ECONNREFUSED
+    if(a_err_code == ECONNREFUSED)
+        return QStringLiteral("Connection refused");
+#endif
+#ifdef ECONNRESET
+    if(a_err_code == ECONNRESET)
+        return QStringLiteral("Connection reset by peer");
+#endif
+#ifdef EHOSTUNREACH
+    if(a_err_code == EHOSTUNREACH)
+        return QStringLiteral("Host unreachable");
+#endif
+#ifdef ENETUNREACH
+    if(a_err_code == ENETUNREACH)
+        return QStringLiteral("Network unreachable");
+#endif
+    switch(a_err_code)
+    {
+    case -6:
+        return QStringLiteral("Server disconnected prematurely");
+    case -7:
+        return QStringLiteral("Server replied with headers only");
+    case -8:
+        return QStringLiteral("Server disconnected without reply");
+    default:
+        break;
+    }
+    char buf[400] = {};
+    strerror_r(a_err_code, buf, sizeof(buf));
+    QString result = QString::fromLocal8Bit(buf);
+    if(result.isEmpty() || result.contains("nknown error", Qt::CaseInsensitive))
+        return QString("Network error (code %1)").arg(a_err_code);
+    return result;
 }
 
 void DapNetworkAccessManager::responseProgressCallback(size_t a_response_size, size_t a_content_length, void * a_obj)

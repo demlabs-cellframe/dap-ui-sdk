@@ -1,4 +1,5 @@
 QT += core network xml
+greaterThan(QT_MAJOR_VERSION, 5): QT += statemachine core5compat
 
 include (../zip/zip.pri)
 SOURCES += \
@@ -75,7 +76,8 @@ win32{
     QMAKE_CXXFLAGS +=  -mno-ms-bitfields
 }
 android {
-QT += androidextras
+lessThan(QT_MAJOR_VERSION, 6): QT += androidextras
+greaterThan(QT_MAJOR_VERSION, 5): QT += core-private
 }
 
 INCLUDEPATH += $$PWD/../quazip

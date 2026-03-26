@@ -508,7 +508,7 @@ Item {
         DapQmlDummy {
             property string fontFamiliy
             property int fontSize
-            property int fontWeight
+            property int fontWeight: Font.Normal
             property color color
             id: loginTypeNamePlacer
             qss: "login-typename-label font-brand c-grey"
@@ -792,7 +792,7 @@ Item {
             qss: "login-btn-orders-history-frame"
 
             property int fontSize
-            property int fontWeight
+            property int fontWeight: Font.Normal
 
             /* top rectangle */
 

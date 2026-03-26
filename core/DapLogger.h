@@ -15,8 +15,7 @@
 #include <QRegularExpression>
 
 #ifdef Q_OS_ANDROID
-#include <QtAndroid>
-#include <QAndroidJniObject>
+#include "DapAndroidCompat.h"
 #endif
 
 enum TypeLogCleaning

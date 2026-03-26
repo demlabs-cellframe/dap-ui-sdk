@@ -19,7 +19,7 @@ public:
     QString value() const;
     operator QString() const { return value(); }
 
-    bool operator== (const SerialKey &a_value);
+    bool operator== (const SerialKey &a_value) const;
     SerialKey &operator= (const QString &a_value);
     SerialKey &operator= (QString &&a_value);
     SerialKey &operator= (const SerialKey &a_value);
@@ -158,7 +158,7 @@ QString SerialKey::value() const
     return m_value;
 }
 
-bool SerialKey::operator== (const SerialKey &a_value)
+bool SerialKey::operator== (const SerialKey &a_value) const
 {
     return m_value == a_value.m_value;
 }

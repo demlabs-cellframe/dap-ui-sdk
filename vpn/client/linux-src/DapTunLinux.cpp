@@ -23,8 +23,11 @@ DapTunLinux::DapTunLinux()
 {
     if(nmcliVersion.size()==0){ // If not detected before - detect nmcli version
         QProcess cmdProcess;
-        // Command to get nmcli version
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        cmdProcess.start("nmcli", QStringList() << "-v");
+#else
         cmdProcess.start("nmcli -v");
+#endif
         cmdProcess.waitForFinished(-1);
         QByteArray cmdOutput = cmdProcess.readAllStandardOutput();
         nmcliVersion= QString::fromUtf8(cmdOutput).split(' ').takeLast();
@@ -36,7 +39,7 @@ DapTunLinux::DapTunLinux()
                             .arg(nmcliVersionNumbers.at(1).toInt())
                             .arg(nmcliVersionNumbers.at(2).toInt());
         } else {
-            qFatal("nmcli client not found");
+            qWarning("nmcli client not found, network management features will be limited");
         }
     }
     connect(SigUnixHandler::getInstance(), &SigUnixHandler::sigKill,

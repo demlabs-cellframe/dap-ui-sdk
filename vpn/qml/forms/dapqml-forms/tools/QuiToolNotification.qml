@@ -1,7 +1,7 @@
 /* INCLUDES */
 
 import QtQuick 2.0
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 import NotificationCtl 1.0
 //import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"

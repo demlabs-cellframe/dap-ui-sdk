@@ -58,7 +58,9 @@ macos {
 
 android {
 
-    !lessThan(QT_MAJOR_VERSION, 5):!lessThan(QT_MINOR_VERSION, 14) {
+    greaterThan(QT_MAJOR_VERSION, 5) {
+        ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../../../brand/$$BRAND/os/android
+    } else:!lessThan(QT_MAJOR_VERSION, 5):!lessThan(QT_MINOR_VERSION, 14) {
         ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../../../brand/$$BRAND/os/android
     } else:equals(QT_MAJOR_VERSION, 5):equals(QT_MINOR_VERSION, 12) {
         message("Legacy build")

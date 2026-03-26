@@ -139,7 +139,7 @@ T *MultiScreenAbstract::createSubScreen(int a_index /*= -1*/)
     T *newScreen = new T(this);                              // Create new screen
 
     //insert screen to m_screens and changing sreen widget
-    m_screens.insertMulti(newScreen->screenName(), newScreen);
+    m_screens.insert(newScreen->screenName(), newScreen);
     this->changingWidget()->insertWidget(a_index, newScreen);
 
     return newScreen;

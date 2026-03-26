@@ -11,6 +11,7 @@
 
 #include <QFile>
 #include <QTextStream>
+#include <QRegularExpression>
 /* DEFS */
 //#define ENABLE_SENSITIVE_PRINTS
 #if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
@@ -135,8 +136,8 @@ QString extractMethod (const QString &inputString)
 }
 
 bool isVersionLessThan(const QString& version1, const QString& version2) {
-    QStringList parts1 = version1.split(QRegExp("[-\\.]"));
-    QStringList parts2 = version2.split(QRegExp("[-\\.]"));
+    QStringList parts1 = version1.split(QRegularExpression("[-\\.]"));
+    QStringList parts2 = version2.split(QRegularExpression("[-\\.]"));
 
     int length = qMax(parts1.size(), parts2.size());
     for (int i = 0; i < length; ++i) {

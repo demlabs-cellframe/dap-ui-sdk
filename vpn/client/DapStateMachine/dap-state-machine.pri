@@ -1,3 +1,5 @@
+greaterThan(QT_MAJOR_VERSION, 5): QT += statemachine
+
 SOURCES += $$PWD/DapIndicatorStateAbstract.cpp \
            $$PWD/DapStateMachine.cpp \
            $$PWD/DapIndicatorSession.cpp \

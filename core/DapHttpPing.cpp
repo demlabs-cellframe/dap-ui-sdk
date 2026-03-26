@@ -1,4 +1,5 @@
 #include "DapHttpPing.h"
+#include "DapNetworkAccessManager.h"
 #include "DapServerConnectivityChecker.h"
 #include <QElapsedTimer>
 #include <QDebug>
@@ -96,11 +97,10 @@ void DapHttpPing::responseCallbackError(int a_err_code, void * a_obj)
 {
     DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
     reply->setError(a_err_code);
-    char buf[400] = { };
-    strerror_r(a_err_code, buf, sizeof(buf));
+    QString errorStr = DapNetworkAccessManager::dapClientHttpErrorToString(a_err_code);
     qWarning() << "[DapHttpPing] Dap Client HTTP Request: error code " << a_err_code
-               << ": " << buf;
-    reply->setErrorStr(buf);
+               << ": " << errorStr;
+    reply->setErrorStr(errorStr);
     emit reply->sigError();
     reply->deleteLater();
 }

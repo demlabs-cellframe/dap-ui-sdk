@@ -3,7 +3,7 @@
 import QtQuick 2.11
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.2
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 import QtQuick.Shapes 1.4
 import DapQmlStyle 1.0
 import Brand 1.0

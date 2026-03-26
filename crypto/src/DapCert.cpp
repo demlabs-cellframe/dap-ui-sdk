@@ -35,8 +35,7 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 #endif
 
 #ifdef Q_OS_ANDROID
-#include <QtAndroid>
-#include <QAndroidJniObject>
+#include "DapAndroidCompat.h"
 #endif
 #include <fcntl.h>
 #include <unistd.h>

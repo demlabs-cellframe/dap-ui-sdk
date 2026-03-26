@@ -33,12 +33,16 @@ public:
     void addUserRequestDisconnectSignal(const QObject *sender, const char *signal);
     void addUserRequestConnect(const QObject *sender, const char *signal);
     void addUserRequestConnectNoCDB(const QObject *sender, const char *signal);
+    void addUserRequestErrorSignal(const QObject *sender, const char *signal);
+
+    bool isTunnelActive() const;
 
     //
     DapState *userRequestStates;
     DapState *userRequestStateConnect;
     DapState *userRequestStateConnectNoCDB;
     DapState *userRequestStateDisconnect;
+    DapState *userRequestStateError;
 
     DapState *initState;
 
