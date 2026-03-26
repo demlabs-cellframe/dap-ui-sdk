@@ -128,13 +128,15 @@ Item {
         Text
         {
             id: textItem
-            height: commonHeight
+            Layout.fillWidth: true
+            Layout.fillHeight: true
             font: mainFont.dapFont.medium14
             color: currTheme.white
             horizontalAlignment: Qt.AlignLeft
             verticalAlignment: Qt.AlignVCenter
             text: infoText
             elide: Text.ElideRight
+            maximumLineCount: 2
         }
     }
 
