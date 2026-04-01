@@ -50,37 +50,36 @@ void DapDownload::sendRequest()
         QFile::remove(m_downloadFileName);
     // send request
     request.setUrl(QUrl(m_networkRequest));
+    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
+                         QNetworkRequest::NoLessSafeRedirectPolicy);
     m_networkReply = m_httpClient->get(request);
-    connect( m_networkReply, &QNetworkReply::finished, this, [=] {
-        QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
-        qWarning() << "Download finished" << reply->error();
+    connect(m_networkReply, &QNetworkReply::finished, this, [this]() {
+        qWarning() << "Download finished" << m_networkReply->error();
         m_downloading = false;
-        if (reply->error() != QNetworkReply::NetworkError::NoError)
-            emit downloadError(reply->error(), tr("Download ended with an error"));
+        if(m_networkReply->error() != QNetworkReply::NetworkError::NoError)
+            emit downloadError(m_networkReply->error(), tr("Download ended with an error"));
+        m_networkReply->deleteLater();
+        m_networkReply = nullptr;
     });
-    connect( m_networkReply, SIGNAL(error), this, SLOT([=](QNetworkReply::NetworkError networkErr) {
-        qInfo() << "Download end:" << networkErr;
+    connect(m_networkReply, &QNetworkReply::errorOccurred, this, [this](QNetworkReply::NetworkError networkErr) {
+        qWarning() << "Download error:" << networkErr;
         m_downloading = false;
-        if (reply->error() != QNetworkReply::NetworkError::NoError)
-        {
-            qWarning() << "Download error:" << networkErr;
-            emit downloadError(reply->error(), tr("Download ended with an error"));
-        }
-    }));
-    connect( m_networkReply, &QNetworkReply::readyRead, this, [=]() {
-        QFile* m_file = new QFile(m_downloadFileName);
-        if(m_file->open(QIODevice::WriteOnly | QIODevice::Append))
+        emit downloadError(static_cast<int>(networkErr), tr("Download ended with an error"));
+    });
+    connect(m_networkReply, &QNetworkReply::readyRead, this, [this]() {
+        QFile file(m_downloadFileName);
+        if(file.open(QIODevice::WriteOnly | QIODevice::Append))
         {
            if(m_networkReply->size())
            {
                QByteArray data = m_networkReply->readAll();
-               m_file->write(data);
+               file.write(data);
            }
-           m_file->flush();
-           m_file->close();
+           file.flush();
+           file.close();
         }
     });
-    connect( m_networkReply, &QNetworkReply::downloadProgress, this, [=](quint64 load, quint64 total) {
+    connect(m_networkReply, &QNetworkReply::downloadProgress, this, [this](qint64 load, qint64 total) {
         emit downloadProgress(load, total);
     });
     qInfo() << "Download started" << m_networkRequest << "to" << m_downloadFileName;

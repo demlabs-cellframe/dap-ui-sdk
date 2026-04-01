@@ -42,42 +42,27 @@ void DapUpdateOperationLogic::startDownload()
 void DapUpdateOperationLogic::startUpdate()
 {
     qInfo() << "Start update process";
-//#ifndef Q_OS_MACOS
-    // start detached process
-    QProcess *myProcess = new QProcess();
     bool detached = false;
     QString updateAppPath = updateApp();
 #ifdef Q_OS_LINUX
-    detached = myProcess->startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
+    detached = QProcess::startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
 #endif
 #ifdef Q_OS_WIN
-    updateAppPath = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("Update.exe");
+    updateAppPath = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND, "Update.exe");
     fileCopy(updateApp(), updateAppPath);
-    //    detached = myProcess->startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
-    //    examples:
-    //    Powershell Start cmd.exe -ArgumentList “/k”,”fsutil”,”volume”,”diskfree”,”c:” -Verb Runas
-    //    Powershell Start cmd.exe -Verb Runas
-        QString psArgs = (QStringList() <<  "\"-p\"" << QString("\"%1\"").arg(downloadFileName().replace(" ", "` ")) << "\"-a\"" << QString("\"%1\"").arg(currentApplication().replace(" ", "` "))).join(",");
-        detached = myProcess->startDetached("Powershell", QStringList() << "Start" << updateAppPath.replace(" ", "` ") << "-ArgumentList" << psArgs << "-Verb" << "Runas");
-        qInfo() << QString("%1 %2").arg("Powershell").arg((QStringList() << "Start" << updateAppPath << "-ArgumentList" << psArgs << "-Verb" << "Runas").join(" "));
+    QString psArgs = (QStringList() <<  "\"-p\"" << QString("\"%1\"").arg(downloadFileName().replace(" ", "` ")) << "\"-a\"" << QString("\"%1\"").arg(currentApplication().replace(" ", "` "))).join(",");
+    detached = QProcess::startDetached("Powershell", QStringList() << "Start" << updateAppPath.replace(" ", "` ") << "-ArgumentList" << psArgs << "-Verb" << "Runas");
+    qInfo() << QString("%1 %2").arg("Powershell", (QStringList() << "Start" << updateAppPath << "-ArgumentList" << psArgs << "-Verb" << "Runas").join(" "));
 #endif
 #ifdef Q_OS_MACOS
-    updateAppPath = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("Update");
+    updateAppPath = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND, "Update");
     fileCopy(updateApp(), updateAppPath);
-    detached = myProcess->startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
+    detached = QProcess::startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
 #endif
-    if (!detached)
+    if(!detached)
         qWarning() << "Failed to start update agent application" << updateAppPath;
     else
         qInfo() << "Start update agent application" << updateAppPath << downloadFileName() << currentApplication();
-    myProcess->close();
-    delete myProcess;
-//#else
-//    // start process for macos
-//    ::system(QString("open %1 --args -p %2 -a %3;")
-//                  .arg(updateApp()).arg(downloadFileName()).arg(currentApplication()).toLatin1().constData() );
-//    qInfo() << "Start update agent application" << updateApp() << downloadFileName() << currentApplication();
-//#endif
 }
 #endif
 
@@ -89,14 +74,14 @@ QString DapUpdateOperationLogic::updateApp()
     updateAgent = qApp->applicationDirPath() + QDir::separator() + ".." + QDir::separator() + "DapChainVpnUpdateApp";
 #endif
 #ifdef Q_OS_LINUX
-    return updateAgent + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("Update");
+    return updateAgent + QDir::separator() + QString("%1%2").arg(DAP_BRAND, "Update");
 #endif
 #ifdef Q_OS_WIN
-    return updateAgent + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("Update.exe");
+    return updateAgent + QDir::separator() + QString("%1%2").arg(DAP_BRAND, "Update.exe");
 #endif
 #ifdef Q_OS_MACOS
     return updateAgent + QDir::separator() + pathInsideMacOSPack(DAP_BRAND)
-            + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("Update");
+            + QDir::separator() + QString("%1%2").arg(DAP_BRAND, "Update");
 #endif
 }
 
@@ -104,13 +89,13 @@ QString DapUpdateOperationLogic::updateApp()
 QString DapUpdateOperationLogic::downloadFileName()
 {
 #ifdef Q_OS_LINUX
-    return QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.deb"); // example KelVPN-installer.deb
+    return QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND, "-update.deb"); // example KelVPN-installer.deb
 #endif
 #ifdef Q_OS_WIN
-    return QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.exe"); // example "KelVPN-installer.exe"
+    return QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND, "-update.exe"); // example "KelVPN-installer.exe"
 #endif
 #ifdef Q_OS_MACOS
-    return QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.pkg"); // example "KelVPN-installer.pkg"
+    return QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND, "-update.pkg"); // example "KelVPN-installer.pkg"
 #endif
 }
 
