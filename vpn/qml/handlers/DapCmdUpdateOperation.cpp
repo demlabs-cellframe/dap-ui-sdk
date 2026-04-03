@@ -38,7 +38,7 @@ void DapCmdUpdateOperation::startDownload()
         }
         else
         {
-            const qint64 totalSize = existingUpdate.split("%").last().toULongLong();
+            const qint64 totalSize = existingUpdate.split("|").last().toULongLong();
             emit downloadProgress(totalSize, totalSize);
         }
     }
@@ -88,7 +88,7 @@ void DapCmdUpdateOperation::handleResult(const QJsonObject& result)
 
         if (loadSize == totalSize)
         {
-            DapDataLocal::instance()->saveValueSetting(DapBaseDataLocal::UPDATE_FILE_PATH, m_dowmloadUrl.split("/").last() + "%" + QString::number(totalSize));
+            DapDataLocal::instance()->saveValueSetting(DapBaseDataLocal::UPDATE_FILE_PATH, m_dowmloadUrl.split("/").last() + "|" + QString::number(totalSize));
         }
     } else {
         qCritical() << "Bad response from service";

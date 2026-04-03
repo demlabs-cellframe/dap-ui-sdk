@@ -44,19 +44,35 @@ void DapUpdateOperationLogic::startUpdate()
     qInfo() << "Start update process";
     bool detached = false;
     QString updateAppPath = updateApp();
+    QString srcPath = updateAppPath;
+    qInfo() << "Update agent source path:" << srcPath;
+    qInfo() << "Update agent source exists:" << QFile::exists(srcPath);
+    qInfo() << "Download file:" << downloadFileName();
+    qInfo() << "Download file exists:" << QFile::exists(downloadFileName());
+    qInfo() << "Current application:" << currentApplication();
 #ifdef Q_OS_LINUX
     detached = QProcess::startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
 #endif
 #ifdef Q_OS_WIN
     updateAppPath = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND, "Update.exe");
-    fileCopy(updateApp(), updateAppPath);
+    if(!fileCopy(updateApp(), updateAppPath))
+        qWarning() << "Failed to copy update agent from" << updateApp() << "to" << updateAppPath;
+    else
+        qInfo() << "Copied update agent to" << updateAppPath;
     QString psArgs = (QStringList() <<  "\"-p\"" << QString("\"%1\"").arg(downloadFileName().replace(" ", "` ")) << "\"-a\"" << QString("\"%1\"").arg(currentApplication().replace(" ", "` "))).join(",");
     detached = QProcess::startDetached("Powershell", QStringList() << "Start" << updateAppPath.replace(" ", "` ") << "-ArgumentList" << psArgs << "-Verb" << "Runas");
     qInfo() << QString("%1 %2").arg("Powershell", (QStringList() << "Start" << updateAppPath << "-ArgumentList" << psArgs << "-Verb" << "Runas").join(" "));
 #endif
 #ifdef Q_OS_MACOS
     updateAppPath = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND, "Update");
-    fileCopy(updateApp(), updateAppPath);
+    if(!fileCopy(updateApp(), updateAppPath))
+        qWarning() << "Failed to copy update agent from" << updateApp() << "to" << updateAppPath;
+    else
+        qInfo() << "Copied update agent to" << updateAppPath;
+    qInfo() << "Update agent dest exists:" << QFile::exists(updateAppPath);
+    QFileInfo fi(updateAppPath);
+    qInfo() << "Update agent dest permissions:" << QString::number(fi.permissions(), 16);
+    qInfo() << "Update agent dest size:" << fi.size();
     detached = QProcess::startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
 #endif
     if(!detached)
@@ -139,7 +155,18 @@ QString DapUpdateOperationLogic::pathInsideMacOSPack(QString packName)
 
 bool DapUpdateOperationLogic::fileCopy(QString source, QString dest)
 {
-    if (QFile::exists(dest))
-        QFile::remove(dest);
-    return QFile::copy(source, dest);
+    if(!QFile::exists(source))
+    {
+        qWarning() << "fileCopy: source does not exist:" << source;
+        return false;
+    }
+    if(QFile::exists(dest))
+    {
+        if(!QFile::remove(dest))
+            qWarning() << "fileCopy: failed to remove existing dest:" << dest;
+    }
+    bool ok = QFile::copy(source, dest);
+    if(!ok)
+        qWarning() << "fileCopy: QFile::copy failed from" << source << "to" << dest;
+    return ok;
 }
