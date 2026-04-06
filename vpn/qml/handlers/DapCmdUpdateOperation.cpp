@@ -2,6 +2,7 @@
 #include <QJsonArray>
 #include <QList>
 #include <QMap>
+#include <QFile>
 #include "DapDataLocal.h"
 #include "Utilz.h"
 
@@ -25,22 +26,56 @@ void DapCmdUpdateOperation::setDownloadPack(QString pack)
 
 void DapCmdUpdateOperation::startDownload()
 {
+    qInfo() << "startDownload: url =" << m_dowmloadUrl
+            << "pack =" << m_dowmloadPack
+            << "availableVersion =" << m_availableVersion;
+
     auto existingUpdate = DapDataLocal::instance()->getValueSetting(DapBaseDataLocal::UPDATE_FILE_PATH).toString();
-    if (existingUpdate.isEmpty())
+    qInfo() << "startDownload: existingUpdate =" << existingUpdate;
+
+    if(existingUpdate.isEmpty())
+    {
         startDownloadUrl(m_dowmloadUrl, m_dowmloadPack);
+        return;
+    }
+
+    if(!m_dowmloadPack.isEmpty() && !QFile::exists(m_dowmloadPack))
+    {
+        qWarning() << "startDownload: cached file not found on disk:" << m_dowmloadPack << "- restarting download";
+        DapDataLocal::instance()->saveValueSetting(DapBaseDataLocal::UPDATE_FILE_PATH, "");
+        startDownloadUrl(m_dowmloadUrl, m_dowmloadPack);
+        return;
+    }
+
+    auto parts = existingUpdate.split("-");
+    if(parts.size() < 3)
+    {
+        qWarning() << "startDownload: malformed updatefilepath, restarting download";
+        DapDataLocal::instance()->saveValueSetting(DapBaseDataLocal::UPDATE_FILE_PATH, "");
+        startDownloadUrl(m_dowmloadUrl, m_dowmloadPack);
+        return;
+    }
+
+    auto existingUpdateVer = parts[1] + "-" + parts[2];
+    if(Utils::isNewerVersion(m_availableVersion, existingUpdateVer))
+    {
+        qInfo() << "startDownload: newer version available, restarting download";
+        DapDataLocal::instance()->saveValueSetting(DapBaseDataLocal::UPDATE_FILE_PATH, "");
+        startDownloadUrl(m_dowmloadUrl, m_dowmloadPack);
+    }
     else
     {
-        auto existingUpdateVer = existingUpdate.split("-")[1] + "-" + existingUpdate.split("-")[2];
-        if (Utils::isNewerVersion(m_availableVersion, existingUpdateVer))
+        QChar separator = existingUpdate.contains('|') ? '|' : '%';
+        const qint64 totalSize = existingUpdate.split(separator).last().toULongLong();
+        if(totalSize <= 0)
         {
+            qWarning() << "startDownload: invalid cached size, restarting download";
             DapDataLocal::instance()->saveValueSetting(DapBaseDataLocal::UPDATE_FILE_PATH, "");
             startDownloadUrl(m_dowmloadUrl, m_dowmloadPack);
+            return;
         }
-        else
-        {
-            const qint64 totalSize = existingUpdate.split("|").last().toULongLong();
-            emit downloadProgress(totalSize, totalSize);
-        }
+        qInfo() << "startDownload: using cached download, totalSize =" << totalSize;
+        emit downloadProgress(totalSize, totalSize);
     }
 }
 

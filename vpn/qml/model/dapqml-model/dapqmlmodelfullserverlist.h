@@ -109,6 +109,7 @@ protected:
   AbstractServerListModelBridge *m_bridge;
   QHash<int, QByteArray> _roleNamesMap;
   int m_current;
+  int m_resetNesting = 0;
   QVector<QMetaObject::Connection> _conn;
   struct
   {

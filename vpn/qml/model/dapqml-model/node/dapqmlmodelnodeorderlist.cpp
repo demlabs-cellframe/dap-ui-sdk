@@ -189,7 +189,7 @@ void DapQmlModelNodeOrderList::setOrderListData (const QJsonArray &a_list, bool 
   int newCurrentIndex = -1, index = 0;
 
   /* parse via cycle */
-  for (const auto &item : qAsConst (a_list))
+  for (const auto &item : std::as_const (a_list))
     {
       /* get item */
       QJsonObject joItem = item.toObject();
@@ -244,7 +244,7 @@ void DapQmlModelNodeOrderList::setOrderListData (const QJsonArray &a_list, bool 
   endResetModel();
 
   /* collect addresses into json */
-  for (const auto &address : qAsConst (addressesSet))
+  for (const auto &address : std::as_const (addressesSet))
     jarray << address;
 
   /* request ip's */

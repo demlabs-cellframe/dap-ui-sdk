@@ -117,7 +117,7 @@ void DapQmlModelChooseServer::setCurrentServerByName (const QString &a_name)
   auto indexOf = [serverList] (const QString & a_serverName) -> int
   {
       int index = 0;
-      for (const auto &server : qAsConst (*serverList))
+      for (const auto &server : std::as_const (*serverList))
       {
           if (server.name() == a_serverName)
               return index;

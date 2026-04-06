@@ -360,7 +360,7 @@ void DapQmlModelAutoServerList::_updateAutoServer (const DapServerInfo &a_server
 //  }
 
   /* set best auto server */
-  for (const auto &server : qAsConst (*_serverList))
+  for (const auto &server : std::as_const (*_serverList))
   {
     if (_containsUserLocation (server.name()))
       continue;
@@ -494,7 +494,7 @@ void DapQmlModelAutoServerList::_slotRowsInserted (const QModelIndex &, int firs
   for (int i = first; i <= last; i++)
   {
     /* get inserted server */
-    const DapServerInfo &server = qAsConst (_serverList)->at (i);
+    const DapServerInfo &server = std::as_const (_serverList)->at (i);
 
     /* ignore user location ones */
     if (_containsUserLocation (server.name()))
@@ -608,10 +608,10 @@ void DapQmlModelAutoServerList::_slotRowsMoved (const QModelIndex &, int first, 
   /* check all indexes data */
   QModelIndex dummy;
   QSet<QString> updatedServers;
-  for (const auto index : qAsConst (indexes))
+  for (const auto index : std::as_const (indexes))
     {
       /* get inserted server */
-      const DapServerInfo &server = qAsConst (_serverList)->at (index);
+      const DapServerInfo &server = std::as_const (_serverList)->at (index);
 
       /* ignore user location ones */
       if (_containsUserLocation (server.name()))
@@ -628,7 +628,7 @@ void DapQmlModelAutoServerList::_slotRowsMoved (const QModelIndex &, int first, 
 #endif // QT_DEBUG
 
       /* update location server */
-      for (const auto &bestServer : qAsConst (*_serverList))
+      for (const auto &bestServer : std::as_const (*_serverList))
         {
           /* skip update, if it is still actual */
           if (bestServer.address() == server.address())
@@ -722,7 +722,7 @@ void DapQmlModelAutoServerList::_slotRowsAboutToRemoved (const QModelIndex &, in
   for (int i = first; i <= last; i++)
     {
       /* get inserted server */
-      const DapServerInfo &server = qAsConst (_serverList)->at (i);
+      const DapServerInfo &server = std::as_const (_serverList)->at (i);
 
       /* ignore user location ones */
       if (_containsUserLocation (server.name()))

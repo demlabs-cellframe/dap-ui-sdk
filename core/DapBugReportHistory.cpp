@@ -89,7 +89,7 @@ void DapBugReportHistory::slotUpdateReportsStatus (const QString &a_json)
 
     if (!bugReportArray.first().toObject().contains ("error"))
     {
-        for (const auto &item : qAsConst(bugReportArray))
+        for (const auto &item : std::as_const(bugReportArray))
         {
             auto jsItem     = item.toObject();
             auto bugreport  = jsItem.value ("bugreport").toString().toInt();
@@ -114,7 +114,7 @@ void DapBugReportHistory::slotNewReport (const QString &a_reportNumber)
         return;
 
     /* check if already exists */
-    for (const auto &item : qAsConst(m_items))
+    for (const auto &item : std::as_const(m_items))
         if(item.number == number)
             return;
 

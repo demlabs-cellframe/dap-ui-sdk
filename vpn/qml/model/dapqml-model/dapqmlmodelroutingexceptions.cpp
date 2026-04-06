@@ -673,7 +673,7 @@ void DapQmlModelRoutingExceptions::sortAndUpdateAllLists()
 
 void DapQmlModelRoutingExceptions::updateAllLists()
 {
-  for (auto *model : qAsConst (s_models))
+  for (auto *model : std::as_const (s_models))
     model->refresh();
 }
 
@@ -683,13 +683,13 @@ void DapQmlModelRoutingExceptions::save() const
   QJsonArray jExApps, jInApps, jroutes;
 
   /* collect checked apps and their content */
-  for (const auto &app : qAsConst (s_excluded.checkedApps))
+  for (const auto &app : std::as_const (s_excluded.checkedApps))
     jExApps << toJson (app);
-  for (const auto &app : qAsConst (s_included.checkedApps))
+  for (const auto &app : std::as_const (s_included.checkedApps))
     jInApps << toJson (app);
 
   /* collect routes */
-  for (const auto &route : qAsConst (s_routes))
+  for (const auto &route : std::as_const (s_routes))
     jroutes << toJson (route);
 
   /* store */
@@ -808,7 +808,7 @@ void DapQmlModelRoutingExceptions::load()
    * load routes
    * ------------------------------------- */
 
-  for (const auto &route : qAsConst (jroutes))
+  for (const auto &route : std::as_const (jroutes))
     append (toRoute (route.toObject()));
 
   /* ----------------------------------------
@@ -852,7 +852,7 @@ void DapQmlModelRoutingExceptions::clearApps()
 
   updateAllLists();
 
-  for (auto *model : qAsConst (s_baseModels))
+  for (auto *model : std::as_const (s_baseModels))
     model->refresh();
 }
 
@@ -865,7 +865,7 @@ void DapQmlModelRoutingExceptions::clearRoutes()
 QStringList DapQmlModelRoutingExceptions::getIncludedCheckedPackageList()
 {
   QStringList _list;
-  for (const auto &item : qAsConst(s_included.checkedApps))
+  for (const auto &item : std::as_const(s_included.checkedApps))
     _list.push_front(item.packageName);
   return _list;
 }
@@ -873,7 +873,7 @@ QStringList DapQmlModelRoutingExceptions::getIncludedCheckedPackageList()
 QStringList DapQmlModelRoutingExceptions::getExcludedCheckedPackageList()
 {
   QStringList _list;
-  for (const auto &item : qAsConst(s_excluded.checkedApps))
+  for (const auto &item : std::as_const(s_excluded.checkedApps))
     _list.push_front(item.packageName);
 
   //force exclude com.KelVPN package from rounting
@@ -1012,7 +1012,7 @@ void DapQmlModelRoutingExceptions::_clearBeforeLoad()
 
   updateAllLists();
 
-  for (auto *model : qAsConst (s_baseModels))
+  for (auto *model : std::as_const (s_baseModels))
     model->refresh();
 }
 
@@ -1022,11 +1022,11 @@ void DapQmlModelRoutingExceptions::_clearBeforeLoad()
 //  QJsonArray japps, jroutes;
 
 //  /* collect checked apps and their names */
-//  for (const auto &app : qAsConst (s_checkedApps))
+//  for (const auto &app : std::as_const (s_checkedApps))
 //    japps << toJson (app);
 
 //  /* collect routes */
-//  for (const auto &route : qAsConst (s_routes))
+//  for (const auto &route : std::as_const (s_routes))
 //    jroutes << toJson (route);
 
 //  /* store */

@@ -11,7 +11,8 @@ enum ConnectionState {
     Disconnecting,
     ServerChanging,
     NoCDBConnecting,
-    ConnectionError
+    ConnectionError,
+    ServiceUnavailable
 };
 
 #endif // VPNDEFINE_H

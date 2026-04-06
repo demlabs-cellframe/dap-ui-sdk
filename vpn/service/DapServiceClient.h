@@ -50,6 +50,7 @@ signals:
     void ctlConnected();
     void ctlDisconnected();
     void ctlError(QString);
+    void sigServiceConnectionFailed();
 
     void error(QString);
 
@@ -62,6 +63,7 @@ public slots:
     void init() override;
     void connectToService();
     void startReconnectingToService();
+    void resetReconnectState();
 
 protected:
 
@@ -69,12 +71,17 @@ protected:
 protected slots:
     virtual void procCmdController(const QByteArray &a_cmd) = 0;
 private:
-    const int RECONNECT_TIMEOUT_MS = 1000;
+    static constexpr int RECONNECT_INITIAL_MS = 1000;
+    static constexpr int RECONNECT_MAX_MS     = 30000;
+    static constexpr int RECONNECT_MAX_ATTEMPTS = 15;
+
     QTimer connectTimer;
     DapUiSocket * sockCtl;
     QString m_serviceName;
     QByteArray readBuffer;
     DapCmdParser * dapCmdParser;
+    int m_reconnectAttempts  = 0;
+    int m_currentBackoffMs   = RECONNECT_INITIAL_MS;
 
 private slots:
     void onCtlSocketConnected();

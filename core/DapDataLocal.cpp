@@ -67,7 +67,7 @@ void DapDataLocal::saveValueSetting(const QString &setting, const QVariant &valu
                     const int MAX_NOTIFICATIONS = 50;
                     
                     // Iterate through notifications and apply filters
-                    for (const auto &item : qAsConst(originalNotifications))
+                    for (const auto &item : std::as_const(originalNotifications))
                     {
                         QJsonObject notification = item.toObject();
                         
@@ -253,7 +253,7 @@ void DapDataLocal::setSettings(const QJsonObject &json)
                     const int MAX_NOTIFICATIONS = 50;
                     
                     // Iterate through notifications and apply filters
-                    for (const auto &item : qAsConst(originalNotifications))
+                    for (const auto &item : std::as_const(originalNotifications))
                     {
                         QJsonObject notification = item.toObject();
                         

@@ -101,7 +101,7 @@ bool DapQmlListviewEventFilter::eventFilter (QObject *a_watched, QEvent *a_event
       };
 
       /* push into chain */
-      for (auto *lef : qAsConst (data->lefChain))
+      for (auto *lef : std::as_const (data->lefChain))
       {
         /* process only, if no one marked event as handled */
         if (!eventData.eventIsHandled)

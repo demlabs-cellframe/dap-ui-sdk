@@ -31,12 +31,10 @@ DapServiceClient::DapServiceClient(const QString& a_serviceName,
 /**
  * @brief DapServiceClient::onCtlSocketConnected
  */
-void DapServiceClient::onCtlSocketConnected() {
+void DapServiceClient::onCtlSocketConnected()
+{
+    resetReconnectState();
     emit ctlConnected();
-    if(this->connectTimer.isActive()) {
-        qInfo() << "Connect timer stopped";
-        connectTimer.stop();
-    }
 }
 
 /**
@@ -98,8 +96,34 @@ void DapServiceClient::onCtlSocketError(DapUiSocketError socketError)
 
 void DapServiceClient::startReconnectingToService()
 {
-    if(!connectTimer.isActive()) {
-        qInfo() << "Start trying to reconnect to service";
-        connectTimer.start(RECONNECT_TIMEOUT_MS);
+    if(connectTimer.isActive())
+        return;
+
+    if(m_reconnectAttempts >= RECONNECT_MAX_ATTEMPTS)
+    {
+        qCritical() << "Service reconnection failed after"
+                     << m_reconnectAttempts << "attempts, giving up";
+        emit sigServiceConnectionFailed();
+        return;
     }
+
+    m_reconnectAttempts++;
+    qInfo() << "Reconnect attempt" << m_reconnectAttempts
+            << "/" << RECONNECT_MAX_ATTEMPTS
+            << "in" << m_currentBackoffMs << "ms";
+
+    connectTimer.start(m_currentBackoffMs);
+
+    m_currentBackoffMs = qMin(m_currentBackoffMs * 3 / 2, RECONNECT_MAX_MS);
+}
+
+void DapServiceClient::resetReconnectState()
+{
+    if(connectTimer.isActive())
+    {
+        qInfo() << "Connect timer stopped";
+        connectTimer.stop();
+    }
+    m_reconnectAttempts = 0;
+    m_currentBackoffMs  = RECONNECT_INITIAL_MS;
 }

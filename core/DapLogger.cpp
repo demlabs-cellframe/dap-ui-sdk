@@ -219,7 +219,7 @@ void DapLogger::clearOldLogs()
 
     QFileInfoList list = dir.entryInfoList();
     QDateTime deleteDate = QDateTime::currentDateTime().addDays(-2);
-    for (const auto& file : qAsConst(list)){
+    for (const auto& file : std::as_const(list)){
         if (file.lastModified() < deleteDate){
             dir.remove(file.fileName());
         }

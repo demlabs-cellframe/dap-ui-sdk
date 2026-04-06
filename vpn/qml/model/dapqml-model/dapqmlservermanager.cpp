@@ -462,7 +462,7 @@ void DapQmlServerManager::_hardReset()
 void DapQmlServerManager::_toJson (QJsonArray &a_dest) const
 {
   QStringList keys  = s_customServers->keys();
-  for (const auto &server : qAsConst (*s_servers))
+  for (const auto &server : std::as_const (*s_servers))
     {
       auto custom = s_customServers->value (server.address());
       auto jobj   = server.toJSON();
@@ -473,7 +473,7 @@ void DapQmlServerManager::_toJson (QJsonArray &a_dest) const
       a_dest << jobj;
     }
 
-  for (const auto &customAddress : qAsConst (keys))
+  for (const auto &customAddress : std::as_const (keys))
     {
       QJsonObject jobj;
       auto custom = s_customServers->value (customAddress);
@@ -520,7 +520,7 @@ void DapQmlServerManager::_fromJson (const QJsonArray &a_src) const
 
 bool DapQmlServerManager::_isServerWithAlreadyExists (const QString &a_address) const
 {
-  for (const auto &server : qAsConst (*s_servers))
+  for (const auto &server : std::as_const (*s_servers))
     if (server.address() == a_address)
       return true;
   return false;

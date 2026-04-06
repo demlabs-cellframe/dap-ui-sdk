@@ -221,7 +221,7 @@ static const QString _findInCountriesMap (const QString &string)
 {
   QStringList list = string.split (".", Qt::SkipEmptyParts);
   QString code;
-  for (const QString &s : qAsConst (list))
+  for (const QString &s : std::as_const (list))
     {
       auto it = s_countryMap.find (s);
       if (it != s_countryMap.end())
@@ -1074,7 +1074,7 @@ void DapSortedServerList::update (const QList<int> &a_indexes)
     }
 
   /* insert to a proper place */
-  for (const auto i : qAsConst (actualIndexes))
+  for (const auto i : std::as_const (actualIndexes))
     {
       auto &server  = _list[i];
 
@@ -1125,10 +1125,10 @@ void DapSortedServerList::_sort()
 //      QStringList names, indexes;
 //      QString currentName = currentServer().name();
 
-//      for (auto &server : qAsConst (_list))
+//      for (auto &server : std::as_const (_list))
 //        names << server.name();
 
-//      for (auto index : qAsConst (_sortedIndexes))
+//      for (auto index : std::as_const (_sortedIndexes))
 //        indexes << QString::number (index);
 
 //      qDebug() << a_name

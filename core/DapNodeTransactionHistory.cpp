@@ -272,7 +272,7 @@ void DapNodeTransactionHistory::load()
   _list.clear();
 
   /* parse json array */
-  for (const auto &jitem : qAsConst (jarr))
+  for (const auto &jitem : std::as_const (jarr))
   {
     DapNodeTransactionHistory::Transaction item;
     item.fromJson (jitem.toObject());

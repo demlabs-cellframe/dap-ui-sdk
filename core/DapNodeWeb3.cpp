@@ -943,7 +943,7 @@ void DapNodeWeb3::parseNodeIp (const QString &replyData, int baseErrorCode)
       auto jarr = dataValue.toArray();
 
       /* convert in cycle */
-      for (const auto &jarrItem : qAsConst (jarr))
+      for (const auto &jarrItem : std::as_const (jarr))
       {
         QJsonObject jitem = jarrItem.toObject();
 

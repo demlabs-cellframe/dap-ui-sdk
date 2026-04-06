@@ -626,7 +626,7 @@ QMap<QString, QVariant> &OrderListData::orders()
 
 void OrderListData::_updateListMap()
 {
-    for (const auto &item : qAsConst (m_orderMap))
+    for (const auto &item : std::as_const (m_orderMap))
     {
         QString key     = item.hash();//.right (10);
         QString loc     = item.nodeLocation();

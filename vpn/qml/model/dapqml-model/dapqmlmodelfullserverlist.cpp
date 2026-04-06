@@ -430,14 +430,19 @@ void DapQmlModelFullServerList::rowsRemoved (const QModelIndex &, int, int)
 
 void DapQmlModelFullServerList::modelAboutToBeReset()
 {
-  beginResetModel();
+  if(m_resetNesting++ == 0)
+    beginResetModel();
 }
 
 void DapQmlModelFullServerList::modelReset()
 {
   _getSizes();
   _getCurrent();
-  endResetModel();
+  if(--m_resetNesting <= 0)
+  {
+    m_resetNesting = 0;
+    endResetModel();
+  }
 }
 
 void DapQmlModelFullServerList::dataChanged (const QModelIndex &a_topLeft, const QModelIndex &a_bottomRight, const QVector<int> &roles)

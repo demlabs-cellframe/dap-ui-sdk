@@ -257,7 +257,7 @@ void DapNodeWalletData::setNetworkFee (const QString &a_networkName, const QStri
 
   for (auto wallet = _wallets.begin(); wallet != _wallets.end(); wallet++)
     for (auto network = wallet->networks.begin(); network != wallet->networks.end(); network++)
-      for (const SimPair &pair : qAsConst (simData))
+      for (const SimPair &pair : std::as_const (simData))
         if (network->name == pair.first)
           network->feeTicker  = pair.second;
 
@@ -551,17 +551,17 @@ void DapNodeWalletData::_printWalletsData()
 {
   DEBUGINFO << "networks";
 
-  for (const auto &network : qAsConst (_data.networkList))
+  for (const auto &network : std::as_const (_data.networkList))
     qDebug() << network;
 
   DEBUGINFO << "wallets";
 
-  for (const auto &wallet : qAsConst (_data.walletTokenList))
+  for (const auto &wallet : std::as_const (_data.walletTokenList))
     qDebug() << QString ("%1:%2:%3").arg (wallet.network, wallet.wallet, wallet.token);
 
   DEBUGINFO << "tokens";
 
-  for (const auto &token : qAsConst (_data.tokenBalanceList))
+  for (const auto &token : std::as_const (_data.tokenBalanceList))
     qDebug() << QString ("%1:%2:%3:%4").arg (token.network, token.wallet, token.token, token.balance);
 }
 
@@ -624,7 +624,7 @@ void DapNodeWalletData::_cleanInvalidTokens()
   }
 
   for (auto wt = _data.walletTokenList.begin(); wt != _data.walletTokenList.end(); wt++)
-    for (const SimPair &pair : qAsConst (simData))
+    for (const SimPair &pair : std::as_const (simData))
       if (wt->network == pair.first)
         networkWalletTokens.insert (nwKeyString (wt->network, wt->wallet), pair.second);
 

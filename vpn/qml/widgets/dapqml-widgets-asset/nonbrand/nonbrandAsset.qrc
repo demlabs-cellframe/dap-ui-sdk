@@ -1,16 +1,16 @@
 <RCC>
     <qresource prefix="/">
-        <file compress="1">fonts/Roboto-Bold.ttf</file>
-        <file compress="1">fonts/Lato-Regular.ttf</file>
-        <file compress="1">fonts/Lato-Bold.ttf</file>
-        <file compress="1">fonts/Jost-Regular.ttf</file>
-        <file compress="1">fonts/Jost-Medium.ttf</file>
-        <file compress="1">fonts/Exo2-Regular.ttf</file>
-        <file compress="1">fonts/Blinker-SemiBold.ttf</file>
-        <file compress="1">fonts/KelRaleway-400.ttf</file>
-        <file compress="1">fonts/KelRaleway-500.ttf</file>
-        <file compress="1">fonts/KelRaleway-600.ttf</file>
-        <file compress="1">fonts/KelRaleway-700.ttf</file>
+        <file>fonts/Roboto-Bold.ttf</file>
+        <file>fonts/Lato-Regular.ttf</file>
+        <file>fonts/Lato-Bold.ttf</file>
+        <file>fonts/Jost-Regular.ttf</file>
+        <file>fonts/Jost-Medium.ttf</file>
+        <file>fonts/Exo2-Regular.ttf</file>
+        <file>fonts/Blinker-SemiBold.ttf</file>
+        <file>fonts/KelRaleway-400.ttf</file>
+        <file>fonts/KelRaleway-500.ttf</file>
+        <file>fonts/KelRaleway-600.ttf</file>
+        <file>fonts/KelRaleway-700.ttf</file>
         <file compress="1">nonthemed/cdb-index-icon.png</file>
         <file compress="1">nonthemed/conn-icon-0.png</file>
         <file compress="1">nonthemed/conn-icon-1.png</file>
