@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTimer>
+#include <QPointer>
 #include "DapCmdServiceAbstract.h"
 #include "DapServerInfo.h"
 #include "DapNetworkReply.h"
@@ -28,6 +29,7 @@ private:
     bool guiCall;
     QTimer * emitTimer;
     bool m_errorSentOnce = false;
+    QPointer<DapNetworkReply> m_pendingReply;
 
     void sendServerList(const QJsonArray& arr, const QString &time);
     void sendRequestToCDB();

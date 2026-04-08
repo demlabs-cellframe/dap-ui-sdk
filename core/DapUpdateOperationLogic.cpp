@@ -3,6 +3,7 @@
 
 #ifdef Q_OS_MAC
     #include "CoreFoundation/CoreFoundation.h"
+    #include <climits>
 #endif
 
 
@@ -96,7 +97,7 @@ QString DapUpdateOperationLogic::updateApp()
     return updateAgent + QDir::separator() + QString("%1%2").arg(DAP_BRAND, "Update.exe");
 #endif
 #ifdef Q_OS_MACOS
-    return updateAgent + QDir::separator() + pathInsideMacOSPack(DAP_BRAND)
+    return updateAgent + pathInsideMacOSPack(DAP_BRAND)
             + QDir::separator() + QString("%1%2").arg(DAP_BRAND, "Update");
 #endif
 }
@@ -130,19 +131,35 @@ QString DapUpdateOperationLogic::currentApplication()
 #endif
 }
 
-// this app folder
+// this app folder (parent of .app bundle on macOS)
 QString DapUpdateOperationLogic::applicationDirPath()
 {
 #ifdef Q_OS_MAC
-    QString appName = "Update.app";
-    CFURLRef pluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-    CFStringRef macPath = CFURLCopyFileSystemPath(pluginRef,kCFURLPOSIXPathStyle);
-    const char *pathPtr = CFStringGetCStringPtr(macPath,CFStringGetSystemEncoding());
-    CFRelease(pluginRef);
-    CFRelease(macPath);
-    QString filePath = QString(pathPtr);
-    QString applicationDirPath = filePath.left(filePath.lastIndexOf("/"));
-    return applicationDirPath;
+    CFURLRef bundleUrl = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+    if(bundleUrl)
+    {
+        CFStringRef macPath = CFURLCopyFileSystemPath(bundleUrl, kCFURLPOSIXPathStyle);
+        if(macPath)
+        {
+            char pathBuf[PATH_MAX];
+            if(CFStringGetCString(macPath, pathBuf, sizeof(pathBuf), kCFStringEncodingUTF8))
+            {
+                QString bundlePath = QString::fromUtf8(pathBuf);
+                CFRelease(macPath);
+                CFRelease(bundleUrl);
+                int idx = bundlePath.lastIndexOf("/");
+                return (idx > 0) ? bundlePath.left(idx) : bundlePath;
+            }
+            CFRelease(macPath);
+        }
+        CFRelease(bundleUrl);
+    }
+    // Fallback: qApp gives ".../KelVPN.app/Contents/MacOS", navigate up 3 levels
+    QDir dir(qApp->applicationDirPath());
+    dir.cdUp(); // → Contents
+    dir.cdUp(); // → KelVPN.app
+    dir.cdUp(); // → parent of bundle
+    return dir.absolutePath();
 #else
     return qApp->applicationDirPath();
 #endif
