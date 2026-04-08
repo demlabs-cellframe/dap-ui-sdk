@@ -42,8 +42,15 @@ void DapUpdateOperationLogic::startDownload()
 // start update application for desktop os
 void DapUpdateOperationLogic::startUpdate()
 {
+    if(m_updateStarted)
+    {
+        qInfo() << "Update agent already launched, skipping repeated call";
+        return;
+    }
+
     qInfo() << "Start update process";
     bool detached = false;
+    qint64 pid = 0;
     QString updateAppPath = updateApp();
     QString srcPath = updateAppPath;
     qInfo() << "Update agent source path:" << srcPath;
@@ -52,7 +59,7 @@ void DapUpdateOperationLogic::startUpdate()
     qInfo() << "Download file exists:" << QFile::exists(downloadFileName());
     qInfo() << "Current application:" << currentApplication();
 #ifdef Q_OS_LINUX
-    detached = QProcess::startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
+    detached = QProcess::startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication(), QString(), &pid);
 #endif
 #ifdef Q_OS_WIN
     updateAppPath = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND, "Update.exe");
@@ -70,16 +77,23 @@ void DapUpdateOperationLogic::startUpdate()
         qWarning() << "Failed to copy update agent from" << updateApp() << "to" << updateAppPath;
     else
         qInfo() << "Copied update agent to" << updateAppPath;
+    // Remove macOS quarantine attribute that may block execution from /tmp
+    QProcess::execute("xattr", QStringList() << "-rd" << "com.apple.quarantine" << updateAppPath);
     qInfo() << "Update agent dest exists:" << QFile::exists(updateAppPath);
     QFileInfo fi(updateAppPath);
     qInfo() << "Update agent dest permissions:" << QString::number(fi.permissions(), 16);
     qInfo() << "Update agent dest size:" << fi.size();
-    detached = QProcess::startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
+    detached = QProcess::startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication(), QString(), &pid);
 #endif
     if(!detached)
+    {
         qWarning() << "Failed to start update agent application" << updateAppPath;
+    }
     else
-        qInfo() << "Start update agent application" << updateAppPath << downloadFileName() << currentApplication();
+    {
+        m_updateStarted = true;
+        qInfo() << "Start update agent application" << updateAppPath << downloadFileName() << currentApplication() << "pid:" << pid;
+    }
 }
 #endif
 

@@ -1018,6 +1018,20 @@ const QJsonObject DapBaseDataLocal::settingsToJson()
     if(m_settings)
     {
         QStringList listKeys = m_settings->allKeys();
+#ifdef Q_OS_MACOS
+        // On macOS with native QSettings, allKeys() may return system-wide
+        // NSGlobalDomain keys (Apple*, NS*, com/apple/* etc.) when running as root.
+        // Filter them out to prevent JSON overflow (20KB+ vs 10KB limit).
+        listKeys.erase(std::remove_if(listKeys.begin(), listKeys.end(),
+            [](const QString &k)
+            {
+                return k.startsWith("Apple") || k.startsWith("NS")
+                    || k.startsWith("com/apple") || k.startsWith("com.apple")
+                    || k.startsWith("KB_") || k.startsWith("AK")
+                    || k.startsWith("ACD") || k.startsWith("shouldShow");
+            }),
+            listKeys.end());
+#endif
         qDebug() << "[DapBaseDataLocal][settingsToJson] setting keys: " << listKeys;
         for(const auto& key: std::as_const(listKeys))
         {

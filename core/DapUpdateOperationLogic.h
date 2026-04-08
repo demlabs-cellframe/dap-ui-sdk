@@ -26,6 +26,7 @@ public:
 
 protected:
     bool m_downloadError;
+    bool m_updateStarted = false;
     QString updateApp();
 
 signals:
