@@ -46,7 +46,7 @@ Item
     function clickFunc()
     {
         print("DapCopyButton onClicked")
-        showInfoNotification(popupText, "check_icon.png")
+        showInfoNotification(popupText, "qrc:/otherQrc/otherQrc/gui_icons/check_icon.svg")
         copyClicked()
     }
 }
