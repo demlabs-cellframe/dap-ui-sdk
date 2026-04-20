@@ -39,7 +39,6 @@ TextField {
     property color contextMenuBackgroundColorHover: currTheme.lime
 
     property var regExpValidator: /.*/
-
     property bool detectNonLatinInput: false
     property bool nonLatinInputDetected: false
 
