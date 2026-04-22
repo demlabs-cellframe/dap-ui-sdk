@@ -78,7 +78,13 @@ void DapTunDarwin::tunnelManagerStart()
     [protocol.includeAllNetworks: YES];
    // [protocol.enforceRoutes: YES];
     [protocol.serverAddress: [NSString stringWithUTF8String: upstreamAddress().toLatin1().constData()]];
-    [protocol.providerBundleIdentifier: [NSString stringWithUTF8String: "com.kelvpn" ]];
+#if defined(DAP_IOS_TUNNEL_BUNDLE_ID)
+    [protocol.providerBundleIdentifier: @DAP_IOS_TUNNEL_BUNDLE_ID];
+#elif defined(DAP_MACOS_TUNNEL_BUNDLE_ID)
+    [protocol.providerBundleIdentifier: @DAP_MACOS_TUNNEL_BUNDLE_ID];
+#else
+    [protocol.providerBundleIdentifier: @"com.KelVPN.vpn.tunnel"];
+#endif
 
     [manager.protocolConfiguration: protocol];
     [manager.enabled: YES];
