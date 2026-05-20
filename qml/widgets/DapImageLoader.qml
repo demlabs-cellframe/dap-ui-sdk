@@ -7,6 +7,8 @@ Item {
     property alias img: image
     property alias mirror: image.mirror
 
+    implicitWidth: innerWidth
+    implicitHeight: innerHeight
     width: innerWidth
     height: innerHeight
     Image

@@ -30,7 +30,7 @@ ToolTip {
         Rectangle {
             id: backgroundToolTip
             anchors.fill: parent
-            radius: 4
+            radius: 4 * scaleFactor
             color: currTheme.mainBackground
         }
         DropShadow {
@@ -49,9 +49,9 @@ ToolTip {
             anchors.fill: backgroundToolTip
             source: backgroundToolTip
             color: currTheme.shadowColor
-            horizontalOffset: 2
-            verticalOffset: 2
-            radius: 10
+            horizontalOffset: 2 * scaleFactor
+            verticalOffset: 2 * scaleFactor
+            radius: 10 * scaleFactor
             samples: 20
             opacity: 1
         }
@@ -96,9 +96,9 @@ ToolTip {
             anchors.fill: bottomRect
             source: bottomRect
             color: currTheme.shadowColor
-            horizontalOffset: 2
-            verticalOffset: 2
-            radius: 10
+            horizontalOffset: 2 * scaleFactor
+            verticalOffset: 2 * scaleFactor
+            radius: 10 * scaleFactor
             samples: 20
             opacity: 1
             visible: bottomRect.visible

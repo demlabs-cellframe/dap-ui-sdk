@@ -15,7 +15,7 @@ Item
     property string fullNumber: "-"
     property string tokenName: ""
     property int outSymbols: 10
-    property int spacing: 10
+    property int spacing: 10 * guiApp.scaleFactor
     property bool showToolTip: true
     property bool alwaysHoverShow: false
     property bool copyButtonVisible: true
@@ -45,7 +45,7 @@ Item
     RowLayout
     {
         anchors.fill: parent
-        spacing: 5
+        spacing: 5 * guiApp.scaleFactor
 
         Text
         {

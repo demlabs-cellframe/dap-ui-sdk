@@ -76,7 +76,7 @@ Item {
             color: currTheme.secondaryBackground
             border.width: 1 * guiApp.scaleFactor
             border.color: currTheme.input
-            radius: 4
+            radius: 4 * guiApp.scaleFactor
 
             MouseArea {
                 anchors.fill: parent
@@ -124,6 +124,32 @@ Item {
                                 placeholderText = defaultPlaceholderText;
                             } else {
                                 placeholderText = "";
+                            }
+                        }
+
+                        // Apply fee value immediately while typing, so slider/state update without Enter.
+                        if (activeFocus) {
+                            let liveValue = text;
+
+                            if (liveValue === "" || liveValue === ".")
+                                return;
+
+                            if (liveValue[0] === ".")
+                                liveValue = "0" + liveValue;
+
+                            if (liveValue[liveValue.length - 1] === ".")
+                                liveValue = liveValue + "0";
+
+                            if (!coinCalculator.isValid(liveValue))
+                                return;
+
+                            if (coinCalculator.isLess(liveValue, minimalValue) || coinCalculator.isGreater(liveValue, maximumValue))
+                                return;
+
+                            if (currentValue !== liveValue) {
+                                currentValue = liveValue;
+                                updateState();
+                                valueChange();
                             }
                         }
                     }

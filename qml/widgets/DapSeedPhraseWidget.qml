@@ -10,7 +10,7 @@ Item {
     property int fieldsNumber: 12  // Number of seed phrase words (12 or 24)
     property bool restoreMode: false  // true for restore/import, false for new generation
     property var wordsModel: []  // Array of words
-    property int buttonsAreaHeight: 96  // Height of the buttons area (reduced)
+    property real buttonsAreaHeight: 96  // Height of the buttons area (reduced)
     property bool wordsCopied: false  // Track if words were copied in create mode
     
     // Button aliases for external access
@@ -30,12 +30,12 @@ Item {
     property color clearButtonColor: "#FF6B6B"
     property color clearButtonHoverColor: "#FF5555"
     
-    property int fieldRadius: 4
-    property int buttonRadius: 4
-    property int scaleFactor: 1
+    property real scaleFactor: 1.0
+    property real fieldRadius: 4 * scaleFactor
+    property real buttonRadius: 4 * scaleFactor
     property string fontFamily: "Quicksand"
-    property int fontSize: 16
-    property int buttonFontSize: 14
+    property real fontSize: 16 * scaleFactor
+    property real buttonFontSize: 14 * scaleFactor
     
     // Icon paths (configurable)
     property string clearIconPath: "qrc:/icons/other/x_mark_white.svg"
@@ -105,7 +105,7 @@ Item {
                                 color: fieldBackgroundColor
                                 border.width: 1 * scaleFactor
                                 border.color: fieldBorderColor
-                                radius: fieldRadius * scaleFactor
+                                radius: fieldRadius
                             }
                             
                             // Initialize text without binding to avoid loops
@@ -178,7 +178,7 @@ Item {
                             text: (index + 1).toString()
                             color: fieldNumberColor
                             font.family: fontFamily
-                            font.pixelSize: 12
+                            font.pixelSize: 12 * scaleFactor
                         }
                         
                         Image {
@@ -218,13 +218,13 @@ Item {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 16 
-                spacing: 16 
+                anchors.bottomMargin: 16 * scaleFactor
+                spacing: 16 * scaleFactor 
                 
                 Item {
                     Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: 90
-                    Layout.preferredHeight: restoreMode ? 28 : 0
+                    Layout.preferredWidth: 90 * scaleFactor
+                    Layout.preferredHeight: restoreMode ? 28 * scaleFactor : 0
                     visible: restoreMode
                     
                     Text {
@@ -233,15 +233,15 @@ Item {
                         text: qsTr("Clear input")
                         color: clearAllArea.containsMouse ? clearAllTextHoverColor : clearAllTextColor
                         font.family: fontFamily
-                        font.pixelSize: 12
+                        font.pixelSize: 12 * scaleFactor
                     }
                     
                     Image {
                         anchors.right: parent.right
                         anchors.verticalCenter: parent.verticalCenter
                         rotation: 180
-                        sourceSize.width: 28
-                        sourceSize.height: 28
+                        sourceSize.width: 28 * scaleFactor
+                        sourceSize.height: 28 * scaleFactor
                         source: clearAllArea.containsMouse ? clearAllIconHoverPath : clearAllIconPath
                     }
                     
@@ -259,18 +259,18 @@ Item {
                 RowLayout {
                     Layout.alignment: Qt.AlignHCenter
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 36
-                    spacing: 8
+                    Layout.preferredHeight: 36 * scaleFactor
+                    spacing: 8 * scaleFactor
                     
                     DapButton {
                         id: copyActionButton
-                        Layout.preferredWidth: 155
-                        Layout.preferredHeight: 36
+                        Layout.preferredWidth: 155 * scaleFactor
+                        Layout.preferredHeight: 36 * scaleFactor
                         textButton: restoreMode ? qsTr("Paste") : qsTr("Copy")
                         enabled: true
                         
-                        implicitWidth: 155
-                        implicitHeight: 36
+                        implicitWidth: 155 * scaleFactor
+                        implicitHeight: 36 * scaleFactor
                         horizontalAligmentText: Text.AlignHCenter
                         fontButton.family: fontFamily
                         fontButton.pixelSize: buttonFontSize
@@ -315,13 +315,13 @@ Item {
                     
                     DapButton {
                         id: nextActionButton
-                        Layout.preferredWidth: 155
-                        Layout.preferredHeight: 36
+                        Layout.preferredWidth: 155 * scaleFactor
+                        Layout.preferredHeight: 36 * scaleFactor
                         textButton: qsTr("Next")
                         enabled: false
                         
-                        implicitWidth: 155
-                        implicitHeight: 36
+                        implicitWidth: 155 * scaleFactor
+                        implicitHeight: 36 * scaleFactor
                         horizontalAligmentText: Text.AlignHCenter
                         fontButton.family: fontFamily
                         fontButton.pixelSize: buttonFontSize

@@ -133,12 +133,12 @@ ComboBox
     {
         anchors.fill: parent
         color: "transparent"
-        radius: 4
+        radius: 4 * guiApp.scaleFactor
 
         Rectangle
         {
             id: backGrnd
-            radius: 4
+            radius: 4 * guiApp.scaleFactor
             width: parent.width
             height: dapComboBoxWithRange.popup.visible ?
                         parent.height + popupBackGrnd.height :
@@ -365,7 +365,7 @@ ComboBox
                     id: popupBackGrnd
                     anchors.fill: parent
                     color: currTheme.secondaryBackground
-                    radius: 4
+                    radius: 4 * guiApp.scaleFactor
                 }
         }
 

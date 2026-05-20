@@ -26,9 +26,9 @@ Rectangle
     layer.effect:
         DropShadow
         {
-            horizontalOffset: 3
-            verticalOffset: 3
-            radius: 13
+            horizontalOffset: 3 * guiApp.scaleFactor
+            verticalOffset: 3 * guiApp.scaleFactor
+            radius: 13 * guiApp.scaleFactor
             samples: 17
             color: currTheme.shadowColor
         }
@@ -39,7 +39,7 @@ Rectangle
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 44 
+        height: 44 * guiApp.scaleFactor
         color: currTheme.backgroundMainScreen
         radius: currTheme.frameRadius
 
@@ -49,8 +49,8 @@ Rectangle
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.leftMargin: 30 
-            anchors.rightMargin: 30 
+            anchors.leftMargin: 30 * guiApp.scaleFactor
+            anchors.rightMargin: 30 * guiApp.scaleFactor
             font: fontMessage
             color: currTheme.textColor
         }
@@ -63,7 +63,7 @@ Rectangle
                 left: parent.left
                 right: parent.right
             }
-            height: 10 
+            height: 10 * guiApp.scaleFactor
             color: currTheme.backgroundMainScreen
         }
     }
@@ -75,11 +75,11 @@ Rectangle
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        anchors.topMargin: 20 
-        anchors.leftMargin: 15 
-        anchors.rightMargin: 15 
-        anchors.bottomMargin: 32 
-        height: 172 
+        anchors.topMargin: 20 * guiApp.scaleFactor
+        anchors.leftMargin: 15 * guiApp.scaleFactor
+        anchors.rightMargin: 15 * guiApp.scaleFactor
+        anchors.bottomMargin: 32 * guiApp.scaleFactor
+        height: 172 * guiApp.scaleFactor
         color: currTheme.backgroundElements
 
         Text
@@ -98,8 +98,8 @@ Rectangle
             anchors.top: contentText.bottom
             anchors.left: parent.left
             anchors.right: parent.right
-            height: 30 
-            anchors.topMargin: 20 
+            height: 30 * guiApp.scaleFactor
+            anchors.topMargin: 20 * guiApp.scaleFactor
             visible: false
             font: fontMessage
             clip:true
@@ -131,8 +131,8 @@ Rectangle
         DapButton
         {
             id: buttonBack
-            widthButton: 78 
-            heightButton: 36 
+            widthButton: 78 * guiApp.scaleFactor
+            heightButton: 36 * guiApp.scaleFactor
             anchors.left: parent.left
             anchors.bottom: parent.bottom
             textButton: qsTr("Back")
@@ -144,8 +144,8 @@ Rectangle
         DapButton
         {
             id: buttonOk
-            widthButton: 78 
-            heightButton: 36 
+            widthButton: 78 * guiApp.scaleFactor
+            heightButton: 36 * guiApp.scaleFactor
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             textButton: qsTr("Ok")
