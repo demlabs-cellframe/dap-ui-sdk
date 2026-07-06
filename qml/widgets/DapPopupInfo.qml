@@ -27,7 +27,7 @@ Item {
 
     y: 84 * scaleFactor
 
-    z: 100
+    z: 200
 
     opacity: 0
     visible: false
